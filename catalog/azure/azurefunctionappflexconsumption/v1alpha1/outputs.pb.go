@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFunctionAppFlexConsumptionStackOutputs** captures the outputs
+// **AzureFunctionAppFlexConsumptionOutputs** captures the outputs
 // of provisioning an Azure Function App on the Flex Consumption plan.
 //
 // The primary output is `function_app_id`, the ARM resource ID. The
@@ -42,7 +42,7 @@ const (
 // **Leaf resource**: Nothing references AzureFunctionAppFlexConsumption
 // outputs downstream. These outputs are consumed by users, infra chart
 // visibility, and external DNS/domain configuration.
-type AzureFunctionAppFlexConsumptionStackOutputs struct {
+type AzureFunctionAppFlexConsumptionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Function App.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/sites/{name}
@@ -99,20 +99,20 @@ type AzureFunctionAppFlexConsumptionStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) Reset() {
-	*x = AzureFunctionAppFlexConsumptionStackOutputs{}
+func (x *AzureFunctionAppFlexConsumptionOutputs) Reset() {
+	*x = AzureFunctionAppFlexConsumptionOutputs{}
 	mi := &file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) String() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFunctionAppFlexConsumptionStackOutputs) ProtoMessage() {}
+func (*AzureFunctionAppFlexConsumptionOutputs) ProtoMessage() {}
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFunctionAppFlexConsumptionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -124,75 +124,75 @@ func (x *AzureFunctionAppFlexConsumptionStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFunctionAppFlexConsumptionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFunctionAppFlexConsumptionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFunctionAppFlexConsumptionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFunctionAppFlexConsumptionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetFunctionAppId() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetFunctionAppId() string {
 	if x != nil {
 		return x.FunctionAppId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetDefaultHostname() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetDefaultHostname() string {
 	if x != nil {
 		return x.DefaultHostname
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetOutboundIpAddresses() []string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetOutboundIpAddresses() []string {
 	if x != nil {
 		return x.OutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetIdentityTenantId() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetIdentityTenantId() string {
 	if x != nil {
 		return x.IdentityTenantId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetCustomDomainVerificationId() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetCustomDomainVerificationId() string {
 	if x != nil {
 		return x.CustomDomainVerificationId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetKind() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetPossibleOutboundIpAddresses() []string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetPossibleOutboundIpAddresses() []string {
 	if x != nil {
 		return x.PossibleOutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetSiteCredentialName() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetSiteCredentialName() string {
 	if x != nil {
 		return x.SiteCredentialName
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumptionStackOutputs) GetSiteCredentialPassword() string {
+func (x *AzureFunctionAppFlexConsumptionOutputs) GetSiteCredentialPassword() string {
 	if x != nil {
 		return x.SiteCredentialPassword
 	}
@@ -203,8 +203,8 @@ var File_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azurefunctionappflexconsumption/v1alpha1/outputs.proto\x12:dev.planton.azure.azurefunctionappflexconsumption.v1alpha1\x1a\x1cshared/options/options.proto\"\xa4\x04\n" +
-	"+AzureFunctionAppFlexConsumptionStackOutputs\x12&\n" +
+	"Dcatalog/azure/azurefunctionappflexconsumption/v1alpha1/outputs.proto\x12:dev.planton.azure.azurefunctionappflexconsumption.v1alpha1\x1a\x1cshared/options/options.proto\"\x9f\x04\n" +
+	"&AzureFunctionAppFlexConsumptionOutputs\x12&\n" +
 	"\x0ffunction_app_id\x18\x01 \x01(\tR\rfunctionAppId\x12)\n" +
 	"\x10default_hostname\x18\x02 \x01(\tR\x0fdefaultHostname\x122\n" +
 	"\x15outbound_ip_addresses\x18\x03 \x03(\tR\x13outboundIpAddresses\x122\n" +
@@ -232,7 +232,7 @@ func file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_r
 
 var file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFunctionAppFlexConsumptionStackOutputs)(nil), // 0: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStackOutputs
+	(*AzureFunctionAppFlexConsumptionOutputs)(nil), // 0: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionOutputs
 }
 var file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

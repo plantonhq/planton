@@ -31,7 +31,7 @@ type DigitalOceanDatabaseReplica struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanDatabaseReplicaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanDatabaseReplica) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplica) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanDatabaseReplica) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanDatabaseReplica) GetStatus() *DigitalOceanDatabaseReplicaSt
 // digital-ocean-database-replica status
 type DigitalOceanDatabaseReplicaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-database-replica stack-outputs
-	Outputs       *DigitalOceanDatabaseReplicaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-database-replica outputs
+	Outputs       *DigitalOceanDatabaseReplicaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanDatabaseReplicaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanDatabaseReplicaStatus) GetOutputs() *DigitalOceanDatabaseReplicaStackOutputs {
+func (x *DigitalOceanDatabaseReplicaStatus) GetOutputs() *DigitalOceanDatabaseReplicaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_api_proto_r
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bDigitalOceanDatabaseReplicaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
 	"\x04spec\x18\x04 \x01(\v2^.dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12x\n" +
-	"\x06status\x18\x05 \x01(\v2`.dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatusR\x06status\"\xa6\x01\n" +
-	"!DigitalOceanDatabaseReplicaStatus\x12\x80\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2f.dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStackOutputsR\aoutputsB\xe2\x03\n" +
+	"\x06status\x18\x05 \x01(\v2`.dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatusR\x06status\"\xa0\x01\n" +
+	"!DigitalOceanDatabaseReplicaStatus\x12{\n" +
+	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaOutputsR\aoutputsB\xe2\x03\n" +
 	"Acom.dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1B\bApiProtoP\x01Zzgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasereplica/v1alpha1;digitaloceandatabasereplicav1alpha1\xa2\x02\x04DPDD\xaa\x02=Dev.Planton.Digitalocean.Digitaloceandatabasereplica.V1alpha1\xca\x02=Dev\\Planton\\Digitalocean\\Digitaloceandatabasereplica\\V1alpha1\xe2\x02IDev\\Planton\\Digitalocean\\Digitaloceandatabasereplica\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Digitalocean::Digitaloceandatabasereplica::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_api_proto_ra
 
 var file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanDatabaseReplica)(nil),             // 0: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplica
-	(*DigitalOceanDatabaseReplicaStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanDatabaseReplicaSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaSpec
-	(*DigitalOceanDatabaseReplicaStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStackOutputs
+	(*DigitalOceanDatabaseReplica)(nil),        // 0: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplica
+	(*DigitalOceanDatabaseReplicaStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanDatabaseReplicaSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaSpec
+	(*DigitalOceanDatabaseReplicaOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplica.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplica.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplica.spec:type_name -> dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaSpec
 	1, // 2: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplica.status:type_name -> dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatus
-	4, // 3: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDialogflowCxAgentStackOutputs captures the identity Google assigned
+// GcpDialogflowCxAgentOutputs captures the identity Google assigned
 // the agent and the names of everything declared in it -- the names
 // console-authored flows, pages, and playbooks refer to.
-type GcpDialogflowCxAgentStackOutputs struct {
+type GcpDialogflowCxAgentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name -- what a GcpVertexAiSearchEngine's
 	// dialogflow_agent_to_link takes:
@@ -54,20 +54,20 @@ type GcpDialogflowCxAgentStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) Reset() {
-	*x = GcpDialogflowCxAgentStackOutputs{}
+func (x *GcpDialogflowCxAgentOutputs) Reset() {
+	*x = GcpDialogflowCxAgentOutputs{}
 	mi := &file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) String() string {
+func (x *GcpDialogflowCxAgentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDialogflowCxAgentStackOutputs) ProtoMessage() {}
+func (*GcpDialogflowCxAgentOutputs) ProtoMessage() {}
 
-func (x *GcpDialogflowCxAgentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDialogflowCxAgentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,75 +79,75 @@ func (x *GcpDialogflowCxAgentStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDialogflowCxAgentStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDialogflowCxAgentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDialogflowCxAgentOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDialogflowCxAgentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetName() string {
+func (x *GcpDialogflowCxAgentOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetAgentId() string {
+func (x *GcpDialogflowCxAgentOutputs) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
 	}
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetLocation() string {
+func (x *GcpDialogflowCxAgentOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetStartFlow() string {
+func (x *GcpDialogflowCxAgentOutputs) GetStartFlow() string {
 	if x != nil {
 		return x.StartFlow
 	}
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetWebhookNames() []string {
+func (x *GcpDialogflowCxAgentOutputs) GetWebhookNames() []string {
 	if x != nil {
 		return x.WebhookNames
 	}
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetToolNames() []string {
+func (x *GcpDialogflowCxAgentOutputs) GetToolNames() []string {
 	if x != nil {
 		return x.ToolNames
 	}
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetToolVersionNames() []string {
+func (x *GcpDialogflowCxAgentOutputs) GetToolVersionNames() []string {
 	if x != nil {
 		return x.ToolVersionNames
 	}
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetVersionNames() []string {
+func (x *GcpDialogflowCxAgentOutputs) GetVersionNames() []string {
 	if x != nil {
 		return x.VersionNames
 	}
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetEnvironmentNames() []string {
+func (x *GcpDialogflowCxAgentOutputs) GetEnvironmentNames() []string {
 	if x != nil {
 		return x.EnvironmentNames
 	}
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentStackOutputs) GetGenerativeSettingsNames() []string {
+func (x *GcpDialogflowCxAgentOutputs) GetGenerativeSettingsNames() []string {
 	if x != nil {
 		return x.GenerativeSettingsNames
 	}
@@ -158,8 +158,8 @@ var File_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpdialogflowcxagent/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpdialogflowcxagent.v1alpha1\"\x8c\x03\n" +
-	" GcpDialogflowCxAgentStackOutputs\x12\x12\n" +
+	"7catalog/gcp/gcpdialogflowcxagent/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpdialogflowcxagent.v1alpha1\"\x87\x03\n" +
+	"\x1bGcpDialogflowCxAgentOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x19\n" +
 	"\bagent_id\x18\x02 \x01(\tR\aagentId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12\x1d\n" +
@@ -189,7 +189,7 @@ func file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDialogflowCxAgentStackOutputs)(nil), // 0: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentStackOutputs
+	(*GcpDialogflowCxAgentOutputs)(nil), // 0: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentOutputs
 }
 var file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

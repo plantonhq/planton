@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorDiagnosticSettingStackOutputs** captures the outputs of
+// **AzureMonitorDiagnosticSettingOutputs** captures the outputs of
 // provisioning an Azure Monitor diagnostic setting.
-type AzureMonitorDiagnosticSettingStackOutputs struct {
+type AzureMonitorDiagnosticSettingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the diagnostic setting -- an extension
 	// resource ID scoped under the target resource. Format:
@@ -38,20 +38,20 @@ type AzureMonitorDiagnosticSettingStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureMonitorDiagnosticSettingStackOutputs) Reset() {
-	*x = AzureMonitorDiagnosticSettingStackOutputs{}
+func (x *AzureMonitorDiagnosticSettingOutputs) Reset() {
+	*x = AzureMonitorDiagnosticSettingOutputs{}
 	mi := &file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorDiagnosticSettingStackOutputs) String() string {
+func (x *AzureMonitorDiagnosticSettingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorDiagnosticSettingStackOutputs) ProtoMessage() {}
+func (*AzureMonitorDiagnosticSettingOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorDiagnosticSettingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorDiagnosticSettingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AzureMonitorDiagnosticSettingStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorDiagnosticSettingStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorDiagnosticSettingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorDiagnosticSettingOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorDiagnosticSettingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorDiagnosticSettingStackOutputs) GetDiagnosticSettingId() string {
+func (x *AzureMonitorDiagnosticSettingOutputs) GetDiagnosticSettingId() string {
 	if x != nil {
 		return x.DiagnosticSettingId
 	}
 	return ""
 }
 
-func (x *AzureMonitorDiagnosticSettingStackOutputs) GetDiagnosticSettingName() string {
+func (x *AzureMonitorDiagnosticSettingOutputs) GetDiagnosticSettingName() string {
 	if x != nil {
 		return x.DiagnosticSettingName
 	}
 	return ""
 }
 
-func (x *AzureMonitorDiagnosticSettingStackOutputs) GetTargetResourceId() string {
+func (x *AzureMonitorDiagnosticSettingOutputs) GetTargetResourceId() string {
 	if x != nil {
 		return x.TargetResourceId
 	}
@@ -93,8 +93,8 @@ var File_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azuremonitordiagnosticsetting/v1alpha1/outputs.proto\x128dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1\"\xc5\x01\n" +
-	")AzureMonitorDiagnosticSettingStackOutputs\x122\n" +
+	"Bcatalog/azure/azuremonitordiagnosticsetting/v1alpha1/outputs.proto\x128dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1\"\xc0\x01\n" +
+	"$AzureMonitorDiagnosticSettingOutputs\x122\n" +
 	"\x15diagnostic_setting_id\x18\x01 \x01(\tR\x13diagnosticSettingId\x126\n" +
 	"\x17diagnostic_setting_name\x18\x02 \x01(\tR\x15diagnosticSettingName\x12,\n" +
 	"\x12target_resource_id\x18\x03 \x01(\tR\x10targetResourceIdB\xca\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorDiagnosticSettingStackOutputs)(nil), // 0: dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingStackOutputs
+	(*AzureMonitorDiagnosticSettingOutputs)(nil), // 0: dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingOutputs
 }
 var file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

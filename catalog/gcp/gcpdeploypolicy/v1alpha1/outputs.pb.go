@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDeployPolicyStackOutputs carries the deploy policy's identity.
-type GcpDeployPolicyStackOutputs struct {
+// GcpDeployPolicyOutputs carries the deploy policy's identity.
+type GcpDeployPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/deployPolicies/{deploy_policy_id}.
@@ -36,20 +36,20 @@ type GcpDeployPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDeployPolicyStackOutputs) Reset() {
-	*x = GcpDeployPolicyStackOutputs{}
+func (x *GcpDeployPolicyOutputs) Reset() {
+	*x = GcpDeployPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDeployPolicyStackOutputs) String() string {
+func (x *GcpDeployPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDeployPolicyStackOutputs) ProtoMessage() {}
+func (*GcpDeployPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpDeployPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDeployPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpDeployPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDeployPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDeployPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDeployPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDeployPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDeployPolicyStackOutputs) GetName() string {
+func (x *GcpDeployPolicyOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDeployPolicyStackOutputs) GetDeployPolicyId() string {
+func (x *GcpDeployPolicyOutputs) GetDeployPolicyId() string {
 	if x != nil {
 		return x.DeployPolicyId
 	}
 	return ""
 }
 
-func (x *GcpDeployPolicyStackOutputs) GetUid() string {
+func (x *GcpDeployPolicyOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpdeploypolicy/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpdeploypolicy.v1alpha1\"m\n" +
-	"\x1bGcpDeployPolicyStackOutputs\x12\x12\n" +
+	"2catalog/gcp/gcpdeploypolicy/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpdeploypolicy.v1alpha1\"h\n" +
+	"\x16GcpDeployPolicyOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\x10deploy_policy_id\x18\x02 \x01(\tR\x0edeployPolicyId\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uidB\xdc\x02\n" +
@@ -112,7 +112,7 @@ func file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDeployPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpdeploypolicy.v1alpha1.GcpDeployPolicyStackOutputs
+	(*GcpDeployPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpdeploypolicy.v1alpha1.GcpDeployPolicyOutputs
 }
 var file_catalog_gcp_gcpdeploypolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

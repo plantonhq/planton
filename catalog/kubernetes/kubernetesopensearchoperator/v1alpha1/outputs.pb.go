@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-open-search-operator stack outputs
-type KubernetesOpenSearchOperatorStackOutputs struct {
+// kubernetes-open-search-operator outputs
+type KubernetesOpenSearchOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the operator is installed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesOpenSearchOperatorStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenSearchOperatorStackOutputs) Reset() {
-	*x = KubernetesOpenSearchOperatorStackOutputs{}
+func (x *KubernetesOpenSearchOperatorOutputs) Reset() {
+	*x = KubernetesOpenSearchOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenSearchOperatorStackOutputs) String() string {
+func (x *KubernetesOpenSearchOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenSearchOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesOpenSearchOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesOpenSearchOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenSearchOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *KubernetesOpenSearchOperatorStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenSearchOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenSearchOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenSearchOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenSearchOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenSearchOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesOpenSearchOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesOpenSearchOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchOperatorStackOutputs) GetDeploymentName() string {
+func (x *KubernetesOpenSearchOperatorOutputs) GetDeploymentName() string {
 	if x != nil {
 		return x.DeploymentName
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto 
 
 const file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/kubernetes/kubernetesopensearchoperator/v1alpha1/outputs.proto\x12<dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1\"\x94\x01\n" +
-	"(KubernetesOpenSearchOperatorStackOutputs\x12\x1c\n" +
+	"Fcatalog/kubernetes/kubernetesopensearchoperator/v1alpha1/outputs.proto\x12<dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1\"\x8f\x01\n" +
+	"#KubernetesOpenSearchOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12'\n" +
 	"\x0fdeployment_name\x18\x03 \x01(\tR\x0edeploymentNameB\xe1\x03\n" +
@@ -111,7 +111,7 @@ func file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto
 
 var file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesOpenSearchOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStackOutputs
+	(*KubernetesOpenSearchOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

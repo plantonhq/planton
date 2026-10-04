@@ -22,9 +22,9 @@ const (
 )
 
 // *
-// **KubernetesKafkaMirrorMaker2StackOutputs** — the handles a
+// **KubernetesKafkaMirrorMaker2Outputs** — the handles a
 // MirrorMaker 2 deployment exports.
-type KubernetesKafkaMirrorMaker2StackOutputs struct {
+type KubernetesKafkaMirrorMaker2Outputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the MirrorMaker 2 deployment runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -38,20 +38,20 @@ type KubernetesKafkaMirrorMaker2StackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackOutputs) Reset() {
-	*x = KubernetesKafkaMirrorMaker2StackOutputs{}
+func (x *KubernetesKafkaMirrorMaker2Outputs) Reset() {
+	*x = KubernetesKafkaMirrorMaker2Outputs{}
 	mi := &file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackOutputs) String() string {
+func (x *KubernetesKafkaMirrorMaker2Outputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaMirrorMaker2StackOutputs) ProtoMessage() {}
+func (*KubernetesKafkaMirrorMaker2Outputs) ProtoMessage() {}
 
-func (x *KubernetesKafkaMirrorMaker2StackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaMirrorMaker2Outputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *KubernetesKafkaMirrorMaker2StackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaMirrorMaker2StackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaMirrorMaker2StackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaMirrorMaker2Outputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaMirrorMaker2Outputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackOutputs) GetNamespace() string {
+func (x *KubernetesKafkaMirrorMaker2Outputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackOutputs) GetMirrormakerName() string {
+func (x *KubernetesKafkaMirrorMaker2Outputs) GetMirrormakerName() string {
 	if x != nil {
 		return x.MirrormakerName
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackOutputs) GetRestApiEndpoint() string {
+func (x *KubernetesKafkaMirrorMaker2Outputs) GetRestApiEndpoint() string {
 	if x != nil {
 		return x.RestApiEndpoint
 	}
@@ -93,8 +93,8 @@ var File_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto p
 
 const file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1\"\x9e\x01\n" +
-	"'KubernetesKafkaMirrorMaker2StackOutputs\x12\x1c\n" +
+	"Ecatalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1\"\x99\x01\n" +
+	"\"KubernetesKafkaMirrorMaker2Outputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12)\n" +
 	"\x10mirrormaker_name\x18\x02 \x01(\tR\x0fmirrormakerName\x12*\n" +
 	"\x11rest_api_endpoint\x18\x03 \x01(\tR\x0frestApiEndpointB\xda\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_
 
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKafkaMirrorMaker2StackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackOutputs
+	(*KubernetesKafkaMirrorMaker2Outputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Outputs
 }
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

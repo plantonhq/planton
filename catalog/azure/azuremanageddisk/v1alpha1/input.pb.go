@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-managed-disk stack-input
-type AzureManagedDiskStackInput struct {
+// azure-managed-disk iac-input
+type AzureManagedDiskIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureManagedDisk `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureManagedDiskStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureManagedDiskStackInput) Reset() {
-	*x = AzureManagedDiskStackInput{}
+func (x *AzureManagedDiskIacInput) Reset() {
+	*x = AzureManagedDiskIacInput{}
 	mi := &file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureManagedDiskStackInput) String() string {
+func (x *AzureManagedDiskIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureManagedDiskStackInput) ProtoMessage() {}
+func (*AzureManagedDiskIacInput) ProtoMessage() {}
 
-func (x *AzureManagedDiskStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureManagedDiskIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureManagedDiskStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureManagedDiskStackInput.ProtoReflect.Descriptor instead.
-func (*AzureManagedDiskStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureManagedDiskIacInput.ProtoReflect.Descriptor instead.
+func (*AzureManagedDiskIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureManagedDiskStackInput) GetTarget() *AzureManagedDisk {
+func (x *AzureManagedDiskIacInput) GetTarget() *AzureManagedDisk {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureManagedDiskStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureManagedDiskIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azuremanageddisk_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/azure/azuremanageddisk/v1alpha1/input.proto\x12+dev.planton.azure.azuremanageddisk.v1alpha1\x1a1catalog/azure/azuremanageddisk/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc4\x01\n" +
-	"\x1aAzureManagedDiskStackInput\x12U\n" +
+	"3catalog/azure/azuremanageddisk/v1alpha1/input.proto\x12+dev.planton.azure.azuremanageddisk.v1alpha1\x1a1catalog/azure/azuremanageddisk/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc2\x01\n" +
+	"\x18AzureManagedDiskIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xed\x02\n" +
 	"/com.dev.planton.azure.azuremanageddisk.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_goTypes = []any{
-	(*AzureManagedDiskStackInput)(nil), // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackInput
-	(*AzureManagedDisk)(nil),           // 1: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk
-	(*azure.AzureProviderConfig)(nil),  // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureManagedDiskIacInput)(nil),  // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskIacInput
+	(*AzureManagedDisk)(nil),          // 1: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremanageddisk_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackInput.target:type_name -> dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk
-	2, // 1: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskIacInput.target:type_name -> dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk
+	2, // 1: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

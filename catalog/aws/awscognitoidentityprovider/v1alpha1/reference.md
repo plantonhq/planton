@@ -28,7 +28,7 @@ Key constraints:
 - provider_name must be unique within a User Pool.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

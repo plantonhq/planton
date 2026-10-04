@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesCiliumStackOutputs captures observable outputs after Cilium is
+// KubernetesCiliumOutputs captures observable outputs after Cilium is
 // installed on the target cluster.
-type KubernetesCiliumStackOutputs struct {
+type KubernetesCiliumOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Cilium was installed into (the resolved spec.namespace).
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -50,20 +50,20 @@ type KubernetesCiliumStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *KubernetesCiliumStackOutputs) Reset() {
-	*x = KubernetesCiliumStackOutputs{}
+func (x *KubernetesCiliumOutputs) Reset() {
+	*x = KubernetesCiliumOutputs{}
 	mi := &file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCiliumStackOutputs) String() string {
+func (x *KubernetesCiliumOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCiliumStackOutputs) ProtoMessage() {}
+func (*KubernetesCiliumOutputs) ProtoMessage() {}
 
-func (x *KubernetesCiliumStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCiliumOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *KubernetesCiliumStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCiliumStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesCiliumStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCiliumOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesCiliumOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCiliumStackOutputs) GetNamespace() string {
+func (x *KubernetesCiliumOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesCiliumStackOutputs) GetReleaseName() string {
+func (x *KubernetesCiliumOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesCiliumStackOutputs) GetClusterName() string {
+func (x *KubernetesCiliumOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesCiliumStackOutputs) GetHubbleRelayServiceName() string {
+func (x *KubernetesCiliumOutputs) GetHubbleRelayServiceName() string {
 	if x != nil {
 		return x.HubbleRelayServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesCiliumStackOutputs) GetHubbleUiServiceName() string {
+func (x *KubernetesCiliumOutputs) GetHubbleUiServiceName() string {
 	if x != nil {
 		return x.HubbleUiServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesCiliumStackOutputs) GetGatewayClassName() string {
+func (x *KubernetesCiliumOutputs) GetGatewayClassName() string {
 	if x != nil {
 		return x.GatewayClassName
 	}
@@ -126,8 +126,8 @@ var File_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetescilium/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetescilium.v1alpha1\"\xa0\x02\n" +
-	"\x1cKubernetesCiliumStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetescilium/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetescilium.v1alpha1\"\x9b\x02\n" +
+	"\x17KubernetesCiliumOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12!\n" +
 	"\fcluster_name\x18\x03 \x01(\tR\vclusterName\x129\n" +
@@ -150,7 +150,7 @@ func file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesCiliumStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackOutputs
+	(*KubernetesCiliumOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumOutputs
 }
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

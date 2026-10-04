@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareWaitingRoomEventStackOutputs captures the observable outputs after
+// CloudflareWaitingRoomEventOutputs captures the observable outputs after
 // creating a waiting room event.
-type CloudflareWaitingRoomEventStackOutputs struct {
+type CloudflareWaitingRoomEventOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the created event.
 	EventId string `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
@@ -35,20 +35,20 @@ type CloudflareWaitingRoomEventStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareWaitingRoomEventStackOutputs) Reset() {
-	*x = CloudflareWaitingRoomEventStackOutputs{}
+func (x *CloudflareWaitingRoomEventOutputs) Reset() {
+	*x = CloudflareWaitingRoomEventOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWaitingRoomEventStackOutputs) String() string {
+func (x *CloudflareWaitingRoomEventOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWaitingRoomEventStackOutputs) ProtoMessage() {}
+func (*CloudflareWaitingRoomEventOutputs) ProtoMessage() {}
 
-func (x *CloudflareWaitingRoomEventStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWaitingRoomEventOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *CloudflareWaitingRoomEventStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWaitingRoomEventStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareWaitingRoomEventStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWaitingRoomEventOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareWaitingRoomEventOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWaitingRoomEventStackOutputs) GetEventId() string {
+func (x *CloudflareWaitingRoomEventOutputs) GetEventId() string {
 	if x != nil {
 		return x.EventId
 	}
 	return ""
 }
 
-func (x *CloudflareWaitingRoomEventStackOutputs) GetWaitingRoomId() string {
+func (x *CloudflareWaitingRoomEventOutputs) GetWaitingRoomId() string {
 	if x != nil {
 		return x.WaitingRoomId
 	}
 	return ""
 }
 
-func (x *CloudflareWaitingRoomEventStackOutputs) GetZoneId() string {
+func (x *CloudflareWaitingRoomEventOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -90,8 +90,8 @@ var File_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto pr
 
 const file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflarewaitingroomevent/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1\"\x84\x01\n" +
-	"&CloudflareWaitingRoomEventStackOutputs\x12\x19\n" +
+	"Dcatalog/cloudflare/cloudflarewaitingroomevent/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1\"\x7f\n" +
+	"!CloudflareWaitingRoomEventOutputs\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\x12&\n" +
 	"\x0fwaiting_room_id\x18\x02 \x01(\tR\rwaitingRoomId\x12\x17\n" +
 	"\azone_id\x18\x03 \x01(\tR\x06zoneIdB\xd3\x03\n" +
@@ -111,7 +111,7 @@ func file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_r
 
 var file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareWaitingRoomEventStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventStackOutputs
+	(*CloudflareWaitingRoomEventOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventOutputs
 }
 var file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

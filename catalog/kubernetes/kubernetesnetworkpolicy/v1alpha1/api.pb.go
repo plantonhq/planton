@@ -39,7 +39,7 @@ type KubernetesNetworkPolicy struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the NetworkPolicy resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the NetworkPolicy.
 	// Defines the target namespace, pod selection, and allow rules.
 	Spec *KubernetesNetworkPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -94,7 +94,7 @@ func (x *KubernetesNetworkPolicy) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesNetworkPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesNetworkPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -123,7 +123,7 @@ type KubernetesNetworkPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the NetworkPolicy deployment.
 	// Contains the policy name and namespace for downstream composition.
-	Outputs       *KubernetesNetworkPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesNetworkPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -158,7 +158,7 @@ func (*KubernetesNetworkPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesNetworkPolicyStatus) GetOutputs() *KubernetesNetworkPolicyStackOutputs {
+func (x *KubernetesNetworkPolicyStatus) GetOutputs() *KubernetesNetworkPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -176,11 +176,11 @@ const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesNetworkPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesNetworkPolicyStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesNetworkPolicyStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesnetworkpolicy/v1alpha1;kubernetesnetworkpolicyv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesnetworkpolicy.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesnetworkpolicy\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesnetworkpolicy\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesnetworkpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -197,17 +197,17 @@ func file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesNetworkPolicy)(nil),             // 0: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicy
-	(*KubernetesNetworkPolicyStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesNetworkPolicySpec)(nil),         // 3: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicySpec
-	(*KubernetesNetworkPolicyStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStackOutputs
+	(*KubernetesNetworkPolicy)(nil),        // 0: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicy
+	(*KubernetesNetworkPolicyStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesNetworkPolicySpec)(nil),    // 3: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicySpec
+	(*KubernetesNetworkPolicyOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyOutputs
 }
 var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicy.spec:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicySpec
 	1, // 2: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicy.status:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatus
-	4, // 3: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

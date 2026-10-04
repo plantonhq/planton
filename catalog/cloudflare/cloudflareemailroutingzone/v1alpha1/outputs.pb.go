@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareEmailRoutingZoneStackOutputs captures the outputs after enabling
+// CloudflareEmailRoutingZoneOutputs captures the outputs after enabling
 // Email Routing on a zone.
-type CloudflareEmailRoutingZoneStackOutputs struct {
+type CloudflareEmailRoutingZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The zone ID Email Routing was enabled on.
 	ZoneId string `protobuf:"bytes,1,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
@@ -38,20 +38,20 @@ type CloudflareEmailRoutingZoneStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) Reset() {
-	*x = CloudflareEmailRoutingZoneStackOutputs{}
+func (x *CloudflareEmailRoutingZoneOutputs) Reset() {
+	*x = CloudflareEmailRoutingZoneOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) String() string {
+func (x *CloudflareEmailRoutingZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareEmailRoutingZoneStackOutputs) ProtoMessage() {}
+func (*CloudflareEmailRoutingZoneOutputs) ProtoMessage() {}
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareEmailRoutingZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,33 +63,33 @@ func (x *CloudflareEmailRoutingZoneStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareEmailRoutingZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareEmailRoutingZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareEmailRoutingZoneOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareEmailRoutingZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) GetZoneId() string {
+func (x *CloudflareEmailRoutingZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) GetEnabled() bool {
+func (x *CloudflareEmailRoutingZoneOutputs) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
 	}
 	return false
 }
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) GetStatus() string {
+func (x *CloudflareEmailRoutingZoneOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *CloudflareEmailRoutingZoneStackOutputs) GetName() string {
+func (x *CloudflareEmailRoutingZoneOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -100,8 +100,8 @@ var File_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto pr
 
 const file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflareemailroutingzone/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1\"\x87\x01\n" +
-	"&CloudflareEmailRoutingZoneStackOutputs\x12\x17\n" +
+	"Dcatalog/cloudflare/cloudflareemailroutingzone/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1\"\x82\x01\n" +
+	"!CloudflareEmailRoutingZoneOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12\x18\n" +
 	"\aenabled\x18\x02 \x01(\bR\aenabled\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12\x12\n" +
@@ -122,7 +122,7 @@ func file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_r
 
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareEmailRoutingZoneStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackOutputs
+	(*CloudflareEmailRoutingZoneOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneOutputs
 }
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

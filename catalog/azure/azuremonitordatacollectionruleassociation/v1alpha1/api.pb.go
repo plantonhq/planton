@@ -36,7 +36,7 @@ type AzureMonitorDataCollectionRuleAssociation struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMonitorDataCollectionRuleAssociationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureMonitorDataCollectionRuleAssociation) GetKind() string {
 	return ""
 }
 
-func (x *AzureMonitorDataCollectionRuleAssociation) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMonitorDataCollectionRuleAssociation) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,10 +115,10 @@ func (x *AzureMonitorDataCollectionRuleAssociation) GetStatus() *AzureMonitorDat
 // deployment.
 type AzureMonitorDataCollectionRuleAssociationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-monitor-data-collection-rule-association stack-outputs
-	Outputs       *AzureMonitorDataCollectionRuleAssociationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-monitor-data-collection-rule-association outputs
+	Outputs       *AzureMonitorDataCollectionRuleAssociationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -153,7 +153,7 @@ func (*AzureMonitorDataCollectionRuleAssociationStatus) Descriptor() ([]byte, []
 	return file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMonitorDataCollectionRuleAssociationStatus) GetOutputs() *AzureMonitorDataCollectionRuleAssociationStackOutputs {
+func (x *AzureMonitorDataCollectionRuleAssociationStatus) GetOutputs() *AzureMonitorDataCollectionRuleAssociationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -171,11 +171,11 @@ const file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_api_
 	"apiVersion\x12D\n" +
 	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\n" +
 	")AzureMonitorDataCollectionRuleAssociationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8f\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8f\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2s.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8d\x01\n" +
-	"\x06status\x18\x05 \x01(\v2u.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatusR\x06status\"\xc9\x01\n" +
-	"/AzureMonitorDataCollectionRuleAssociationStatus\x12\x95\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2{.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStackOutputsR\aoutputsB\x9b\x04\n" +
+	"\x06status\x18\x05 \x01(\v2u.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatusR\x06status\"\xc4\x01\n" +
+	"/AzureMonitorDataCollectionRuleAssociationStatus\x12\x90\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2v.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationOutputsR\aoutputsB\x9b\x04\n" +
 	"Hcom.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1B\bApiProtoP\x01Z\x8f\x01github.com/plantonhq/planton/catalog/azure/azuremonitordatacollectionruleassociation/v1alpha1;azuremonitordatacollectionruleassociationv1alpha1\xa2\x02\x04DPAA\xaa\x02DDev.Planton.Azure.Azuremonitordatacollectionruleassociation.V1alpha1\xca\x02DDev\\Planton\\Azure\\Azuremonitordatacollectionruleassociation\\V1alpha1\xe2\x02PDev\\Planton\\Azure\\Azuremonitordatacollectionruleassociation\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Azure::Azuremonitordatacollectionruleassociation::V1alpha1b\x06proto3"
 
 var (
@@ -192,17 +192,17 @@ func file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_api_p
 
 var file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMonitorDataCollectionRuleAssociation)(nil),             // 0: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociation
-	(*AzureMonitorDataCollectionRuleAssociationStatus)(nil),       // 1: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatus
-	(*shared.CloudResourceMetadata)(nil),                          // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMonitorDataCollectionRuleAssociationSpec)(nil),         // 3: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationSpec
-	(*AzureMonitorDataCollectionRuleAssociationStackOutputs)(nil), // 4: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStackOutputs
+	(*AzureMonitorDataCollectionRuleAssociation)(nil),        // 0: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociation
+	(*AzureMonitorDataCollectionRuleAssociationStatus)(nil),  // 1: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatus
+	(*shared.CatalogObjectMetadata)(nil),                     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMonitorDataCollectionRuleAssociationSpec)(nil),    // 3: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationSpec
+	(*AzureMonitorDataCollectionRuleAssociationOutputs)(nil), // 4: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationOutputs
 }
 var file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociation.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociation.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociation.spec:type_name -> dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationSpec
 	1, // 2: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociation.status:type_name -> dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatus
-	4, // 3: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatus.outputs:type_name -> dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStackOutputs
+	4, // 3: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStatus.outputs:type_name -> dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

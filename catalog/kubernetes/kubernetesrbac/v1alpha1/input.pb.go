@@ -23,10 +23,10 @@ const (
 )
 
 // *
-// **KubernetesRbacStackInput** defines the input structure for deploying a Kubernetes RBAC
+// **KubernetesRbacIacInput** defines the input structure for deploying a Kubernetes RBAC
 // grant. It carries the target grant specification and the Kubernetes cluster configuration
 // the IaC modules (Pulumi and Terraform) need to reach the cluster.
-type KubernetesRbacStackInput struct {
+type KubernetesRbacIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target RBAC grant resource to be created.
@@ -41,20 +41,20 @@ type KubernetesRbacStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesRbacStackInput) Reset() {
-	*x = KubernetesRbacStackInput{}
+func (x *KubernetesRbacIacInput) Reset() {
+	*x = KubernetesRbacIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRbacStackInput) String() string {
+func (x *KubernetesRbacIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRbacStackInput) ProtoMessage() {}
+func (*KubernetesRbacIacInput) ProtoMessage() {}
 
-func (x *KubernetesRbacStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRbacIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,19 +66,19 @@ func (x *KubernetesRbacStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRbacStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesRbacStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRbacIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesRbacIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRbacStackInput) GetTarget() *KubernetesRbac {
+func (x *KubernetesRbacIacInput) GetTarget() *KubernetesRbac {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesRbacStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesRbacIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -89,8 +89,8 @@ var File_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/kubernetes/kubernetesrbac/v1alpha1/input.proto\x12.dev.planton.kubernetes.kubernetesrbac.v1alpha1\x1a4catalog/kubernetes/kubernetesrbac/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xcd\x01\n" +
-	"\x18KubernetesRbacStackInput\x12V\n" +
+	"6catalog/kubernetes/kubernetesrbac/v1alpha1/input.proto\x12.dev.planton.kubernetes.kubernetesrbac.v1alpha1\x1a4catalog/kubernetes/kubernetesrbac/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xcb\x01\n" +
+	"\x16KubernetesRbacIacInput\x12V\n" +
 	"\x06target\x18\x01 \x01(\v2>.dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"2com.dev.planton.kubernetes.kubernetesrbac.v1alpha1B\n" +
@@ -110,13 +110,13 @@ func file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesRbacStackInput)(nil),            // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackInput
+	(*KubernetesRbacIacInput)(nil),              // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacIacInput
 	(*KubernetesRbac)(nil),                      // 1: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackInput.target:type_name -> dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac
-	2, // 1: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacIacInput.target:type_name -> dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac
+	2, // 1: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

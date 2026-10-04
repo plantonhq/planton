@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsSecretsManagerSecretSpec defines the desired configuration for an AWS
 Secrets Manager secret - a named, versioned, KMS-encrypted container for
@@ -42,7 +42,7 @@ metadata.name) and `type`. Everything else - value, KMS key, policy,
 replicas, rotation - updates in place.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

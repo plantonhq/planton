@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Cloud Tasks queue.
-type GcpCloudTasksQueueStackOutputs struct {
+type GcpCloudTasksQueueOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified queue ID.
 	// Format: projects/{project}/locations/{location}/queues/{name}
@@ -39,20 +39,20 @@ type GcpCloudTasksQueueStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudTasksQueueStackOutputs) Reset() {
-	*x = GcpCloudTasksQueueStackOutputs{}
+func (x *GcpCloudTasksQueueOutputs) Reset() {
+	*x = GcpCloudTasksQueueOutputs{}
 	mi := &file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudTasksQueueStackOutputs) String() string {
+func (x *GcpCloudTasksQueueOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudTasksQueueStackOutputs) ProtoMessage() {}
+func (*GcpCloudTasksQueueOutputs) ProtoMessage() {}
 
-func (x *GcpCloudTasksQueueStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudTasksQueueOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *GcpCloudTasksQueueStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudTasksQueueStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudTasksQueueStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudTasksQueueOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudTasksQueueOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudTasksQueueStackOutputs) GetQueueId() string {
+func (x *GcpCloudTasksQueueOutputs) GetQueueId() string {
 	if x != nil {
 		return x.QueueId
 	}
 	return ""
 }
 
-func (x *GcpCloudTasksQueueStackOutputs) GetQueueName() string {
+func (x *GcpCloudTasksQueueOutputs) GetQueueName() string {
 	if x != nil {
 		return x.QueueName
 	}
 	return ""
 }
 
-func (x *GcpCloudTasksQueueStackOutputs) GetMaxBurstSize() int32 {
+func (x *GcpCloudTasksQueueOutputs) GetMaxBurstSize() int32 {
 	if x != nil {
 		return x.MaxBurstSize
 	}
@@ -94,8 +94,8 @@ var File_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpcloudtasksqueue/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpcloudtasksqueue.v1alpha1\"\x80\x01\n" +
-	"\x1eGcpCloudTasksQueueStackOutputs\x12\x19\n" +
+	"5catalog/gcp/gcpcloudtasksqueue/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpcloudtasksqueue.v1alpha1\"{\n" +
+	"\x19GcpCloudTasksQueueOutputs\x12\x19\n" +
 	"\bqueue_id\x18\x01 \x01(\tR\aqueueId\x12\x1d\n" +
 	"\n" +
 	"queue_name\x18\x02 \x01(\tR\tqueueName\x12$\n" +
@@ -116,7 +116,7 @@ func file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudTasksQueueStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueStackOutputs
+	(*GcpCloudTasksQueueOutputs)(nil), // 0: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueOutputs
 }
 var file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

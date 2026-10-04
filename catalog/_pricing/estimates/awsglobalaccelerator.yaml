@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsglobalaccelerator
 spec:
@@ -40,7 +40,7 @@ spec:
       total_list_cost: "25.5500"
       exclusions:
         - Data Transfer-Premium bills per GB in the dominant traffic direction, at a rate varying by source region and destination edge -- entirely traffic-dependent
-        - standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those components, in addition to DT-Premium
+        - standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those kinds, in addition to DT-Premium
       notes: Listeners and endpoint groups carry no committed fee of their own -- the offer's only fixed-fee meter is the per-accelerator hourly charge; their counts only shape which DT-Premium rate rows traffic bills at.
     - preset: 02-multi-region-production
       region_assumption: us-east-1
@@ -68,7 +68,7 @@ spec:
       total_list_cost: "25.5500"
       exclusions:
         - Data Transfer-Premium bills per GB in the dominant traffic direction, at a rate varying by source region and destination edge -- entirely traffic-dependent
-        - standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those components, in addition to DT-Premium
+        - standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those kinds, in addition to DT-Premium
         - flow-log storage and request charges bill to the destination S3 bucket, not the accelerator
       notes: Listeners and endpoint groups carry no committed fee of their own -- the offer's only fixed-fee meter is the per-accelerator hourly charge; their counts only shape which DT-Premium rate rows traffic bills at.
     - preset: 03-gaming-udp-accelerator
@@ -97,5 +97,5 @@ spec:
       total_list_cost: "25.5500"
       exclusions:
         - Data Transfer-Premium bills per GB in the dominant traffic direction, at a rate varying by source region and destination edge -- entirely traffic-dependent
-        - standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those components, in addition to DT-Premium
+        - standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those kinds, in addition to DT-Premium
       notes: Listeners and endpoint groups carry no committed fee of their own -- the offer's only fixed-fee meter is the per-accelerator hourly charge; their counts only shape which DT-Premium rate rows traffic bills at.

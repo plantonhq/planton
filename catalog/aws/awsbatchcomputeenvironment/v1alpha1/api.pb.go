@@ -34,7 +34,7 @@ type AwsBatchComputeEnvironment struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the Batch compute environment.
 	Spec *AwsBatchComputeEnvironmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -87,7 +87,7 @@ func (x *AwsBatchComputeEnvironment) GetKind() string {
 	return ""
 }
 
-func (x *AwsBatchComputeEnvironment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBatchComputeEnvironment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ func (x *AwsBatchComputeEnvironment) GetStatus() *AwsBatchComputeEnvironmentStat
 type AwsBatchComputeEnvironmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsBatchComputeEnvironmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsBatchComputeEnvironmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsBatchComputeEnvironmentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBatchComputeEnvironmentStatus) GetOutputs() *AwsBatchComputeEnvironmentStackOutputs {
+func (x *AwsBatchComputeEnvironmentStatus) GetOutputs() *AwsBatchComputeEnvironmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAwsBatchComputeEnvironmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatusR\x06status\"\x99\x01\n" +
-	" AwsBatchComputeEnvironmentStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatusR\x06status\"\x94\x01\n" +
+	" AwsBatchComputeEnvironmentStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/aws/awsbatchcomputeenvironment/v1alpha1;awsbatchcomputeenvironmentv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Aws.Awsbatchcomputeenvironment.V1alpha1\xca\x023Dev\\Planton\\Aws\\Awsbatchcomputeenvironment\\V1alpha1\xe2\x02?Dev\\Planton\\Aws\\Awsbatchcomputeenvironment\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Aws::Awsbatchcomputeenvironment::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBatchComputeEnvironment)(nil),             // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment
-	(*AwsBatchComputeEnvironmentStatus)(nil),       // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBatchComputeEnvironmentSpec)(nil),         // 3: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentSpec
-	(*AwsBatchComputeEnvironmentStackOutputs)(nil), // 4: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackOutputs
+	(*AwsBatchComputeEnvironment)(nil),        // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment
+	(*AwsBatchComputeEnvironmentStatus)(nil),  // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBatchComputeEnvironmentSpec)(nil),    // 3: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentSpec
+	(*AwsBatchComputeEnvironmentOutputs)(nil), // 4: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentOutputs
 }
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment.spec:type_name -> dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentSpec
 	1, // 2: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment.status:type_name -> dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatus
-	4, // 3: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatus.outputs:type_name -> dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackOutputs
+	4, // 3: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStatus.outputs:type_name -> dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

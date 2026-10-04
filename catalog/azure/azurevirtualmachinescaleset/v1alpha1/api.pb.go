@@ -31,7 +31,7 @@ type AzureVirtualMachineScaleSet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureVirtualMachineScaleSetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureVirtualMachineScaleSet) GetKind() string {
 	return ""
 }
 
-func (x *AzureVirtualMachineScaleSet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureVirtualMachineScaleSet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureVirtualMachineScaleSet) GetStatus() *AzureVirtualMachineScaleSetSt
 // azure-virtual-machine-scale-set status
 type AzureVirtualMachineScaleSetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-virtual-machine-scale-set stack-outputs
-	Outputs       *AzureVirtualMachineScaleSetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-virtual-machine-scale-set outputs
+	Outputs       *AzureVirtualMachineScaleSetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureVirtualMachineScaleSetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureVirtualMachineScaleSetStatus) GetOutputs() *AzureVirtualMachineScaleSetStackOutputs {
+func (x *AzureVirtualMachineScaleSetStatus) GetOutputs() *AzureVirtualMachineScaleSetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAzureVirtualMachineScaleSetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatusR\x06status\"\x9e\x01\n" +
-	"!AzureVirtualMachineScaleSetStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatusR\x06status\"\x99\x01\n" +
+	"!AzureVirtualMachineScaleSetStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetOutputsR\aoutputsB\xb8\x03\n" +
 	":com.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/azure/azurevirtualmachinescaleset/v1alpha1;azurevirtualmachinescalesetv1alpha1\xa2\x02\x04DPAA\xaa\x026Dev.Planton.Azure.Azurevirtualmachinescaleset.V1alpha1\xca\x026Dev\\Planton\\Azure\\Azurevirtualmachinescaleset\\V1alpha1\xe2\x02BDev\\Planton\\Azure\\Azurevirtualmachinescaleset\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Azure::Azurevirtualmachinescaleset::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_api_proto_goTypes = []any{
-	(*AzureVirtualMachineScaleSet)(nil),             // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet
-	(*AzureVirtualMachineScaleSetStatus)(nil),       // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureVirtualMachineScaleSetSpec)(nil),         // 3: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetSpec
-	(*AzureVirtualMachineScaleSetStackOutputs)(nil), // 4: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackOutputs
+	(*AzureVirtualMachineScaleSet)(nil),        // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet
+	(*AzureVirtualMachineScaleSetStatus)(nil),  // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureVirtualMachineScaleSetSpec)(nil),    // 3: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetSpec
+	(*AzureVirtualMachineScaleSetOutputs)(nil), // 4: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetOutputs
 }
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet.spec:type_name -> dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetSpec
 	1, // 2: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet.status:type_name -> dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatus
-	4, // 3: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatus.outputs:type_name -> dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackOutputs
+	4, // 3: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStatus.outputs:type_name -> dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

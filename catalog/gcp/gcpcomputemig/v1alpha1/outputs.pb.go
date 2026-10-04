@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Compute Engine managed instance
 // group.
-type GcpComputeMigStackOutputs struct {
+type GcpComputeMigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full URL of the group's INSTANCE GROUP — the load-balancer
 	// backend handle: a GcpBackendService backend's group takes exactly
@@ -50,20 +50,20 @@ type GcpComputeMigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpComputeMigStackOutputs) Reset() {
-	*x = GcpComputeMigStackOutputs{}
+func (x *GcpComputeMigOutputs) Reset() {
+	*x = GcpComputeMigOutputs{}
 	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpComputeMigStackOutputs) String() string {
+func (x *GcpComputeMigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpComputeMigStackOutputs) ProtoMessage() {}
+func (*GcpComputeMigOutputs) ProtoMessage() {}
 
-func (x *GcpComputeMigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpComputeMigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,40 +75,40 @@ func (x *GcpComputeMigStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpComputeMigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpComputeMigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpComputeMigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpComputeMigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpComputeMigStackOutputs) GetInstanceGroup() string {
+func (x *GcpComputeMigOutputs) GetInstanceGroup() string {
 	if x != nil {
 		return x.InstanceGroup
 	}
 	return ""
 }
 
-func (x *GcpComputeMigStackOutputs) GetSelfLink() string {
+func (x *GcpComputeMigOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpComputeMigStackOutputs) GetCurrentTemplateSelfLink() string {
+func (x *GcpComputeMigOutputs) GetCurrentTemplateSelfLink() string {
 	if x != nil {
 		return x.CurrentTemplateSelfLink
 	}
 	return ""
 }
 
-func (x *GcpComputeMigStackOutputs) GetMigName() string {
+func (x *GcpComputeMigOutputs) GetMigName() string {
 	if x != nil {
 		return x.MigName
 	}
 	return ""
 }
 
-func (x *GcpComputeMigStackOutputs) GetLocation() string {
+func (x *GcpComputeMigOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -119,8 +119,8 @@ var File_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpcomputemig/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpcomputemig.v1alpha1\"\xd3\x01\n" +
-	"\x19GcpComputeMigStackOutputs\x12%\n" +
+	"0catalog/gcp/gcpcomputemig/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpcomputemig.v1alpha1\"\xce\x01\n" +
+	"\x14GcpComputeMigOutputs\x12%\n" +
 	"\x0einstance_group\x18\x01 \x01(\tR\rinstanceGroup\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12;\n" +
 	"\x1acurrent_template_self_link\x18\x03 \x01(\tR\x17currentTemplateSelfLink\x12\x19\n" +
@@ -142,7 +142,7 @@ func file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpComputeMigStackOutputs)(nil), // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStackOutputs
+	(*GcpComputeMigOutputs)(nil), // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigOutputs
 }
 var file_catalog_gcp_gcpcomputemig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

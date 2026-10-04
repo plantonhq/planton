@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBatchJobDefinitionStackOutputs captures the observable outputs of the
+// AwsBatchJobDefinitionOutputs captures the observable outputs of the
 // registered job definition revision, for EventBridge Batch targets and
 // SubmitJob callers to reference.
-type AwsBatchJobDefinitionStackOutputs struct {
+type AwsBatchJobDefinitionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full ARN of the registered revision, including the revision number
 	// (e.g. "arn:aws:batch:us-west-2:123456789012:job-definition/etl:7").
@@ -46,20 +46,20 @@ type AwsBatchJobDefinitionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBatchJobDefinitionStackOutputs) Reset() {
-	*x = AwsBatchJobDefinitionStackOutputs{}
+func (x *AwsBatchJobDefinitionOutputs) Reset() {
+	*x = AwsBatchJobDefinitionOutputs{}
 	mi := &file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBatchJobDefinitionStackOutputs) String() string {
+func (x *AwsBatchJobDefinitionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBatchJobDefinitionStackOutputs) ProtoMessage() {}
+func (*AwsBatchJobDefinitionOutputs) ProtoMessage() {}
 
-func (x *AwsBatchJobDefinitionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBatchJobDefinitionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,33 +71,33 @@ func (x *AwsBatchJobDefinitionStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBatchJobDefinitionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBatchJobDefinitionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBatchJobDefinitionOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBatchJobDefinitionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBatchJobDefinitionStackOutputs) GetJobDefinitionArn() string {
+func (x *AwsBatchJobDefinitionOutputs) GetJobDefinitionArn() string {
 	if x != nil {
 		return x.JobDefinitionArn
 	}
 	return ""
 }
 
-func (x *AwsBatchJobDefinitionStackOutputs) GetArnWithoutRevision() string {
+func (x *AwsBatchJobDefinitionOutputs) GetArnWithoutRevision() string {
 	if x != nil {
 		return x.ArnWithoutRevision
 	}
 	return ""
 }
 
-func (x *AwsBatchJobDefinitionStackOutputs) GetJobDefinitionName() string {
+func (x *AwsBatchJobDefinitionOutputs) GetJobDefinitionName() string {
 	if x != nil {
 		return x.JobDefinitionName
 	}
 	return ""
 }
 
-func (x *AwsBatchJobDefinitionStackOutputs) GetRevision() int64 {
+func (x *AwsBatchJobDefinitionOutputs) GetRevision() int64 {
 	if x != nil {
 		return x.Revision
 	}
@@ -108,8 +108,8 @@ var File_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsbatchjobdefinition/v1alpha1/outputs.proto\x12.dev.planton.aws.awsbatchjobdefinition.v1alpha1\"\xcf\x01\n" +
-	"!AwsBatchJobDefinitionStackOutputs\x12,\n" +
+	"8catalog/aws/awsbatchjobdefinition/v1alpha1/outputs.proto\x12.dev.planton.aws.awsbatchjobdefinition.v1alpha1\"\xca\x01\n" +
+	"\x1cAwsBatchJobDefinitionOutputs\x12,\n" +
 	"\x12job_definition_arn\x18\x01 \x01(\tR\x10jobDefinitionArn\x120\n" +
 	"\x14arn_without_revision\x18\x02 \x01(\tR\x12arnWithoutRevision\x12.\n" +
 	"\x13job_definition_name\x18\x03 \x01(\tR\x11jobDefinitionName\x12\x1a\n" +
@@ -130,7 +130,7 @@ func file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBatchJobDefinitionStackOutputs)(nil), // 0: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStackOutputs
+	(*AwsBatchJobDefinitionOutputs)(nil), // 0: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionOutputs
 }
 var file_catalog_aws_awsbatchjobdefinition_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

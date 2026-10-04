@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// jenkins-kubernetes stack outputs.
-type KubernetesJenkinsStackOutputs struct {
+// jenkins-kubernetes outputs.
+type KubernetesJenkinsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// kubernetes namespace in which jenkins-kubernetes is created.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -54,20 +54,20 @@ type KubernetesJenkinsStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesJenkinsStackOutputs) Reset() {
-	*x = KubernetesJenkinsStackOutputs{}
+func (x *KubernetesJenkinsOutputs) Reset() {
+	*x = KubernetesJenkinsOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesJenkinsStackOutputs) String() string {
+func (x *KubernetesJenkinsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesJenkinsStackOutputs) ProtoMessage() {}
+func (*KubernetesJenkinsOutputs) ProtoMessage() {}
 
-func (x *KubernetesJenkinsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesJenkinsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,61 +79,61 @@ func (x *KubernetesJenkinsStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesJenkinsStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesJenkinsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesJenkinsOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesJenkinsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetNamespace() string {
+func (x *KubernetesJenkinsOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetService() string {
+func (x *KubernetesJenkinsOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesJenkinsOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesJenkinsOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetExternalHostname() string {
+func (x *KubernetesJenkinsOutputs) GetExternalHostname() string {
 	if x != nil {
 		return x.ExternalHostname
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetInternalHostname() string {
+func (x *KubernetesJenkinsOutputs) GetInternalHostname() string {
 	if x != nil {
 		return x.InternalHostname
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetUsername() string {
+func (x *KubernetesJenkinsOutputs) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
 	return ""
 }
 
-func (x *KubernetesJenkinsStackOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesJenkinsOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.PasswordSecret
 	}
@@ -144,8 +144,8 @@ var File_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesjenkins/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesjenkins.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xfa\x02\n" +
-	"\x1dKubernetesJenkinsStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetesjenkins/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesjenkins.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf5\x02\n" +
+	"\x18KubernetesJenkinsOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x120\n" +
 	"\x14port_forward_command\x18\x03 \x01(\tR\x12portForwardCommand\x12#\n" +
@@ -170,11 +170,11 @@ func file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesJenkinsStackOutputs)(nil),  // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStackOutputs
+	(*KubernetesJenkinsOutputs)(nil),       // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesjenkins_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStackOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpVpcPeeringStackInput struct {
+type GcpVpcPeeringIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpVpcPeering         `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpVpcPeeringStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVpcPeeringStackInput) Reset() {
-	*x = GcpVpcPeeringStackInput{}
+func (x *GcpVpcPeeringIacInput) Reset() {
+	*x = GcpVpcPeeringIacInput{}
 	mi := &file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVpcPeeringStackInput) String() string {
+func (x *GcpVpcPeeringIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVpcPeeringStackInput) ProtoMessage() {}
+func (*GcpVpcPeeringIacInput) ProtoMessage() {}
 
-func (x *GcpVpcPeeringStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVpcPeeringIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpVpcPeeringStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVpcPeeringStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVpcPeeringStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVpcPeeringIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVpcPeeringIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVpcPeeringStackInput) GetTarget() *GcpVpcPeering {
+func (x *GcpVpcPeeringIacInput) GetTarget() *GcpVpcPeering {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVpcPeeringStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVpcPeeringIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpvpcpeering/v1alpha1/input.proto\x12&dev.planton.gcp.gcpvpcpeering.v1alpha1\x1a,catalog/gcp/gcpvpcpeering/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb5\x01\n" +
-	"\x17GcpVpcPeeringStackInput\x12M\n" +
+	".catalog/gcp/gcpvpcpeering/v1alpha1/input.proto\x12&dev.planton.gcp.gcpvpcpeering.v1alpha1\x1a,catalog/gcp/gcpvpcpeering/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb3\x01\n" +
+	"\x15GcpVpcPeeringIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.gcp.gcpvpcpeering.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVpcPeeringStackInput)(nil), // 0: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringStackInput
-	(*GcpVpcPeering)(nil),           // 1: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeering
-	(*gcp.GcpProviderConfig)(nil),   // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVpcPeeringIacInput)(nil), // 0: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringIacInput
+	(*GcpVpcPeering)(nil),         // 1: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeering
+	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvpcpeering_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringStackInput.target:type_name -> dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeering
-	2, // 1: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringIacInput.target:type_name -> dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeering
+	2, // 1: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

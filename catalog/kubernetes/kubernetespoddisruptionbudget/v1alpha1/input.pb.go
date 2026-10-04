@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesPodDisruptionBudgetStackInput** defines the input structure for
+// **KubernetesPodDisruptionBudgetIacInput** defines the input structure for
 // deploying a Kubernetes PodDisruptionBudget. It carries the target budget
 // specification and the Kubernetes cluster configuration the IaC modules
 // (Pulumi and Terraform) need to reach the cluster.
-type KubernetesPodDisruptionBudgetStackInput struct {
+type KubernetesPodDisruptionBudgetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target PodDisruptionBudget resource to be created.
@@ -43,20 +43,20 @@ type KubernetesPodDisruptionBudgetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesPodDisruptionBudgetStackInput) Reset() {
-	*x = KubernetesPodDisruptionBudgetStackInput{}
+func (x *KubernetesPodDisruptionBudgetIacInput) Reset() {
+	*x = KubernetesPodDisruptionBudgetIacInput{}
 	mi := &file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPodDisruptionBudgetStackInput) String() string {
+func (x *KubernetesPodDisruptionBudgetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPodDisruptionBudgetStackInput) ProtoMessage() {}
+func (*KubernetesPodDisruptionBudgetIacInput) ProtoMessage() {}
 
-func (x *KubernetesPodDisruptionBudgetStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPodDisruptionBudgetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,19 +68,19 @@ func (x *KubernetesPodDisruptionBudgetStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPodDisruptionBudgetStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesPodDisruptionBudgetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPodDisruptionBudgetIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesPodDisruptionBudgetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPodDisruptionBudgetStackInput) GetTarget() *KubernetesPodDisruptionBudget {
+func (x *KubernetesPodDisruptionBudgetIacInput) GetTarget() *KubernetesPodDisruptionBudget {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesPodDisruptionBudgetStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesPodDisruptionBudgetIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -91,8 +91,8 @@ var File_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto p
 
 const file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/input.proto\x12=dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1\x1aCcatalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xfa\x01\n" +
-	"'KubernetesPodDisruptionBudgetStackInput\x12t\n" +
+	"Ecatalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/input.proto\x12=dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1\x1aCcatalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf8\x01\n" +
+	"%KubernetesPodDisruptionBudgetIacInput\x12t\n" +
 	"\x06target\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xe6\x03\n" +
 	"Acom.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1B\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_
 
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesPodDisruptionBudgetStackInput)(nil), // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackInput
-	(*KubernetesPodDisruptionBudget)(nil),           // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget
-	(*kubernetes.KubernetesProviderConfig)(nil),     // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesPodDisruptionBudgetIacInput)(nil), // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetIacInput
+	(*KubernetesPodDisruptionBudget)(nil),         // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget
+	(*kubernetes.KubernetesProviderConfig)(nil),   // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackInput.target:type_name -> dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget
-	2, // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetIacInput.target:type_name -> dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget
+	2, // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

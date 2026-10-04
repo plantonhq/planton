@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerMlflowAppStackInput is the input for the IaC modules that
+// AwsSagemakerMlflowAppIacInput is the input for the IaC modules that
 // deploy the MLflow app.
-type AwsSagemakerMlflowAppStackInput struct {
+type AwsSagemakerMlflowAppIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSagemakerMlflowApp resource to deploy.
 	Target *AwsSagemakerMlflowApp `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerMlflowAppStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerMlflowAppStackInput) Reset() {
-	*x = AwsSagemakerMlflowAppStackInput{}
+func (x *AwsSagemakerMlflowAppIacInput) Reset() {
+	*x = AwsSagemakerMlflowAppIacInput{}
 	mi := &file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerMlflowAppStackInput) String() string {
+func (x *AwsSagemakerMlflowAppIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerMlflowAppStackInput) ProtoMessage() {}
+func (*AwsSagemakerMlflowAppIacInput) ProtoMessage() {}
 
-func (x *AwsSagemakerMlflowAppStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerMlflowAppIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerMlflowAppStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerMlflowAppStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerMlflowAppStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerMlflowAppIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerMlflowAppIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerMlflowAppStackInput) GetTarget() *AwsSagemakerMlflowApp {
+func (x *AwsSagemakerMlflowAppIacInput) GetTarget() *AwsSagemakerMlflowApp {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSagemakerMlflowAppStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSagemakerMlflowAppIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awssagemakermlflowapp/v1alpha1/input.proto\x12.dev.planton.aws.awssagemakermlflowapp.v1alpha1\x1a4catalog/aws/awssagemakermlflowapp/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsSagemakerMlflowAppStackInput\x12]\n" +
+	"6catalog/aws/awssagemakermlflowapp/v1alpha1/input.proto\x12.dev.planton.aws.awssagemakermlflowapp.v1alpha1\x1a4catalog/aws/awssagemakermlflowapp/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsSagemakerMlflowAppIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awssagemakermlflowapp.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSagemakerMlflowAppStackInput)(nil), // 0: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppStackInput
-	(*AwsSagemakerMlflowApp)(nil),           // 1: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowApp
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSagemakerMlflowAppIacInput)(nil), // 0: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppIacInput
+	(*AwsSagemakerMlflowApp)(nil),         // 1: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowApp
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssagemakermlflowapp_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppStackInput.target:type_name -> dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowApp
-	2, // 1: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppIacInput.target:type_name -> dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowApp
+	2, // 1: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

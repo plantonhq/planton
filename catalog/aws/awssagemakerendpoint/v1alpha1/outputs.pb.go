@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerEndpointStackOutputs captures observable identifiers from
+// AwsSagemakerEndpointOutputs captures observable identifiers from
 // a provisioned SageMaker endpoint. Clients invoke by `endpoint_name`;
 // autoscaling policies and inference components wire via the ARNs.
-type AwsSagemakerEndpointStackOutputs struct {
+type AwsSagemakerEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The endpoint name (the AWS identity clients invoke).
 	EndpointName string `protobuf:"bytes,1,opt,name=endpoint_name,json=endpointName,proto3" json:"endpoint_name,omitempty"`
@@ -39,20 +39,20 @@ type AwsSagemakerEndpointStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerEndpointStackOutputs) Reset() {
-	*x = AwsSagemakerEndpointStackOutputs{}
+func (x *AwsSagemakerEndpointOutputs) Reset() {
+	*x = AwsSagemakerEndpointOutputs{}
 	mi := &file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerEndpointStackOutputs) String() string {
+func (x *AwsSagemakerEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerEndpointStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerEndpointOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsSagemakerEndpointStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerEndpointStackOutputs) GetEndpointName() string {
+func (x *AwsSagemakerEndpointOutputs) GetEndpointName() string {
 	if x != nil {
 		return x.EndpointName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerEndpointStackOutputs) GetEndpointArn() string {
+func (x *AwsSagemakerEndpointOutputs) GetEndpointArn() string {
 	if x != nil {
 		return x.EndpointArn
 	}
 	return ""
 }
 
-func (x *AwsSagemakerEndpointStackOutputs) GetEndpointConfigName() string {
+func (x *AwsSagemakerEndpointOutputs) GetEndpointConfigName() string {
 	if x != nil {
 		return x.EndpointConfigName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerEndpointStackOutputs) GetEndpointConfigArn() string {
+func (x *AwsSagemakerEndpointOutputs) GetEndpointConfigArn() string {
 	if x != nil {
 		return x.EndpointConfigArn
 	}
@@ -101,8 +101,8 @@ var File_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awssagemakerendpoint/v1alpha1/outputs.proto\x12-dev.planton.aws.awssagemakerendpoint.v1alpha1\"\xcc\x01\n" +
-	" AwsSagemakerEndpointStackOutputs\x12#\n" +
+	"7catalog/aws/awssagemakerendpoint/v1alpha1/outputs.proto\x12-dev.planton.aws.awssagemakerendpoint.v1alpha1\"\xc7\x01\n" +
+	"\x1bAwsSagemakerEndpointOutputs\x12#\n" +
 	"\rendpoint_name\x18\x01 \x01(\tR\fendpointName\x12!\n" +
 	"\fendpoint_arn\x18\x02 \x01(\tR\vendpointArn\x120\n" +
 	"\x14endpoint_config_name\x18\x03 \x01(\tR\x12endpointConfigName\x12.\n" +
@@ -123,7 +123,7 @@ func file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerEndpointStackOutputs)(nil), // 0: dev.planton.aws.awssagemakerendpoint.v1alpha1.AwsSagemakerEndpointStackOutputs
+	(*AwsSagemakerEndpointOutputs)(nil), // 0: dev.planton.aws.awssagemakerendpoint.v1alpha1.AwsSagemakerEndpointOutputs
 }
 var file_catalog_aws_awssagemakerendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -34,7 +34,7 @@ type CloudflareBotManagement struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareBotManagementSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *CloudflareBotManagement) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareBotManagement) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareBotManagement) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *CloudflareBotManagement) GetStatus() *CloudflareBotManagementStatus {
 // Management configuration.
 type CloudflareBotManagementStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareBotManagementStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareBotManagementOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*CloudflareBotManagementStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareBotManagementStatus) GetOutputs() *CloudflareBotManagementStackOutputs {
+func (x *CloudflareBotManagementStatus) GetOutputs() *CloudflareBotManagementOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17CloudflareBotManagementR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatusR\x06status\"\x97\x01\n" +
-	"\x1dCloudflareBotManagementStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatusR\x06status\"\x92\x01\n" +
+	"\x1dCloudflareBotManagementStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarebotmanagement/v1alpha1;cloudflarebotmanagementv1alpha1\xa2\x02\x04DPCC\xaa\x027Dev.Planton.Cloudflare.Cloudflarebotmanagement.V1alpha1\xca\x027Dev\\Planton\\Cloudflare\\Cloudflarebotmanagement\\V1alpha1\xe2\x02CDev\\Planton\\Cloudflare\\Cloudflarebotmanagement\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Cloudflare::Cloudflarebotmanagement::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_api_proto_rawDescG
 
 var file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareBotManagement)(nil),             // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement
-	(*CloudflareBotManagementStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareBotManagementSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementSpec
-	(*CloudflareBotManagementStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStackOutputs
+	(*CloudflareBotManagement)(nil),        // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement
+	(*CloudflareBotManagementStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareBotManagementSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementSpec
+	(*CloudflareBotManagementOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementOutputs
 }
 var file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement.spec:type_name -> dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementSpec
 	1, // 2: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement.status:type_name -> dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatus
-	4, // 3: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

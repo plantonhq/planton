@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsBedrockProvisionedThroughputSpec defines the desired configuration
 for Amazon Bedrock Provisioned Throughput - dedicated, guaranteed model
@@ -29,7 +29,7 @@ recreates the purchase (a committed purchase blocks that destroy until
 its term ends).
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

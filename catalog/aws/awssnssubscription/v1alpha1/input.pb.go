@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSnsSubscriptionStackInput is the input for the aws-sns-subscription
+// AwsSnsSubscriptionIacInput is the input for the aws-sns-subscription
 // IaC modules.
-type AwsSnsSubscriptionStackInput struct {
+type AwsSnsSubscriptionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsSnsSubscription `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsSnsSubscriptionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSnsSubscriptionStackInput) Reset() {
-	*x = AwsSnsSubscriptionStackInput{}
+func (x *AwsSnsSubscriptionIacInput) Reset() {
+	*x = AwsSnsSubscriptionIacInput{}
 	mi := &file_catalog_aws_awssnssubscription_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSnsSubscriptionStackInput) String() string {
+func (x *AwsSnsSubscriptionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSnsSubscriptionStackInput) ProtoMessage() {}
+func (*AwsSnsSubscriptionIacInput) ProtoMessage() {}
 
-func (x *AwsSnsSubscriptionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSnsSubscriptionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssnssubscription_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSnsSubscriptionStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSnsSubscriptionStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSnsSubscriptionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSnsSubscriptionIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSnsSubscriptionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssnssubscription_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSnsSubscriptionStackInput) GetTarget() *AwsSnsSubscription {
+func (x *AwsSnsSubscriptionIacInput) GetTarget() *AwsSnsSubscription {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSnsSubscriptionStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSnsSubscriptionIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssnssubscription_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awssnssubscription_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awssnssubscription/v1alpha1/input.proto\x12+dev.planton.aws.awssnssubscription.v1alpha1\x1a1catalog/aws/awssnssubscription/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsSnsSubscriptionStackInput\x12W\n" +
+	"3catalog/aws/awssnssubscription/v1alpha1/input.proto\x12+dev.planton.aws.awssnssubscription.v1alpha1\x1a1catalog/aws/awssnssubscription/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsSnsSubscriptionIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awssnssubscription.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awssnssubscription_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awssnssubscription_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssnssubscription_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSnsSubscriptionStackInput)(nil), // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackInput
-	(*AwsSnsSubscription)(nil),           // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSnsSubscriptionIacInput)(nil), // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionIacInput
+	(*AwsSnsSubscription)(nil),         // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssnssubscription_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackInput.target:type_name -> dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription
-	2, // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionIacInput.target:type_name -> dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription
+	2, // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

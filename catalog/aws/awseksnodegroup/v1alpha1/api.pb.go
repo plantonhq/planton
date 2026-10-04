@@ -34,7 +34,7 @@ type AwsEksNodeGroup struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining how the node group is provisioned.
 	Spec *AwsEksNodeGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsEksNodeGroup) GetKind() string {
 	return ""
 }
 
-func (x *AwsEksNodeGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEksNodeGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsEksNodeGroup) GetStatus() *AwsEksNodeGroupStatus {
 type AwsEksNodeGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsEksNodeGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsEksNodeGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsEksNodeGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksnodegroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEksNodeGroupStatus) GetOutputs() *AwsEksNodeGroupStackOutputs {
+func (x *AwsEksNodeGroupStatus) GetOutputs() *AwsEksNodeGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awseksnodegroup_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAwsEksNodeGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
 	"\x04spec\x18\x04 \x01(\v2=.dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12W\n" +
-	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStatusR\x06status\"x\n" +
-	"\x15AwsEksNodeGroupStatus\x12_\n" +
-	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStackOutputsR\aoutputsB\xd8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStatusR\x06status\"s\n" +
+	"\x15AwsEksNodeGroupStatus\x12Z\n" +
+	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupOutputsR\aoutputsB\xd8\x02\n" +
 	",com.dev.planton.aws.awseksnodegroup.v1alpha1B\bApiProtoP\x01ZYgithub.com/plantonhq/planton/catalog/aws/awseksnodegroup/v1alpha1;awseksnodegroupv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Aws.Awseksnodegroup.V1alpha1\xca\x02(Dev\\Planton\\Aws\\Awseksnodegroup\\V1alpha1\xe2\x024Dev\\Planton\\Aws\\Awseksnodegroup\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Aws::Awseksnodegroup::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_aws_awseksnodegroup_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_aws_awseksnodegroup_v1alpha1_api_proto_goTypes = []any{
 	(*AwsEksNodeGroup)(nil),              // 0: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroup
 	(*AwsEksNodeGroupStatus)(nil),        // 1: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsEksNodeGroupSpec)(nil),          // 3: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupSpec
-	(*AwsEksNodeGroupStackOutputs)(nil),  // 4: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStackOutputs
+	(*AwsEksNodeGroupOutputs)(nil),       // 4: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupOutputs
 }
 var file_catalog_aws_awseksnodegroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroup.spec:type_name -> dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupSpec
 	1, // 2: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroup.status:type_name -> dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStatus
-	4, // 3: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStatus.outputs:type_name -> dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStackOutputs
+	4, // 3: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStatus.outputs:type_name -> dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

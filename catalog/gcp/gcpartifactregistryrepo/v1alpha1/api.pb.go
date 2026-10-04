@@ -31,7 +31,7 @@ type GcpArtifactRegistryRepo struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// resource spec
 	Spec *GcpArtifactRegistryRepoSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// resource status
@@ -84,7 +84,7 @@ func (x *GcpArtifactRegistryRepo) GetKind() string {
 	return ""
 }
 
-func (x *GcpArtifactRegistryRepo) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpArtifactRegistryRepo) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpArtifactRegistryRepo) GetStatus() *GcpArtifactRegistryRepoStatus {
 // gcp-artifact-registry-repo status
 type GcpArtifactRegistryRepoStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs for gcp-artifact-registry-repo
-	Outputs       *GcpArtifactRegistryRepoStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs for gcp-artifact-registry-repo
+	Outputs       *GcpArtifactRegistryRepoOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpArtifactRegistryRepoStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpArtifactRegistryRepoStatus) GetOutputs() *GcpArtifactRegistryRepoStackOutputs {
+func (x *GcpArtifactRegistryRepoStatus) GetOutputs() *GcpArtifactRegistryRepoOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17GcpArtifactRegistryRepoR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatusR\x06status\"\x90\x01\n" +
-	"\x1dGcpArtifactRegistryRepoStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatusR\x06status\"\x8b\x01\n" +
+	"\x1dGcpArtifactRegistryRepoStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpartifactregistryrepo/v1alpha1;gcpartifactregistryrepov1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpartifactregistryrepo.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpartifactregistryrepo\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpartifactregistryrepo\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpartifactregistryrepo::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_api_proto_goTypes = []any{
-	(*GcpArtifactRegistryRepo)(nil),             // 0: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepo
-	(*GcpArtifactRegistryRepoStatus)(nil),       // 1: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpArtifactRegistryRepoSpec)(nil),         // 3: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec
-	(*GcpArtifactRegistryRepoStackOutputs)(nil), // 4: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStackOutputs
+	(*GcpArtifactRegistryRepo)(nil),        // 0: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepo
+	(*GcpArtifactRegistryRepoStatus)(nil),  // 1: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpArtifactRegistryRepoSpec)(nil),    // 3: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec
+	(*GcpArtifactRegistryRepoOutputs)(nil), // 4: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoOutputs
 }
 var file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepo.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepo.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepo.spec:type_name -> dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec
 	1, // 2: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepo.status:type_name -> dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatus
-	4, // 3: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatus.outputs:type_name -> dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStackOutputs
+	4, // 3: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStatus.outputs:type_name -> dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

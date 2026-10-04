@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesKubePrometheusStackSpec** deploys the kube-prometheus-stack —
 the industry-standard cluster monitoring bundle — from the official
@@ -43,7 +43,7 @@ DISCOVERY: by default this component discovers EVERY ServiceMonitor,
 PodMonitor, PrometheusRule, Probe and ScrapeConfig in the cluster —
 deliberately wider than the chart's own default (which only discovers
 objects labeled by its release, upstream's most-tripped-over behavior).
-Cluster-wide discovery is what makes every catalog component's
+Cluster-wide discovery is what makes every catalog kind's
 `service_monitor_enabled` toggle and any user-authored monitor light up
 without extra wiring. Set `discovery` to `release_managed_only` to get
 the chart's fenced default back.
@@ -80,7 +80,7 @@ never the primary interface.
 # operator sizing with cert-manager-issued webhook certificates, exporter
 # sizing, the managed-cloud scraper posture with its matching rule-group
 # disables, the CRD upgrade hook, global registry + pull-secret plumbing,
-# per-component scheduling, and an escape-hatch entry — so the offline tofu
+# per-kind scheduling, and an escape-hatch entry — so the offline tofu
 # plan and pulumi preview proofs cover the full typed surface. Placeholder
 # values; never applied to a real cluster.
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -1485,7 +1485,7 @@ Read the admin credentials from an existing Secret. Empty = the
 chart generates a random admin password ONCE at first install
 (stable across upgrades) and keeps it in its own
 `<name>-grafana` Secret — keys `admin-user` / `admin-password`;
-the Secret name lands in the stack outputs.
+the Secret name lands in the outputs.
 
 ### spec.grafana.adminSecret.name
 

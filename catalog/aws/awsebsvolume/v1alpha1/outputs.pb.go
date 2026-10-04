@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEbsVolumeStackOutputs captures the observable state of the volume
+// AwsEbsVolumeOutputs captures the observable state of the volume
 // after apply.
-type AwsEbsVolumeStackOutputs struct {
+type AwsEbsVolumeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The volume's id (vol-...) - what attachments, snapshots, and
 	// copies reference, and the provider's import ID.
@@ -42,20 +42,20 @@ type AwsEbsVolumeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEbsVolumeStackOutputs) Reset() {
-	*x = AwsEbsVolumeStackOutputs{}
+func (x *AwsEbsVolumeOutputs) Reset() {
+	*x = AwsEbsVolumeOutputs{}
 	mi := &file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEbsVolumeStackOutputs) String() string {
+func (x *AwsEbsVolumeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEbsVolumeStackOutputs) ProtoMessage() {}
+func (*AwsEbsVolumeOutputs) ProtoMessage() {}
 
-func (x *AwsEbsVolumeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEbsVolumeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,40 +67,40 @@ func (x *AwsEbsVolumeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEbsVolumeStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEbsVolumeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEbsVolumeOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEbsVolumeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEbsVolumeStackOutputs) GetVolumeId() string {
+func (x *AwsEbsVolumeOutputs) GetVolumeId() string {
 	if x != nil {
 		return x.VolumeId
 	}
 	return ""
 }
 
-func (x *AwsEbsVolumeStackOutputs) GetVolumeArn() string {
+func (x *AwsEbsVolumeOutputs) GetVolumeArn() string {
 	if x != nil {
 		return x.VolumeArn
 	}
 	return ""
 }
 
-func (x *AwsEbsVolumeStackOutputs) GetAvailabilityZone() string {
+func (x *AwsEbsVolumeOutputs) GetAvailabilityZone() string {
 	if x != nil {
 		return x.AvailabilityZone
 	}
 	return ""
 }
 
-func (x *AwsEbsVolumeStackOutputs) GetSizeGb() string {
+func (x *AwsEbsVolumeOutputs) GetSizeGb() string {
 	if x != nil {
 		return x.SizeGb
 	}
 	return ""
 }
 
-func (x *AwsEbsVolumeStackOutputs) GetCreateTime() string {
+func (x *AwsEbsVolumeOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
@@ -111,8 +111,8 @@ var File_catalog_aws_awsebsvolume_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsebsvolume/v1alpha1/outputs.proto\x12%dev.planton.aws.awsebsvolume.v1alpha1\"\xbd\x01\n" +
-	"\x18AwsEbsVolumeStackOutputs\x12\x1b\n" +
+	"/catalog/aws/awsebsvolume/v1alpha1/outputs.proto\x12%dev.planton.aws.awsebsvolume.v1alpha1\"\xb8\x01\n" +
+	"\x13AwsEbsVolumeOutputs\x12\x1b\n" +
 	"\tvolume_id\x18\x01 \x01(\tR\bvolumeId\x12\x1d\n" +
 	"\n" +
 	"volume_arn\x18\x02 \x01(\tR\tvolumeArn\x12+\n" +
@@ -136,7 +136,7 @@ func file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEbsVolumeStackOutputs)(nil), // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackOutputs
+	(*AwsEbsVolumeOutputs)(nil), // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeOutputs
 }
 var file_catalog_aws_awsebsvolume_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

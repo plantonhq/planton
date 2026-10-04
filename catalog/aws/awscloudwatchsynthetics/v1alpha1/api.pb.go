@@ -27,7 +27,7 @@ type AwsCloudwatchSynthetics struct {
 	state         protoimpl.MessageState         `protogen:"open.v1"`
 	ApiVersion    string                         `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                         `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata  `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata  `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsCloudwatchSyntheticsSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsCloudwatchSyntheticsStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsCloudwatchSynthetics) GetKind() string {
 	return ""
 }
 
-func (x *AwsCloudwatchSynthetics) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCloudwatchSynthetics) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsCloudwatchSynthetics) GetStatus() *AwsCloudwatchSyntheticsStatus {
 }
 
 type AwsCloudwatchSyntheticsStatus struct {
-	state         protoimpl.MessageState               `protogen:"open.v1"`
-	Outputs       *AwsCloudwatchSyntheticsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState          `protogen:"open.v1"`
+	Outputs       *AwsCloudwatchSyntheticsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsCloudwatchSyntheticsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchsynthetics_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCloudwatchSyntheticsStatus) GetOutputs() *AwsCloudwatchSyntheticsStackOutputs {
+func (x *AwsCloudwatchSyntheticsStatus) GetOutputs() *AwsCloudwatchSyntheticsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awscloudwatchsynthetics_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AwsCloudwatchSyntheticsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatusR\x06status\"\x90\x01\n" +
-	"\x1dAwsCloudwatchSyntheticsStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatusR\x06status\"\x8b\x01\n" +
+	"\x1dAwsCloudwatchSyntheticsStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.aws.awscloudwatchsynthetics.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/aws/awscloudwatchsynthetics/v1alpha1;awscloudwatchsyntheticsv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Aws.Awscloudwatchsynthetics.V1alpha1\xca\x020Dev\\Planton\\Aws\\Awscloudwatchsynthetics\\V1alpha1\xe2\x02<Dev\\Planton\\Aws\\Awscloudwatchsynthetics\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Aws::Awscloudwatchsynthetics::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awscloudwatchsynthetics_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCloudwatchSynthetics)(nil),             // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics
-	(*AwsCloudwatchSyntheticsStatus)(nil),       // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCloudwatchSyntheticsSpec)(nil),         // 3: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsSpec
-	(*AwsCloudwatchSyntheticsStackOutputs)(nil), // 4: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs
+	(*AwsCloudwatchSynthetics)(nil),        // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics
+	(*AwsCloudwatchSyntheticsStatus)(nil),  // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCloudwatchSyntheticsSpec)(nil),    // 3: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsSpec
+	(*AwsCloudwatchSyntheticsOutputs)(nil), // 4: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs
 }
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics.spec:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsSpec
 	1, // 2: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics.status:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatus
-	4, // 3: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatus.outputs:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs
+	4, // 3: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStatus.outputs:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

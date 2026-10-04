@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsElasticFileSystemStackOutputs captures observable identifiers and endpoints
+// AwsElasticFileSystemOutputs captures observable identifiers and endpoints
 // from a provisioned Elastic File System. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef.
 //
@@ -31,7 +31,7 @@ const (
 //   - AwsEfsAccessPoint: references `file_system_id` (Lambda and ECS then
 //     reference the access point's own outputs)
 //   - EC2 (direct NFS mount): uses `dns_name` or mount target DNS names
-type AwsElasticFileSystemStackOutputs struct {
+type AwsElasticFileSystemOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the file system (e.g., "fs-0123456789abcdef0"). This is the
 	// primary identifier used by EKS PersistentVolumes, ECS task definitions,
@@ -67,20 +67,20 @@ type AwsElasticFileSystemStackOutputs struct {
 	sizeCache                          protoimpl.SizeCache
 }
 
-func (x *AwsElasticFileSystemStackOutputs) Reset() {
-	*x = AwsElasticFileSystemStackOutputs{}
+func (x *AwsElasticFileSystemOutputs) Reset() {
+	*x = AwsElasticFileSystemOutputs{}
 	mi := &file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsElasticFileSystemStackOutputs) String() string {
+func (x *AwsElasticFileSystemOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsElasticFileSystemStackOutputs) ProtoMessage() {}
+func (*AwsElasticFileSystemOutputs) ProtoMessage() {}
 
-func (x *AwsElasticFileSystemStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsElasticFileSystemOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,61 +92,61 @@ func (x *AwsElasticFileSystemStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsElasticFileSystemStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsElasticFileSystemStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsElasticFileSystemOutputs.ProtoReflect.Descriptor instead.
+func (*AwsElasticFileSystemOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetFileSystemId() string {
+func (x *AwsElasticFileSystemOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetFileSystemArn() string {
+func (x *AwsElasticFileSystemOutputs) GetFileSystemArn() string {
 	if x != nil {
 		return x.FileSystemArn
 	}
 	return ""
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetDnsName() string {
+func (x *AwsElasticFileSystemOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetMountTargetIds() map[string]string {
+func (x *AwsElasticFileSystemOutputs) GetMountTargetIds() map[string]string {
 	if x != nil {
 		return x.MountTargetIds
 	}
 	return nil
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetMountTargetIps() map[string]string {
+func (x *AwsElasticFileSystemOutputs) GetMountTargetIps() map[string]string {
 	if x != nil {
 		return x.MountTargetIps
 	}
 	return nil
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetMountTargetIpv6Addresses() map[string]string {
+func (x *AwsElasticFileSystemOutputs) GetMountTargetIpv6Addresses() map[string]string {
 	if x != nil {
 		return x.MountTargetIpv6Addresses
 	}
 	return nil
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetMountTargetDnsNames() map[string]string {
+func (x *AwsElasticFileSystemOutputs) GetMountTargetDnsNames() map[string]string {
 	if x != nil {
 		return x.MountTargetDnsNames
 	}
 	return nil
 }
 
-func (x *AwsElasticFileSystemStackOutputs) GetReplicationDestinationFileSystemId() string {
+func (x *AwsElasticFileSystemOutputs) GetReplicationDestinationFileSystemId() string {
 	if x != nil {
 		return x.ReplicationDestinationFileSystemId
 	}
@@ -157,15 +157,15 @@ var File_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awselasticfilesystem/v1alpha1/outputs.proto\x12-dev.planton.aws.awselasticfilesystem.v1alpha1\"\xe9\b\n" +
-	" AwsElasticFileSystemStackOutputs\x12$\n" +
+	"7catalog/aws/awselasticfilesystem/v1alpha1/outputs.proto\x12-dev.planton.aws.awselasticfilesystem.v1alpha1\"\xd0\b\n" +
+	"\x1bAwsElasticFileSystemOutputs\x12$\n" +
 	"\x0efile_system_id\x18\x01 \x01(\tR\ffileSystemId\x12&\n" +
 	"\x0ffile_system_arn\x18\x02 \x01(\tR\rfileSystemArn\x12\x19\n" +
-	"\bdns_name\x18\x03 \x01(\tR\adnsName\x12\x8d\x01\n" +
-	"\x10mount_target_ids\x18\x04 \x03(\v2c.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIdsEntryR\x0emountTargetIds\x12\x8d\x01\n" +
-	"\x10mount_target_ips\x18\x05 \x03(\v2c.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIpsEntryR\x0emountTargetIps\x12\xac\x01\n" +
-	"\x1bmount_target_ipv6_addresses\x18\x06 \x03(\v2m.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIpv6AddressesEntryR\x18mountTargetIpv6Addresses\x12\x9d\x01\n" +
-	"\x16mount_target_dns_names\x18\a \x03(\v2h.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetDnsNamesEntryR\x13mountTargetDnsNames\x12R\n" +
+	"\bdns_name\x18\x03 \x01(\tR\adnsName\x12\x88\x01\n" +
+	"\x10mount_target_ids\x18\x04 \x03(\v2^.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIdsEntryR\x0emountTargetIds\x12\x88\x01\n" +
+	"\x10mount_target_ips\x18\x05 \x03(\v2^.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIpsEntryR\x0emountTargetIps\x12\xa7\x01\n" +
+	"\x1bmount_target_ipv6_addresses\x18\x06 \x03(\v2h.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIpv6AddressesEntryR\x18mountTargetIpv6Addresses\x12\x98\x01\n" +
+	"\x16mount_target_dns_names\x18\a \x03(\v2c.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetDnsNamesEntryR\x13mountTargetDnsNames\x12R\n" +
 	"&replication_destination_file_system_id\x18\b \x01(\tR\"replicationDestinationFileSystemId\x1aA\n" +
 	"\x13MountTargetIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -195,17 +195,17 @@ func file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsElasticFileSystemStackOutputs)(nil), // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs
-	nil,                                      // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIdsEntry
-	nil,                                      // 2: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIpsEntry
-	nil,                                      // 3: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIpv6AddressesEntry
-	nil,                                      // 4: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetDnsNamesEntry
+	(*AwsElasticFileSystemOutputs)(nil), // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs
+	nil,                                 // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIdsEntry
+	nil,                                 // 2: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIpsEntry
+	nil,                                 // 3: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIpv6AddressesEntry
+	nil,                                 // 4: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetDnsNamesEntry
 }
 var file_catalog_aws_awselasticfilesystem_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.mount_target_ids:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIdsEntry
-	2, // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.mount_target_ips:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIpsEntry
-	3, // 2: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.mount_target_ipv6_addresses:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetIpv6AddressesEntry
-	4, // 3: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.mount_target_dns_names:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackOutputs.MountTargetDnsNamesEntry
+	1, // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.mount_target_ids:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIdsEntry
+	2, // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.mount_target_ips:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIpsEntry
+	3, // 2: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.mount_target_ipv6_addresses:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetIpv6AddressesEntry
+	4, // 3: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.mount_target_dns_names:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemOutputs.MountTargetDnsNamesEntry
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

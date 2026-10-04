@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockCustomModelStackInput is the input for the IaC modules that
+// AwsBedrockCustomModelIacInput is the input for the IaC modules that
 // deploy the Bedrock custom model.
-type AwsBedrockCustomModelStackInput struct {
+type AwsBedrockCustomModelIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockCustomModel resource to deploy.
 	Target *AwsBedrockCustomModel `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockCustomModelStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockCustomModelStackInput) Reset() {
-	*x = AwsBedrockCustomModelStackInput{}
+func (x *AwsBedrockCustomModelIacInput) Reset() {
+	*x = AwsBedrockCustomModelIacInput{}
 	mi := &file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockCustomModelStackInput) String() string {
+func (x *AwsBedrockCustomModelIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockCustomModelStackInput) ProtoMessage() {}
+func (*AwsBedrockCustomModelIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockCustomModelStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockCustomModelIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockCustomModelStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockCustomModelStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockCustomModelStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockCustomModelIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockCustomModelIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockCustomModelStackInput) GetTarget() *AwsBedrockCustomModel {
+func (x *AwsBedrockCustomModelIacInput) GetTarget() *AwsBedrockCustomModel {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockCustomModelStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockCustomModelIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsbedrockcustommodel/v1alpha1/input.proto\x12.dev.planton.aws.awsbedrockcustommodel.v1alpha1\x1a4catalog/aws/awsbedrockcustommodel/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsBedrockCustomModelStackInput\x12]\n" +
+	"6catalog/aws/awsbedrockcustommodel/v1alpha1/input.proto\x12.dev.planton.aws.awsbedrockcustommodel.v1alpha1\x1a4catalog/aws/awsbedrockcustommodel/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsBedrockCustomModelIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awsbedrockcustommodel.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockCustomModelStackInput)(nil), // 0: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelStackInput
-	(*AwsBedrockCustomModel)(nil),           // 1: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModel
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockCustomModelIacInput)(nil), // 0: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelIacInput
+	(*AwsBedrockCustomModel)(nil),         // 1: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModel
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockcustommodel_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelStackInput.target:type_name -> dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModel
-	2, // 1: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelIacInput.target:type_name -> dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModel
+	2, // 1: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorRuleSetStackOutputs** captures the outputs of
+// **AzureFrontDoorRuleSetOutputs** captures the outputs of
 // provisioning an Azure Front Door rule set. The rules inside the set
 // export no individual IDs on purpose: nothing references a rule --
 // routes attach the whole set.
-type AzureFrontDoorRuleSetStackOutputs struct {
+type AzureFrontDoorRuleSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the rule set -- what
 	// AzureFrontDoorRoute's rule_set_ids references to attach this
@@ -38,20 +38,20 @@ type AzureFrontDoorRuleSetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorRuleSetStackOutputs) Reset() {
-	*x = AzureFrontDoorRuleSetStackOutputs{}
+func (x *AzureFrontDoorRuleSetOutputs) Reset() {
+	*x = AzureFrontDoorRuleSetOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorRuleSetStackOutputs) String() string {
+func (x *AzureFrontDoorRuleSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorRuleSetStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorRuleSetOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorRuleSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorRuleSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureFrontDoorRuleSetStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorRuleSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorRuleSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorRuleSetOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorRuleSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorRuleSetStackOutputs) GetRuleSetId() string {
+func (x *AzureFrontDoorRuleSetOutputs) GetRuleSetId() string {
 	if x != nil {
 		return x.RuleSetId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorRuleSetStackOutputs) GetRuleSetName() string {
+func (x *AzureFrontDoorRuleSetOutputs) GetRuleSetName() string {
 	if x != nil {
 		return x.RuleSetName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurefrontdoorruleset/v1alpha1/outputs.proto\x120dev.planton.azure.azurefrontdoorruleset.v1alpha1\"g\n" +
-	"!AzureFrontDoorRuleSetStackOutputs\x12\x1e\n" +
+	":catalog/azure/azurefrontdoorruleset/v1alpha1/outputs.proto\x120dev.planton.azure.azurefrontdoorruleset.v1alpha1\"b\n" +
+	"\x1cAzureFrontDoorRuleSetOutputs\x12\x1e\n" +
 	"\vrule_set_id\x18\x01 \x01(\tR\truleSetId\x12\"\n" +
 	"\rrule_set_name\x18\x02 \x01(\tR\vruleSetNameB\x92\x03\n" +
 	"4com.dev.planton.azure.azurefrontdoorruleset.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azurefrontdoorruleset/v1alpha1;azurefrontdoorrulesetv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azurefrontdoorruleset.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azurefrontdoorruleset\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azurefrontdoorruleset\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azurefrontdoorruleset::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorRuleSetStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorruleset.v1alpha1.AzureFrontDoorRuleSetStackOutputs
+	(*AzureFrontDoorRuleSetOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorruleset.v1alpha1.AzureFrontDoorRuleSetOutputs
 }
 var file_catalog_azure_azurefrontdoorruleset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

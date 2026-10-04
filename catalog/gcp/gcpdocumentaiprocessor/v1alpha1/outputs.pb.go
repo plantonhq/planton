@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDocumentAiProcessorStackOutputs carries what an application needs to
+// GcpDocumentAiProcessorOutputs carries what an application needs to
 // send documents to the processor.
-type GcpDocumentAiProcessorStackOutputs struct {
+type GcpDocumentAiProcessorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/processors/{processor_id}.
@@ -39,20 +39,20 @@ type GcpDocumentAiProcessorStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *GcpDocumentAiProcessorStackOutputs) Reset() {
-	*x = GcpDocumentAiProcessorStackOutputs{}
+func (x *GcpDocumentAiProcessorOutputs) Reset() {
+	*x = GcpDocumentAiProcessorOutputs{}
 	mi := &file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDocumentAiProcessorStackOutputs) String() string {
+func (x *GcpDocumentAiProcessorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDocumentAiProcessorStackOutputs) ProtoMessage() {}
+func (*GcpDocumentAiProcessorOutputs) ProtoMessage() {}
 
-func (x *GcpDocumentAiProcessorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDocumentAiProcessorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *GcpDocumentAiProcessorStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDocumentAiProcessorStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDocumentAiProcessorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDocumentAiProcessorOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDocumentAiProcessorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDocumentAiProcessorStackOutputs) GetName() string {
+func (x *GcpDocumentAiProcessorOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDocumentAiProcessorStackOutputs) GetProcessorId() string {
+func (x *GcpDocumentAiProcessorOutputs) GetProcessorId() string {
 	if x != nil {
 		return x.ProcessorId
 	}
 	return ""
 }
 
-func (x *GcpDocumentAiProcessorStackOutputs) GetLocation() string {
+func (x *GcpDocumentAiProcessorOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpDocumentAiProcessorStackOutputs) GetProcessEndpoint() string {
+func (x *GcpDocumentAiProcessorOutputs) GetProcessEndpoint() string {
 	if x != nil {
 		return x.ProcessEndpoint
 	}
@@ -101,8 +101,8 @@ var File_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpdocumentaiprocessor/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1\"\xa2\x01\n" +
-	"\"GcpDocumentAiProcessorStackOutputs\x12\x12\n" +
+	"9catalog/gcp/gcpdocumentaiprocessor/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1\"\x9d\x01\n" +
+	"\x1dGcpDocumentAiProcessorOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12!\n" +
 	"\fprocessor_id\x18\x02 \x01(\tR\vprocessorId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12)\n" +
@@ -123,7 +123,7 @@ func file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDocumentAiProcessorStackOutputs)(nil), // 0: dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1.GcpDocumentAiProcessorStackOutputs
+	(*GcpDocumentAiProcessorOutputs)(nil), // 0: dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1.GcpDocumentAiProcessorOutputs
 }
 var file_catalog_gcp_gcpdocumentaiprocessor_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

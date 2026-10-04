@@ -29,7 +29,7 @@ Notes:
 - There is deliberately no description field: the CreateStateMachine API has
   no description input (the AWS console derives one from the definition's
   Comment field), so a spec field would be silently dropped.
-- Credentials, region, and deployment workflow live outside this spec in stack inputs.
+- Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 
 ## Example
 
@@ -136,7 +136,7 @@ invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, etc.).
 Publish a version of the state machine on every create and on every
 configuration update. Published versions are immutable snapshots
 (definition + role + logging/tracing/encryption at publish time) addressed
-by the version ARN exported in stack outputs. Versions are the foundation
+by the version ARN exported in outputs. Versions are the foundation
 for alias-based traffic shifting and safe rollbacks: point consumers at a
 version ARN (or an alias routing between two versions) instead of the
 mutable state machine ARN. When false (the default), executions always run

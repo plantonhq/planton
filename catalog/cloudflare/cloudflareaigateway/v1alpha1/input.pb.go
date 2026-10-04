@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareAiGatewayStackInput is the input to the IaC module.
+// CloudflareAiGatewayIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareAiGatewayStackInput struct {
+type CloudflareAiGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *CloudflareAiGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareAiGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareAiGatewayStackInput) Reset() {
-	*x = CloudflareAiGatewayStackInput{}
+func (x *CloudflareAiGatewayIacInput) Reset() {
+	*x = CloudflareAiGatewayIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareAiGatewayStackInput) String() string {
+func (x *CloudflareAiGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareAiGatewayStackInput) ProtoMessage() {}
+func (*CloudflareAiGatewayIacInput) ProtoMessage() {}
 
-func (x *CloudflareAiGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareAiGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareAiGatewayStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareAiGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareAiGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareAiGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareAiGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareAiGatewayStackInput) GetTarget() *CloudflareAiGateway {
+func (x *CloudflareAiGatewayIacInput) GetTarget() *CloudflareAiGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareAiGatewayStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareAiGatewayIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto protoreflec
 
 const file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/cloudflare/cloudflareaigateway/v1alpha1/input.proto\x123dev.planton.cloudflare.cloudflareaigateway.v1alpha1\x1a9catalog/cloudflare/cloudflareaigateway/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xdc\x01\n" +
-	"\x1dCloudflareAiGatewayStackInput\x12`\n" +
+	";catalog/cloudflare/cloudflareaigateway/v1alpha1/input.proto\x123dev.planton.cloudflare.cloudflareaigateway.v1alpha1\x1a9catalog/cloudflare/cloudflareaigateway/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xda\x01\n" +
+	"\x1bCloudflareAiGatewayIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"7com.dev.planton.cloudflare.cloudflareaigateway.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareAiGatewayStackInput)(nil),       // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackInput
+	(*CloudflareAiGatewayIacInput)(nil),         // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayIacInput
 	(*CloudflareAiGateway)(nil),                 // 1: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGateway
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareaigateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackInput.target:type_name -> dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGateway
-	2, // 1: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayIacInput.target:type_name -> dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGateway
+	2, // 1: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// tempo-kubernetes stack outputs
-type KubernetesTempoStackOutputs struct {
+// tempo-kubernetes outputs
+type KubernetesTempoOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace Tempo runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -49,20 +49,20 @@ type KubernetesTempoStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesTempoStackOutputs) Reset() {
-	*x = KubernetesTempoStackOutputs{}
+func (x *KubernetesTempoOutputs) Reset() {
+	*x = KubernetesTempoOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTempoStackOutputs) String() string {
+func (x *KubernetesTempoOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTempoStackOutputs) ProtoMessage() {}
+func (*KubernetesTempoOutputs) ProtoMessage() {}
 
-func (x *KubernetesTempoStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTempoOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,54 +74,54 @@ func (x *KubernetesTempoStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTempoStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTempoStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTempoOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTempoOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTempoStackOutputs) GetNamespace() string {
+func (x *KubernetesTempoOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesTempoStackOutputs) GetReleaseName() string {
+func (x *KubernetesTempoOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesTempoStackOutputs) GetService() string {
+func (x *KubernetesTempoOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesTempoStackOutputs) GetHttpEndpoint() string {
+func (x *KubernetesTempoOutputs) GetHttpEndpoint() string {
 	if x != nil {
 		return x.HttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTempoStackOutputs) GetOtlpGrpcEndpoint() string {
+func (x *KubernetesTempoOutputs) GetOtlpGrpcEndpoint() string {
 	if x != nil {
 		return x.OtlpGrpcEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTempoStackOutputs) GetOtlpHttpEndpoint() string {
+func (x *KubernetesTempoOutputs) GetOtlpHttpEndpoint() string {
 	if x != nil {
 		return x.OtlpHttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTempoStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesTempoOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -132,8 +132,8 @@ var File_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetestempo/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetestempo.v1alpha1\"\xab\x02\n" +
-	"\x1bKubernetesTempoStackOutputs\x12\x1c\n" +
+	"9catalog/kubernetes/kubernetestempo/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetestempo.v1alpha1\"\xa6\x02\n" +
+	"\x16KubernetesTempoOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12#\n" +
@@ -157,7 +157,7 @@ func file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTempoStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStackOutputs
+	(*KubernetesTempoOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoOutputs
 }
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

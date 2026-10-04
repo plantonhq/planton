@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-custom-hostname stack-input
-type CloudflareCustomHostnameStackInput struct {
+// cloudflare-custom-hostname iac-input
+type CloudflareCustomHostnameIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareCustomHostname `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareCustomHostnameStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareCustomHostnameStackInput) Reset() {
-	*x = CloudflareCustomHostnameStackInput{}
+func (x *CloudflareCustomHostnameIacInput) Reset() {
+	*x = CloudflareCustomHostnameIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCustomHostnameStackInput) String() string {
+func (x *CloudflareCustomHostnameIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCustomHostnameStackInput) ProtoMessage() {}
+func (*CloudflareCustomHostnameIacInput) ProtoMessage() {}
 
-func (x *CloudflareCustomHostnameStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCustomHostnameIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareCustomHostnameStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCustomHostnameStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareCustomHostnameStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCustomHostnameIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareCustomHostnameIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCustomHostnameStackInput) GetTarget() *CloudflareCustomHostname {
+func (x *CloudflareCustomHostnameIacInput) GetTarget() *CloudflareCustomHostname {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareCustomHostnameStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareCustomHostnameIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto protor
 
 const file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/cloudflare/cloudflarecustomhostname/v1alpha1/input.proto\x128dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1\x1a>catalog/cloudflare/cloudflarecustomhostname/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xeb\x01\n" +
-	"\"CloudflareCustomHostnameStackInput\x12j\n" +
+	"@catalog/cloudflare/cloudflarecustomhostname/v1alpha1/input.proto\x128dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1\x1a>catalog/cloudflare/cloudflarecustomhostname/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe9\x01\n" +
+	" CloudflareCustomHostnameIacInput\x12j\n" +
 	"\x06target\x18\x01 \x01(\v2R.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	"<com.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_rawDe
 
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareCustomHostnameStackInput)(nil),  // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackInput
+	(*CloudflareCustomHostnameIacInput)(nil),    // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameIacInput
 	(*CloudflareCustomHostname)(nil),            // 1: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackInput.target:type_name -> dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname
-	2, // 1: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameIacInput.target:type_name -> dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname
+	2, // 1: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

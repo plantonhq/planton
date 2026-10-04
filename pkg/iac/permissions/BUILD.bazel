@@ -25,6 +25,7 @@ go_test(
     deps = [
         "//iac/catalogkindpermissions/v1:catalogkindpermissions",
         "//pkg/catalogkindreflect",
+        "//pkg/kubernetes/manifestprojection",
         "//shared/catalogkind",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],

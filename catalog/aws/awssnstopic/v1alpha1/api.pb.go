@@ -31,7 +31,7 @@ type AwsSnsTopic struct {
 	// resource-kind for this SNS topic resource, must be "AwsSnsTopic".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the SNS topic.
 	Spec *AwsSnsTopicSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -84,7 +84,7 @@ func (x *AwsSnsTopic) GetKind() string {
 	return ""
 }
 
-func (x *AwsSnsTopic) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSnsTopic) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsSnsTopic) GetStatus() *AwsSnsTopicStatus {
 // AwsSnsTopicStatus captures lifecycle, audit, job linkage, and observable outputs.
 type AwsSnsTopicStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsSnsTopicStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsSnsTopicOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsSnsTopicStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssnstopic_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSnsTopicStatus) GetOutputs() *AwsSnsTopicStackOutputs {
+func (x *AwsSnsTopicStatus) GetOutputs() *AwsSnsTopicOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awssnstopic_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAwsSnsTopicR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
 	"\x04spec\x18\x04 \x01(\v25.dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12O\n" +
-	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStatusR\x06status\"l\n" +
-	"\x11AwsSnsTopicStatus\x12W\n" +
-	"\aoutputs\x18\x01 \x01(\v2=.dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStackOutputsR\aoutputsB\xbc\x02\n" +
+	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStatusR\x06status\"g\n" +
+	"\x11AwsSnsTopicStatus\x12R\n" +
+	"\aoutputs\x18\x01 \x01(\v28.dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicOutputsR\aoutputsB\xbc\x02\n" +
 	"(com.dev.planton.aws.awssnstopic.v1alpha1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/catalog/aws/awssnstopic/v1alpha1;awssnstopicv1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Aws.Awssnstopic.V1alpha1\xca\x02$Dev\\Planton\\Aws\\Awssnstopic\\V1alpha1\xe2\x020Dev\\Planton\\Aws\\Awssnstopic\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Aws::Awssnstopic::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awssnstopic_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_aws_awssnstopic_v1alpha1_api_proto_goTypes = []any{
 	(*AwsSnsTopic)(nil),                  // 0: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopic
 	(*AwsSnsTopicStatus)(nil),            // 1: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsSnsTopicSpec)(nil),              // 3: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicSpec
-	(*AwsSnsTopicStackOutputs)(nil),      // 4: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStackOutputs
+	(*AwsSnsTopicOutputs)(nil),           // 4: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicOutputs
 }
 var file_catalog_aws_awssnstopic_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopic.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopic.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopic.spec:type_name -> dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicSpec
 	1, // 2: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopic.status:type_name -> dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStatus
-	4, // 3: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStatus.outputs:type_name -> dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStackOutputs
+	4, // 3: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStatus.outputs:type_name -> dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

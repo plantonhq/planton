@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgeApiDestinationStackInput is the input for the IaC
+// AwsEventBridgeApiDestinationIacInput is the input for the IaC
 // modules that manage an EventBridge API destination and its
 // connection.
-type AwsEventBridgeApiDestinationStackInput struct {
+type AwsEventBridgeApiDestinationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsEventBridgeApiDestination resource to deploy.
 	Target *AwsEventBridgeApiDestination `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsEventBridgeApiDestinationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgeApiDestinationStackInput) Reset() {
-	*x = AwsEventBridgeApiDestinationStackInput{}
+func (x *AwsEventBridgeApiDestinationIacInput) Reset() {
+	*x = AwsEventBridgeApiDestinationIacInput{}
 	mi := &file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgeApiDestinationStackInput) String() string {
+func (x *AwsEventBridgeApiDestinationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgeApiDestinationStackInput) ProtoMessage() {}
+func (*AwsEventBridgeApiDestinationIacInput) ProtoMessage() {}
 
-func (x *AwsEventBridgeApiDestinationStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgeApiDestinationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsEventBridgeApiDestinationStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgeApiDestinationStackInput.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgeApiDestinationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgeApiDestinationIacInput.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgeApiDestinationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgeApiDestinationStackInput) GetTarget() *AwsEventBridgeApiDestination {
+func (x *AwsEventBridgeApiDestinationIacInput) GetTarget() *AwsEventBridgeApiDestination {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsEventBridgeApiDestinationStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsEventBridgeApiDestinationIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto protorefl
 
 const file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awseventbridgeapidestination/v1alpha1/input.proto\x125dev.planton.aws.awseventbridgeapidestination.v1alpha1\x1a;catalog/aws/awseventbridgeapidestination/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe2\x01\n" +
-	"&AwsEventBridgeApiDestinationStackInput\x12k\n" +
+	"=catalog/aws/awseventbridgeapidestination/v1alpha1/input.proto\x125dev.planton.aws.awseventbridgeapidestination.v1alpha1\x1a;catalog/aws/awseventbridgeapidestination/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe0\x01\n" +
+	"$AwsEventBridgeApiDestinationIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	"9com.dev.planton.aws.awseventbridgeapidestination.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_rawDescG
 
 var file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_goTypes = []any{
-	(*AwsEventBridgeApiDestinationStackInput)(nil), // 0: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationStackInput
-	(*AwsEventBridgeApiDestination)(nil),           // 1: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestination
-	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsEventBridgeApiDestinationIacInput)(nil), // 0: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationIacInput
+	(*AwsEventBridgeApiDestination)(nil),         // 1: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestination
+	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awseventbridgeapidestination_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationStackInput.target:type_name -> dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestination
-	2, // 1: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationIacInput.target:type_name -> dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestination
+	2, // 1: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

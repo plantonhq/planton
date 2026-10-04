@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcostderivation/v1/spec.proto
+// source: finops/catalogkindcostderivation/v1/spec.proto
 
-package componentcostderivationv1
+package catalogkindcostderivationv1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -80,11 +80,11 @@ func (x Condition_Op) String() string {
 }
 
 func (Condition_Op) Descriptor() protoreflect.EnumDescriptor {
-	return file_finops_componentcostderivation_v1_spec_proto_enumTypes[0].Descriptor()
+	return file_finops_catalogkindcostderivation_v1_spec_proto_enumTypes[0].Descriptor()
 }
 
 func (Condition_Op) Type() protoreflect.EnumType {
-	return &file_finops_componentcostderivation_v1_spec_proto_enumTypes[0]
+	return &file_finops_catalogkindcostderivation_v1_spec_proto_enumTypes[0]
 }
 
 func (x Condition_Op) Number() protoreflect.EnumNumber {
@@ -93,26 +93,26 @@ func (x Condition_Op) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Condition_Op.Descriptor instead.
 func (Condition_Op) EnumDescriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{4, 0}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{4, 0}
 }
 
-// ComponentCostDerivationSpec holds one component's machine-executable
+// CatalogKindCostDerivationSpec holds one kind's machine-executable
 // derivation rules: how ANY manifest's spec values become metered
 // quantities and price choices. The estimator evaluates these rules
 // against a typed manifest and either produces an exact, source-cited
 // monthly estimate or refuses with the reason it cannot know the number
 // -- it never guesses. Authoring contract: every numeric literal is a
 // decimal STRING (never a YAML float), every rule defends itself in
-// basis prose, every sku_meter must be declared by the component's
-// cost.yaml, and every field path must resolve against the component's
+// basis prose, every sku_meter must be declared by the kind's
+// cost.yaml, and every field path must resolve against the kind's
 // served spec contract -- the derivation conformance gate enforces all
 // of it, and the estimate generator replays every catalog preset through
 // these rules, so a rule that disagrees with the hand-verified estimates
 // fails CI.
-type ComponentCostDerivationSpec struct {
+type CatalogKindCostDerivationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ISO 4217 currency every price this derivation selects must be
-	// pinned in ("USD"). One currency per component: a bill that mixes
+	// pinned in ("USD"). One currency per kind: a bill that mixes
 	// currencies cannot be summed honestly.
 	Currency string `protobuf:"bytes,1,opt,name=currency,proto3" json:"currency,omitempty"`
 	// The hours-in-a-month convention behind time-metered quantities. 730
@@ -155,21 +155,21 @@ type ComponentCostDerivationSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCostDerivationSpec) Reset() {
-	*x = ComponentCostDerivationSpec{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostDerivationSpec) Reset() {
+	*x = CatalogKindCostDerivationSpec{}
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCostDerivationSpec) String() string {
+func (x *CatalogKindCostDerivationSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCostDerivationSpec) ProtoMessage() {}
+func (*CatalogKindCostDerivationSpec) ProtoMessage() {}
 
-func (x *ComponentCostDerivationSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostDerivationSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -180,54 +180,54 @@ func (x *ComponentCostDerivationSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCostDerivationSpec.ProtoReflect.Descriptor instead.
-func (*ComponentCostDerivationSpec) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCostDerivationSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindCostDerivationSpec) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCostDerivationSpec) GetCurrency() string {
+func (x *CatalogKindCostDerivationSpec) GetCurrency() string {
 	if x != nil {
 		return x.Currency
 	}
 	return ""
 }
 
-func (x *ComponentCostDerivationSpec) GetHoursPerMonth() int32 {
+func (x *CatalogKindCostDerivationSpec) GetHoursPerMonth() int32 {
 	if x != nil {
 		return x.HoursPerMonth
 	}
 	return 0
 }
 
-func (x *ComponentCostDerivationSpec) GetRegion() *RegionBinding {
+func (x *CatalogKindCostDerivationSpec) GetRegion() *RegionBinding {
 	if x != nil {
 		return x.Region
 	}
 	return nil
 }
 
-func (x *ComponentCostDerivationSpec) GetRefusals() []*RefusalRule {
+func (x *CatalogKindCostDerivationSpec) GetRefusals() []*RefusalRule {
 	if x != nil {
 		return x.Refusals
 	}
 	return nil
 }
 
-func (x *ComponentCostDerivationSpec) GetLines() []*LineRule {
+func (x *CatalogKindCostDerivationSpec) GetLines() []*LineRule {
 	if x != nil {
 		return x.Lines
 	}
 	return nil
 }
 
-func (x *ComponentCostDerivationSpec) GetExclusions() []*ConditionalText {
+func (x *CatalogKindCostDerivationSpec) GetExclusions() []*ConditionalText {
 	if x != nil {
 		return x.Exclusions
 	}
 	return nil
 }
 
-func (x *ComponentCostDerivationSpec) GetNotes() []*ConditionalText {
+func (x *CatalogKindCostDerivationSpec) GetNotes() []*ConditionalText {
 	if x != nil {
 		return x.Notes
 	}
@@ -241,7 +241,7 @@ type RegionBinding struct {
 	// Spec-relative snake_case dotted path to the field carrying the
 	// provider region or location (e.g. "region", "location"). A value
 	// wrapped in angle brackets ("<aws-region>") is a catalog placeholder
-	// and reads as unset. Empty when the component's spec carries no
+	// and reads as unset. Empty when the kind's spec carries no
 	// region field.
 	FromField string `protobuf:"bytes,1,opt,name=from_field,json=fromField,proto3" json:"from_field,omitempty"`
 	// The region assumed when from_field is empty or unresolved, e.g.
@@ -261,7 +261,7 @@ type RegionBinding struct {
 
 func (x *RegionBinding) Reset() {
 	*x = RegionBinding{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -273,7 +273,7 @@ func (x *RegionBinding) String() string {
 func (*RegionBinding) ProtoMessage() {}
 
 func (x *RegionBinding) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -286,7 +286,7 @@ func (x *RegionBinding) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegionBinding.ProtoReflect.Descriptor instead.
 func (*RegionBinding) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RegionBinding) GetFromField() string {
@@ -315,7 +315,7 @@ func (x *RegionBinding) GetZoneToRegion() bool {
 type RefusalRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The conditions under which this refusal fires; ALL must hold. Must
-	// not be empty -- an unconditional refusal means the component should
+	// not be empty -- an unconditional refusal means the kind should
 	// simply ship no derivation.
 	When []*Condition `protobuf:"bytes,1,rep,name=when,proto3" json:"when,omitempty"`
 	// The honest sentence explaining what cannot be known and where the
@@ -328,7 +328,7 @@ type RefusalRule struct {
 
 func (x *RefusalRule) Reset() {
 	*x = RefusalRule{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -340,7 +340,7 @@ func (x *RefusalRule) String() string {
 func (*RefusalRule) ProtoMessage() {}
 
 func (x *RefusalRule) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -353,7 +353,7 @@ func (x *RefusalRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefusalRule.ProtoReflect.Descriptor instead.
 func (*RefusalRule) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *RefusalRule) GetWhen() []*Condition {
@@ -375,7 +375,7 @@ func (x *RefusalRule) GetReason() string {
 type LineRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The functionality being metered (FOCUS SkuMeter). Must match a
-	// baseline charge or cost driver sku_meter in the component's
+	// baseline charge or cost driver sku_meter in the kind's
 	// cost.yaml -- a derivation cannot price a meter the cost profile
 	// does not declare.
 	SkuMeter string `protobuf:"bytes,1,opt,name=sku_meter,json=skuMeter,proto3" json:"sku_meter,omitempty"`
@@ -395,7 +395,7 @@ type LineRule struct {
 	// price merge by adding quantities, so "floor nodes plus warm-pool
 	// nodes" is two rules, not an expression.
 	Quantity []*QuantityFactor `protobuf:"bytes,3,rep,name=quantity,proto3" json:"quantity,omitempty"`
-	// The pinned price valuing this line, from the component's provider
+	// The pinned price valuing this line, from the kind's provider
 	// price book. Whichever arm is used, the entry must be priced in the
 	// spec's currency and for the resolved region (or globally) -- the
 	// estimator refuses otherwise.
@@ -440,7 +440,7 @@ type LineRule struct {
 
 func (x *LineRule) Reset() {
 	*x = LineRule{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[3]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -452,7 +452,7 @@ func (x *LineRule) String() string {
 func (*LineRule) ProtoMessage() {}
 
 func (x *LineRule) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[3]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -465,7 +465,7 @@ func (x *LineRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LineRule.ProtoReflect.Descriptor instead.
 func (*LineRule) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *LineRule) GetSkuMeter() string {
@@ -572,7 +572,7 @@ type Condition struct {
 	// it starts at the element message, never back at the spec root.
 	FieldPath string `protobuf:"bytes,1,opt,name=field_path,json=fieldPath,proto3" json:"field_path,omitempty"`
 	// How the field is examined.
-	Op Condition_Op `protobuf:"varint,2,opt,name=op,proto3,enum=dev.planton.finops.componentcostderivation.v1.Condition_Op" json:"op,omitempty"`
+	Op Condition_Op `protobuf:"varint,2,opt,name=op,proto3,enum=dev.planton.finops.catalogkindcostderivation.v1.Condition_Op" json:"op,omitempty"`
 	// The literal compared against, for equals / not_equals /
 	// starts_with (e.g. "true", "SPOT", "0", "composer-3"). Empty for
 	// is_set / is_unset.
@@ -593,7 +593,7 @@ type Condition struct {
 
 func (x *Condition) Reset() {
 	*x = Condition{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[4]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -605,7 +605,7 @@ func (x *Condition) String() string {
 func (*Condition) ProtoMessage() {}
 
 func (x *Condition) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[4]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -618,7 +618,7 @@ func (x *Condition) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Condition.ProtoReflect.Descriptor instead.
 func (*Condition) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{4}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Condition) GetFieldPath() string {
@@ -666,7 +666,7 @@ type QuantityFactor struct {
 
 func (x *QuantityFactor) Reset() {
 	*x = QuantityFactor{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[5]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -678,7 +678,7 @@ func (x *QuantityFactor) String() string {
 func (*QuantityFactor) ProtoMessage() {}
 
 func (x *QuantityFactor) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[5]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -691,7 +691,7 @@ func (x *QuantityFactor) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuantityFactor.ProtoReflect.Descriptor instead.
 func (*QuantityFactor) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *QuantityFactor) GetFactor() isQuantityFactor_Factor {
@@ -815,7 +815,7 @@ type SubtractBaseline struct {
 
 func (x *SubtractBaseline) Reset() {
 	*x = SubtractBaseline{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[6]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -827,7 +827,7 @@ func (x *SubtractBaseline) String() string {
 func (*SubtractBaseline) ProtoMessage() {}
 
 func (x *SubtractBaseline) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[6]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -840,7 +840,7 @@ func (x *SubtractBaseline) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubtractBaseline.ProtoReflect.Descriptor instead.
 func (*SubtractBaseline) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SubtractBaseline) GetFieldPath() string {
@@ -877,7 +877,7 @@ type FieldValue struct {
 
 func (x *FieldValue) Reset() {
 	*x = FieldValue{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[7]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -889,7 +889,7 @@ func (x *FieldValue) String() string {
 func (*FieldValue) ProtoMessage() {}
 
 func (x *FieldValue) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[7]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -902,7 +902,7 @@ func (x *FieldValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FieldValue.ProtoReflect.Descriptor instead.
 func (*FieldValue) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *FieldValue) GetFieldPath() string {
@@ -925,7 +925,7 @@ func (x *FieldValue) GetDefaultWhenUnset() string {
 type PriceLookup struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The provider offering that bills (FOCUS ServiceName), exactly as
-	// the component's cost.yaml declares it. Narrows the candidate
+	// the kind's cost.yaml declares it. Narrows the candidate
 	// entries.
 	ServiceName string `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
 	// The unit the price must be quoted in (FOCUS PricingUnit).
@@ -941,7 +941,7 @@ type PriceLookup struct {
 
 func (x *PriceLookup) Reset() {
 	*x = PriceLookup{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[8]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -953,7 +953,7 @@ func (x *PriceLookup) String() string {
 func (*PriceLookup) ProtoMessage() {}
 
 func (x *PriceLookup) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[8]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -966,7 +966,7 @@ func (x *PriceLookup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PriceLookup.ProtoReflect.Descriptor instead.
 func (*PriceLookup) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{8}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *PriceLookup) GetServiceName() string {
@@ -1015,7 +1015,7 @@ type AttributeBinding struct {
 
 func (x *AttributeBinding) Reset() {
 	*x = AttributeBinding{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[9]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1027,7 +1027,7 @@ func (x *AttributeBinding) String() string {
 func (*AttributeBinding) ProtoMessage() {}
 
 func (x *AttributeBinding) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[9]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1040,7 +1040,7 @@ func (x *AttributeBinding) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttributeBinding.ProtoReflect.Descriptor instead.
 func (*AttributeBinding) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{9}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *AttributeBinding) GetKey() string {
@@ -1121,7 +1121,7 @@ type ConditionalText struct {
 
 func (x *ConditionalText) Reset() {
 	*x = ConditionalText{}
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[10]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1133,7 +1133,7 @@ func (x *ConditionalText) String() string {
 func (*ConditionalText) ProtoMessage() {}
 
 func (x *ConditionalText) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_spec_proto_msgTypes[10]
+	mi := &file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1146,7 +1146,7 @@ func (x *ConditionalText) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConditionalText.ProtoReflect.Descriptor instead.
 func (*ConditionalText) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP(), []int{10}
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ConditionalText) GetAppliesWhen() []*Condition {
@@ -1163,47 +1163,47 @@ func (x *ConditionalText) GetText() string {
 	return ""
 }
 
-var File_finops_componentcostderivation_v1_spec_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcostderivation_v1_spec_proto protoreflect.FileDescriptor
 
-const file_finops_componentcostderivation_v1_spec_proto_rawDesc = "" +
+const file_finops_catalogkindcostderivation_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	",finops/componentcostderivation/v1/spec.proto\x12-dev.planton.finops.componentcostderivation.v1\"\x94\x04\n" +
-	"\x1bComponentCostDerivationSpec\x12\x1a\n" +
+	".finops/catalogkindcostderivation/v1/spec.proto\x12/dev.planton.finops.catalogkindcostderivation.v1\"\xa0\x04\n" +
+	"\x1dCatalogKindCostDerivationSpec\x12\x1a\n" +
 	"\bcurrency\x18\x01 \x01(\tR\bcurrency\x12&\n" +
-	"\x0fhours_per_month\x18\x02 \x01(\x05R\rhoursPerMonth\x12T\n" +
-	"\x06region\x18\x03 \x01(\v2<.dev.planton.finops.componentcostderivation.v1.RegionBindingR\x06region\x12V\n" +
-	"\brefusals\x18\x04 \x03(\v2:.dev.planton.finops.componentcostderivation.v1.RefusalRuleR\brefusals\x12M\n" +
-	"\x05lines\x18\x05 \x03(\v27.dev.planton.finops.componentcostderivation.v1.LineRuleR\x05lines\x12^\n" +
+	"\x0fhours_per_month\x18\x02 \x01(\x05R\rhoursPerMonth\x12V\n" +
+	"\x06region\x18\x03 \x01(\v2>.dev.planton.finops.catalogkindcostderivation.v1.RegionBindingR\x06region\x12X\n" +
+	"\brefusals\x18\x04 \x03(\v2<.dev.planton.finops.catalogkindcostderivation.v1.RefusalRuleR\brefusals\x12O\n" +
+	"\x05lines\x18\x05 \x03(\v29.dev.planton.finops.catalogkindcostderivation.v1.LineRuleR\x05lines\x12`\n" +
 	"\n" +
-	"exclusions\x18\x06 \x03(\v2>.dev.planton.finops.componentcostderivation.v1.ConditionalTextR\n" +
-	"exclusions\x12T\n" +
-	"\x05notes\x18\a \x03(\v2>.dev.planton.finops.componentcostderivation.v1.ConditionalTextR\x05notes\"t\n" +
+	"exclusions\x18\x06 \x03(\v2@.dev.planton.finops.catalogkindcostderivation.v1.ConditionalTextR\n" +
+	"exclusions\x12V\n" +
+	"\x05notes\x18\a \x03(\v2@.dev.planton.finops.catalogkindcostderivation.v1.ConditionalTextR\x05notes\"t\n" +
 	"\rRegionBinding\x12\x1d\n" +
 	"\n" +
 	"from_field\x18\x01 \x01(\tR\tfromField\x12\x1e\n" +
 	"\n" +
 	"assumption\x18\x02 \x01(\tR\n" +
 	"assumption\x12$\n" +
-	"\x0ezone_to_region\x18\x03 \x01(\bR\fzoneToRegion\"s\n" +
-	"\vRefusalRule\x12L\n" +
-	"\x04when\x18\x01 \x03(\v28.dev.planton.finops.componentcostderivation.v1.ConditionR\x04when\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\"\x8d\x04\n" +
+	"\x0ezone_to_region\x18\x03 \x01(\bR\fzoneToRegion\"u\n" +
+	"\vRefusalRule\x12N\n" +
+	"\x04when\x18\x01 \x03(\v2:.dev.planton.finops.catalogkindcostderivation.v1.ConditionR\x04when\x12\x16\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\"\x95\x04\n" +
 	"\bLineRule\x12\x1b\n" +
-	"\tsku_meter\x18\x01 \x01(\tR\bskuMeter\x12[\n" +
-	"\fapplies_when\x18\x02 \x03(\v28.dev.planton.finops.componentcostderivation.v1.ConditionR\vappliesWhen\x12Y\n" +
-	"\bquantity\x18\x03 \x03(\v2=.dev.planton.finops.componentcostderivation.v1.QuantityFactorR\bquantity\x12\x1f\n" +
+	"\tsku_meter\x18\x01 \x01(\tR\bskuMeter\x12]\n" +
+	"\fapplies_when\x18\x02 \x03(\v2:.dev.planton.finops.catalogkindcostderivation.v1.ConditionR\vappliesWhen\x12[\n" +
+	"\bquantity\x18\x03 \x03(\v2?.dev.planton.finops.catalogkindcostderivation.v1.QuantityFactorR\bquantity\x12\x1f\n" +
 	"\n" +
-	"price_slug\x18\x04 \x01(\tH\x00R\tpriceSlug\x12_\n" +
-	"\fprice_lookup\x18\x05 \x01(\v2:.dev.planton.finops.componentcostderivation.v1.PriceLookupH\x00R\vpriceLookup\x12\x14\n" +
+	"price_slug\x18\x04 \x01(\tH\x00R\tpriceSlug\x12a\n" +
+	"\fprice_lookup\x18\x05 \x01(\v2<.dev.planton.finops.catalogkindcostderivation.v1.PriceLookupH\x00R\vpriceLookup\x12\x14\n" +
 	"\x05basis\x18\x06 \x01(\tR\x05basis\x12\x1f\n" +
 	"\vexpand_over\x18\a \x01(\tR\n" +
-	"expandOver\x12j\n" +
-	"\x14element_applies_when\x18\b \x03(\v28.dev.planton.finops.componentcostderivation.v1.ConditionR\x12elementAppliesWhenB\a\n" +
-	"\x05price\"\x94\x02\n" +
+	"expandOver\x12l\n" +
+	"\x14element_applies_when\x18\b \x03(\v2:.dev.planton.finops.catalogkindcostderivation.v1.ConditionR\x12elementAppliesWhenB\a\n" +
+	"\x05price\"\x96\x02\n" +
 	"\tCondition\x12\x1d\n" +
 	"\n" +
-	"field_path\x18\x01 \x01(\tR\tfieldPath\x12K\n" +
-	"\x02op\x18\x02 \x01(\x0e2;.dev.planton.finops.componentcostderivation.v1.Condition.OpR\x02op\x12\x14\n" +
+	"field_path\x18\x01 \x01(\tR\tfieldPath\x12M\n" +
+	"\x02op\x18\x02 \x01(\x0e2=.dev.planton.finops.catalogkindcostderivation.v1.Condition.OpR\x02op\x12\x14\n" +
 	"\x05value\x18\x03 \x01(\tR\x05value\x12$\n" +
 	"\x0eany_element_of\x18\x04 \x01(\tR\fanyElementOf\"_\n" +
 	"\x02Op\x12\x12\n" +
@@ -1215,14 +1215,14 @@ const file_finops_componentcostderivation_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"\x06is_set\x10\x03\x12\f\n" +
 	"\bis_unset\x10\x04\x12\x0f\n" +
-	"\vstarts_with\x10\x05\"\xcb\x02\n" +
+	"\vstarts_with\x10\x05\"\xcf\x02\n" +
 	"\x0eQuantityFactor\x12\x1c\n" +
-	"\bconstant\x18\x01 \x01(\tH\x00R\bconstant\x12\\\n" +
-	"\vfield_value\x18\x02 \x01(\v29.dev.planton.finops.componentcostderivation.v1.FieldValueH\x00R\n" +
+	"\bconstant\x18\x01 \x01(\tH\x00R\bconstant\x12^\n" +
+	"\vfield_value\x18\x02 \x01(\v2;.dev.planton.finops.catalogkindcostderivation.v1.FieldValueH\x00R\n" +
 	"fieldValue\x12\x1b\n" +
 	"\bcount_of\x18\x03 \x01(\tH\x00R\acountOf\x12&\n" +
-	"\x0ehours_in_month\x18\x04 \x01(\bH\x00R\fhoursInMonth\x12n\n" +
-	"\x11subtract_baseline\x18\x05 \x01(\v2?.dev.planton.finops.componentcostderivation.v1.SubtractBaselineH\x00R\x10subtractBaselineB\b\n" +
+	"\x0ehours_in_month\x18\x04 \x01(\bH\x00R\fhoursInMonth\x12p\n" +
+	"\x11subtract_baseline\x18\x05 \x01(\v2A.dev.planton.finops.catalogkindcostderivation.v1.SubtractBaselineH\x00R\x10subtractBaselineB\b\n" +
 	"\x06factor\"M\n" +
 	"\x10SubtractBaseline\x12\x1d\n" +
 	"\n" +
@@ -1232,12 +1232,12 @@ const file_finops_componentcostderivation_v1_spec_proto_rawDesc = "" +
 	"FieldValue\x12\x1d\n" +
 	"\n" +
 	"field_path\x18\x01 \x01(\tR\tfieldPath\x12,\n" +
-	"\x12default_when_unset\x18\x02 \x01(\tR\x10defaultWhenUnset\"\xb4\x01\n" +
+	"\x12default_when_unset\x18\x02 \x01(\tR\x10defaultWhenUnset\"\xb6\x01\n" +
 	"\vPriceLookup\x12!\n" +
 	"\fservice_name\x18\x01 \x01(\tR\vserviceName\x12!\n" +
-	"\fpricing_unit\x18\x02 \x01(\tR\vpricingUnit\x12_\n" +
+	"\fpricing_unit\x18\x02 \x01(\tR\vpricingUnit\x12a\n" +
 	"\n" +
-	"attributes\x18\x03 \x03(\v2?.dev.planton.finops.componentcostderivation.v1.AttributeBindingR\n" +
+	"attributes\x18\x03 \x03(\v2A.dev.planton.finops.catalogkindcostderivation.v1.AttributeBindingR\n" +
 	"attributes\"\xa0\x01\n" +
 	"\x10AttributeBinding\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x1c\n" +
@@ -1245,56 +1245,56 @@ const file_finops_componentcostderivation_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"from_field\x18\x03 \x01(\tH\x00R\tfromField\x122\n" +
 	"\x15assumption_when_unset\x18\x04 \x01(\tR\x13assumptionWhenUnsetB\a\n" +
-	"\x05value\"\x82\x01\n" +
-	"\x0fConditionalText\x12[\n" +
-	"\fapplies_when\x18\x01 \x03(\v28.dev.planton.finops.componentcostderivation.v1.ConditionR\vappliesWhen\x12\x12\n" +
-	"\x04text\x18\x02 \x01(\tR\x04textB\xf1\x02\n" +
-	"1com.dev.planton.finops.componentcostderivation.v1B\tSpecProtoP\x01ZXgithub.com/plantonhq/planton/finops/componentcostderivation/v1;componentcostderivationv1\xa2\x02\x04DPFC\xaa\x02-Dev.Planton.Finops.Componentcostderivation.V1\xca\x02-Dev\\Planton\\Finops\\Componentcostderivation\\V1\xe2\x029Dev\\Planton\\Finops\\Componentcostderivation\\V1\\GPBMetadata\xea\x021Dev::Planton::Finops::Componentcostderivation::V1b\x06proto3"
+	"\x05value\"\x84\x01\n" +
+	"\x0fConditionalText\x12]\n" +
+	"\fapplies_when\x18\x01 \x03(\v2:.dev.planton.finops.catalogkindcostderivation.v1.ConditionR\vappliesWhen\x12\x12\n" +
+	"\x04text\x18\x02 \x01(\tR\x04textB\xff\x02\n" +
+	"3com.dev.planton.finops.catalogkindcostderivation.v1B\tSpecProtoP\x01Z\\github.com/plantonhq/planton/finops/catalogkindcostderivation/v1;catalogkindcostderivationv1\xa2\x02\x04DPFC\xaa\x02/Dev.Planton.Finops.Catalogkindcostderivation.V1\xca\x02/Dev\\Planton\\Finops\\Catalogkindcostderivation\\V1\xe2\x02;Dev\\Planton\\Finops\\Catalogkindcostderivation\\V1\\GPBMetadata\xea\x023Dev::Planton::Finops::Catalogkindcostderivation::V1b\x06proto3"
 
 var (
-	file_finops_componentcostderivation_v1_spec_proto_rawDescOnce sync.Once
-	file_finops_componentcostderivation_v1_spec_proto_rawDescData []byte
+	file_finops_catalogkindcostderivation_v1_spec_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcostderivation_v1_spec_proto_rawDescData []byte
 )
 
-func file_finops_componentcostderivation_v1_spec_proto_rawDescGZIP() []byte {
-	file_finops_componentcostderivation_v1_spec_proto_rawDescOnce.Do(func() {
-		file_finops_componentcostderivation_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcostderivation_v1_spec_proto_rawDesc), len(file_finops_componentcostderivation_v1_spec_proto_rawDesc)))
+func file_finops_catalogkindcostderivation_v1_spec_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcostderivation_v1_spec_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcostderivation_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostderivation_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostderivation_v1_spec_proto_rawDesc)))
 	})
-	return file_finops_componentcostderivation_v1_spec_proto_rawDescData
+	return file_finops_catalogkindcostderivation_v1_spec_proto_rawDescData
 }
 
-var file_finops_componentcostderivation_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_finops_componentcostderivation_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
-var file_finops_componentcostderivation_v1_spec_proto_goTypes = []any{
-	(Condition_Op)(0),                   // 0: dev.planton.finops.componentcostderivation.v1.Condition.Op
-	(*ComponentCostDerivationSpec)(nil), // 1: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec
-	(*RegionBinding)(nil),               // 2: dev.planton.finops.componentcostderivation.v1.RegionBinding
-	(*RefusalRule)(nil),                 // 3: dev.planton.finops.componentcostderivation.v1.RefusalRule
-	(*LineRule)(nil),                    // 4: dev.planton.finops.componentcostderivation.v1.LineRule
-	(*Condition)(nil),                   // 5: dev.planton.finops.componentcostderivation.v1.Condition
-	(*QuantityFactor)(nil),              // 6: dev.planton.finops.componentcostderivation.v1.QuantityFactor
-	(*SubtractBaseline)(nil),            // 7: dev.planton.finops.componentcostderivation.v1.SubtractBaseline
-	(*FieldValue)(nil),                  // 8: dev.planton.finops.componentcostderivation.v1.FieldValue
-	(*PriceLookup)(nil),                 // 9: dev.planton.finops.componentcostderivation.v1.PriceLookup
-	(*AttributeBinding)(nil),            // 10: dev.planton.finops.componentcostderivation.v1.AttributeBinding
-	(*ConditionalText)(nil),             // 11: dev.planton.finops.componentcostderivation.v1.ConditionalText
+var file_finops_catalogkindcostderivation_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_finops_catalogkindcostderivation_v1_spec_proto_goTypes = []any{
+	(Condition_Op)(0),                     // 0: dev.planton.finops.catalogkindcostderivation.v1.Condition.Op
+	(*CatalogKindCostDerivationSpec)(nil), // 1: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec
+	(*RegionBinding)(nil),                 // 2: dev.planton.finops.catalogkindcostderivation.v1.RegionBinding
+	(*RefusalRule)(nil),                   // 3: dev.planton.finops.catalogkindcostderivation.v1.RefusalRule
+	(*LineRule)(nil),                      // 4: dev.planton.finops.catalogkindcostderivation.v1.LineRule
+	(*Condition)(nil),                     // 5: dev.planton.finops.catalogkindcostderivation.v1.Condition
+	(*QuantityFactor)(nil),                // 6: dev.planton.finops.catalogkindcostderivation.v1.QuantityFactor
+	(*SubtractBaseline)(nil),              // 7: dev.planton.finops.catalogkindcostderivation.v1.SubtractBaseline
+	(*FieldValue)(nil),                    // 8: dev.planton.finops.catalogkindcostderivation.v1.FieldValue
+	(*PriceLookup)(nil),                   // 9: dev.planton.finops.catalogkindcostderivation.v1.PriceLookup
+	(*AttributeBinding)(nil),              // 10: dev.planton.finops.catalogkindcostderivation.v1.AttributeBinding
+	(*ConditionalText)(nil),               // 11: dev.planton.finops.catalogkindcostderivation.v1.ConditionalText
 }
-var file_finops_componentcostderivation_v1_spec_proto_depIdxs = []int32{
-	2,  // 0: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec.region:type_name -> dev.planton.finops.componentcostderivation.v1.RegionBinding
-	3,  // 1: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec.refusals:type_name -> dev.planton.finops.componentcostderivation.v1.RefusalRule
-	4,  // 2: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec.lines:type_name -> dev.planton.finops.componentcostderivation.v1.LineRule
-	11, // 3: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec.exclusions:type_name -> dev.planton.finops.componentcostderivation.v1.ConditionalText
-	11, // 4: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec.notes:type_name -> dev.planton.finops.componentcostderivation.v1.ConditionalText
-	5,  // 5: dev.planton.finops.componentcostderivation.v1.RefusalRule.when:type_name -> dev.planton.finops.componentcostderivation.v1.Condition
-	5,  // 6: dev.planton.finops.componentcostderivation.v1.LineRule.applies_when:type_name -> dev.planton.finops.componentcostderivation.v1.Condition
-	6,  // 7: dev.planton.finops.componentcostderivation.v1.LineRule.quantity:type_name -> dev.planton.finops.componentcostderivation.v1.QuantityFactor
-	9,  // 8: dev.planton.finops.componentcostderivation.v1.LineRule.price_lookup:type_name -> dev.planton.finops.componentcostderivation.v1.PriceLookup
-	5,  // 9: dev.planton.finops.componentcostderivation.v1.LineRule.element_applies_when:type_name -> dev.planton.finops.componentcostderivation.v1.Condition
-	0,  // 10: dev.planton.finops.componentcostderivation.v1.Condition.op:type_name -> dev.planton.finops.componentcostderivation.v1.Condition.Op
-	8,  // 11: dev.planton.finops.componentcostderivation.v1.QuantityFactor.field_value:type_name -> dev.planton.finops.componentcostderivation.v1.FieldValue
-	7,  // 12: dev.planton.finops.componentcostderivation.v1.QuantityFactor.subtract_baseline:type_name -> dev.planton.finops.componentcostderivation.v1.SubtractBaseline
-	10, // 13: dev.planton.finops.componentcostderivation.v1.PriceLookup.attributes:type_name -> dev.planton.finops.componentcostderivation.v1.AttributeBinding
-	5,  // 14: dev.planton.finops.componentcostderivation.v1.ConditionalText.applies_when:type_name -> dev.planton.finops.componentcostderivation.v1.Condition
+var file_finops_catalogkindcostderivation_v1_spec_proto_depIdxs = []int32{
+	2,  // 0: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec.region:type_name -> dev.planton.finops.catalogkindcostderivation.v1.RegionBinding
+	3,  // 1: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec.refusals:type_name -> dev.planton.finops.catalogkindcostderivation.v1.RefusalRule
+	4,  // 2: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec.lines:type_name -> dev.planton.finops.catalogkindcostderivation.v1.LineRule
+	11, // 3: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec.exclusions:type_name -> dev.planton.finops.catalogkindcostderivation.v1.ConditionalText
+	11, // 4: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec.notes:type_name -> dev.planton.finops.catalogkindcostderivation.v1.ConditionalText
+	5,  // 5: dev.planton.finops.catalogkindcostderivation.v1.RefusalRule.when:type_name -> dev.planton.finops.catalogkindcostderivation.v1.Condition
+	5,  // 6: dev.planton.finops.catalogkindcostderivation.v1.LineRule.applies_when:type_name -> dev.planton.finops.catalogkindcostderivation.v1.Condition
+	6,  // 7: dev.planton.finops.catalogkindcostderivation.v1.LineRule.quantity:type_name -> dev.planton.finops.catalogkindcostderivation.v1.QuantityFactor
+	9,  // 8: dev.planton.finops.catalogkindcostderivation.v1.LineRule.price_lookup:type_name -> dev.planton.finops.catalogkindcostderivation.v1.PriceLookup
+	5,  // 9: dev.planton.finops.catalogkindcostderivation.v1.LineRule.element_applies_when:type_name -> dev.planton.finops.catalogkindcostderivation.v1.Condition
+	0,  // 10: dev.planton.finops.catalogkindcostderivation.v1.Condition.op:type_name -> dev.planton.finops.catalogkindcostderivation.v1.Condition.Op
+	8,  // 11: dev.planton.finops.catalogkindcostderivation.v1.QuantityFactor.field_value:type_name -> dev.planton.finops.catalogkindcostderivation.v1.FieldValue
+	7,  // 12: dev.planton.finops.catalogkindcostderivation.v1.QuantityFactor.subtract_baseline:type_name -> dev.planton.finops.catalogkindcostderivation.v1.SubtractBaseline
+	10, // 13: dev.planton.finops.catalogkindcostderivation.v1.PriceLookup.attributes:type_name -> dev.planton.finops.catalogkindcostderivation.v1.AttributeBinding
+	5,  // 14: dev.planton.finops.catalogkindcostderivation.v1.ConditionalText.applies_when:type_name -> dev.planton.finops.catalogkindcostderivation.v1.Condition
 	15, // [15:15] is the sub-list for method output_type
 	15, // [15:15] is the sub-list for method input_type
 	15, // [15:15] is the sub-list for extension type_name
@@ -1302,23 +1302,23 @@ var file_finops_componentcostderivation_v1_spec_proto_depIdxs = []int32{
 	0,  // [0:15] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcostderivation_v1_spec_proto_init() }
-func file_finops_componentcostderivation_v1_spec_proto_init() {
-	if File_finops_componentcostderivation_v1_spec_proto != nil {
+func init() { file_finops_catalogkindcostderivation_v1_spec_proto_init() }
+func file_finops_catalogkindcostderivation_v1_spec_proto_init() {
+	if File_finops_catalogkindcostderivation_v1_spec_proto != nil {
 		return
 	}
-	file_finops_componentcostderivation_v1_spec_proto_msgTypes[3].OneofWrappers = []any{
+	file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[3].OneofWrappers = []any{
 		(*LineRule_PriceSlug)(nil),
 		(*LineRule_PriceLookup)(nil),
 	}
-	file_finops_componentcostderivation_v1_spec_proto_msgTypes[5].OneofWrappers = []any{
+	file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[5].OneofWrappers = []any{
 		(*QuantityFactor_Constant)(nil),
 		(*QuantityFactor_FieldValue)(nil),
 		(*QuantityFactor_CountOf)(nil),
 		(*QuantityFactor_HoursInMonth)(nil),
 		(*QuantityFactor_SubtractBaseline)(nil),
 	}
-	file_finops_componentcostderivation_v1_spec_proto_msgTypes[9].OneofWrappers = []any{
+	file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes[9].OneofWrappers = []any{
 		(*AttributeBinding_Constant)(nil),
 		(*AttributeBinding_FromField)(nil),
 	}
@@ -1326,18 +1326,18 @@ func file_finops_componentcostderivation_v1_spec_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcostderivation_v1_spec_proto_rawDesc), len(file_finops_componentcostderivation_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostderivation_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostderivation_v1_spec_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcostderivation_v1_spec_proto_goTypes,
-		DependencyIndexes: file_finops_componentcostderivation_v1_spec_proto_depIdxs,
-		EnumInfos:         file_finops_componentcostderivation_v1_spec_proto_enumTypes,
-		MessageInfos:      file_finops_componentcostderivation_v1_spec_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcostderivation_v1_spec_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcostderivation_v1_spec_proto_depIdxs,
+		EnumInfos:         file_finops_catalogkindcostderivation_v1_spec_proto_enumTypes,
+		MessageInfos:      file_finops_catalogkindcostderivation_v1_spec_proto_msgTypes,
 	}.Build()
-	File_finops_componentcostderivation_v1_spec_proto = out.File
-	file_finops_componentcostderivation_v1_spec_proto_goTypes = nil
-	file_finops_componentcostderivation_v1_spec_proto_depIdxs = nil
+	File_finops_catalogkindcostderivation_v1_spec_proto = out.File
+	file_finops_catalogkindcostderivation_v1_spec_proto_goTypes = nil
+	file_finops_catalogkindcostderivation_v1_spec_proto_depIdxs = nil
 }

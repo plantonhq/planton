@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsbedrockcustommodel
 spec:
@@ -31,8 +31,8 @@ spec:
       total_list_cost: "1.9500"
       exclusions:
         - the ONE-TIME training charge is tokens-processed x epochCount x the base model's per-1K-token rate ($0.0004 Titan Text Lite, $0.008 Titan Text Express in us-east-1) -- the dataset's token count lives in training_data_s3_uri's object, invisible to this manifest
-        - serving the custom model bills elsewhere -- Provisioned Throughput (hourly per model unit, its own component) or on-demand custom-model deployment where supported
-        - the training, validation, and output S3 locations bill storage and requests on their own bucket components
+        - serving the custom model bills elsewhere -- Provisioned Throughput (hourly per model unit, its own kind) or on-demand custom-model deployment where supported
+        - the training, validation, and output S3 locations bill storage and requests on their own bucket kinds
       notes: The storage meter starts when the asynchronous job COMPLETES (minutes to many hours after apply), not at apply time -- the estimate treats the model as existing for the full month, the steady-state posture. Every spec field is create-time-immutable -- any change re-runs the customization job (a fresh one-time training bill) and replaces the stored model; the monthly commitment stays one model either way.
     - preset: 02-fine-tune-private-vpc
       region_assumption: us-east-1
@@ -51,8 +51,8 @@ spec:
       total_list_cost: "1.9500"
       exclusions:
         - the ONE-TIME training charge is tokens-processed x epochCount x the base model's per-1K-token rate ($0.0004 Titan Text Lite, $0.008 Titan Text Express in us-east-1) -- the dataset's token count lives in training_data_s3_uri's object, invisible to this manifest
-        - serving the custom model bills elsewhere -- Provisioned Throughput (hourly per model unit, its own component) or on-demand custom-model deployment where supported
-        - the training, validation, and output S3 locations bill storage and requests on their own bucket components
-        - the customer-managed model-encryption key bills its monthly fee and per-request charges on the referenced AwsKmsKey component
-        - VPC-mode jobs reach S3 through the VPC's own plumbing -- any interface/gateway endpoints or NAT the route needs bill on those components
+        - serving the custom model bills elsewhere -- Provisioned Throughput (hourly per model unit, its own kind) or on-demand custom-model deployment where supported
+        - the training, validation, and output S3 locations bill storage and requests on their own bucket kinds
+        - the customer-managed model-encryption key bills its monthly fee and per-request charges on the referenced AwsKmsKey kind
+        - VPC-mode jobs reach S3 through the VPC's own plumbing -- any interface/gateway endpoints or NAT the route needs bill on those kinds
       notes: The storage meter starts when the asynchronous job COMPLETES (minutes to many hours after apply), not at apply time -- the estimate treats the model as existing for the full month, the steady-state posture. Every spec field is create-time-immutable -- any change re-runs the customization job (a fresh one-time training bill) and replaces the stored model; the monthly commitment stays one model either way.

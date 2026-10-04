@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDatabaseDbStackOutputs captures the key outputs after
+// DigitalOceanDatabaseDbOutputs captures the key outputs after
 // provisioning a logical database in a DigitalOcean database cluster. The
 // DigitalOcean API has no standalone database id -- the (cluster, name)
 // pair IS the identity -- so both halves are exported for consumers and
 // verification tooling.
-type DigitalOceanDatabaseDbStackOutputs struct {
+type DigitalOceanDatabaseDbOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the database cluster the logical database lives in.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -36,20 +36,20 @@ type DigitalOceanDatabaseDbStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseDbStackOutputs) Reset() {
-	*x = DigitalOceanDatabaseDbStackOutputs{}
+func (x *DigitalOceanDatabaseDbOutputs) Reset() {
+	*x = DigitalOceanDatabaseDbOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseDbStackOutputs) String() string {
+func (x *DigitalOceanDatabaseDbOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseDbStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDatabaseDbOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseDbStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseDbOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *DigitalOceanDatabaseDbStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseDbStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseDbStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseDbOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseDbOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseDbStackOutputs) GetClusterId() string {
+func (x *DigitalOceanDatabaseDbOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseDbStackOutputs) GetDatabaseName() string {
+func (x *DigitalOceanDatabaseDbOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
@@ -84,8 +84,8 @@ var File_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto prot
 
 const file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/digitalocean/digitaloceandatabasedb/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceandatabasedb.v1alpha1\"h\n" +
-	"\"DigitalOceanDatabaseDbStackOutputs\x12\x1d\n" +
+	"Bcatalog/digitalocean/digitaloceandatabasedb/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceandatabasedb.v1alpha1\"c\n" +
+	"\x1dDigitalOceanDatabaseDbOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12#\n" +
 	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseNameB\xc3\x03\n" +
@@ -105,7 +105,7 @@ func file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_raw
 
 var file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDatabaseDbStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasedb.v1alpha1.DigitalOceanDatabaseDbStackOutputs
+	(*DigitalOceanDatabaseDbOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasedb.v1alpha1.DigitalOceanDatabaseDbOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasedb_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

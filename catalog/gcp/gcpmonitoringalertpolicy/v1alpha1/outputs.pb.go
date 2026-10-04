@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Monitoring alert policy.
-type GcpMonitoringAlertPolicyStackOutputs struct {
+type GcpMonitoringAlertPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-assigned resource name of the policy.
 	// Format: projects/{project}/alertPolicies/{policy_id}
@@ -33,20 +33,20 @@ type GcpMonitoringAlertPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpMonitoringAlertPolicyStackOutputs) Reset() {
-	*x = GcpMonitoringAlertPolicyStackOutputs{}
+func (x *GcpMonitoringAlertPolicyOutputs) Reset() {
+	*x = GcpMonitoringAlertPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMonitoringAlertPolicyStackOutputs) String() string {
+func (x *GcpMonitoringAlertPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMonitoringAlertPolicyStackOutputs) ProtoMessage() {}
+func (*GcpMonitoringAlertPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpMonitoringAlertPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpMonitoringAlertPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *GcpMonitoringAlertPolicyStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMonitoringAlertPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpMonitoringAlertPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMonitoringAlertPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpMonitoringAlertPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMonitoringAlertPolicyStackOutputs) GetPolicyName() string {
+func (x *GcpMonitoringAlertPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
@@ -74,8 +74,8 @@ var File_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpmonitoringalertpolicy/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1\"G\n" +
-	"$GcpMonitoringAlertPolicyStackOutputs\x12\x1f\n" +
+	";catalog/gcp/gcpmonitoringalertpolicy/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1\"B\n" +
+	"\x1fGcpMonitoringAlertPolicyOutputs\x12\x1f\n" +
 	"\vpolicy_name\x18\x01 \x01(\tR\n" +
 	"policyNameB\x9b\x03\n" +
 	"5com.dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpmonitoringalertpolicy/v1alpha1;gcpmonitoringalertpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpmonitoringalertpolicy.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpmonitoringalertpolicy\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpmonitoringalertpolicy\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpmonitoringalertpolicy::V1alpha1b\x06proto3"
@@ -94,7 +94,7 @@ func file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpMonitoringAlertPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1.GcpMonitoringAlertPolicyStackOutputs
+	(*GcpMonitoringAlertPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1.GcpMonitoringAlertPolicyOutputs
 }
 var file_catalog_gcp_gcpmonitoringalertpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

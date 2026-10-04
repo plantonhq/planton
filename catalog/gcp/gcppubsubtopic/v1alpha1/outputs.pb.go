@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Pub/Sub topic.
-type GcpPubSubTopicStackOutputs struct {
+type GcpPubSubTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified topic ID.
 	// Format: projects/{project}/topics/{name}
@@ -35,20 +35,20 @@ type GcpPubSubTopicStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPubSubTopicStackOutputs) Reset() {
-	*x = GcpPubSubTopicStackOutputs{}
+func (x *GcpPubSubTopicOutputs) Reset() {
+	*x = GcpPubSubTopicOutputs{}
 	mi := &file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPubSubTopicStackOutputs) String() string {
+func (x *GcpPubSubTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPubSubTopicStackOutputs) ProtoMessage() {}
+func (*GcpPubSubTopicOutputs) ProtoMessage() {}
 
-func (x *GcpPubSubTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPubSubTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpPubSubTopicStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPubSubTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPubSubTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPubSubTopicOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPubSubTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPubSubTopicStackOutputs) GetTopicId() string {
+func (x *GcpPubSubTopicOutputs) GetTopicId() string {
 	if x != nil {
 		return x.TopicId
 	}
 	return ""
 }
 
-func (x *GcpPubSubTopicStackOutputs) GetTopicName() string {
+func (x *GcpPubSubTopicOutputs) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcppubsubtopic/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcppubsubtopic.v1alpha1\"V\n" +
-	"\x1aGcpPubSubTopicStackOutputs\x12\x19\n" +
+	"1catalog/gcp/gcppubsubtopic/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcppubsubtopic.v1alpha1\"Q\n" +
+	"\x15GcpPubSubTopicOutputs\x12\x19\n" +
 	"\btopic_id\x18\x01 \x01(\tR\atopicId\x12\x1d\n" +
 	"\n" +
 	"topic_name\x18\x02 \x01(\tR\ttopicNameB\xd5\x02\n" +
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPubSubTopicStackOutputs)(nil), // 0: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStackOutputs
+	(*GcpPubSubTopicOutputs)(nil), // 0: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicOutputs
 }
 var file_catalog_gcp_gcppubsubtopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

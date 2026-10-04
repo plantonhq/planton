@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureRedisCacheAccessPolicyAssignmentStackOutputs** captures the
+// **AzureRedisCacheAccessPolicyAssignmentOutputs** captures the
 // outputs of granting a Redis data-plane access policy to an identity.
-type AzureRedisCacheAccessPolicyAssignmentStackOutputs struct {
+type AzureRedisCacheAccessPolicyAssignmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the access policy assignment.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redis/{cache}/accessPolicyAssignments/{name}
@@ -34,20 +34,20 @@ type AzureRedisCacheAccessPolicyAssignmentStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *AzureRedisCacheAccessPolicyAssignmentStackOutputs) Reset() {
-	*x = AzureRedisCacheAccessPolicyAssignmentStackOutputs{}
+func (x *AzureRedisCacheAccessPolicyAssignmentOutputs) Reset() {
+	*x = AzureRedisCacheAccessPolicyAssignmentOutputs{}
 	mi := &file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRedisCacheAccessPolicyAssignmentStackOutputs) String() string {
+func (x *AzureRedisCacheAccessPolicyAssignmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRedisCacheAccessPolicyAssignmentStackOutputs) ProtoMessage() {}
+func (*AzureRedisCacheAccessPolicyAssignmentOutputs) ProtoMessage() {}
 
-func (x *AzureRedisCacheAccessPolicyAssignmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureRedisCacheAccessPolicyAssignmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureRedisCacheAccessPolicyAssignmentStackOutputs) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRedisCacheAccessPolicyAssignmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureRedisCacheAccessPolicyAssignmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRedisCacheAccessPolicyAssignmentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureRedisCacheAccessPolicyAssignmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRedisCacheAccessPolicyAssignmentStackOutputs) GetAccessPolicyAssignmentId() string {
+func (x *AzureRedisCacheAccessPolicyAssignmentOutputs) GetAccessPolicyAssignmentId() string {
 	if x != nil {
 		return x.AccessPolicyAssignmentId
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheAccessPolicyAssignmentStackOutputs) GetAccessPolicyAssignmentName() string {
+func (x *AzureRedisCacheAccessPolicyAssignmentOutputs) GetAccessPolicyAssignmentName() string {
 	if x != nil {
 		return x.AccessPolicyAssignmentName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_pr
 
 const file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/azure/azurerediscacheaccesspolicyassignment/v1alpha1/outputs.proto\x12@dev.planton.azure.azurerediscacheaccesspolicyassignment.v1alpha1\"\xb5\x01\n" +
-	"1AzureRedisCacheAccessPolicyAssignmentStackOutputs\x12=\n" +
+	"Jcatalog/azure/azurerediscacheaccesspolicyassignment/v1alpha1/outputs.proto\x12@dev.planton.azure.azurerediscacheaccesspolicyassignment.v1alpha1\"\xb0\x01\n" +
+	",AzureRedisCacheAccessPolicyAssignmentOutputs\x12=\n" +
 	"\x1baccess_policy_assignment_id\x18\x01 \x01(\tR\x18accessPolicyAssignmentId\x12A\n" +
 	"\x1daccess_policy_assignment_name\x18\x02 \x01(\tR\x1aaccessPolicyAssignmentNameB\x83\x04\n" +
 	"Dcom.dev.planton.azure.azurerediscacheaccesspolicyassignment.v1alpha1B\fOutputsProtoP\x01Z\x87\x01github.com/plantonhq/planton/catalog/azure/azurerediscacheaccesspolicyassignment/v1alpha1;azurerediscacheaccesspolicyassignmentv1alpha1\xa2\x02\x04DPAA\xaa\x02@Dev.Planton.Azure.Azurerediscacheaccesspolicyassignment.V1alpha1\xca\x02@Dev\\Planton\\Azure\\Azurerediscacheaccesspolicyassignment\\V1alpha1\xe2\x02LDev\\Planton\\Azure\\Azurerediscacheaccesspolicyassignment\\V1alpha1\\GPBMetadata\xea\x02DDev::Planton::Azure::Azurerediscacheaccesspolicyassignment::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_p
 
 var file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureRedisCacheAccessPolicyAssignmentStackOutputs)(nil), // 0: dev.planton.azure.azurerediscacheaccesspolicyassignment.v1alpha1.AzureRedisCacheAccessPolicyAssignmentStackOutputs
+	(*AzureRedisCacheAccessPolicyAssignmentOutputs)(nil), // 0: dev.planton.azure.azurerediscacheaccesspolicyassignment.v1alpha1.AzureRedisCacheAccessPolicyAssignmentOutputs
 }
 var file_catalog_azure_azurerediscacheaccesspolicyassignment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

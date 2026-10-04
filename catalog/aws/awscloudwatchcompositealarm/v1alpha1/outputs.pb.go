@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchCompositeAlarmStackOutputs captures observable identifiers
+// AwsCloudwatchCompositeAlarmOutputs captures observable identifiers
 // from a provisioned CloudWatch composite alarm.
 //
 // The primary output is `alarm_arn`. The `alarm_name` is the join key other
 // alarms use to address this composite — a parent composite alarm's
 // `alarm_rule` references it by name, as does an actions_suppressor.
-type AwsCloudwatchCompositeAlarmStackOutputs struct {
+type AwsCloudwatchCompositeAlarmOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the composite alarm.
 	AlarmArn string `protobuf:"bytes,1,opt,name=alarm_arn,json=alarmArn,proto3" json:"alarm_arn,omitempty"`
@@ -39,20 +39,20 @@ type AwsCloudwatchCompositeAlarmStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchCompositeAlarmStackOutputs) Reset() {
-	*x = AwsCloudwatchCompositeAlarmStackOutputs{}
+func (x *AwsCloudwatchCompositeAlarmOutputs) Reset() {
+	*x = AwsCloudwatchCompositeAlarmOutputs{}
 	mi := &file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchCompositeAlarmStackOutputs) String() string {
+func (x *AwsCloudwatchCompositeAlarmOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchCompositeAlarmStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchCompositeAlarmOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchCompositeAlarmStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchCompositeAlarmOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *AwsCloudwatchCompositeAlarmStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchCompositeAlarmStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchCompositeAlarmStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchCompositeAlarmOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchCompositeAlarmOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchCompositeAlarmStackOutputs) GetAlarmArn() string {
+func (x *AwsCloudwatchCompositeAlarmOutputs) GetAlarmArn() string {
 	if x != nil {
 		return x.AlarmArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchCompositeAlarmStackOutputs) GetAlarmName() string {
+func (x *AwsCloudwatchCompositeAlarmOutputs) GetAlarmName() string {
 	if x != nil {
 		return x.AlarmName
 	}
@@ -87,8 +87,8 @@ var File_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awscloudwatchcompositealarm/v1alpha1/outputs.proto\x124dev.planton.aws.awscloudwatchcompositealarm.v1alpha1\"e\n" +
-	"'AwsCloudwatchCompositeAlarmStackOutputs\x12\x1b\n" +
+	">catalog/aws/awscloudwatchcompositealarm/v1alpha1/outputs.proto\x124dev.planton.aws.awscloudwatchcompositealarm.v1alpha1\"`\n" +
+	"\"AwsCloudwatchCompositeAlarmOutputs\x12\x1b\n" +
 	"\talarm_arn\x18\x01 \x01(\tR\balarmArn\x12\x1d\n" +
 	"\n" +
 	"alarm_name\x18\x02 \x01(\tR\talarmNameB\xb0\x03\n" +
@@ -108,7 +108,7 @@ func file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchCompositeAlarmStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStackOutputs
+	(*AwsCloudwatchCompositeAlarmOutputs)(nil), // 0: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmOutputs
 }
 var file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -27,7 +27,7 @@ type AwsConfigRecorder struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsConfigRecorderSpec        `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsConfigRecorderStatus      `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsConfigRecorder) GetKind() string {
 	return ""
 }
 
-func (x *AwsConfigRecorder) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsConfigRecorder) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsConfigRecorder) GetStatus() *AwsConfigRecorderStatus {
 }
 
 type AwsConfigRecorderStatus struct {
-	state         protoimpl.MessageState         `protogen:"open.v1"`
-	Outputs       *AwsConfigRecorderStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState    `protogen:"open.v1"`
+	Outputs       *AwsConfigRecorderOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsConfigRecorderStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigrecorder_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsConfigRecorderStatus) GetOutputs() *AwsConfigRecorderStackOutputs {
+func (x *AwsConfigRecorderStatus) GetOutputs() *AwsConfigRecorderOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsconfigrecorder_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsConfigRecorderR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatusR\x06status\"~\n" +
-	"\x17AwsConfigRecorderStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatusR\x06status\"y\n" +
+	"\x17AwsConfigRecorderStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awsconfigrecorder.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awsconfigrecorder/v1alpha1;awsconfigrecorderv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awsconfigrecorder.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awsconfigrecorder\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awsconfigrecorder\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awsconfigrecorder::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsconfigrecorder_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsconfigrecorder_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsconfigrecorder_v1alpha1_api_proto_goTypes = []any{
-	(*AwsConfigRecorder)(nil),             // 0: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorder
-	(*AwsConfigRecorderStatus)(nil),       // 1: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsConfigRecorderSpec)(nil),         // 3: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderSpec
-	(*AwsConfigRecorderStackOutputs)(nil), // 4: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStackOutputs
+	(*AwsConfigRecorder)(nil),            // 0: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorder
+	(*AwsConfigRecorderStatus)(nil),      // 1: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsConfigRecorderSpec)(nil),        // 3: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderSpec
+	(*AwsConfigRecorderOutputs)(nil),     // 4: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderOutputs
 }
 var file_catalog_aws_awsconfigrecorder_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorder.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorder.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorder.spec:type_name -> dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderSpec
 	1, // 2: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorder.status:type_name -> dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatus
-	4, // 3: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatus.outputs:type_name -> dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStackOutputs
+	4, // 3: dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderStatus.outputs:type_name -> dev.planton.aws.awsconfigrecorder.v1alpha1.AwsConfigRecorderOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

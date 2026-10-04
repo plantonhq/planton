@@ -56,7 +56,7 @@ const (
 // For the common use case, only `retention_in_days` is needed. KMS encryption
 // and log group class are optional settings for compliance and cost optimization.
 //
-// Credentials, region, and deployment workflow live outside this spec in stack inputs.
+// Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsCloudwatchLogGroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

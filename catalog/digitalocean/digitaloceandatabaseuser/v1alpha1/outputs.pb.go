@@ -22,12 +22,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDatabaseUserStackOutputs captures the key outputs after
+// DigitalOceanDatabaseUserOutputs captures the key outputs after
 // provisioning a DigitalOcean database user. The cluster id and user name
 // are echoed here so consumers (and verification tooling) can address the
 // user directly -- the DigitalOcean API has no standalone user id; the
 // (cluster, name) pair IS the identity.
-type DigitalOceanDatabaseUserStackOutputs struct {
+type DigitalOceanDatabaseUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the database cluster the user belongs to.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -50,20 +50,20 @@ type DigitalOceanDatabaseUserStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) Reset() {
-	*x = DigitalOceanDatabaseUserStackOutputs{}
+func (x *DigitalOceanDatabaseUserOutputs) Reset() {
+	*x = DigitalOceanDatabaseUserOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) String() string {
+func (x *DigitalOceanDatabaseUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseUserStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDatabaseUserOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *DigitalOceanDatabaseUserStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseUserOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) GetClusterId() string {
+func (x *DigitalOceanDatabaseUserOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) GetUserName() string {
+func (x *DigitalOceanDatabaseUserOutputs) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) GetRole() string {
+func (x *DigitalOceanDatabaseUserOutputs) GetRole() string {
 	if x != nil {
 		return x.Role
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) GetPassword() string {
+func (x *DigitalOceanDatabaseUserOutputs) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) GetAccessCert() string {
+func (x *DigitalOceanDatabaseUserOutputs) GetAccessCert() string {
 	if x != nil {
 		return x.AccessCert
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseUserStackOutputs) GetAccessKey() string {
+func (x *DigitalOceanDatabaseUserOutputs) GetAccessKey() string {
 	if x != nil {
 		return x.AccessKey
 	}
@@ -126,8 +126,8 @@ var File_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto pr
 
 const file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/digitalocean/digitaloceandatabaseuser/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1\x1a\x1cshared/options/options.proto\"\xde\x01\n" +
-	"$DigitalOceanDatabaseUserStackOutputs\x12\x1d\n" +
+	"Dcatalog/digitalocean/digitaloceandatabaseuser/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1\x1a\x1cshared/options/options.proto\"\xd9\x01\n" +
+	"\x1fDigitalOceanDatabaseUserOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\x12\x12\n" +
@@ -153,7 +153,7 @@ func file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_r
 
 var file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDatabaseUserStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserStackOutputs
+	(*DigitalOceanDatabaseUserOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

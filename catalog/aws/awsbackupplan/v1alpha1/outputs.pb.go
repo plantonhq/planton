@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupPlanStackOutputs captures the observable state of the
+// AwsBackupPlanOutputs captures the observable state of the
 // backup plan after apply.
-type AwsBackupPlanStackOutputs struct {
+type AwsBackupPlanOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The plan's AWS-generated ID (a UUID - also the provider's import
 	// ID; the plan's name is NOT its identity at AWS).
@@ -39,20 +39,20 @@ type AwsBackupPlanStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBackupPlanStackOutputs) Reset() {
-	*x = AwsBackupPlanStackOutputs{}
+func (x *AwsBackupPlanOutputs) Reset() {
+	*x = AwsBackupPlanOutputs{}
 	mi := &file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupPlanStackOutputs) String() string {
+func (x *AwsBackupPlanOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupPlanStackOutputs) ProtoMessage() {}
+func (*AwsBackupPlanOutputs) ProtoMessage() {}
 
-func (x *AwsBackupPlanStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupPlanOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsBackupPlanStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupPlanStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBackupPlanStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupPlanOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBackupPlanOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupPlanStackOutputs) GetPlanId() string {
+func (x *AwsBackupPlanOutputs) GetPlanId() string {
 	if x != nil {
 		return x.PlanId
 	}
 	return ""
 }
 
-func (x *AwsBackupPlanStackOutputs) GetPlanArn() string {
+func (x *AwsBackupPlanOutputs) GetPlanArn() string {
 	if x != nil {
 		return x.PlanArn
 	}
 	return ""
 }
 
-func (x *AwsBackupPlanStackOutputs) GetPlanVersion() string {
+func (x *AwsBackupPlanOutputs) GetPlanVersion() string {
 	if x != nil {
 		return x.PlanVersion
 	}
 	return ""
 }
 
-func (x *AwsBackupPlanStackOutputs) GetSelectionIds() map[string]string {
+func (x *AwsBackupPlanOutputs) GetSelectionIds() map[string]string {
 	if x != nil {
 		return x.SelectionIds
 	}
@@ -101,12 +101,12 @@ var File_catalog_aws_awsbackupplan_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsbackupplan/v1alpha1/outputs.proto\x12&dev.planton.aws.awsbackupplan.v1alpha1\"\xad\x02\n" +
-	"\x19AwsBackupPlanStackOutputs\x12\x17\n" +
+	"0catalog/aws/awsbackupplan/v1alpha1/outputs.proto\x12&dev.planton.aws.awsbackupplan.v1alpha1\"\xa3\x02\n" +
+	"\x14AwsBackupPlanOutputs\x12\x17\n" +
 	"\aplan_id\x18\x01 \x01(\tR\x06planId\x12\x19\n" +
 	"\bplan_arn\x18\x02 \x01(\tR\aplanArn\x12!\n" +
-	"\fplan_version\x18\x03 \x01(\tR\vplanVersion\x12x\n" +
-	"\rselection_ids\x18\x04 \x03(\v2S.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs.SelectionIdsEntryR\fselectionIds\x1a?\n" +
+	"\fplan_version\x18\x03 \x01(\tR\vplanVersion\x12s\n" +
+	"\rselection_ids\x18\x04 \x03(\v2N.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs.SelectionIdsEntryR\fselectionIds\x1a?\n" +
 	"\x11SelectionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xce\x02\n" +
@@ -126,11 +126,11 @@ func file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBackupPlanStackOutputs)(nil), // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs
-	nil,                               // 1: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs.SelectionIdsEntry
+	(*AwsBackupPlanOutputs)(nil), // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs
+	nil,                          // 1: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs.SelectionIdsEntry
 }
 var file_catalog_aws_awsbackupplan_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs.selection_ids:type_name -> dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs.SelectionIdsEntry
+	1, // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs.selection_ids:type_name -> dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs.SelectionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

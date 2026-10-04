@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpFirebaseAndroidAppStackInput struct {
+type GcpFirebaseAndroidAppIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpFirebaseAndroidApp `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpFirebaseAndroidAppStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpFirebaseAndroidAppStackInput) Reset() {
-	*x = GcpFirebaseAndroidAppStackInput{}
+func (x *GcpFirebaseAndroidAppIacInput) Reset() {
+	*x = GcpFirebaseAndroidAppIacInput{}
 	mi := &file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirebaseAndroidAppStackInput) String() string {
+func (x *GcpFirebaseAndroidAppIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirebaseAndroidAppStackInput) ProtoMessage() {}
+func (*GcpFirebaseAndroidAppIacInput) ProtoMessage() {}
 
-func (x *GcpFirebaseAndroidAppStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpFirebaseAndroidAppIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpFirebaseAndroidAppStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirebaseAndroidAppStackInput.ProtoReflect.Descriptor instead.
-func (*GcpFirebaseAndroidAppStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirebaseAndroidAppIacInput.ProtoReflect.Descriptor instead.
+func (*GcpFirebaseAndroidAppIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirebaseAndroidAppStackInput) GetTarget() *GcpFirebaseAndroidApp {
+func (x *GcpFirebaseAndroidAppIacInput) GetTarget() *GcpFirebaseAndroidApp {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpFirebaseAndroidAppStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpFirebaseAndroidAppIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpfirebaseandroidapp/v1alpha1/input.proto\x12.dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1\x1a4catalog/gcp/gcpfirebaseandroidapp/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcd\x01\n" +
-	"\x1fGcpFirebaseAndroidAppStackInput\x12]\n" +
+	"6catalog/gcp/gcpfirebaseandroidapp/v1alpha1/input.proto\x12.dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1\x1a4catalog/gcp/gcpfirebaseandroidapp/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcb\x01\n" +
+	"\x1dGcpFirebaseAndroidAppIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_goTypes = []any{
-	(*GcpFirebaseAndroidAppStackInput)(nil), // 0: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppStackInput
-	(*GcpFirebaseAndroidApp)(nil),           // 1: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidApp
-	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpFirebaseAndroidAppIacInput)(nil), // 0: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppIacInput
+	(*GcpFirebaseAndroidApp)(nil),         // 1: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidApp
+	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppStackInput.target:type_name -> dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidApp
-	2, // 1: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppIacInput.target:type_name -> dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidApp
+	2, // 1: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

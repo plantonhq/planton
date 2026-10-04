@@ -34,7 +34,7 @@ type AzureFabricCapacity struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFabricCapacitySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureFabricCapacity) GetKind() string {
 	return ""
 }
 
-func (x *AzureFabricCapacity) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFabricCapacity) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureFabricCapacity) GetStatus() *AzureFabricCapacityStatus {
 // Fabric capacity deployment.
 type AzureFabricCapacityStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-fabric-capacity stack-outputs
-	Outputs       *AzureFabricCapacityStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-fabric-capacity outputs
+	Outputs       *AzureFabricCapacityOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureFabricCapacityStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefabriccapacity_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFabricCapacityStatus) GetOutputs() *AzureFabricCapacityStackOutputs {
+func (x *AzureFabricCapacityStatus) GetOutputs() *AzureFabricCapacityOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azurefabriccapacity_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzureFabricCapacityR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacitySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatusR\x06status\"\x86\x01\n" +
-	"\x19AzureFabricCapacityStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatusR\x06status\"\x81\x01\n" +
+	"\x19AzureFabricCapacityStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azurefabriccapacity.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurefabriccapacity/v1alpha1;azurefabriccapacityv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurefabriccapacity.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurefabriccapacity\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurefabriccapacity\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurefabriccapacity::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azurefabriccapacity_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurefabriccapacity_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefabriccapacity_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFabricCapacity)(nil),             // 0: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacity
-	(*AzureFabricCapacityStatus)(nil),       // 1: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFabricCapacitySpec)(nil),         // 3: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacitySpec
-	(*AzureFabricCapacityStackOutputs)(nil), // 4: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStackOutputs
+	(*AzureFabricCapacity)(nil),          // 0: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacity
+	(*AzureFabricCapacityStatus)(nil),    // 1: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFabricCapacitySpec)(nil),      // 3: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacitySpec
+	(*AzureFabricCapacityOutputs)(nil),   // 4: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityOutputs
 }
 var file_catalog_azure_azurefabriccapacity_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacity.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacity.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacity.spec:type_name -> dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacitySpec
 	1, // 2: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacity.status:type_name -> dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatus
-	4, // 3: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatus.outputs:type_name -> dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStackOutputs
+	4, // 3: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStatus.outputs:type_name -> dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

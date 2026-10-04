@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxDataRepositoryAssociationStackOutputs captures observable identifiers
+// AwsFsxDataRepositoryAssociationOutputs captures observable identifiers
 // from a provisioned FSx data repository association.
-type AwsFsxDataRepositoryAssociationStackOutputs struct {
+type AwsFsxDataRepositoryAssociationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS-assigned association ID (dra-...). The identifier FSx data
 	// repository task APIs and the console use to address this link.
@@ -39,20 +39,20 @@ type AwsFsxDataRepositoryAssociationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackOutputs) Reset() {
-	*x = AwsFsxDataRepositoryAssociationStackOutputs{}
+func (x *AwsFsxDataRepositoryAssociationOutputs) Reset() {
+	*x = AwsFsxDataRepositoryAssociationOutputs{}
 	mi := &file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackOutputs) String() string {
+func (x *AwsFsxDataRepositoryAssociationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxDataRepositoryAssociationStackOutputs) ProtoMessage() {}
+func (*AwsFsxDataRepositoryAssociationOutputs) ProtoMessage() {}
 
-func (x *AwsFsxDataRepositoryAssociationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxDataRepositoryAssociationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsFsxDataRepositoryAssociationStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxDataRepositoryAssociationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxDataRepositoryAssociationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxDataRepositoryAssociationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxDataRepositoryAssociationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackOutputs) GetAssociationId() string {
+func (x *AwsFsxDataRepositoryAssociationOutputs) GetAssociationId() string {
 	if x != nil {
 		return x.AssociationId
 	}
 	return ""
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackOutputs) GetAssociationArn() string {
+func (x *AwsFsxDataRepositoryAssociationOutputs) GetAssociationArn() string {
 	if x != nil {
 		return x.AssociationArn
 	}
 	return ""
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackOutputs) GetFileSystemId() string {
+func (x *AwsFsxDataRepositoryAssociationOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
@@ -94,8 +94,8 @@ var File_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto prot
 
 const file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/aws/awsfsxdatarepositoryassociation/v1alpha1/outputs.proto\x128dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1\"\xa3\x01\n" +
-	"+AwsFsxDataRepositoryAssociationStackOutputs\x12%\n" +
+	"Bcatalog/aws/awsfsxdatarepositoryassociation/v1alpha1/outputs.proto\x128dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1\"\x9e\x01\n" +
+	"&AwsFsxDataRepositoryAssociationOutputs\x12%\n" +
 	"\x0eassociation_id\x18\x01 \x01(\tR\rassociationId\x12'\n" +
 	"\x0fassociation_arn\x18\x02 \x01(\tR\x0eassociationArn\x12$\n" +
 	"\x0efile_system_id\x18\x03 \x01(\tR\ffileSystemIdB\xcc\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_raw
 
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxDataRepositoryAssociationStackOutputs)(nil), // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackOutputs
+	(*AwsFsxDataRepositoryAssociationOutputs)(nil), // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationOutputs
 }
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

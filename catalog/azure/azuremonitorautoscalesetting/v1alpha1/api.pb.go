@@ -34,7 +34,7 @@ type AzureMonitorAutoscaleSetting struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMonitorAutoscaleSettingSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureMonitorAutoscaleSetting) GetKind() string {
 	return ""
 }
 
-func (x *AzureMonitorAutoscaleSetting) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMonitorAutoscaleSetting) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureMonitorAutoscaleSetting) GetStatus() *AzureMonitorAutoscaleSetting
 // Monitor autoscale setting deployment.
 type AzureMonitorAutoscaleSettingStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-monitor-autoscale-setting stack-outputs
-	Outputs       *AzureMonitorAutoscaleSettingStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-monitor-autoscale-setting outputs
+	Outputs       *AzureMonitorAutoscaleSettingOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureMonitorAutoscaleSettingStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMonitorAutoscaleSettingStatus) GetOutputs() *AzureMonitorAutoscaleSettingStackOutputs {
+func (x *AzureMonitorAutoscaleSettingStatus) GetOutputs() *AzureMonitorAutoscaleSettingOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_api_proto_rawDesc
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cAzureMonitorAutoscaleSettingR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
 	"\x04spec\x18\x04 \x01(\v2Y.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatusR\x06status\"\xa1\x01\n" +
-	"\"AzureMonitorAutoscaleSettingStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackOutputsR\aoutputsB\xbf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2[.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatusR\x06status\"\x9c\x01\n" +
+	"\"AzureMonitorAutoscaleSettingStatus\x12v\n" +
+	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingOutputsR\aoutputsB\xbf\x03\n" +
 	";com.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1B\bApiProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azuremonitorautoscalesetting/v1alpha1;azuremonitorautoscalesettingv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azuremonitorautoscalesetting.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azuremonitorautoscalesetting\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azuremonitorautoscalesetting\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azuremonitorautoscalesetting::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_api_proto_rawDescG
 
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMonitorAutoscaleSetting)(nil),             // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting
-	(*AzureMonitorAutoscaleSettingStatus)(nil),       // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMonitorAutoscaleSettingSpec)(nil),         // 3: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingSpec
-	(*AzureMonitorAutoscaleSettingStackOutputs)(nil), // 4: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackOutputs
+	(*AzureMonitorAutoscaleSetting)(nil),        // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting
+	(*AzureMonitorAutoscaleSettingStatus)(nil),  // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMonitorAutoscaleSettingSpec)(nil),    // 3: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingSpec
+	(*AzureMonitorAutoscaleSettingOutputs)(nil), // 4: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingOutputs
 }
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting.spec:type_name -> dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingSpec
 	1, // 2: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting.status:type_name -> dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatus
-	4, // 3: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatus.outputs:type_name -> dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackOutputs
+	4, // 3: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStatus.outputs:type_name -> dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

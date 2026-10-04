@@ -34,7 +34,7 @@ type KubernetesKeycloakOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKeycloakOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *KubernetesKeycloakOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKeycloakOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKeycloakOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *KubernetesKeycloakOperator) GetStatus() *KubernetesKeycloakOperatorStat
 // KubernetesKeycloakOperatorStatus describes the observed state of KubernetesKeycloakOperator.
 type KubernetesKeycloakOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKeycloakOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKeycloakOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*KubernetesKeycloakOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKeycloakOperatorStatus) GetOutputs() *KubernetesKeycloakOperatorStackOutputs {
+func (x *KubernetesKeycloakOperatorStatus) GetOutputs() *KubernetesKeycloakOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_api_proto_rawD
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aKubernetesKeycloakOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
 	"\x04spec\x18\x04 \x01(\v2Z.dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12t\n" +
-	"\x06status\x18\x05 \x01(\v2\\.dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatusR\x06status\"\xa0\x01\n" +
-	" KubernetesKeycloakOperatorStatus\x12|\n" +
-	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2\\.dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatusR\x06status\"\x9b\x01\n" +
+	" KubernetesKeycloakOperatorStatus\x12w\n" +
+	"\aoutputs\x18\x01 \x01(\v2].dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorOutputsR\aoutputsB\xcf\x03\n" +
 	">com.dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1B\bApiProtoP\x01Zvgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskeycloakoperator/v1alpha1;kuberneteskeycloakoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02:Dev.Planton.Kubernetes.Kuberneteskeycloakoperator.V1alpha1\xca\x02:Dev\\Planton\\Kubernetes\\Kuberneteskeycloakoperator\\V1alpha1\xe2\x02FDev\\Planton\\Kubernetes\\Kuberneteskeycloakoperator\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Kubernetes::Kuberneteskeycloakoperator::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_api_proto_rawDe
 
 var file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKeycloakOperator)(nil),             // 0: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperator
-	(*KubernetesKeycloakOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKeycloakOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorSpec
-	(*KubernetesKeycloakOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStackOutputs
+	(*KubernetesKeycloakOperator)(nil),        // 0: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperator
+	(*KubernetesKeycloakOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKeycloakOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorSpec
+	(*KubernetesKeycloakOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorOutputs
 }
 var file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperator.spec:type_name -> dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperator.status:type_name -> dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

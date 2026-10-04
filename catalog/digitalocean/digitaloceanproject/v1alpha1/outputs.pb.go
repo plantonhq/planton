@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanProjectStackOutputs captures the key outputs after
+// DigitalOceanProjectOutputs captures the key outputs after
 // provisioning a DigitalOcean project.
-type DigitalOceanProjectStackOutputs struct {
+type DigitalOceanProjectOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the project (the API identity, and the import id).
 	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
@@ -41,20 +41,20 @@ type DigitalOceanProjectStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanProjectStackOutputs) Reset() {
-	*x = DigitalOceanProjectStackOutputs{}
+func (x *DigitalOceanProjectOutputs) Reset() {
+	*x = DigitalOceanProjectOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanProjectStackOutputs) String() string {
+func (x *DigitalOceanProjectOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanProjectStackOutputs) ProtoMessage() {}
+func (*DigitalOceanProjectOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanProjectOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *DigitalOceanProjectStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanProjectOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanProjectOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanProjectStackOutputs) GetProjectId() string {
+func (x *DigitalOceanProjectOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *DigitalOceanProjectStackOutputs) GetOwnerUuid() string {
+func (x *DigitalOceanProjectOutputs) GetOwnerUuid() string {
 	if x != nil {
 		return x.OwnerUuid
 	}
 	return ""
 }
 
-func (x *DigitalOceanProjectStackOutputs) GetOwnerId() string {
+func (x *DigitalOceanProjectOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *DigitalOceanProjectStackOutputs) GetResourceUrns() []string {
+func (x *DigitalOceanProjectOutputs) GetResourceUrns() []string {
 	if x != nil {
 		return x.ResourceUrns
 	}
@@ -103,8 +103,8 @@ var File_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto protore
 
 const file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/digitalocean/digitaloceanproject/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceanproject.v1alpha1\"\x9f\x01\n" +
-	"\x1fDigitalOceanProjectStackOutputs\x12\x1d\n" +
+	"?catalog/digitalocean/digitaloceanproject/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceanproject.v1alpha1\"\x9a\x01\n" +
+	"\x1aDigitalOceanProjectOutputs\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12\x1d\n" +
 	"\n" +
@@ -127,7 +127,7 @@ func file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanProjectStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanproject.v1alpha1.DigitalOceanProjectStackOutputs
+	(*DigitalOceanProjectOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanproject.v1alpha1.DigitalOceanProjectOutputs
 }
 var file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

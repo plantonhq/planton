@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudTrailStackInput is the input for the IaC modules that
+// AwsCloudTrailIacInput is the input for the IaC modules that
 // manage a CloudTrail trail.
-type AwsCloudTrailStackInput struct {
+type AwsCloudTrailIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudTrail resource to deploy.
 	Target *AwsCloudTrail `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudTrailStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudTrailStackInput) Reset() {
-	*x = AwsCloudTrailStackInput{}
+func (x *AwsCloudTrailIacInput) Reset() {
+	*x = AwsCloudTrailIacInput{}
 	mi := &file_catalog_aws_awscloudtrail_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudTrailStackInput) String() string {
+func (x *AwsCloudTrailIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudTrailStackInput) ProtoMessage() {}
+func (*AwsCloudTrailIacInput) ProtoMessage() {}
 
-func (x *AwsCloudTrailStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudTrailIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudtrail_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudTrailStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudTrailStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudTrailStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudTrailIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudTrailIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudtrail_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudTrailStackInput) GetTarget() *AwsCloudTrail {
+func (x *AwsCloudTrailIacInput) GetTarget() *AwsCloudTrail {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudTrailStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudTrailIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudtrail_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awscloudtrail_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awscloudtrail/v1alpha1/input.proto\x12&dev.planton.aws.awscloudtrail.v1alpha1\x1a,catalog/aws/awscloudtrail/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb5\x01\n" +
-	"\x17AwsCloudTrailStackInput\x12M\n" +
+	".catalog/aws/awscloudtrail/v1alpha1/input.proto\x12&dev.planton.aws.awscloudtrail.v1alpha1\x1a,catalog/aws/awscloudtrail/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb3\x01\n" +
+	"\x15AwsCloudTrailIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.aws.awscloudtrail.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudtrail_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awscloudtrail_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudtrail_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudTrailStackInput)(nil), // 0: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailStackInput
-	(*AwsCloudTrail)(nil),           // 1: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrail
-	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudTrailIacInput)(nil), // 0: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailIacInput
+	(*AwsCloudTrail)(nil),         // 1: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrail
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudtrail_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailStackInput.target:type_name -> dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrail
-	2, // 1: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailIacInput.target:type_name -> dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrail
+	2, // 1: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

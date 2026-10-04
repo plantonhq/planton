@@ -60,12 +60,12 @@ type StripeBillingMeter struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripeBillingMeter" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the event name, how events add up, and the alerts.
 	Spec *StripeBillingMeterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the meter as created, populated after deployment.
@@ -118,7 +118,7 @@ func (x *StripeBillingMeter) GetKind() string {
 	return ""
 }
 
-func (x *StripeBillingMeter) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripeBillingMeter) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -143,8 +143,8 @@ func (x *StripeBillingMeter) GetStatus() *StripeBillingMeterStatus {
 // Populated by the deployment system.
 type StripeBillingMeterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the meter's id, event name, status and alert ids.
-	Outputs       *StripeBillingMeterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the meter's id, event name, status and alert ids.
+	Outputs       *StripeBillingMeterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -179,7 +179,7 @@ func (*StripeBillingMeterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingmeter_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripeBillingMeterStatus) GetOutputs() *StripeBillingMeterStackOutputs {
+func (x *StripeBillingMeterStatus) GetOutputs() *StripeBillingMeterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -197,11 +197,11 @@ const file_catalog_stripe_stripebillingmeter_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12StripeBillingMeterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatusR\x06status\"\x84\x01\n" +
-	"\x18StripeBillingMeterStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputsR\aoutputsB\xff\x02\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatusR\x06status\"\x7f\n" +
+	"\x18StripeBillingMeterStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputsR\aoutputsB\xff\x02\n" +
 	"2com.dev.planton.stripe.stripebillingmeter.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/stripe/stripebillingmeter/v1alpha1;stripebillingmeterv1alpha1\xa2\x02\x04DPSS\xaa\x02.Dev.Planton.Stripe.Stripebillingmeter.V1alpha1\xca\x02.Dev\\Planton\\Stripe\\Stripebillingmeter\\V1alpha1\xe2\x02:Dev\\Planton\\Stripe\\Stripebillingmeter\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Stripe::Stripebillingmeter::V1alpha1b\x06proto3"
 
 var (
@@ -218,17 +218,17 @@ func file_catalog_stripe_stripebillingmeter_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_stripe_stripebillingmeter_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripebillingmeter_v1alpha1_api_proto_goTypes = []any{
-	(*StripeBillingMeter)(nil),             // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter
-	(*StripeBillingMeterStatus)(nil),       // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripeBillingMeterSpec)(nil),         // 3: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterSpec
-	(*StripeBillingMeterStackOutputs)(nil), // 4: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs
+	(*StripeBillingMeter)(nil),           // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter
+	(*StripeBillingMeterStatus)(nil),     // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripeBillingMeterSpec)(nil),       // 3: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterSpec
+	(*StripeBillingMeterOutputs)(nil),    // 4: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs
 }
 var file_catalog_stripe_stripebillingmeter_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter.spec:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterSpec
 	1, // 2: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter.status:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatus
-	4, // 3: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatus.outputs:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs
+	4, // 3: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStatus.outputs:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

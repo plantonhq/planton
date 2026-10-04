@@ -31,7 +31,7 @@ type GcpSpannerDatabase struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpSpannerDatabaseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpSpannerDatabase) GetKind() string {
 	return ""
 }
 
-func (x *GcpSpannerDatabase) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpSpannerDatabase) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpSpannerDatabase) GetStatus() *GcpSpannerDatabaseStatus {
 // gcp-spanner-database status
 type GcpSpannerDatabaseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpSpannerDatabaseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpSpannerDatabaseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpSpannerDatabaseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpspannerdatabase_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpSpannerDatabaseStatus) GetOutputs() *GcpSpannerDatabaseStackOutputs {
+func (x *GcpSpannerDatabaseStatus) GetOutputs() *GcpSpannerDatabaseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpspannerdatabase_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12GcpSpannerDatabaseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatusR\x06status\"\x81\x01\n" +
-	"\x18GcpSpannerDatabaseStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatusR\x06status\"|\n" +
+	"\x18GcpSpannerDatabaseStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.gcp.gcpspannerdatabase.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpspannerdatabase/v1alpha1;gcpspannerdatabasev1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpspannerdatabase.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpspannerdatabase\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpspannerdatabase\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpspannerdatabase::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpspannerdatabase_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpspannerdatabase_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpspannerdatabase_v1alpha1_api_proto_goTypes = []any{
-	(*GcpSpannerDatabase)(nil),             // 0: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabase
-	(*GcpSpannerDatabaseStatus)(nil),       // 1: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpSpannerDatabaseSpec)(nil),         // 3: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseSpec
-	(*GcpSpannerDatabaseStackOutputs)(nil), // 4: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStackOutputs
+	(*GcpSpannerDatabase)(nil),           // 0: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabase
+	(*GcpSpannerDatabaseStatus)(nil),     // 1: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpSpannerDatabaseSpec)(nil),       // 3: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseSpec
+	(*GcpSpannerDatabaseOutputs)(nil),    // 4: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseOutputs
 }
 var file_catalog_gcp_gcpspannerdatabase_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabase.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabase.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabase.spec:type_name -> dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseSpec
 	1, // 2: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabase.status:type_name -> dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatus
-	4, // 3: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatus.outputs:type_name -> dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStackOutputs
+	4, // 3: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStatus.outputs:type_name -> dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

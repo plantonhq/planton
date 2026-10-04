@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurestorageshare
 spec:
@@ -21,7 +21,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - used capacity bills 0.06 USD/GB-month (transaction-optimized Standard LRS, eastus -- Azure's default tier on standard accounts), and transactions bill 0.015 per 10K writes and lists, 0.0015 per 10K reads and protocol operations -- all following what workloads store and do on the account's meters
-        - geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking components, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare component's
+        - geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking kinds, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare kind's
       notes: "Zero committed is real but rests on a stated assumption: with the tier unset, Azure defaults the share by ACCOUNT kind (TransactionOptimized on standard accounts, Premium on FileStorage) -- this derivation reads the share as standard, and a FileStorage parent would make the provisioned billing apply instead; the account kind is invisible in this manifest."
     - preset: 02-nfs-premium-share
       region_assumption: eastus
@@ -40,7 +40,7 @@ spec:
       total_list_cost: "16.0000"
       exclusions:
         - share snapshots bill their differential used GB at 0.136 USD/GB-month (Premium LRS, eastus), following snapshot cadence and churn; an account on the provisioned v2 billing model bills separately provisioned storage/IOPS/throughput meters on its own rate card instead of the pinned v1 rate
-        - geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking components, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare component's
+        - geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking kinds, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare kind's
       notes: "The committed figure is the provisioned floor: growing quota_gb grows the bill in place, and premium FileStorage floors at 100 GB. The rate is keyed to the ACCOUNT's redundancy, which this manifest sees only as a reference -- Premium LRS 0.16 USD/GB-month is assumed and stated; a ZRS account bills 0.20."
     - preset: 03-policy-anchored-access
       region_assumption: eastus
@@ -49,4 +49,4 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - used capacity bills 0.0228 USD/GB-month (Cool LRS, eastus) plus metadata at 0.0297, and every touch bills transactions (writes 0.13, reads 0.013, lists 0.065 per 10K) plus 0.01 USD/GB cool data retrieval -- all following what workloads store and do on the account's meters
-        - geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking components, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare component's
+        - geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking kinds, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare kind's

@@ -244,7 +244,7 @@ func (KubernetesKubePrometheusStackAlertMatchOperator) EnumDescriptor() ([]byte,
 // PodMonitor, PrometheusRule, Probe and ScrapeConfig in the cluster —
 // deliberately wider than the chart's own default (which only discovers
 // objects labeled by its release, upstream's most-tripped-over behavior).
-// Cluster-wide discovery is what makes every catalog component's
+// Cluster-wide discovery is what makes every catalog kind's
 // `service_monitor_enabled` toggle and any user-authored monitor light up
 // without extra wiring. Set `discovery` to `release_managed_only` to get
 // the chart's fenced default back.
@@ -2011,7 +2011,8 @@ type KubernetesKubePrometheusStackAlertMessage struct {
 	EnvironmentLabel *string `protobuf:"bytes,1,opt,name=environment_label,json=environmentLabel,proto3,oneof" json:"environment_label,omitempty"`
 	// *
 	// The label that names the component. Default `component`; an alert
-	// without it is titled by its scrape `job` instead.
+	// without it is titled by its scrape `job` instead, and one with
+	// neither (an overcommit sum, a cluster-wide aggregate) by `cluster`.
 	ComponentLabel *string `protobuf:"bytes,2,opt,name=component_label,json=componentLabel,proto3,oneof" json:"component_label,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -2074,7 +2075,7 @@ type KubernetesKubePrometheusStackGrafana struct {
 	// chart generates a random admin password ONCE at first install
 	// (stable across upgrades) and keeps it in its own
 	// `<name>-grafana` Secret — keys `admin-user` / `admin-password`;
-	// the Secret name lands in the stack outputs.
+	// the Secret name lands in the outputs.
 	AdminSecret *KubernetesKubePrometheusStackGrafanaAdminSecret `protobuf:"bytes,2,opt,name=admin_secret,json=adminSecret,proto3" json:"admin_secret,omitempty"`
 	// *
 	// Provision the stack's curated dashboard set (Kubernetes cluster,

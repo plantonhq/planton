@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpOrgPolicyStackInput struct {
+type GcpOrgPolicyIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpOrgPolicy          `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpOrgPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpOrgPolicyStackInput) Reset() {
-	*x = GcpOrgPolicyStackInput{}
+func (x *GcpOrgPolicyIacInput) Reset() {
+	*x = GcpOrgPolicyIacInput{}
 	mi := &file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpOrgPolicyStackInput) String() string {
+func (x *GcpOrgPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpOrgPolicyStackInput) ProtoMessage() {}
+func (*GcpOrgPolicyIacInput) ProtoMessage() {}
 
-func (x *GcpOrgPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpOrgPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpOrgPolicyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpOrgPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*GcpOrgPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpOrgPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*GcpOrgPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpOrgPolicyStackInput) GetTarget() *GcpOrgPolicy {
+func (x *GcpOrgPolicyIacInput) GetTarget() *GcpOrgPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpOrgPolicyStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpOrgPolicyIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcporgpolicy_v1alpha1_input_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcporgpolicy/v1alpha1/input.proto\x12%dev.planton.gcp.gcporgpolicy.v1alpha1\x1a+catalog/gcp/gcporgpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb2\x01\n" +
-	"\x16GcpOrgPolicyStackInput\x12K\n" +
+	"-catalog/gcp/gcporgpolicy/v1alpha1/input.proto\x12%dev.planton.gcp.gcporgpolicy.v1alpha1\x1a+catalog/gcp/gcporgpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb0\x01\n" +
+	"\x14GcpOrgPolicyIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xc5\x02\n" +
 	")com.dev.planton.gcp.gcporgpolicy.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*GcpOrgPolicyStackInput)(nil), // 0: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyStackInput
-	(*GcpOrgPolicy)(nil),           // 1: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicy
-	(*gcp.GcpProviderConfig)(nil),  // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpOrgPolicyIacInput)(nil),  // 0: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyIacInput
+	(*GcpOrgPolicy)(nil),          // 1: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicy
+	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcporgpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyStackInput.target:type_name -> dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicy
-	2, // 1: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyIacInput.target:type_name -> dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicy
+	2, // 1: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0ResourceServerSpec defines an API in the Auth0 tenant the provider
 connection's credential belongs to (Auth0 calls it a resource server): the
@@ -55,7 +55,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client
 
 ```yaml
 # Auth0 Resource Server Test Manifest
-# The component's full surface, for the offline plan and preview proofs: it
+# The kind's full surface, for the offline plan and preview proofs: it
 # declares settings that need the Enterprise plan with the Highly Regulated
 # Identity add-on (token encryption, consent_policy) and Early Access
 # features (anonymous sessions, Online Refresh Tokens, authorization

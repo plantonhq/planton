@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamInstanceProfileStackOutputs captures the observable outputs of a
+// AwsIamInstanceProfileOutputs captures the observable outputs of a
 // provisioned IAM instance profile, for EC2-shaped resources (instances,
 // launch templates, Auto Scaling groups) to reference.
-type AwsIamInstanceProfileStackOutputs struct {
+type AwsIamInstanceProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the instance profile (e.g.
 	// "arn:aws:iam::123456789012:instance-profile/web-server"). What an EC2
@@ -44,20 +44,20 @@ type AwsIamInstanceProfileStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsIamInstanceProfileStackOutputs) Reset() {
-	*x = AwsIamInstanceProfileStackOutputs{}
+func (x *AwsIamInstanceProfileOutputs) Reset() {
+	*x = AwsIamInstanceProfileOutputs{}
 	mi := &file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamInstanceProfileStackOutputs) String() string {
+func (x *AwsIamInstanceProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamInstanceProfileStackOutputs) ProtoMessage() {}
+func (*AwsIamInstanceProfileOutputs) ProtoMessage() {}
 
-func (x *AwsIamInstanceProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamInstanceProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *AwsIamInstanceProfileStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamInstanceProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamInstanceProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamInstanceProfileOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamInstanceProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamInstanceProfileStackOutputs) GetInstanceProfileArn() string {
+func (x *AwsIamInstanceProfileOutputs) GetInstanceProfileArn() string {
 	if x != nil {
 		return x.InstanceProfileArn
 	}
 	return ""
 }
 
-func (x *AwsIamInstanceProfileStackOutputs) GetInstanceProfileName() string {
+func (x *AwsIamInstanceProfileOutputs) GetInstanceProfileName() string {
 	if x != nil {
 		return x.InstanceProfileName
 	}
 	return ""
 }
 
-func (x *AwsIamInstanceProfileStackOutputs) GetInstanceProfileId() string {
+func (x *AwsIamInstanceProfileOutputs) GetInstanceProfileId() string {
 	if x != nil {
 		return x.InstanceProfileId
 	}
 	return ""
 }
 
-func (x *AwsIamInstanceProfileStackOutputs) GetRoleName() string {
+func (x *AwsIamInstanceProfileOutputs) GetRoleName() string {
 	if x != nil {
 		return x.RoleName
 	}
@@ -106,8 +106,8 @@ var File_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsiaminstanceprofile/v1alpha1/outputs.proto\x12.dev.planton.aws.awsiaminstanceprofile.v1alpha1\"\xd6\x01\n" +
-	"!AwsIamInstanceProfileStackOutputs\x120\n" +
+	"8catalog/aws/awsiaminstanceprofile/v1alpha1/outputs.proto\x12.dev.planton.aws.awsiaminstanceprofile.v1alpha1\"\xd1\x01\n" +
+	"\x1cAwsIamInstanceProfileOutputs\x120\n" +
 	"\x14instance_profile_arn\x18\x01 \x01(\tR\x12instanceProfileArn\x122\n" +
 	"\x15instance_profile_name\x18\x02 \x01(\tR\x13instanceProfileName\x12.\n" +
 	"\x13instance_profile_id\x18\x03 \x01(\tR\x11instanceProfileId\x12\x1b\n" +
@@ -128,7 +128,7 @@ func file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamInstanceProfileStackOutputs)(nil), // 0: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStackOutputs
+	(*AwsIamInstanceProfileOutputs)(nil), // 0: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileOutputs
 }
 var file_catalog_aws_awsiaminstanceprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

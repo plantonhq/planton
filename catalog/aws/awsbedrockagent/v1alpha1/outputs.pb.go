@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentStackOutputs captures observable identifiers from a
+// AwsBedrockAgentOutputs captures observable identifiers from a
 // provisioned Bedrock agent. These outputs are used by downstream
 // resources (supervisor agents, flows, prompts) to wire dependencies via
 // StringValueOrRef.
-type AwsBedrockAgentStackOutputs struct {
+type AwsBedrockAgentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique agent identifier (e.g. "GGRRAED6JP").
 	AgentId string `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
@@ -52,20 +52,20 @@ type AwsBedrockAgentStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentStackOutputs) Reset() {
-	*x = AwsBedrockAgentStackOutputs{}
+func (x *AwsBedrockAgentOutputs) Reset() {
+	*x = AwsBedrockAgentOutputs{}
 	mi := &file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentStackOutputs) String() string {
+func (x *AwsBedrockAgentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,61 +77,61 @@ func (x *AwsBedrockAgentStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetAgentId() string {
+func (x *AwsBedrockAgentOutputs) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetAgentArn() string {
+func (x *AwsBedrockAgentOutputs) GetAgentArn() string {
 	if x != nil {
 		return x.AgentArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetDraftVersion() string {
+func (x *AwsBedrockAgentOutputs) GetDraftVersion() string {
 	if x != nil {
 		return x.DraftVersion
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetAliasIds() map[string]string {
+func (x *AwsBedrockAgentOutputs) GetAliasIds() map[string]string {
 	if x != nil {
 		return x.AliasIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetAliasArns() map[string]string {
+func (x *AwsBedrockAgentOutputs) GetAliasArns() map[string]string {
 	if x != nil {
 		return x.AliasArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetActionGroupIds() map[string]string {
+func (x *AwsBedrockAgentOutputs) GetActionGroupIds() map[string]string {
 	if x != nil {
 		return x.ActionGroupIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetCollaboratorIds() map[string]string {
+func (x *AwsBedrockAgentOutputs) GetCollaboratorIds() map[string]string {
 	if x != nil {
 		return x.CollaboratorIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentStackOutputs) GetAssociatedKnowledgeBaseIds() map[string]string {
+func (x *AwsBedrockAgentOutputs) GetAssociatedKnowledgeBaseIds() map[string]string {
 	if x != nil {
 		return x.AssociatedKnowledgeBaseIds
 	}
@@ -142,17 +142,17 @@ var File_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsbedrockagent/v1alpha1/outputs.proto\x12(dev.planton.aws.awsbedrockagent.v1alpha1\"\xeb\b\n" +
-	"\x1bAwsBedrockAgentStackOutputs\x12\x19\n" +
+	"2catalog/aws/awsbedrockagent/v1alpha1/outputs.proto\x12(dev.planton.aws.awsbedrockagent.v1alpha1\"\xcc\b\n" +
+	"\x16AwsBedrockAgentOutputs\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1b\n" +
 	"\tagent_arn\x18\x02 \x01(\tR\bagentArn\x12#\n" +
-	"\rdraft_version\x18\x03 \x01(\tR\fdraftVersion\x12p\n" +
-	"\talias_ids\x18\x04 \x03(\v2S.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AliasIdsEntryR\baliasIds\x12s\n" +
+	"\rdraft_version\x18\x03 \x01(\tR\fdraftVersion\x12k\n" +
+	"\talias_ids\x18\x04 \x03(\v2N.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AliasIdsEntryR\baliasIds\x12n\n" +
 	"\n" +
-	"alias_arns\x18\x05 \x03(\v2T.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AliasArnsEntryR\taliasArns\x12\x83\x01\n" +
-	"\x10action_group_ids\x18\x06 \x03(\v2Y.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.ActionGroupIdsEntryR\x0eactionGroupIds\x12\x85\x01\n" +
-	"\x10collaborator_ids\x18\a \x03(\v2Z.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.CollaboratorIdsEntryR\x0fcollaboratorIds\x12\xa8\x01\n" +
-	"\x1dassociated_knowledge_base_ids\x18\b \x03(\v2e.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AssociatedKnowledgeBaseIdsEntryR\x1aassociatedKnowledgeBaseIds\x1a;\n" +
+	"alias_arns\x18\x05 \x03(\v2O.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AliasArnsEntryR\taliasArns\x12~\n" +
+	"\x10action_group_ids\x18\x06 \x03(\v2T.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.ActionGroupIdsEntryR\x0eactionGroupIds\x12\x80\x01\n" +
+	"\x10collaborator_ids\x18\a \x03(\v2U.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.CollaboratorIdsEntryR\x0fcollaboratorIds\x12\xa3\x01\n" +
+	"\x1dassociated_knowledge_base_ids\x18\b \x03(\v2`.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AssociatedKnowledgeBaseIdsEntryR\x1aassociatedKnowledgeBaseIds\x1a;\n" +
 	"\rAliasIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a<\n" +
@@ -184,19 +184,19 @@ func file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs
-	nil,                                 // 1: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AliasIdsEntry
-	nil,                                 // 2: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AliasArnsEntry
-	nil,                                 // 3: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.ActionGroupIdsEntry
-	nil,                                 // 4: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.CollaboratorIdsEntry
-	nil,                                 // 5: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AssociatedKnowledgeBaseIdsEntry
+	(*AwsBedrockAgentOutputs)(nil), // 0: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs
+	nil,                            // 1: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AliasIdsEntry
+	nil,                            // 2: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AliasArnsEntry
+	nil,                            // 3: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.ActionGroupIdsEntry
+	nil,                            // 4: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.CollaboratorIdsEntry
+	nil,                            // 5: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AssociatedKnowledgeBaseIdsEntry
 }
 var file_catalog_aws_awsbedrockagent_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.alias_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AliasIdsEntry
-	2, // 1: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.alias_arns:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AliasArnsEntry
-	3, // 2: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.action_group_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.ActionGroupIdsEntry
-	4, // 3: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.collaborator_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.CollaboratorIdsEntry
-	5, // 4: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.associated_knowledge_base_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentStackOutputs.AssociatedKnowledgeBaseIdsEntry
+	1, // 0: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.alias_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AliasIdsEntry
+	2, // 1: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.alias_arns:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AliasArnsEntry
+	3, // 2: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.action_group_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.ActionGroupIdsEntry
+	4, // 3: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.collaborator_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.CollaboratorIdsEntry
+	5, // 4: dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.associated_knowledge_base_ids:type_name -> dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentOutputs.AssociatedKnowledgeBaseIdsEntry
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name

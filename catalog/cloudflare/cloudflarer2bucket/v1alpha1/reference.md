@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareR2BucketSpec defines the user configuration for a Cloudflare R2 bucket
 and its bucket-scoped configuration (custom domains, public access, CORS,
@@ -171,7 +171,7 @@ Allowed values (use exactly as shown):
 
 Expose the bucket publicly over Cloudflare's managed `r2.dev` domain. When
 true, a managed public domain is enabled and its URL is published as the
-`public_url` stack output. Custom domains (below) are the production-grade
+`public_url` output. Custom domains (below) are the production-grade
 path; the r2.dev domain is rate-limited and intended for development.
 
 ### spec.customDomains

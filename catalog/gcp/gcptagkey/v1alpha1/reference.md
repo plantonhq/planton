@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpTagKeySpec creates one Resource Manager tag key: the NAME half of a
 tag such as `environment`, `cost-center`, or `data-classification`. A tag

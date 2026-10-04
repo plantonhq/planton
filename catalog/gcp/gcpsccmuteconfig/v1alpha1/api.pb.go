@@ -31,7 +31,7 @@ type GcpSccMuteConfig struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpSccMuteConfigSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpSccMuteConfig) GetKind() string {
 	return ""
 }
 
-func (x *GcpSccMuteConfig) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpSccMuteConfig) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpSccMuteConfig) GetStatus() *GcpSccMuteConfigStatus {
 // gcp-scc-mute-config status
 type GcpSccMuteConfigStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpSccMuteConfigStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpSccMuteConfigOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpSccMuteConfigStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsccmuteconfig_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpSccMuteConfigStatus) GetOutputs() *GcpSccMuteConfigStackOutputs {
+func (x *GcpSccMuteConfigStatus) GetOutputs() *GcpSccMuteConfigOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpsccmuteconfig_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10GcpSccMuteConfigR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStatusR\x06status\"{\n" +
-	"\x16GcpSccMuteConfigStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStatusR\x06status\"v\n" +
+	"\x16GcpSccMuteConfigStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.gcp.gcpsccmuteconfig.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpsccmuteconfig/v1alpha1;gcpsccmuteconfigv1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpsccmuteconfig.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpsccmuteconfig\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpsccmuteconfig\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpsccmuteconfig::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpsccmuteconfig_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_gcp_gcpsccmuteconfig_v1alpha1_api_proto_goTypes = []any{
 	(*GcpSccMuteConfig)(nil),             // 0: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfig
 	(*GcpSccMuteConfigStatus)(nil),       // 1: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpSccMuteConfigSpec)(nil),         // 3: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigSpec
-	(*GcpSccMuteConfigStackOutputs)(nil), // 4: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStackOutputs
+	(*GcpSccMuteConfigOutputs)(nil),      // 4: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigOutputs
 }
 var file_catalog_gcp_gcpsccmuteconfig_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfig.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfig.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfig.spec:type_name -> dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigSpec
 	1, // 2: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfig.status:type_name -> dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStatus
-	4, // 3: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStatus.outputs:type_name -> dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStackOutputs
+	4, // 3: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStatus.outputs:type_name -> dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

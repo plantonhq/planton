@@ -34,7 +34,7 @@ type AzureFrontDoorRoute struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFrontDoorRouteSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureFrontDoorRoute) GetKind() string {
 	return ""
 }
 
-func (x *AzureFrontDoorRoute) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFrontDoorRoute) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureFrontDoorRoute) GetStatus() *AzureFrontDoorRouteStatus {
 // AzureFrontDoorRouteStatus holds the deployment status and outputs.
 type AzureFrontDoorRouteStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureFrontDoorRouteStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureFrontDoorRouteOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureFrontDoorRouteStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorroute_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFrontDoorRouteStatus) GetOutputs() *AzureFrontDoorRouteStackOutputs {
+func (x *AzureFrontDoorRouteStatus) GetOutputs() *AzureFrontDoorRouteOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurefrontdoorroute_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzureFrontDoorRouteR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatusR\x06status\"\x86\x01\n" +
-	"\x19AzureFrontDoorRouteStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatusR\x06status\"\x81\x01\n" +
+	"\x19AzureFrontDoorRouteStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azurefrontdoorroute.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurefrontdoorroute/v1alpha1;azurefrontdoorroutev1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurefrontdoorroute.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurefrontdoorroute\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurefrontdoorroute\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurefrontdoorroute::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurefrontdoorroute_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurefrontdoorroute_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefrontdoorroute_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFrontDoorRoute)(nil),             // 0: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRoute
-	(*AzureFrontDoorRouteStatus)(nil),       // 1: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFrontDoorRouteSpec)(nil),         // 3: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteSpec
-	(*AzureFrontDoorRouteStackOutputs)(nil), // 4: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStackOutputs
+	(*AzureFrontDoorRoute)(nil),          // 0: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRoute
+	(*AzureFrontDoorRouteStatus)(nil),    // 1: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFrontDoorRouteSpec)(nil),      // 3: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteSpec
+	(*AzureFrontDoorRouteOutputs)(nil),   // 4: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteOutputs
 }
 var file_catalog_azure_azurefrontdoorroute_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRoute.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRoute.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRoute.spec:type_name -> dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteSpec
 	1, // 2: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRoute.status:type_name -> dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatus
-	4, // 3: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatus.outputs:type_name -> dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStackOutputs
+	4, // 3: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStatus.outputs:type_name -> dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

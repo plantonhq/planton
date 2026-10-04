@@ -34,7 +34,7 @@ type AzureEventHubAuthorizationRule struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventHubAuthorizationRuleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureEventHubAuthorizationRule) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventHubAuthorizationRule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureEventHubAuthorizationRule) GetStatus() *AzureEventHubAuthorization
 // outputs.
 type AzureEventHubAuthorizationRuleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureEventHubAuthorizationRuleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureEventHubAuthorizationRuleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureEventHubAuthorizationRuleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventHubAuthorizationRuleStatus) GetOutputs() *AzureEventHubAuthorizationRuleStackOutputs {
+func (x *AzureEventHubAuthorizationRuleStatus) GetOutputs() *AzureEventHubAuthorizationRuleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_api_proto_rawDe
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eAzureEventHubAuthorizationRuleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatusR\x06status\"\xa7\x01\n" +
-	"$AzureEventHubAuthorizationRuleStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStackOutputsR\aoutputsB\xcd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatusR\x06status\"\xa2\x01\n" +
+	"$AzureEventHubAuthorizationRuleStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleOutputsR\aoutputsB\xcd\x03\n" +
 	"=com.dev.planton.azure.azureeventhubauthorizationrule.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/azure/azureeventhubauthorizationrule/v1alpha1;azureeventhubauthorizationrulev1alpha1\xa2\x02\x04DPAA\xaa\x029Dev.Planton.Azure.Azureeventhubauthorizationrule.V1alpha1\xca\x029Dev\\Planton\\Azure\\Azureeventhubauthorizationrule\\V1alpha1\xe2\x02EDev\\Planton\\Azure\\Azureeventhubauthorizationrule\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Azure::Azureeventhubauthorizationrule::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_api_proto_rawDes
 
 var file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventHubAuthorizationRule)(nil),             // 0: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRule
-	(*AzureEventHubAuthorizationRuleStatus)(nil),       // 1: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventHubAuthorizationRuleSpec)(nil),         // 3: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleSpec
-	(*AzureEventHubAuthorizationRuleStackOutputs)(nil), // 4: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStackOutputs
+	(*AzureEventHubAuthorizationRule)(nil),        // 0: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRule
+	(*AzureEventHubAuthorizationRuleStatus)(nil),  // 1: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventHubAuthorizationRuleSpec)(nil),    // 3: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleSpec
+	(*AzureEventHubAuthorizationRuleOutputs)(nil), // 4: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleOutputs
 }
 var file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRule.spec:type_name -> dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleSpec
 	1, // 2: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRule.status:type_name -> dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatus
-	4, // 3: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatus.outputs:type_name -> dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStackOutputs
+	4, // 3: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStatus.outputs:type_name -> dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

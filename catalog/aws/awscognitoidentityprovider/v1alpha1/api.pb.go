@@ -37,7 +37,7 @@ type AwsCognitoIdentityProvider struct {
 	// resource-kind for this identity provider resource, must be "AwsCognitoIdentityProvider".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the identity provider.
 	Spec *AwsCognitoIdentityProviderSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -90,7 +90,7 @@ func (x *AwsCognitoIdentityProvider) GetKind() string {
 	return ""
 }
 
-func (x *AwsCognitoIdentityProvider) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCognitoIdentityProvider) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,8 +115,8 @@ func (x *AwsCognitoIdentityProvider) GetStatus() *AwsCognitoIdentityProviderStat
 // outputs from a provisioned identity provider.
 type AwsCognitoIdentityProviderStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsCognitoIdentityProviderStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsCognitoIdentityProviderOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*AwsCognitoIdentityProviderStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitoidentityprovider_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCognitoIdentityProviderStatus) GetOutputs() *AwsCognitoIdentityProviderStackOutputs {
+func (x *AwsCognitoIdentityProviderStatus) GetOutputs() *AwsCognitoIdentityProviderOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_aws_awscognitoidentityprovider_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAwsCognitoIdentityProviderR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatusR\x06status\"\x99\x01\n" +
-	" AwsCognitoIdentityProviderStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatusR\x06status\"\x94\x01\n" +
+	" AwsCognitoIdentityProviderStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.aws.awscognitoidentityprovider.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/aws/awscognitoidentityprovider/v1alpha1;awscognitoidentityproviderv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Aws.Awscognitoidentityprovider.V1alpha1\xca\x023Dev\\Planton\\Aws\\Awscognitoidentityprovider\\V1alpha1\xe2\x02?Dev\\Planton\\Aws\\Awscognitoidentityprovider\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Aws::Awscognitoidentityprovider::V1alpha1b\x06proto3"
 
 var (
@@ -190,17 +190,17 @@ func file_catalog_aws_awscognitoidentityprovider_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_aws_awscognitoidentityprovider_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscognitoidentityprovider_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCognitoIdentityProvider)(nil),             // 0: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProvider
-	(*AwsCognitoIdentityProviderStatus)(nil),       // 1: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCognitoIdentityProviderSpec)(nil),         // 3: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderSpec
-	(*AwsCognitoIdentityProviderStackOutputs)(nil), // 4: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStackOutputs
+	(*AwsCognitoIdentityProvider)(nil),        // 0: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProvider
+	(*AwsCognitoIdentityProviderStatus)(nil),  // 1: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCognitoIdentityProviderSpec)(nil),    // 3: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderSpec
+	(*AwsCognitoIdentityProviderOutputs)(nil), // 4: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderOutputs
 }
 var file_catalog_aws_awscognitoidentityprovider_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProvider.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProvider.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProvider.spec:type_name -> dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderSpec
 	1, // 2: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProvider.status:type_name -> dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatus
-	4, // 3: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatus.outputs:type_name -> dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStackOutputs
+	4, // 3: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStatus.outputs:type_name -> dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

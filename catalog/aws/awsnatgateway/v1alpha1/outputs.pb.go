@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsNatGatewayStackOutputs contains the values produced by deploying an
+// AwsNatGatewayOutputs contains the values produced by deploying an
 // AwsNatGateway. Downstream components reference these via StringValueOrRef --
 // most commonly an AwsSubnet route whose target is this gateway's id.
 //
@@ -29,7 +29,7 @@ const (
 // does the underlying API), so the gateway is identified solely by
 // nat_gateway_id. Do not add a nat_gateway_arn output -- there is nothing to
 // populate it with.
-type AwsNatGatewayStackOutputs struct {
+type AwsNatGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The NAT gateway's id (e.g. "nat-0abc123"). This is the value a subnet route
 	// uses as its target_id when target_type is nat_gateway.
@@ -50,20 +50,20 @@ type AwsNatGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsNatGatewayStackOutputs) Reset() {
-	*x = AwsNatGatewayStackOutputs{}
+func (x *AwsNatGatewayOutputs) Reset() {
+	*x = AwsNatGatewayOutputs{}
 	mi := &file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsNatGatewayStackOutputs) String() string {
+func (x *AwsNatGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsNatGatewayStackOutputs) ProtoMessage() {}
+func (*AwsNatGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsNatGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *AwsNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsNatGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsNatGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsNatGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsNatGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsNatGatewayStackOutputs) GetNatGatewayId() string {
+func (x *AwsNatGatewayOutputs) GetNatGatewayId() string {
 	if x != nil {
 		return x.NatGatewayId
 	}
 	return ""
 }
 
-func (x *AwsNatGatewayStackOutputs) GetPublicIp() string {
+func (x *AwsNatGatewayOutputs) GetPublicIp() string {
 	if x != nil {
 		return x.PublicIp
 	}
 	return ""
 }
 
-func (x *AwsNatGatewayStackOutputs) GetPrivateIp() string {
+func (x *AwsNatGatewayOutputs) GetPrivateIp() string {
 	if x != nil {
 		return x.PrivateIp
 	}
 	return ""
 }
 
-func (x *AwsNatGatewayStackOutputs) GetNetworkInterfaceId() string {
+func (x *AwsNatGatewayOutputs) GetNetworkInterfaceId() string {
 	if x != nil {
 		return x.NetworkInterfaceId
 	}
 	return ""
 }
 
-func (x *AwsNatGatewayStackOutputs) GetSubnetId() string {
+func (x *AwsNatGatewayOutputs) GetSubnetId() string {
 	if x != nil {
 		return x.SubnetId
 	}
 	return ""
 }
 
-func (x *AwsNatGatewayStackOutputs) GetRegion() string {
+func (x *AwsNatGatewayOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -126,8 +126,8 @@ var File_catalog_aws_awsnatgateway_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsnatgateway/v1alpha1/outputs.proto\x12&dev.planton.aws.awsnatgateway.v1alpha1\"\xe4\x01\n" +
-	"\x19AwsNatGatewayStackOutputs\x12$\n" +
+	"0catalog/aws/awsnatgateway/v1alpha1/outputs.proto\x12&dev.planton.aws.awsnatgateway.v1alpha1\"\xdf\x01\n" +
+	"\x14AwsNatGatewayOutputs\x12$\n" +
 	"\x0enat_gateway_id\x18\x01 \x01(\tR\fnatGatewayId\x12\x1b\n" +
 	"\tpublic_ip\x18\x02 \x01(\tR\bpublicIp\x12\x1d\n" +
 	"\n" +
@@ -151,7 +151,7 @@ func file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsNatGatewayStackOutputs)(nil), // 0: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStackOutputs
+	(*AwsNatGatewayOutputs)(nil), // 0: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayOutputs
 }
 var file_catalog_aws_awsnatgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

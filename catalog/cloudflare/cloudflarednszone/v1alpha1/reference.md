@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **CloudflareDnsZoneSpec** defines a Cloudflare DNS zone: the domain, its
 account, common zone-level options, optional zone-wide DNS settings and DNSSEC,
@@ -1122,7 +1122,7 @@ reference to another CloudflareDnsZone.
 `CloudflareDnsZoneDnssec`
 
 Optional DNSSEC configuration. Enable to have Cloudflare sign the zone; the
-DS record material to hand to your registrar is published as stack outputs.
+DS record material to hand to your registrar is published as outputs.
 DNSSEC activates only on an ACTIVE (registrar-delegated) zone: on a
 PENDING zone Cloudflare rejects the enable with 400 code 1017 "Invalid
 zone plan for action" (measured live; the same call succeeds on an

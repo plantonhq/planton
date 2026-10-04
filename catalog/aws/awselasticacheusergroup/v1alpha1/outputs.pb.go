@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsElasticacheUserGroupStackOutputs captures observable identifiers from a
+// AwsElasticacheUserGroupOutputs captures observable identifiers from a
 // provisioned ElastiCache user group. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef — most importantly the
 // replication group's `user_group_ids` and the serverless cache's
 // `user_group_id`.
-type AwsElasticacheUserGroupStackOutputs struct {
+type AwsElasticacheUserGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The group's AWS identifier (the user group id). This is what caches
 	// reference to attach RBAC and what the AWS CLI/API address.
@@ -38,20 +38,20 @@ type AwsElasticacheUserGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsElasticacheUserGroupStackOutputs) Reset() {
-	*x = AwsElasticacheUserGroupStackOutputs{}
+func (x *AwsElasticacheUserGroupOutputs) Reset() {
+	*x = AwsElasticacheUserGroupOutputs{}
 	mi := &file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsElasticacheUserGroupStackOutputs) String() string {
+func (x *AwsElasticacheUserGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsElasticacheUserGroupStackOutputs) ProtoMessage() {}
+func (*AwsElasticacheUserGroupOutputs) ProtoMessage() {}
 
-func (x *AwsElasticacheUserGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsElasticacheUserGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AwsElasticacheUserGroupStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsElasticacheUserGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsElasticacheUserGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsElasticacheUserGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsElasticacheUserGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsElasticacheUserGroupStackOutputs) GetUserGroupId() string {
+func (x *AwsElasticacheUserGroupOutputs) GetUserGroupId() string {
 	if x != nil {
 		return x.UserGroupId
 	}
 	return ""
 }
 
-func (x *AwsElasticacheUserGroupStackOutputs) GetArn() string {
+func (x *AwsElasticacheUserGroupOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
@@ -86,8 +86,8 @@ var File_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awselasticacheusergroup/v1alpha1/outputs.proto\x120dev.planton.aws.awselasticacheusergroup.v1alpha1\"[\n" +
-	"#AwsElasticacheUserGroupStackOutputs\x12\"\n" +
+	":catalog/aws/awselasticacheusergroup/v1alpha1/outputs.proto\x120dev.planton.aws.awselasticacheusergroup.v1alpha1\"V\n" +
+	"\x1eAwsElasticacheUserGroupOutputs\x12\"\n" +
 	"\ruser_group_id\x18\x01 \x01(\tR\vuserGroupId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arnB\x94\x03\n" +
 	"4com.dev.planton.aws.awselasticacheusergroup.v1alpha1B\fOutputsProtoP\x01Zigithub.com/plantonhq/planton/catalog/aws/awselasticacheusergroup/v1alpha1;awselasticacheusergroupv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Aws.Awselasticacheusergroup.V1alpha1\xca\x020Dev\\Planton\\Aws\\Awselasticacheusergroup\\V1alpha1\xe2\x02<Dev\\Planton\\Aws\\Awselasticacheusergroup\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Aws::Awselasticacheusergroup::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsElasticacheUserGroupStackOutputs)(nil), // 0: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStackOutputs
+	(*AwsElasticacheUserGroupOutputs)(nil), // 0: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupOutputs
 }
 var file_catalog_aws_awselasticacheusergroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

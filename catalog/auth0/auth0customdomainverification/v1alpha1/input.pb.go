@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0CustomDomainVerificationStackInput is the input to the
+// Auth0CustomDomainVerificationIacInput is the input to the
 // Auth0CustomDomainVerification IaC module. It contains the target resource and
 // the Auth0 provider configuration.
-type Auth0CustomDomainVerificationStackInput struct {
+type Auth0CustomDomainVerificationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0CustomDomainVerification resource to be deployed.
 	Target *Auth0CustomDomainVerification `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -39,20 +39,20 @@ type Auth0CustomDomainVerificationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0CustomDomainVerificationStackInput) Reset() {
-	*x = Auth0CustomDomainVerificationStackInput{}
+func (x *Auth0CustomDomainVerificationIacInput) Reset() {
+	*x = Auth0CustomDomainVerificationIacInput{}
 	mi := &file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0CustomDomainVerificationStackInput) String() string {
+func (x *Auth0CustomDomainVerificationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0CustomDomainVerificationStackInput) ProtoMessage() {}
+func (*Auth0CustomDomainVerificationIacInput) ProtoMessage() {}
 
-func (x *Auth0CustomDomainVerificationStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0CustomDomainVerificationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *Auth0CustomDomainVerificationStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0CustomDomainVerificationStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0CustomDomainVerificationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0CustomDomainVerificationIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0CustomDomainVerificationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0CustomDomainVerificationStackInput) GetTarget() *Auth0CustomDomainVerification {
+func (x *Auth0CustomDomainVerificationIacInput) GetTarget() *Auth0CustomDomainVerification {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0CustomDomainVerificationStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0CustomDomainVerificationIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -87,8 +87,8 @@ var File_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto protor
 
 const file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/auth0/auth0customdomainverification/v1alpha1/input.proto\x128dev.planton.auth0.auth0customdomainverification.v1alpha1\x1a>catalog/auth0/auth0customdomainverification/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xeb\x01\n" +
-	"'Auth0CustomDomainVerificationStackInput\x12o\n" +
+	"@catalog/auth0/auth0customdomainverification/v1alpha1/input.proto\x128dev.planton.auth0.auth0customdomainverification.v1alpha1\x1a>catalog/auth0/auth0customdomainverification/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xe9\x01\n" +
+	"%Auth0CustomDomainVerificationIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xc8\x03\n" +
 	"<com.dev.planton.auth0.auth0customdomainverification.v1alpha1B\n" +
@@ -108,13 +108,13 @@ func file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_rawDe
 
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0CustomDomainVerificationStackInput)(nil), // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackInput
-	(*Auth0CustomDomainVerification)(nil),           // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification
-	(*auth0.Auth0ProviderConfig)(nil),               // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0CustomDomainVerificationIacInput)(nil), // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationIacInput
+	(*Auth0CustomDomainVerification)(nil),         // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification
+	(*auth0.Auth0ProviderConfig)(nil),             // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackInput.target:type_name -> dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification
-	2, // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationIacInput.target:type_name -> dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification
+	2, // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

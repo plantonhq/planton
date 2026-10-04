@@ -31,7 +31,7 @@ type CloudflareR2Bucket struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareR2BucketSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareR2Bucket) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareR2Bucket) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareR2Bucket) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareR2Bucket) GetStatus() *CloudflareR2BucketStatus {
 // cloudflare-r2-bucket status
 type CloudflareR2BucketStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-r2-bucket stack-outputs
-	Outputs       *CloudflareR2BucketStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-r2-bucket outputs
+	Outputs       *CloudflareR2BucketOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareR2BucketStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareR2BucketStatus) GetOutputs() *CloudflareR2BucketStackOutputs {
+func (x *CloudflareR2BucketStatus) GetOutputs() *CloudflareR2BucketOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12CloudflareR2BucketR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12f\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12f\n" +
 	"\x04spec\x18\x04 \x01(\v2J.dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12d\n" +
-	"\x06status\x18\x05 \x01(\v2L.dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatusR\x06status\"\x88\x01\n" +
-	"\x18CloudflareR2BucketStatus\x12l\n" +
-	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2L.dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatusR\x06status\"\x83\x01\n" +
+	"\x18CloudflareR2BucketStatus\x12g\n" +
+	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketOutputsR\aoutputsB\x97\x03\n" +
 	"6com.dev.planton.cloudflare.cloudflarer2bucket.v1alpha1B\bApiProtoP\x01Zfgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarer2bucket/v1alpha1;cloudflarer2bucketv1alpha1\xa2\x02\x04DPCC\xaa\x022Dev.Planton.Cloudflare.Cloudflarer2bucket.V1alpha1\xca\x022Dev\\Planton\\Cloudflare\\Cloudflarer2bucket\\V1alpha1\xe2\x02>Dev\\Planton\\Cloudflare\\Cloudflarer2bucket\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Cloudflare::Cloudflarer2bucket::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareR2Bucket)(nil),             // 0: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Bucket
-	(*CloudflareR2BucketStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareR2BucketSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketSpec
-	(*CloudflareR2BucketStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStackOutputs
+	(*CloudflareR2Bucket)(nil),           // 0: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Bucket
+	(*CloudflareR2BucketStatus)(nil),     // 1: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareR2BucketSpec)(nil),       // 3: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketSpec
+	(*CloudflareR2BucketOutputs)(nil),    // 4: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketOutputs
 }
 var file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Bucket.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Bucket.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Bucket.spec:type_name -> dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketSpec
 	1, // 2: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Bucket.status:type_name -> dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatus
-	4, // 3: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

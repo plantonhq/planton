@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-kafka-connector stack-input
-type KubernetesKafkaConnectorStackInput struct {
+// kubernetes-kafka-connector iac-input
+type KubernetesKafkaConnectorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesKafkaConnector `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesKafkaConnectorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaConnectorStackInput) Reset() {
-	*x = KubernetesKafkaConnectorStackInput{}
+func (x *KubernetesKafkaConnectorIacInput) Reset() {
+	*x = KubernetesKafkaConnectorIacInput{}
 	mi := &file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaConnectorStackInput) String() string {
+func (x *KubernetesKafkaConnectorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaConnectorStackInput) ProtoMessage() {}
+func (*KubernetesKafkaConnectorIacInput) ProtoMessage() {}
 
-func (x *KubernetesKafkaConnectorStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaConnectorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesKafkaConnectorStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaConnectorStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaConnectorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaConnectorIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaConnectorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaConnectorStackInput) GetTarget() *KubernetesKafkaConnector {
+func (x *KubernetesKafkaConnectorIacInput) GetTarget() *KubernetesKafkaConnector {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesKafkaConnectorStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesKafkaConnectorIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto protor
 
 const file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kuberneteskafkaconnector/v1alpha1/input.proto\x128dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1\x1a>catalog/kubernetes/kuberneteskafkaconnector/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xeb\x01\n" +
-	"\"KubernetesKafkaConnectorStackInput\x12j\n" +
+	"@catalog/kubernetes/kuberneteskafkaconnector/v1alpha1/input.proto\x128dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1\x1a>catalog/kubernetes/kuberneteskafkaconnector/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe9\x01\n" +
+	" KubernetesKafkaConnectorIacInput\x12j\n" +
 	"\x06target\x18\x01 \x01(\v2R.dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	"<com.dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_rawDe
 
 var file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesKafkaConnectorStackInput)(nil),  // 0: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorStackInput
+	(*KubernetesKafkaConnectorIacInput)(nil),    // 0: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorIacInput
 	(*KubernetesKafkaConnector)(nil),            // 1: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnector
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorStackInput.target:type_name -> dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnector
-	2, // 1: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorIacInput.target:type_name -> dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnector
+	2, // 1: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

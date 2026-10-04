@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0BrandingStackOutputs contains the branding as applied.
+// Auth0BrandingOutputs contains the branding as applied.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/branding_theme#attributes-reference
-type Auth0BrandingStackOutputs struct {
+type Auth0BrandingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// theme_id is the id of the theme the branding applied; empty when the spec
 	// declares no theme.
@@ -36,20 +36,20 @@ type Auth0BrandingStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0BrandingStackOutputs) Reset() {
-	*x = Auth0BrandingStackOutputs{}
+func (x *Auth0BrandingOutputs) Reset() {
+	*x = Auth0BrandingOutputs{}
 	mi := &file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0BrandingStackOutputs) String() string {
+func (x *Auth0BrandingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0BrandingStackOutputs) ProtoMessage() {}
+func (*Auth0BrandingOutputs) ProtoMessage() {}
 
-func (x *Auth0BrandingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0BrandingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *Auth0BrandingStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0BrandingStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0BrandingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0BrandingOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0BrandingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0BrandingStackOutputs) GetThemeId() string {
+func (x *Auth0BrandingOutputs) GetThemeId() string {
 	if x != nil {
 		return x.ThemeId
 	}
 	return ""
 }
 
-func (x *Auth0BrandingStackOutputs) GetLogoUrl() string {
+func (x *Auth0BrandingOutputs) GetLogoUrl() string {
 	if x != nil {
 		return x.LogoUrl
 	}
@@ -84,8 +84,8 @@ var File_catalog_auth0_auth0branding_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/auth0/auth0branding/v1alpha1/outputs.proto\x12(dev.planton.auth0.auth0branding.v1alpha1\"Q\n" +
-	"\x19Auth0BrandingStackOutputs\x12\x19\n" +
+	"2catalog/auth0/auth0branding/v1alpha1/outputs.proto\x12(dev.planton.auth0.auth0branding.v1alpha1\"L\n" +
+	"\x14Auth0BrandingOutputs\x12\x19\n" +
 	"\btheme_id\x18\x01 \x01(\tR\athemeId\x12\x19\n" +
 	"\blogo_url\x18\x02 \x01(\tR\alogoUrlB\xda\x02\n" +
 	",com.dev.planton.auth0.auth0branding.v1alpha1B\fOutputsProtoP\x01ZWgithub.com/plantonhq/planton/catalog/auth0/auth0branding/v1alpha1;auth0brandingv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Auth0.Auth0branding.V1alpha1\xca\x02(Dev\\Planton\\Auth0\\Auth0branding\\V1alpha1\xe2\x024Dev\\Planton\\Auth0\\Auth0branding\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Auth0::Auth0branding::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0BrandingStackOutputs)(nil), // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackOutputs
+	(*Auth0BrandingOutputs)(nil), // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingOutputs
 }
 var file_catalog_auth0_auth0branding_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

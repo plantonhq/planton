@@ -35,8 +35,8 @@ go_test(
     embed = [":conversion"],
     deps = [
         "//catalog/_test/testcatalogkindgeneric/v1alpha1",
-        "//pkg/conversion/embedded",
         "//pkg/catalogkindreflect",
+        "//pkg/conversion/embedded",
         "//shared/catalogkind",
         "@io_k8s_sigs_yaml//:yaml",
         "@org_golang_google_protobuf//reflect/protoreflect",

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMwaaEnvironmentStackOutputs captures observable identifiers and endpoints from a deployed
+// AwsMwaaEnvironmentOutputs captures observable identifiers and endpoints from a deployed
 // Amazon MWAA environment. These outputs enable downstream consumers (CI/CD pipelines,
 // monitoring dashboards, documentation) to reference the Airflow UI, connect to the
 // environment, and integrate with security and observability workflows.
-type AwsMwaaEnvironmentStackOutputs struct {
+type AwsMwaaEnvironmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// environment_arn is the Amazon Resource Name of the MWAA environment,
 	// used in IAM policies and cross-service references.
@@ -61,20 +61,20 @@ type AwsMwaaEnvironmentStackOutputs struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) Reset() {
-	*x = AwsMwaaEnvironmentStackOutputs{}
+func (x *AwsMwaaEnvironmentOutputs) Reset() {
+	*x = AwsMwaaEnvironmentOutputs{}
 	mi := &file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) String() string {
+func (x *AwsMwaaEnvironmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMwaaEnvironmentStackOutputs) ProtoMessage() {}
+func (*AwsMwaaEnvironmentOutputs) ProtoMessage() {}
 
-func (x *AwsMwaaEnvironmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMwaaEnvironmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,75 +86,75 @@ func (x *AwsMwaaEnvironmentStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMwaaEnvironmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMwaaEnvironmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMwaaEnvironmentOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMwaaEnvironmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetEnvironmentArn() string {
+func (x *AwsMwaaEnvironmentOutputs) GetEnvironmentArn() string {
 	if x != nil {
 		return x.EnvironmentArn
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetEnvironmentName() string {
+func (x *AwsMwaaEnvironmentOutputs) GetEnvironmentName() string {
 	if x != nil {
 		return x.EnvironmentName
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetWebserverUrl() string {
+func (x *AwsMwaaEnvironmentOutputs) GetWebserverUrl() string {
 	if x != nil {
 		return x.WebserverUrl
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetAirflowVersion() string {
+func (x *AwsMwaaEnvironmentOutputs) GetAirflowVersion() string {
 	if x != nil {
 		return x.AirflowVersion
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetServiceRoleArn() string {
+func (x *AwsMwaaEnvironmentOutputs) GetServiceRoleArn() string {
 	if x != nil {
 		return x.ServiceRoleArn
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetEnvironmentClass() string {
+func (x *AwsMwaaEnvironmentOutputs) GetEnvironmentClass() string {
 	if x != nil {
 		return x.EnvironmentClass
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetStatus() string {
+func (x *AwsMwaaEnvironmentOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetCreatedAt() string {
+func (x *AwsMwaaEnvironmentOutputs) GetCreatedAt() string {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetDatabaseVpcEndpointService() string {
+func (x *AwsMwaaEnvironmentOutputs) GetDatabaseVpcEndpointService() string {
 	if x != nil {
 		return x.DatabaseVpcEndpointService
 	}
 	return ""
 }
 
-func (x *AwsMwaaEnvironmentStackOutputs) GetWebserverVpcEndpointService() string {
+func (x *AwsMwaaEnvironmentOutputs) GetWebserverVpcEndpointService() string {
 	if x != nil {
 		return x.WebserverVpcEndpointService
 	}
@@ -165,8 +165,8 @@ var File_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsmwaaenvironment/v1alpha1/outputs.proto\x12+dev.planton.aws.awsmwaaenvironment.v1alpha1\"\xd8\x03\n" +
-	"\x1eAwsMwaaEnvironmentStackOutputs\x12'\n" +
+	"5catalog/aws/awsmwaaenvironment/v1alpha1/outputs.proto\x12+dev.planton.aws.awsmwaaenvironment.v1alpha1\"\xd3\x03\n" +
+	"\x19AwsMwaaEnvironmentOutputs\x12'\n" +
 	"\x0fenvironment_arn\x18\x01 \x01(\tR\x0eenvironmentArn\x12)\n" +
 	"\x10environment_name\x18\x02 \x01(\tR\x0fenvironmentName\x12#\n" +
 	"\rwebserver_url\x18\x03 \x01(\tR\fwebserverUrl\x12'\n" +
@@ -195,7 +195,7 @@ func file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMwaaEnvironmentStackOutputs)(nil), // 0: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStackOutputs
+	(*AwsMwaaEnvironmentOutputs)(nil), // 0: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentOutputs
 }
 var file_catalog_aws_awsmwaaenvironment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

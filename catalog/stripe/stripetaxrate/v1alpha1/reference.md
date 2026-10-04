@@ -6,7 +6,7 @@
 
 **apiVersion**: `stripe.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 StripeTaxRateSpec declares a manual tax rate -- VAT at 19% in Germany, a state sales tax -- that
 invoices, subscriptions, Checkout sessions and payment links apply when the account calculates

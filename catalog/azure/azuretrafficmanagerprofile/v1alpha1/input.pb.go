@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureTrafficManagerProfileStackInput is the input to the IaC modules
+// AzureTrafficManagerProfileIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureTrafficManagerProfileStackInput struct {
+type AzureTrafficManagerProfileIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Traffic Manager profile resource to deploy.
 	Target *AzureTrafficManagerProfile `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureTrafficManagerProfileStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureTrafficManagerProfileStackInput) Reset() {
-	*x = AzureTrafficManagerProfileStackInput{}
+func (x *AzureTrafficManagerProfileIacInput) Reset() {
+	*x = AzureTrafficManagerProfileIacInput{}
 	mi := &file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureTrafficManagerProfileStackInput) String() string {
+func (x *AzureTrafficManagerProfileIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureTrafficManagerProfileStackInput) ProtoMessage() {}
+func (*AzureTrafficManagerProfileIacInput) ProtoMessage() {}
 
-func (x *AzureTrafficManagerProfileStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureTrafficManagerProfileIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureTrafficManagerProfileStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureTrafficManagerProfileStackInput.ProtoReflect.Descriptor instead.
-func (*AzureTrafficManagerProfileStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureTrafficManagerProfileIacInput.ProtoReflect.Descriptor instead.
+func (*AzureTrafficManagerProfileIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureTrafficManagerProfileStackInput) GetTarget() *AzureTrafficManagerProfile {
+func (x *AzureTrafficManagerProfileIacInput) GetTarget() *AzureTrafficManagerProfile {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureTrafficManagerProfileStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureTrafficManagerProfileIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto protorefl
 
 const file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azuretrafficmanagerprofile/v1alpha1/input.proto\x125dev.planton.azure.azuretrafficmanagerprofile.v1alpha1\x1a;catalog/azure/azuretrafficmanagerprofile/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe2\x01\n" +
-	"$AzureTrafficManagerProfileStackInput\x12i\n" +
+	"=catalog/azure/azuretrafficmanagerprofile/v1alpha1/input.proto\x125dev.planton.azure.azuretrafficmanagerprofile.v1alpha1\x1a;catalog/azure/azuretrafficmanagerprofile/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe0\x01\n" +
+	"\"AzureTrafficManagerProfileIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xb3\x03\n" +
 	"9com.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_rawDescG
 
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_goTypes = []any{
-	(*AzureTrafficManagerProfileStackInput)(nil), // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackInput
-	(*AzureTrafficManagerProfile)(nil),           // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile
-	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureTrafficManagerProfileIacInput)(nil), // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileIacInput
+	(*AzureTrafficManagerProfile)(nil),         // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile
+	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackInput.target:type_name -> dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile
-	2, // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileIacInput.target:type_name -> dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile
+	2, // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

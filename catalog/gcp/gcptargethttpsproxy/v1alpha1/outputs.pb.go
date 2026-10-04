@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP target HTTPS proxy.
-type GcpTargetHttpsProxyStackOutputs struct {
+type GcpTargetHttpsProxyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the target HTTPS proxy. This is the value a
 	// forwarding rule references as its target — the composition handle that
@@ -45,20 +45,20 @@ type GcpTargetHttpsProxyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) Reset() {
-	*x = GcpTargetHttpsProxyStackOutputs{}
+func (x *GcpTargetHttpsProxyOutputs) Reset() {
+	*x = GcpTargetHttpsProxyOutputs{}
 	mi := &file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) String() string {
+func (x *GcpTargetHttpsProxyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTargetHttpsProxyStackOutputs) ProtoMessage() {}
+func (*GcpTargetHttpsProxyOutputs) ProtoMessage() {}
 
-func (x *GcpTargetHttpsProxyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpTargetHttpsProxyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *GcpTargetHttpsProxyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTargetHttpsProxyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpTargetHttpsProxyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTargetHttpsProxyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpTargetHttpsProxyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) GetSelfLink() string {
+func (x *GcpTargetHttpsProxyOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) GetProxyName() string {
+func (x *GcpTargetHttpsProxyOutputs) GetProxyName() string {
 	if x != nil {
 		return x.ProxyName
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) GetProxyId() string {
+func (x *GcpTargetHttpsProxyOutputs) GetProxyId() string {
 	if x != nil {
 		return x.ProxyId
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) GetFingerprint() string {
+func (x *GcpTargetHttpsProxyOutputs) GetFingerprint() string {
 	if x != nil {
 		return x.Fingerprint
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpsProxyStackOutputs) GetRegion() string {
+func (x *GcpTargetHttpsProxyOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -114,8 +114,8 @@ var File_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcptargethttpsproxy/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\"\xb2\x01\n" +
-	"\x1fGcpTargetHttpsProxyStackOutputs\x12\x1b\n" +
+	"6catalog/gcp/gcptargethttpsproxy/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\"\xad\x01\n" +
+	"\x1aGcpTargetHttpsProxyOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12\x1d\n" +
 	"\n" +
 	"proxy_name\x18\x02 \x01(\tR\tproxyName\x12\x19\n" +
@@ -138,7 +138,7 @@ func file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpTargetHttpsProxyStackOutputs)(nil), // 0: dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxyStackOutputs
+	(*GcpTargetHttpsProxyOutputs)(nil), // 0: dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxyOutputs
 }
 var file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

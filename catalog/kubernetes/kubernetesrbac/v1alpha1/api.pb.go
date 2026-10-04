@@ -38,7 +38,7 @@ type KubernetesRbac struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the RBAC grant resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the RBAC grant.
 	// Defines the scope, the role (created or existing), and the subjects.
 	Spec *KubernetesRbacSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -93,7 +93,7 @@ func (x *KubernetesRbac) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesRbac) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesRbac) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -121,7 +121,7 @@ type KubernetesRbacStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the RBAC grant deployment.
 	// Contains the created object names and kinds for downstream composition.
-	Outputs       *KubernetesRbacStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesRbacOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -156,7 +156,7 @@ func (*KubernetesRbacStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrbac_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesRbacStatus) GetOutputs() *KubernetesRbacStackOutputs {
+func (x *KubernetesRbacStatus) GetOutputs() *KubernetesRbacOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -174,11 +174,11 @@ const file_catalog_kubernetes_kubernetesrbac_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eKubernetesRbacR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
 	"\x04spec\x18\x04 \x01(\v2B.dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\\\n" +
-	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStatusR\x06status\"|\n" +
-	"\x14KubernetesRbacStatus\x12d\n" +
-	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStatusR\x06status\"w\n" +
+	"\x14KubernetesRbacStatus\x12_\n" +
+	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacOutputsR\aoutputsB\xfb\x02\n" +
 	"2com.dev.planton.kubernetes.kubernetesrbac.v1alpha1B\bApiProtoP\x01Z^github.com/plantonhq/planton/catalog/kubernetes/kubernetesrbac/v1alpha1;kubernetesrbacv1alpha1\xa2\x02\x04DPKK\xaa\x02.Dev.Planton.Kubernetes.Kubernetesrbac.V1alpha1\xca\x02.Dev\\Planton\\Kubernetes\\Kubernetesrbac\\V1alpha1\xe2\x02:Dev\\Planton\\Kubernetes\\Kubernetesrbac\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Kubernetes::Kubernetesrbac::V1alpha1b\x06proto3"
 
 var (
@@ -197,15 +197,15 @@ var file_catalog_kubernetes_kubernetesrbac_v1alpha1_api_proto_msgTypes = make([]
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesRbac)(nil),               // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac
 	(*KubernetesRbacStatus)(nil),         // 1: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesRbacSpec)(nil),           // 3: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacSpec
-	(*KubernetesRbacStackOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackOutputs
+	(*KubernetesRbacOutputs)(nil),        // 4: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacOutputs
 }
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac.spec:type_name -> dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacSpec
 	1, // 2: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbac.status:type_name -> dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStatus
-	4, // 3: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

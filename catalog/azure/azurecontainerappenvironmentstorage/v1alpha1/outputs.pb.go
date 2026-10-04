@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppEnvironmentStorageStackOutputs** captures the outputs
+// **AzureContainerAppEnvironmentStorageOutputs** captures the outputs
 // of registering an Azure Files share on a Container App Environment.
 //
 // The `storage_name` output is the composition seam: AzureContainerApp and
 // AzureContainerAppJob volumes reference it in their `storage_name` field
 // to mount the share.
-type AzureContainerAppEnvironmentStorageStackOutputs struct {
+type AzureContainerAppEnvironmentStorageOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the storage registration.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/storages/{name}
@@ -39,20 +39,20 @@ type AzureContainerAppEnvironmentStorageStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppEnvironmentStorageStackOutputs) Reset() {
-	*x = AzureContainerAppEnvironmentStorageStackOutputs{}
+func (x *AzureContainerAppEnvironmentStorageOutputs) Reset() {
+	*x = AzureContainerAppEnvironmentStorageOutputs{}
 	mi := &file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppEnvironmentStorageStackOutputs) String() string {
+func (x *AzureContainerAppEnvironmentStorageOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppEnvironmentStorageStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppEnvironmentStorageOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppEnvironmentStorageStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppEnvironmentStorageOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *AzureContainerAppEnvironmentStorageStackOutputs) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppEnvironmentStorageStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppEnvironmentStorageStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppEnvironmentStorageOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppEnvironmentStorageOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppEnvironmentStorageStackOutputs) GetStorageId() string {
+func (x *AzureContainerAppEnvironmentStorageOutputs) GetStorageId() string {
 	if x != nil {
 		return x.StorageId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStorageStackOutputs) GetStorageName() string {
+func (x *AzureContainerAppEnvironmentStorageOutputs) GetStorageName() string {
 	if x != nil {
 		return x.StorageName
 	}
@@ -87,8 +87,8 @@ var File_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_prot
 
 const file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/azure/azurecontainerappenvironmentstorage/v1alpha1/outputs.proto\x12>dev.planton.azure.azurecontainerappenvironmentstorage.v1alpha1\"s\n" +
-	"/AzureContainerAppEnvironmentStorageStackOutputs\x12\x1d\n" +
+	"Hcatalog/azure/azurecontainerappenvironmentstorage/v1alpha1/outputs.proto\x12>dev.planton.azure.azurecontainerappenvironmentstorage.v1alpha1\"n\n" +
+	"*AzureContainerAppEnvironmentStorageOutputs\x12\x1d\n" +
 	"\n" +
 	"storage_id\x18\x01 \x01(\tR\tstorageId\x12!\n" +
 	"\fstorage_name\x18\x02 \x01(\tR\vstorageNameB\xf5\x03\n" +
@@ -108,7 +108,7 @@ func file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_pro
 
 var file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentStorageStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentstorage.v1alpha1.AzureContainerAppEnvironmentStorageStackOutputs
+	(*AzureContainerAppEnvironmentStorageOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentstorage.v1alpha1.AzureContainerAppEnvironmentStorageOutputs
 }
 var file_catalog_azure_azurecontainerappenvironmentstorage_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

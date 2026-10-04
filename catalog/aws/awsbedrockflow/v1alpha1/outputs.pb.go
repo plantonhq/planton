@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockFlowStackOutputs captures observable identifiers from a
+// AwsBedrockFlowOutputs captures observable identifiers from a
 // provisioned Bedrock flow.
-type AwsBedrockFlowStackOutputs struct {
+type AwsBedrockFlowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique flow identifier (e.g. "ABCDEFGHIJ").
 	FlowId string `protobuf:"bytes,1,opt,name=flow_id,json=flowId,proto3" json:"flow_id,omitempty"`
@@ -36,20 +36,20 @@ type AwsBedrockFlowStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockFlowStackOutputs) Reset() {
-	*x = AwsBedrockFlowStackOutputs{}
+func (x *AwsBedrockFlowOutputs) Reset() {
+	*x = AwsBedrockFlowOutputs{}
 	mi := &file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockFlowStackOutputs) String() string {
+func (x *AwsBedrockFlowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockFlowStackOutputs) ProtoMessage() {}
+func (*AwsBedrockFlowOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockFlowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockFlowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *AwsBedrockFlowStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockFlowStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockFlowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockFlowOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockFlowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockFlowStackOutputs) GetFlowId() string {
+func (x *AwsBedrockFlowOutputs) GetFlowId() string {
 	if x != nil {
 		return x.FlowId
 	}
 	return ""
 }
 
-func (x *AwsBedrockFlowStackOutputs) GetFlowArn() string {
+func (x *AwsBedrockFlowOutputs) GetFlowArn() string {
 	if x != nil {
 		return x.FlowArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockFlowStackOutputs) GetDraftVersion() string {
+func (x *AwsBedrockFlowOutputs) GetDraftVersion() string {
 	if x != nil {
 		return x.DraftVersion
 	}
@@ -91,8 +91,8 @@ var File_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsbedrockflow/v1alpha1/outputs.proto\x12'dev.planton.aws.awsbedrockflow.v1alpha1\"u\n" +
-	"\x1aAwsBedrockFlowStackOutputs\x12\x17\n" +
+	"1catalog/aws/awsbedrockflow/v1alpha1/outputs.proto\x12'dev.planton.aws.awsbedrockflow.v1alpha1\"p\n" +
+	"\x15AwsBedrockFlowOutputs\x12\x17\n" +
 	"\aflow_id\x18\x01 \x01(\tR\x06flowId\x12\x19\n" +
 	"\bflow_arn\x18\x02 \x01(\tR\aflowArn\x12#\n" +
 	"\rdraft_version\x18\x03 \x01(\tR\fdraftVersionB\xd5\x02\n" +
@@ -112,7 +112,7 @@ func file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockFlowStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockflow.v1alpha1.AwsBedrockFlowStackOutputs
+	(*AwsBedrockFlowOutputs)(nil), // 0: dev.planton.aws.awsbedrockflow.v1alpha1.AwsBedrockFlowOutputs
 }
 var file_catalog_aws_awsbedrockflow_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

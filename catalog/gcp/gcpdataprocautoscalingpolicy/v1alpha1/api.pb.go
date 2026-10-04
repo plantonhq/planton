@@ -31,7 +31,7 @@ type GcpDataprocAutoscalingPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpDataprocAutoscalingPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpDataprocAutoscalingPolicy) GetKind() string {
 	return ""
 }
 
-func (x *GcpDataprocAutoscalingPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpDataprocAutoscalingPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpDataprocAutoscalingPolicy) GetStatus() *GcpDataprocAutoscalingPolicy
 // gcp-dataproc-autoscaling-policy status
 type GcpDataprocAutoscalingPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpDataprocAutoscalingPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpDataprocAutoscalingPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpDataprocAutoscalingPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpDataprocAutoscalingPolicyStatus) GetOutputs() *GcpDataprocAutoscalingPolicyStackOutputs {
+func (x *GcpDataprocAutoscalingPolicyStatus) GetOutputs() *GcpDataprocAutoscalingPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cGcpDataprocAutoscalingPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatusR\x06status\"\x9f\x01\n" +
-	"\"GcpDataprocAutoscalingPolicyStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatusR\x06status\"\x9a\x01\n" +
+	"\"GcpDataprocAutoscalingPolicyStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyOutputsR\aoutputsB\xb3\x03\n" +
 	"9com.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1;gcpdataprocautoscalingpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x025Dev.Planton.Gcp.Gcpdataprocautoscalingpolicy.V1alpha1\xca\x025Dev\\Planton\\Gcp\\Gcpdataprocautoscalingpolicy\\V1alpha1\xe2\x02ADev\\Planton\\Gcp\\Gcpdataprocautoscalingpolicy\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Gcp::Gcpdataprocautoscalingpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*GcpDataprocAutoscalingPolicy)(nil),             // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy
-	(*GcpDataprocAutoscalingPolicyStatus)(nil),       // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpDataprocAutoscalingPolicySpec)(nil),         // 3: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicySpec
-	(*GcpDataprocAutoscalingPolicyStackOutputs)(nil), // 4: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackOutputs
+	(*GcpDataprocAutoscalingPolicy)(nil),        // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy
+	(*GcpDataprocAutoscalingPolicyStatus)(nil),  // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpDataprocAutoscalingPolicySpec)(nil),    // 3: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicySpec
+	(*GcpDataprocAutoscalingPolicyOutputs)(nil), // 4: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyOutputs
 }
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy.spec:type_name -> dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicySpec
 	1, // 2: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy.status:type_name -> dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatus
-	4, // 3: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatus.outputs:type_name -> dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackOutputs
+	4, // 3: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStatus.outputs:type_name -> dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

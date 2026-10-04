@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-database-kafka-schema stack-input
-type DigitalOceanDatabaseKafkaSchemaStackInput struct {
+// digital-ocean-database-kafka-schema iac-input
+type DigitalOceanDatabaseKafkaSchemaIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanDatabaseKafkaSchema `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanDatabaseKafkaSchemaStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseKafkaSchemaStackInput) Reset() {
-	*x = DigitalOceanDatabaseKafkaSchemaStackInput{}
+func (x *DigitalOceanDatabaseKafkaSchemaIacInput) Reset() {
+	*x = DigitalOceanDatabaseKafkaSchemaIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseKafkaSchemaStackInput) String() string {
+func (x *DigitalOceanDatabaseKafkaSchemaIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseKafkaSchemaStackInput) ProtoMessage() {}
+func (*DigitalOceanDatabaseKafkaSchemaIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseKafkaSchemaStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseKafkaSchemaIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanDatabaseKafkaSchemaStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseKafkaSchemaStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseKafkaSchemaStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseKafkaSchemaIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseKafkaSchemaIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseKafkaSchemaStackInput) GetTarget() *DigitalOceanDatabaseKafkaSchema {
+func (x *DigitalOceanDatabaseKafkaSchemaIacInput) GetTarget() *DigitalOceanDatabaseKafkaSchema {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanDatabaseKafkaSchemaStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanDatabaseKafkaSchemaIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_pro
 
 const file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/digitalocean/digitaloceandatabasekafkaschema/v1alpha1/input.proto\x12Adev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1\x1aGcatalog/digitalocean/digitaloceandatabasekafkaschema/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x86\x02\n" +
-	")DigitalOceanDatabaseKafkaSchemaStackInput\x12z\n" +
+	"Icatalog/digitalocean/digitaloceandatabasekafkaschema/v1alpha1/input.proto\x12Adev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1\x1aGcatalog/digitalocean/digitaloceandatabasekafkaschema/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x84\x02\n" +
+	"'DigitalOceanDatabaseKafkaSchemaIacInput\x12z\n" +
 	"\x06target\x18\x01 \x01(\v2b.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\x81\x04\n" +
 	"Ecom.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_pr
 
 var file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanDatabaseKafkaSchemaStackInput)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStackInput
-	(*DigitalOceanDatabaseKafkaSchema)(nil),           // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema
-	(*digitalocean.DigitalOceanProviderConfig)(nil),   // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
+	(*DigitalOceanDatabaseKafkaSchemaIacInput)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaIacInput
+	(*DigitalOceanDatabaseKafkaSchema)(nil),         // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema
+	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStackInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema
-	2, // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaIacInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema
+	2, // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

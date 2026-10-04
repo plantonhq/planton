@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataProtectionBackupInstanceStackOutputs** captures the
+// **AzureDataProtectionBackupInstanceOutputs** captures the
 // outputs of provisioning a Data Protection backup instance.
-type AzureDataProtectionBackupInstanceStackOutputs struct {
+type AzureDataProtectionBackupInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the backup instance.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DataProtection/backupVaults/{vault}/backupInstances/{name}
@@ -34,20 +34,20 @@ type AzureDataProtectionBackupInstanceStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureDataProtectionBackupInstanceStackOutputs) Reset() {
-	*x = AzureDataProtectionBackupInstanceStackOutputs{}
+func (x *AzureDataProtectionBackupInstanceOutputs) Reset() {
+	*x = AzureDataProtectionBackupInstanceOutputs{}
 	mi := &file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataProtectionBackupInstanceStackOutputs) String() string {
+func (x *AzureDataProtectionBackupInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataProtectionBackupInstanceStackOutputs) ProtoMessage() {}
+func (*AzureDataProtectionBackupInstanceOutputs) ProtoMessage() {}
 
-func (x *AzureDataProtectionBackupInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataProtectionBackupInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureDataProtectionBackupInstanceStackOutputs) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataProtectionBackupInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataProtectionBackupInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataProtectionBackupInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataProtectionBackupInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataProtectionBackupInstanceStackOutputs) GetBackupInstanceId() string {
+func (x *AzureDataProtectionBackupInstanceOutputs) GetBackupInstanceId() string {
 	if x != nil {
 		return x.BackupInstanceId
 	}
 	return ""
 }
 
-func (x *AzureDataProtectionBackupInstanceStackOutputs) GetBackupInstanceName() string {
+func (x *AzureDataProtectionBackupInstanceOutputs) GetBackupInstanceName() string {
 	if x != nil {
 		return x.BackupInstanceName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto 
 
 const file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/azure/azuredataprotectionbackupinstance/v1alpha1/outputs.proto\x12<dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1\"\x8f\x01\n" +
-	"-AzureDataProtectionBackupInstanceStackOutputs\x12,\n" +
+	"Fcatalog/azure/azuredataprotectionbackupinstance/v1alpha1/outputs.proto\x12<dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1\"\x8a\x01\n" +
+	"(AzureDataProtectionBackupInstanceOutputs\x12,\n" +
 	"\x12backup_instance_id\x18\x01 \x01(\tR\x10backupInstanceId\x120\n" +
 	"\x14backup_instance_name\x18\x02 \x01(\tR\x12backupInstanceNameB\xe6\x03\n" +
 	"@com.dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1B\fOutputsProtoP\x01Z\x7fgithub.com/plantonhq/planton/catalog/azure/azuredataprotectionbackupinstance/v1alpha1;azuredataprotectionbackupinstancev1alpha1\xa2\x02\x04DPAA\xaa\x02<Dev.Planton.Azure.Azuredataprotectionbackupinstance.V1alpha1\xca\x02<Dev\\Planton\\Azure\\Azuredataprotectionbackupinstance\\V1alpha1\xe2\x02HDev\\Planton\\Azure\\Azuredataprotectionbackupinstance\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Azure::Azuredataprotectionbackupinstance::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto
 
 var file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataProtectionBackupInstanceStackOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceStackOutputs
+	(*AzureDataProtectionBackupInstanceOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceOutputs
 }
 var file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

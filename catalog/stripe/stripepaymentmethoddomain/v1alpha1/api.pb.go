@@ -55,12 +55,12 @@ type StripePaymentMethodDomain struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripePaymentMethodDomain" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the domain and whether wallets may appear on it.
 	Spec *StripePaymentMethodDomainSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the registration as Stripe reports it, populated after deployment.
@@ -113,7 +113,7 @@ func (x *StripePaymentMethodDomain) GetKind() string {
 	return ""
 }
 
-func (x *StripePaymentMethodDomain) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripePaymentMethodDomain) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -138,8 +138,8 @@ func (x *StripePaymentMethodDomain) GetStatus() *StripePaymentMethodDomainStatus
 // resource. Populated by the deployment system.
 type StripePaymentMethodDomainStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the registration's id and each wallet's state.
-	Outputs       *StripePaymentMethodDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the registration's id and each wallet's state.
+	Outputs       *StripePaymentMethodDomainOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -174,7 +174,7 @@ func (*StripePaymentMethodDomainStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripePaymentMethodDomainStatus) GetOutputs() *StripePaymentMethodDomainStackOutputs {
+func (x *StripePaymentMethodDomainStatus) GetOutputs() *StripePaymentMethodDomainOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -192,11 +192,11 @@ const file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19StripePaymentMethodDomainR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatusR\x06status\"\x99\x01\n" +
-	"\x1fStripePaymentMethodDomainStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackOutputsR\aoutputsB\xb0\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatusR\x06status\"\x94\x01\n" +
+	"\x1fStripePaymentMethodDomainStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainOutputsR\aoutputsB\xb0\x03\n" +
 	"9com.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/stripe/stripepaymentmethoddomain/v1alpha1;stripepaymentmethoddomainv1alpha1\xa2\x02\x04DPSS\xaa\x025Dev.Planton.Stripe.Stripepaymentmethoddomain.V1alpha1\xca\x025Dev\\Planton\\Stripe\\Stripepaymentmethoddomain\\V1alpha1\xe2\x02ADev\\Planton\\Stripe\\Stripepaymentmethoddomain\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Stripe::Stripepaymentmethoddomain::V1alpha1b\x06proto3"
 
 var (
@@ -213,17 +213,17 @@ func file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_api_proto_goTypes = []any{
-	(*StripePaymentMethodDomain)(nil),             // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain
-	(*StripePaymentMethodDomainStatus)(nil),       // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripePaymentMethodDomainSpec)(nil),         // 3: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainSpec
-	(*StripePaymentMethodDomainStackOutputs)(nil), // 4: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackOutputs
+	(*StripePaymentMethodDomain)(nil),        // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain
+	(*StripePaymentMethodDomainStatus)(nil),  // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripePaymentMethodDomainSpec)(nil),    // 3: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainSpec
+	(*StripePaymentMethodDomainOutputs)(nil), // 4: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainOutputs
 }
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain.spec:type_name -> dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainSpec
 	1, // 2: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain.status:type_name -> dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatus
-	4, // 3: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatus.outputs:type_name -> dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackOutputs
+	4, // 3: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStatus.outputs:type_name -> dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsKinesisFirehoseStackOutputs captures observable identifiers from a
+// AwsKinesisFirehoseOutputs captures observable identifiers from a
 // provisioned Kinesis Data Firehose delivery stream. These outputs are used
 // by downstream resources (e.g., CloudWatch alarms monitoring delivery metrics,
 // IAM policies granting PutRecord access) and for operational reference.
-type AwsKinesisFirehoseStackOutputs struct {
+type AwsKinesisFirehoseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the delivery stream. Used for IAM
 	// policies, CloudWatch alarm dimensions, and as a reference in other
@@ -48,20 +48,20 @@ type AwsKinesisFirehoseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsKinesisFirehoseStackOutputs) Reset() {
-	*x = AwsKinesisFirehoseStackOutputs{}
+func (x *AwsKinesisFirehoseOutputs) Reset() {
+	*x = AwsKinesisFirehoseOutputs{}
 	mi := &file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsKinesisFirehoseStackOutputs) String() string {
+func (x *AwsKinesisFirehoseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsKinesisFirehoseStackOutputs) ProtoMessage() {}
+func (*AwsKinesisFirehoseOutputs) ProtoMessage() {}
 
-func (x *AwsKinesisFirehoseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsKinesisFirehoseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,33 +73,33 @@ func (x *AwsKinesisFirehoseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsKinesisFirehoseStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsKinesisFirehoseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsKinesisFirehoseOutputs.ProtoReflect.Descriptor instead.
+func (*AwsKinesisFirehoseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsKinesisFirehoseStackOutputs) GetDeliveryStreamArn() string {
+func (x *AwsKinesisFirehoseOutputs) GetDeliveryStreamArn() string {
 	if x != nil {
 		return x.DeliveryStreamArn
 	}
 	return ""
 }
 
-func (x *AwsKinesisFirehoseStackOutputs) GetDeliveryStreamName() string {
+func (x *AwsKinesisFirehoseOutputs) GetDeliveryStreamName() string {
 	if x != nil {
 		return x.DeliveryStreamName
 	}
 	return ""
 }
 
-func (x *AwsKinesisFirehoseStackOutputs) GetDestinationId() string {
+func (x *AwsKinesisFirehoseOutputs) GetDestinationId() string {
 	if x != nil {
 		return x.DestinationId
 	}
 	return ""
 }
 
-func (x *AwsKinesisFirehoseStackOutputs) GetVersionId() string {
+func (x *AwsKinesisFirehoseOutputs) GetVersionId() string {
 	if x != nil {
 		return x.VersionId
 	}
@@ -110,8 +110,8 @@ var File_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awskinesisfirehose/v1alpha1/outputs.proto\x12+dev.planton.aws.awskinesisfirehose.v1alpha1\"\xc8\x01\n" +
-	"\x1eAwsKinesisFirehoseStackOutputs\x12.\n" +
+	"5catalog/aws/awskinesisfirehose/v1alpha1/outputs.proto\x12+dev.planton.aws.awskinesisfirehose.v1alpha1\"\xc3\x01\n" +
+	"\x19AwsKinesisFirehoseOutputs\x12.\n" +
 	"\x13delivery_stream_arn\x18\x01 \x01(\tR\x11deliveryStreamArn\x120\n" +
 	"\x14delivery_stream_name\x18\x02 \x01(\tR\x12deliveryStreamName\x12%\n" +
 	"\x0edestination_id\x18\x03 \x01(\tR\rdestinationId\x12\x1d\n" +
@@ -133,7 +133,7 @@ func file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsKinesisFirehoseStackOutputs)(nil), // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackOutputs
+	(*AwsKinesisFirehoseOutputs)(nil), // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOutputs
 }
 var file_catalog_aws_awskinesisfirehose_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiFeatureGroupStackOutputs captures the feature group's identity
+// GcpVertexAiFeatureGroupOutputs captures the feature group's identity
 // and the features registered in it.
-type GcpVertexAiFeatureGroupStackOutputs struct {
+type GcpVertexAiFeatureGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/featureGroups/{feature_group_id}.
@@ -39,20 +39,20 @@ type GcpVertexAiFeatureGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) Reset() {
-	*x = GcpVertexAiFeatureGroupStackOutputs{}
+func (x *GcpVertexAiFeatureGroupOutputs) Reset() {
+	*x = GcpVertexAiFeatureGroupOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) String() string {
+func (x *GcpVertexAiFeatureGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiFeatureGroupStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiFeatureGroupOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiFeatureGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *GcpVertexAiFeatureGroupStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiFeatureGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiFeatureGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiFeatureGroupOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiFeatureGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) GetName() string {
+func (x *GcpVertexAiFeatureGroupOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) GetFeatureGroupId() string {
+func (x *GcpVertexAiFeatureGroupOutputs) GetFeatureGroupId() string {
 	if x != nil {
 		return x.FeatureGroupId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) GetLocation() string {
+func (x *GcpVertexAiFeatureGroupOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureGroupStackOutputs) GetFeatureNames() []string {
+func (x *GcpVertexAiFeatureGroupOutputs) GetFeatureNames() []string {
 	if x != nil {
 		return x.FeatureNames
 	}
@@ -101,8 +101,8 @@ var File_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpvertexaifeaturegroup/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1\"\xa4\x01\n" +
-	"#GcpVertexAiFeatureGroupStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpvertexaifeaturegroup/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1\"\x9f\x01\n" +
+	"\x1eGcpVertexAiFeatureGroupOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\x10feature_group_id\x18\x02 \x01(\tR\x0efeatureGroupId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12#\n" +
@@ -123,7 +123,7 @@ func file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiFeatureGroupStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStackOutputs
+	(*GcpVertexAiFeatureGroupOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupOutputs
 }
 var file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

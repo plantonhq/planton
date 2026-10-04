@@ -37,7 +37,7 @@ type AzureMongoClusterUser struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMongoClusterUserSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureMongoClusterUser) GetKind() string {
 	return ""
 }
 
-func (x *AzureMongoClusterUser) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMongoClusterUser) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,10 +115,10 @@ func (x *AzureMongoClusterUser) GetStatus() *AzureMongoClusterUserStatus {
 // Cosmos DB for MongoDB vCore user-grant deployment.
 type AzureMongoClusterUserStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-mongo-cluster-user stack-outputs
-	Outputs       *AzureMongoClusterUserStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-mongo-cluster-user outputs
+	Outputs       *AzureMongoClusterUserOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -153,7 +153,7 @@ func (*AzureMongoClusterUserStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremongoclusteruser_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMongoClusterUserStatus) GetOutputs() *AzureMongoClusterUserStackOutputs {
+func (x *AzureMongoClusterUserStatus) GetOutputs() *AzureMongoClusterUserOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -171,11 +171,11 @@ const file_catalog_azure_azuremongoclusteruser_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AzureMongoClusterUserR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAzureMongoClusterUserStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatusR\x06status\"\x87\x01\n" +
+	"\x1bAzureMongoClusterUserStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.azure.azuremongoclusteruser.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azuremongoclusteruser/v1alpha1;azuremongoclusteruserv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azuremongoclusteruser.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azuremongoclusteruser\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azuremongoclusteruser\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azuremongoclusteruser::V1alpha1b\x06proto3"
 
 var (
@@ -192,17 +192,17 @@ func file_catalog_azure_azuremongoclusteruser_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_azure_azuremongoclusteruser_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremongoclusteruser_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMongoClusterUser)(nil),             // 0: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUser
-	(*AzureMongoClusterUserStatus)(nil),       // 1: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMongoClusterUserSpec)(nil),         // 3: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserSpec
-	(*AzureMongoClusterUserStackOutputs)(nil), // 4: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStackOutputs
+	(*AzureMongoClusterUser)(nil),        // 0: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUser
+	(*AzureMongoClusterUserStatus)(nil),  // 1: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMongoClusterUserSpec)(nil),    // 3: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserSpec
+	(*AzureMongoClusterUserOutputs)(nil), // 4: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserOutputs
 }
 var file_catalog_azure_azuremongoclusteruser_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUser.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUser.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUser.spec:type_name -> dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserSpec
 	1, // 2: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUser.status:type_name -> dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatus
-	4, // 3: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatus.outputs:type_name -> dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStackOutputs
+	4, // 3: dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserStatus.outputs:type_name -> dev.planton.azure.azuremongoclusteruser.v1alpha1.AzureMongoClusterUserOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

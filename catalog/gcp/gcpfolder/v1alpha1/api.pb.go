@@ -28,7 +28,7 @@ type GcpFolder struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpFolderSpec                `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpFolderStatus              `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpFolder) GetKind() string {
 	return ""
 }
 
-func (x *GcpFolder) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpFolder) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -102,7 +102,7 @@ func (x *GcpFolder) GetStatus() *GcpFolderStatus {
 
 type GcpFolderStatus struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Outputs       *GcpFolderStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *GcpFolderOutputs      `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpFolderStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfolder_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpFolderStatus) GetOutputs() *GcpFolderStackOutputs {
+func (x *GcpFolderStatus) GetOutputs() *GcpFolderOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpfolder_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12$\n" +
 	"\x04kind\x18\x02 \x01(\tB\x10\xbaH\rr\v\n" +
 	"\tGcpFolderR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12M\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12M\n" +
 	"\x04spec\x18\x04 \x01(\v21.dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12K\n" +
-	"\x06status\x18\x05 \x01(\v23.dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStatusR\x06status\"f\n" +
-	"\x0fGcpFolderStatus\x12S\n" +
-	"\aoutputs\x18\x01 \x01(\v29.dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStackOutputsR\aoutputsB\xae\x02\n" +
+	"\x06status\x18\x05 \x01(\v23.dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStatusR\x06status\"a\n" +
+	"\x0fGcpFolderStatus\x12N\n" +
+	"\aoutputs\x18\x01 \x01(\v24.dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderOutputsR\aoutputsB\xae\x02\n" +
 	"&com.dev.planton.gcp.gcpfolder.v1alpha1B\bApiProtoP\x01ZMgithub.com/plantonhq/planton/catalog/gcp/gcpfolder/v1alpha1;gcpfolderv1alpha1\xa2\x02\x04DPGG\xaa\x02\"Dev.Planton.Gcp.Gcpfolder.V1alpha1\xca\x02\"Dev\\Planton\\Gcp\\Gcpfolder\\V1alpha1\xe2\x02.Dev\\Planton\\Gcp\\Gcpfolder\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Gcp::Gcpfolder::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcpfolder_v1alpha1_api_proto_msgTypes = make([]protoimpl.Me
 var file_catalog_gcp_gcpfolder_v1alpha1_api_proto_goTypes = []any{
 	(*GcpFolder)(nil),                    // 0: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolder
 	(*GcpFolderStatus)(nil),              // 1: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpFolderSpec)(nil),                // 3: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderSpec
-	(*GcpFolderStackOutputs)(nil),        // 4: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStackOutputs
+	(*GcpFolderOutputs)(nil),             // 4: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderOutputs
 }
 var file_catalog_gcp_gcpfolder_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolder.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolder.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolder.spec:type_name -> dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderSpec
 	1, // 2: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolder.status:type_name -> dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStatus
-	4, // 3: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStatus.outputs:type_name -> dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStackOutputs
+	4, // 3: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStatus.outputs:type_name -> dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

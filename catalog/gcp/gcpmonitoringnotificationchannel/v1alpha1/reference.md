@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpMonitoringNotificationChannelSpec defines a Cloud Monitoring
 notification channel — the delivery endpoint (an email address, a Slack
@@ -16,7 +16,7 @@ new violations.
 
 A channel is pure configuration: creating one sends nothing on its own.
 Alert policies reference the channel by its server-assigned resource name
-(the `channel_name` stack output) in their notification_channels list —
+(the `channel_name` output) in their notification_channels list —
 that reference is the composition edge charts wire.
 
 Channel behavior is driven by `type` plus type-specific configuration in

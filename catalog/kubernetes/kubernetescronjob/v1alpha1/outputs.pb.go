@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesCronJobStackOutputs** captures the observable handles of a
+// **KubernetesCronJobOutputs** captures the observable handles of a
 // deployed CronJob. CronJobs front no Service; the useful handles are the
 // object's identity and its effective schedule.
-type KubernetesCronJobStackOutputs struct {
+type KubernetesCronJobOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the CronJob was created in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -40,20 +40,20 @@ type KubernetesCronJobStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesCronJobStackOutputs) Reset() {
-	*x = KubernetesCronJobStackOutputs{}
+func (x *KubernetesCronJobOutputs) Reset() {
+	*x = KubernetesCronJobOutputs{}
 	mi := &file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCronJobStackOutputs) String() string {
+func (x *KubernetesCronJobOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCronJobStackOutputs) ProtoMessage() {}
+func (*KubernetesCronJobOutputs) ProtoMessage() {}
 
-func (x *KubernetesCronJobStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCronJobOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *KubernetesCronJobStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCronJobStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesCronJobStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCronJobOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesCronJobOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCronJobStackOutputs) GetNamespace() string {
+func (x *KubernetesCronJobOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesCronJobStackOutputs) GetCronJobName() string {
+func (x *KubernetesCronJobOutputs) GetCronJobName() string {
 	if x != nil {
 		return x.CronJobName
 	}
 	return ""
 }
 
-func (x *KubernetesCronJobStackOutputs) GetSchedule() string {
+func (x *KubernetesCronJobOutputs) GetSchedule() string {
 	if x != nil {
 		return x.Schedule
 	}
@@ -95,8 +95,8 @@ var File_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetescronjob/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetescronjob.v1alpha1\"}\n" +
-	"\x1dKubernetesCronJobStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetescronjob/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetescronjob.v1alpha1\"x\n" +
+	"\x18KubernetesCronJobOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\"\n" +
 	"\rcron_job_name\x18\x02 \x01(\tR\vcronJobName\x12\x1a\n" +
 	"\bschedule\x18\x03 \x01(\tR\bscheduleB\x94\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesCronJobStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescronjob.v1alpha1.KubernetesCronJobStackOutputs
+	(*KubernetesCronJobOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescronjob.v1alpha1.KubernetesCronJobOutputs
 }
 var file_catalog_kubernetes_kubernetescronjob_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

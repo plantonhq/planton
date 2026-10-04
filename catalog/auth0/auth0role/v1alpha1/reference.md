@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0RoleSpec defines the configuration for an Auth0 Role.
 In Auth0, a Role is a named collection of permissions (scopes) that can be
@@ -32,7 +32,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/role/
 
 ```yaml
 # Auth0 Role Test Manifest
-# This file is used for testing the Auth0Role component
+# This file is used for testing the Auth0Role kind
 #
 # Prerequisites:
 # 1. Set the following environment variables:
@@ -48,7 +48,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/role/
 #    - read:resource_servers
 #
 # 3. The referenced resource server identifier and its scopes must already exist
-#    in the tenant (e.g., created via the Auth0ResourceServer component).
+#    in the tenant (e.g., created via the Auth0ResourceServer kind).
 
 apiVersion: auth0.planton.dev/v1alpha1
 kind: Auth0Role
@@ -63,7 +63,7 @@ spec:
   name: Test Viewer
 
   # Optional: description
-  description: Read-only access for testing the Auth0Role component
+  description: Read-only access for testing the Auth0Role kind
 
   # Authoritative set of permissions granted to the role
   permissions:

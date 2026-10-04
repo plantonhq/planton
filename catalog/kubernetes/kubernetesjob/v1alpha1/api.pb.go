@@ -41,7 +41,7 @@ type KubernetesJob struct {
 	// Resource kind - must be "KubernetesJob"
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard object metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Spec defines the desired state of the KubernetesJob
 	Spec *KubernetesJobSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// Status represents the current state of the KubernetesJob
@@ -94,7 +94,7 @@ func (x *KubernetesJob) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesJob) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesJob) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -119,7 +119,7 @@ func (x *KubernetesJob) GetStatus() *KubernetesJobStatus {
 type KubernetesJobStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the stack deployment
-	Outputs       *KubernetesJobStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesJobOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -154,7 +154,7 @@ func (*KubernetesJobStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesjob_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesJobStatus) GetOutputs() *KubernetesJobStackOutputs {
+func (x *KubernetesJobStatus) GetOutputs() *KubernetesJobOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -172,11 +172,11 @@ const file_catalog_kubernetes_kubernetesjob_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rKubernetesJobR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\\\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\\\n" +
 	"\x04spec\x18\x04 \x01(\v2@.dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Z\n" +
-	"\x06status\x18\x05 \x01(\v2B.dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStatusR\x06status\"y\n" +
-	"\x13KubernetesJobStatus\x12b\n" +
-	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2B.dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStatusR\x06status\"t\n" +
+	"\x13KubernetesJobStatus\x12]\n" +
+	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobOutputsR\aoutputsB\xf4\x02\n" +
 	"1com.dev.planton.kubernetes.kubernetesjob.v1alpha1B\bApiProtoP\x01Z\\github.com/plantonhq/planton/catalog/kubernetes/kubernetesjob/v1alpha1;kubernetesjobv1alpha1\xa2\x02\x04DPKK\xaa\x02-Dev.Planton.Kubernetes.Kubernetesjob.V1alpha1\xca\x02-Dev\\Planton\\Kubernetes\\Kubernetesjob\\V1alpha1\xe2\x029Dev\\Planton\\Kubernetes\\Kubernetesjob\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Kubernetes::Kubernetesjob::V1alpha1b\x06proto3"
 
 var (
@@ -195,15 +195,15 @@ var file_catalog_kubernetes_kubernetesjob_v1alpha1_api_proto_msgTypes = make([]p
 var file_catalog_kubernetes_kubernetesjob_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesJob)(nil),                // 0: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJob
 	(*KubernetesJobStatus)(nil),          // 1: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesJobSpec)(nil),            // 3: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobSpec
-	(*KubernetesJobStackOutputs)(nil),    // 4: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStackOutputs
+	(*KubernetesJobOutputs)(nil),         // 4: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobOutputs
 }
 var file_catalog_kubernetes_kubernetesjob_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJob.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJob.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJob.spec:type_name -> dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobSpec
 	1, // 2: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJob.status:type_name -> dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStatus
-	4, // 3: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

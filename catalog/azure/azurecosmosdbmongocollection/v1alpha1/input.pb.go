@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-cosmosdb-mongo-collection stack-input
-type AzureCosmosdbMongoCollectionStackInput struct {
+// azure-cosmosdb-mongo-collection iac-input
+type AzureCosmosdbMongoCollectionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureCosmosdbMongoCollection `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureCosmosdbMongoCollectionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbMongoCollectionStackInput) Reset() {
-	*x = AzureCosmosdbMongoCollectionStackInput{}
+func (x *AzureCosmosdbMongoCollectionIacInput) Reset() {
+	*x = AzureCosmosdbMongoCollectionIacInput{}
 	mi := &file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbMongoCollectionStackInput) String() string {
+func (x *AzureCosmosdbMongoCollectionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbMongoCollectionStackInput) ProtoMessage() {}
+func (*AzureCosmosdbMongoCollectionIacInput) ProtoMessage() {}
 
-func (x *AzureCosmosdbMongoCollectionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbMongoCollectionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureCosmosdbMongoCollectionStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbMongoCollectionStackInput.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbMongoCollectionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbMongoCollectionIacInput.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbMongoCollectionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbMongoCollectionStackInput) GetTarget() *AzureCosmosdbMongoCollection {
+func (x *AzureCosmosdbMongoCollectionIacInput) GetTarget() *AzureCosmosdbMongoCollection {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureCosmosdbMongoCollectionStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureCosmosdbMongoCollectionIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto protore
 
 const file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurecosmosdbmongocollection/v1alpha1/input.proto\x127dev.planton.azure.azurecosmosdbmongocollection.v1alpha1\x1a=catalog/azure/azurecosmosdbmongocollection/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe8\x01\n" +
-	"&AzureCosmosdbMongoCollectionStackInput\x12m\n" +
+	"?catalog/azure/azurecosmosdbmongocollection/v1alpha1/input.proto\x127dev.planton.azure.azurecosmosdbmongocollection.v1alpha1\x1a=catalog/azure/azurecosmosdbmongocollection/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe6\x01\n" +
+	"$AzureCosmosdbMongoCollectionIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xc1\x03\n" +
 	";com.dev.planton.azure.azurecosmosdbmongocollection.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_rawDes
 
 var file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_goTypes = []any{
-	(*AzureCosmosdbMongoCollectionStackInput)(nil), // 0: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionStackInput
-	(*AzureCosmosdbMongoCollection)(nil),           // 1: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollection
-	(*azure.AzureProviderConfig)(nil),              // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureCosmosdbMongoCollectionIacInput)(nil), // 0: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionIacInput
+	(*AzureCosmosdbMongoCollection)(nil),         // 1: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollection
+	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionStackInput.target:type_name -> dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollection
-	2, // 1: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionIacInput.target:type_name -> dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollection
+	2, // 1: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

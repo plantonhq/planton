@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorRouteStackOutputs** captures the outputs of
+// **AzureFrontDoorRouteOutputs** captures the outputs of
 // provisioning an Azure Front Door route.
 //
 // No hostname output on purpose: the client-facing hostname lives on the
 // ENDPOINT (AzureFrontDoorEndpoint's host_name output); the route is
 // policy attached to that hostname.
-type AzureFrontDoorRouteStackOutputs struct {
+type AzureFrontDoorRouteOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the route.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cdn/profiles/{profile}/afdEndpoints/{endpoint}/routes/{name}
@@ -38,20 +38,20 @@ type AzureFrontDoorRouteStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorRouteStackOutputs) Reset() {
-	*x = AzureFrontDoorRouteStackOutputs{}
+func (x *AzureFrontDoorRouteOutputs) Reset() {
+	*x = AzureFrontDoorRouteOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorRouteStackOutputs) String() string {
+func (x *AzureFrontDoorRouteOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorRouteStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorRouteOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorRouteStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorRouteOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureFrontDoorRouteStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorRouteStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorRouteStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorRouteOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorRouteOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorRouteStackOutputs) GetRouteId() string {
+func (x *AzureFrontDoorRouteOutputs) GetRouteId() string {
 	if x != nil {
 		return x.RouteId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorRouteStackOutputs) GetRouteName() string {
+func (x *AzureFrontDoorRouteOutputs) GetRouteName() string {
 	if x != nil {
 		return x.RouteName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurefrontdoorroute/v1alpha1/outputs.proto\x12.dev.planton.azure.azurefrontdoorroute.v1alpha1\"[\n" +
-	"\x1fAzureFrontDoorRouteStackOutputs\x12\x19\n" +
+	"8catalog/azure/azurefrontdoorroute/v1alpha1/outputs.proto\x12.dev.planton.azure.azurefrontdoorroute.v1alpha1\"V\n" +
+	"\x1aAzureFrontDoorRouteOutputs\x12\x19\n" +
 	"\broute_id\x18\x01 \x01(\tR\arouteId\x12\x1d\n" +
 	"\n" +
 	"route_name\x18\x02 \x01(\tR\trouteNameB\x84\x03\n" +
@@ -107,7 +107,7 @@ func file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorRouteStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteStackOutputs
+	(*AzureFrontDoorRouteOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteOutputs
 }
 var file_catalog_azure_azurefrontdoorroute_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-karapace stack-input
-type KubernetesKarapaceStackInput struct {
+// kubernetes-karapace iac-input
+type KubernetesKarapaceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesKarapace `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesKarapaceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesKarapaceStackInput) Reset() {
-	*x = KubernetesKarapaceStackInput{}
+func (x *KubernetesKarapaceIacInput) Reset() {
+	*x = KubernetesKarapaceIacInput{}
 	mi := &file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKarapaceStackInput) String() string {
+func (x *KubernetesKarapaceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKarapaceStackInput) ProtoMessage() {}
+func (*KubernetesKarapaceIacInput) ProtoMessage() {}
 
-func (x *KubernetesKarapaceStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKarapaceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesKarapaceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKarapaceStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesKarapaceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKarapaceIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesKarapaceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKarapaceStackInput) GetTarget() *KubernetesKarapace {
+func (x *KubernetesKarapaceIacInput) GetTarget() *KubernetesKarapace {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesKarapaceStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesKarapaceIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto protoreflect
 
 const file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kuberneteskarapace/v1alpha1/input.proto\x122dev.planton.kubernetes.kuberneteskarapace.v1alpha1\x1a8catalog/kubernetes/kuberneteskarapace/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd9\x01\n" +
-	"\x1cKubernetesKarapaceStackInput\x12^\n" +
+	":catalog/kubernetes/kuberneteskarapace/v1alpha1/input.proto\x122dev.planton.kubernetes.kuberneteskarapace.v1alpha1\x1a8catalog/kubernetes/kuberneteskarapace/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd7\x01\n" +
+	"\x1aKubernetesKarapaceIacInput\x12^\n" +
 	"\x06target\x18\x01 \x01(\v2F.dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"6com.dev.planton.kubernetes.kuberneteskarapace.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesKarapaceStackInput)(nil),        // 0: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceStackInput
+	(*KubernetesKarapaceIacInput)(nil),          // 0: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceIacInput
 	(*KubernetesKarapace)(nil),                  // 1: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapace
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kuberneteskarapace_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceStackInput.target:type_name -> dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapace
-	2, // 1: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceIacInput.target:type_name -> dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapace
+	2, // 1: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

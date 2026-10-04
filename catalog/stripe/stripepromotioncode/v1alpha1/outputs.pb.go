@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePromotionCodeStackOutputs identifies the promotion code.
+// StripePromotionCodeOutputs identifies the promotion code.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/promotion_code
-type StripePromotionCodeStackOutputs struct {
+type StripePromotionCodeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the promotion code's Stripe id (promo_...). It changes when the code is replaced.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -37,20 +37,20 @@ type StripePromotionCodeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripePromotionCodeStackOutputs) Reset() {
-	*x = StripePromotionCodeStackOutputs{}
+func (x *StripePromotionCodeOutputs) Reset() {
+	*x = StripePromotionCodeOutputs{}
 	mi := &file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePromotionCodeStackOutputs) String() string {
+func (x *StripePromotionCodeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePromotionCodeStackOutputs) ProtoMessage() {}
+func (*StripePromotionCodeOutputs) ProtoMessage() {}
 
-func (x *StripePromotionCodeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripePromotionCodeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *StripePromotionCodeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePromotionCodeStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripePromotionCodeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePromotionCodeOutputs.ProtoReflect.Descriptor instead.
+func (*StripePromotionCodeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePromotionCodeStackOutputs) GetId() string {
+func (x *StripePromotionCodeOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripePromotionCodeStackOutputs) GetCode() string {
+func (x *StripePromotionCodeOutputs) GetCode() string {
 	if x != nil {
 		return x.Code
 	}
 	return ""
 }
 
-func (x *StripePromotionCodeStackOutputs) GetActive() bool {
+func (x *StripePromotionCodeOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
@@ -92,8 +92,8 @@ var File_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/stripe/stripepromotioncode/v1alpha1/outputs.proto\x12/dev.planton.stripe.stripepromotioncode.v1alpha1\"]\n" +
-	"\x1fStripePromotionCodeStackOutputs\x12\x0e\n" +
+	"9catalog/stripe/stripepromotioncode/v1alpha1/outputs.proto\x12/dev.planton.stripe.stripepromotioncode.v1alpha1\"X\n" +
+	"\x1aStripePromotionCodeOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x12\x16\n" +
 	"\x06active\x18\x03 \x01(\bR\x06activeB\x8a\x03\n" +
@@ -113,7 +113,7 @@ func file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripePromotionCodeStackOutputs)(nil), // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackOutputs
+	(*StripePromotionCodeOutputs)(nil), // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeOutputs
 }
 var file_catalog_stripe_stripepromotioncode_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -28,7 +28,7 @@ type GcpBillingBudget struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpBillingBudgetSpec         `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpBillingBudgetStatus       `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpBillingBudget) GetKind() string {
 	return ""
 }
 
-func (x *GcpBillingBudget) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpBillingBudget) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpBillingBudget) GetStatus() *GcpBillingBudgetStatus {
 }
 
 type GcpBillingBudgetStatus struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	Outputs       *GcpBillingBudgetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Outputs       *GcpBillingBudgetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpBillingBudgetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbillingbudget_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpBillingBudgetStatus) GetOutputs() *GcpBillingBudgetStackOutputs {
+func (x *GcpBillingBudgetStatus) GetOutputs() *GcpBillingBudgetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpbillingbudget_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10GcpBillingBudgetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStatusR\x06status\"{\n" +
-	"\x16GcpBillingBudgetStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStatusR\x06status\"v\n" +
+	"\x16GcpBillingBudgetStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.gcp.gcpbillingbudget.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpbillingbudget/v1alpha1;gcpbillingbudgetv1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpbillingbudget.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpbillingbudget\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpbillingbudget\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpbillingbudget::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcpbillingbudget_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_gcp_gcpbillingbudget_v1alpha1_api_proto_goTypes = []any{
 	(*GcpBillingBudget)(nil),             // 0: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudget
 	(*GcpBillingBudgetStatus)(nil),       // 1: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpBillingBudgetSpec)(nil),         // 3: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec
-	(*GcpBillingBudgetStackOutputs)(nil), // 4: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStackOutputs
+	(*GcpBillingBudgetOutputs)(nil),      // 4: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetOutputs
 }
 var file_catalog_gcp_gcpbillingbudget_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudget.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudget.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudget.spec:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec
 	1, // 2: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudget.status:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStatus
-	4, // 3: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStatus.outputs:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStackOutputs
+	4, // 3: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStatus.outputs:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

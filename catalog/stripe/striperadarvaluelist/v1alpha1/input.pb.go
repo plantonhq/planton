@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeRadarValueListStackInput is the input to the StripeRadarValueList IaC module.
+// StripeRadarValueListIacInput is the input to the StripeRadarValueList IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeRadarValueListStackInput struct {
+type StripeRadarValueListIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeRadarValueList resource to be deployed.
 	Target *StripeRadarValueList `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeRadarValueListStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeRadarValueListStackInput) Reset() {
-	*x = StripeRadarValueListStackInput{}
+func (x *StripeRadarValueListIacInput) Reset() {
+	*x = StripeRadarValueListIacInput{}
 	mi := &file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeRadarValueListStackInput) String() string {
+func (x *StripeRadarValueListIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeRadarValueListStackInput) ProtoMessage() {}
+func (*StripeRadarValueListIacInput) ProtoMessage() {}
 
-func (x *StripeRadarValueListStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeRadarValueListIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeRadarValueListStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeRadarValueListStackInput.ProtoReflect.Descriptor instead.
-func (*StripeRadarValueListStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeRadarValueListIacInput.ProtoReflect.Descriptor instead.
+func (*StripeRadarValueListIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeRadarValueListStackInput) GetTarget() *StripeRadarValueList {
+func (x *StripeRadarValueListIacInput) GetTarget() *StripeRadarValueList {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeRadarValueListStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeRadarValueListIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/stripe/striperadarvaluelist/v1alpha1/input.proto\x120dev.planton.stripe.striperadarvaluelist.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a6catalog/stripe/striperadarvaluelist/v1alpha1/api.proto\"\xd3\x01\n" +
-	"\x1eStripeRadarValueListStackInput\x12^\n" +
+	"8catalog/stripe/striperadarvaluelist/v1alpha1/input.proto\x120dev.planton.stripe.striperadarvaluelist.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a6catalog/stripe/striperadarvaluelist/v1alpha1/api.proto\"\xd1\x01\n" +
+	"\x1cStripeRadarValueListIacInput\x12^\n" +
 	"\x06target\x18\x01 \x01(\v2F.dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x8f\x03\n" +
 	"4com.dev.planton.stripe.striperadarvaluelist.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_goTypes = []any{
-	(*StripeRadarValueListStackInput)(nil), // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackInput
-	(*StripeRadarValueList)(nil),           // 1: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueList
-	(*stripe.StripeProviderConfig)(nil),    // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeRadarValueListIacInput)(nil), // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListIacInput
+	(*StripeRadarValueList)(nil),         // 1: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueList
+	(*stripe.StripeProviderConfig)(nil),  // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_striperadarvaluelist_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackInput.target:type_name -> dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueList
-	2, // 1: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListIacInput.target:type_name -> dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueList
+	2, // 1: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

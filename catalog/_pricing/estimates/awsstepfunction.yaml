@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsstepfunction
 spec:
@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each execution of the single-state definition bills Standard state transitions, and the first 4,000 transitions each month are permanently free -- this one-task workflow runs thousands of times before the meter shows
-        - the invoked function's compute bills on its AwsLambda component and typically dwarfs the orchestration charge
+        - the invoked function's compute bills on its AwsLambda kind and typically dwarfs the orchestration charge
       notes: Zero committed cost -- the simplest Standard shape, where the permanent free allotment covers modest volumes outright and the meter follows executions.
     - preset: 02-express-workflow
       region_assumption: us-east-1
@@ -28,7 +28,7 @@ spec:
       exclusions:
         - Express executions bill per request plus GB-second duration in 64-MB memory chunks and 100ms increments, with NO free allotment -- the first request bills
         - ERROR-level logging writes failure records to the referenced log group at vended-log rates; for Express this is the only execution history that exists at all
-        - the three routed functions bill on their AwsLambda components
+        - the three routed functions bill on their AwsLambda kinds
       notes: Zero committed cost -- Express trades Standard's per-transition granularity for request-plus-duration billing that suits short, high-volume event processing; the meter waits for events.
     - preset: 03-production-workflow
       region_assumption: us-east-1
@@ -39,6 +39,6 @@ spec:
         - Standard executions bill per state entered, and every configured retry is another billed transition -- the retry/catch scaffolding multiplies transitions exactly when things fail; the first 4,000 transitions each month are permanently free
         - ALL-level logging with include_execution_data copies full inter-state payloads into every log record, so vended-log ingestion tracks payload size times state count on the referenced log group
         - X-Ray records trace segments per execution at its per-trace rates
-        - the customer-managed key bills KMS data-key requests as executions run -- the 600-second reuse window is the dial on call frequency -- and its monthly fee bills on the referenced AwsKmsKey component
-        - the workflow's Lambda functions bill on their own components
+        - the customer-managed key bills KMS data-key requests as executions run -- the 600-second reuse window is the dial on call frequency -- and its monthly fee bills on the referenced AwsKmsKey kind
+        - the workflow's Lambda functions bill on their own kinds
       notes: Zero committed cost -- publishing versions, tracing, verbose logging, and CMK encryption are all posture whose meters follow execution volume; nothing bills while the machine is idle.

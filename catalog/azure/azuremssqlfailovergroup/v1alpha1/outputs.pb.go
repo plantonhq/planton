@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMssqlFailoverGroupStackOutputs** captures the outputs of
+// **AzureMssqlFailoverGroupOutputs** captures the outputs of
 // provisioning an Azure SQL Failover Group.
-type AzureMssqlFailoverGroupStackOutputs struct {
+type AzureMssqlFailoverGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the failover group.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{server}/failoverGroups/{name}
@@ -42,20 +42,20 @@ type AzureMssqlFailoverGroupStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *AzureMssqlFailoverGroupStackOutputs) Reset() {
-	*x = AzureMssqlFailoverGroupStackOutputs{}
+func (x *AzureMssqlFailoverGroupOutputs) Reset() {
+	*x = AzureMssqlFailoverGroupOutputs{}
 	mi := &file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMssqlFailoverGroupStackOutputs) String() string {
+func (x *AzureMssqlFailoverGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMssqlFailoverGroupStackOutputs) ProtoMessage() {}
+func (*AzureMssqlFailoverGroupOutputs) ProtoMessage() {}
 
-func (x *AzureMssqlFailoverGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMssqlFailoverGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AzureMssqlFailoverGroupStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMssqlFailoverGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMssqlFailoverGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMssqlFailoverGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMssqlFailoverGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMssqlFailoverGroupStackOutputs) GetFailoverGroupId() string {
+func (x *AzureMssqlFailoverGroupOutputs) GetFailoverGroupId() string {
 	if x != nil {
 		return x.FailoverGroupId
 	}
 	return ""
 }
 
-func (x *AzureMssqlFailoverGroupStackOutputs) GetFailoverGroupName() string {
+func (x *AzureMssqlFailoverGroupOutputs) GetFailoverGroupName() string {
 	if x != nil {
 		return x.FailoverGroupName
 	}
 	return ""
 }
 
-func (x *AzureMssqlFailoverGroupStackOutputs) GetReadWriteListenerEndpoint() string {
+func (x *AzureMssqlFailoverGroupOutputs) GetReadWriteListenerEndpoint() string {
 	if x != nil {
 		return x.ReadWriteListenerEndpoint
 	}
 	return ""
 }
 
-func (x *AzureMssqlFailoverGroupStackOutputs) GetReadOnlyListenerEndpoint() string {
+func (x *AzureMssqlFailoverGroupOutputs) GetReadOnlyListenerEndpoint() string {
 	if x != nil {
 		return x.ReadOnlyListenerEndpoint
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azuremssqlfailovergroup/v1alpha1/outputs.proto\x122dev.planton.azure.azuremssqlfailovergroup.v1alpha1\"\x81\x02\n" +
-	"#AzureMssqlFailoverGroupStackOutputs\x12*\n" +
+	"<catalog/azure/azuremssqlfailovergroup/v1alpha1/outputs.proto\x122dev.planton.azure.azuremssqlfailovergroup.v1alpha1\"\xfc\x01\n" +
+	"\x1eAzureMssqlFailoverGroupOutputs\x12*\n" +
 	"\x11failover_group_id\x18\x01 \x01(\tR\x0ffailoverGroupId\x12.\n" +
 	"\x13failover_group_name\x18\x02 \x01(\tR\x11failoverGroupName\x12?\n" +
 	"\x1cread_write_listener_endpoint\x18\x03 \x01(\tR\x19readWriteListenerEndpoint\x12=\n" +
@@ -126,7 +126,7 @@ func file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMssqlFailoverGroupStackOutputs)(nil), // 0: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStackOutputs
+	(*AzureMssqlFailoverGroupOutputs)(nil), // 0: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupOutputs
 }
 var file_catalog_azure_azuremssqlfailovergroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

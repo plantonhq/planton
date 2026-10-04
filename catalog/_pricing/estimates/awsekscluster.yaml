@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsekscluster
 spec:
@@ -27,7 +27,7 @@ spec:
           list_cost: "73.0000"
       total_list_cost: "73.0000"
       exclusions:
-        - node compute -- worker capacity lives on separate AwsEksNodeGroup components with their own estimates
+        - node compute -- worker capacity lives on separate AwsEksNodeGroup kinds with their own estimates
         - CloudWatch ingestion for the enabled audit and authenticator control-plane logs depends on cluster chatter
       notes: upgrade_support_type STANDARD caps the fee -- this preset can never incur the extended-support surcharge.
     - preset: 02-private-endpoint
@@ -46,7 +46,7 @@ spec:
           list_cost: "73.0000"
       total_list_cost: "73.0000"
       exclusions:
-        - node compute -- separate AwsEksNodeGroup components
+        - node compute -- separate AwsEksNodeGroup kinds
         - CloudWatch ingestion for the enabled audit and authenticator logs
         - upgrade_support_type is left at the AWS EXTENDED default -- once the pinned Kubernetes version leaves standard support, the extended-support surcharge raises the hourly fee to six times this estimate
       notes: The private endpoint, KMS secrets encryption, and deletion protection add no charge of their own.

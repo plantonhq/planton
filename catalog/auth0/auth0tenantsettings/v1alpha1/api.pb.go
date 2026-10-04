@@ -67,12 +67,12 @@ type Auth0TenantSettings struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0TenantSettings" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the settings resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the tenant settings to manage.
 	Spec *Auth0TenantSettingsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the settings as applied, populated after deployment.
@@ -125,7 +125,7 @@ func (x *Auth0TenantSettings) GetKind() string {
 	return ""
 }
 
-func (x *Auth0TenantSettings) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0TenantSettings) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -150,8 +150,8 @@ func (x *Auth0TenantSettings) GetStatus() *Auth0TenantSettingsStatus {
 // Auth0TenantSettings resource. Populated by the deployment system.
 type Auth0TenantSettingsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the tenant settings as applied.
-	Outputs       *Auth0TenantSettingsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the tenant settings as applied.
+	Outputs       *Auth0TenantSettingsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,7 +186,7 @@ func (*Auth0TenantSettingsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0tenantsettings_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0TenantSettingsStatus) GetOutputs() *Auth0TenantSettingsStackOutputs {
+func (x *Auth0TenantSettingsStatus) GetOutputs() *Auth0TenantSettingsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -204,11 +204,11 @@ const file_catalog_auth0_auth0tenantsettings_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13Auth0TenantSettingsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatusR\x06status\"\x86\x01\n" +
-	"\x19Auth0TenantSettingsStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatusR\x06status\"\x81\x01\n" +
+	"\x19Auth0TenantSettingsStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.auth0.auth0tenantsettings.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1;auth0tenantsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Auth0.Auth0tenantsettings.V1alpha1\xca\x02.Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\xe2\x02:Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Auth0::Auth0tenantsettings::V1alpha1b\x06proto3"
 
 var (
@@ -225,17 +225,17 @@ func file_catalog_auth0_auth0tenantsettings_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_api_proto_goTypes = []any{
-	(*Auth0TenantSettings)(nil),             // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings
-	(*Auth0TenantSettingsStatus)(nil),       // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*Auth0TenantSettingsSpec)(nil),         // 3: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsSpec
-	(*Auth0TenantSettingsStackOutputs)(nil), // 4: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackOutputs
+	(*Auth0TenantSettings)(nil),          // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings
+	(*Auth0TenantSettingsStatus)(nil),    // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*Auth0TenantSettingsSpec)(nil),      // 3: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsSpec
+	(*Auth0TenantSettingsOutputs)(nil),   // 4: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsOutputs
 }
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings.spec:type_name -> dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsSpec
 	1, // 2: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings.status:type_name -> dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatus
-	4, // 3: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatus.outputs:type_name -> dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackOutputs
+	4, // 3: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStatus.outputs:type_name -> dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

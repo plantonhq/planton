@@ -61,12 +61,12 @@ type Auth0Branding struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0Branding" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the branding to apply to the tenant.
 	Spec *Auth0BrandingSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the resource as applied, populated after deployment.
@@ -119,7 +119,7 @@ func (x *Auth0Branding) GetKind() string {
 	return ""
 }
 
-func (x *Auth0Branding) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0Branding) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -144,8 +144,8 @@ func (x *Auth0Branding) GetStatus() *Auth0BrandingStatus {
 // Populated by the deployment system.
 type Auth0BrandingStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the theme the branding applied.
-	Outputs       *Auth0BrandingStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the theme the branding applied.
+	Outputs       *Auth0BrandingOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -180,7 +180,7 @@ func (*Auth0BrandingStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0branding_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0BrandingStatus) GetOutputs() *Auth0BrandingStackOutputs {
+func (x *Auth0BrandingStatus) GetOutputs() *Auth0BrandingOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -198,11 +198,11 @@ const file_catalog_auth0_auth0branding_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAuth0BrandingR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStatusR\x06status\"t\n" +
-	"\x13Auth0BrandingStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackOutputsR\aoutputsB\xd6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStatusR\x06status\"o\n" +
+	"\x13Auth0BrandingStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingOutputsR\aoutputsB\xd6\x02\n" +
 	",com.dev.planton.auth0.auth0branding.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/auth0/auth0branding/v1alpha1;auth0brandingv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Auth0.Auth0branding.V1alpha1\xca\x02(Dev\\Planton\\Auth0\\Auth0branding\\V1alpha1\xe2\x024Dev\\Planton\\Auth0\\Auth0branding\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Auth0::Auth0branding::V1alpha1b\x06proto3"
 
 var (
@@ -221,15 +221,15 @@ var file_catalog_auth0_auth0branding_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_auth0_auth0branding_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0Branding)(nil),                // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding
 	(*Auth0BrandingStatus)(nil),          // 1: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0BrandingSpec)(nil),            // 3: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingSpec
-	(*Auth0BrandingStackOutputs)(nil),    // 4: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackOutputs
+	(*Auth0BrandingOutputs)(nil),         // 4: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingOutputs
 }
 var file_catalog_auth0_auth0branding_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding.spec:type_name -> dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingSpec
 	1, // 2: dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding.status:type_name -> dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStatus
-	4, // 3: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStatus.outputs:type_name -> dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackOutputs
+	4, // 3: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStatus.outputs:type_name -> dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

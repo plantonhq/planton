@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRestApiUsagePlanStackInput is the input for the IaC modules that
+// AwsRestApiUsagePlanIacInput is the input for the IaC modules that
 // deploy the usage plan.
-type AwsRestApiUsagePlanStackInput struct {
+type AwsRestApiUsagePlanIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsRestApiUsagePlan resource to deploy.
 	Target *AwsRestApiUsagePlan `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsRestApiUsagePlanStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRestApiUsagePlanStackInput) Reset() {
-	*x = AwsRestApiUsagePlanStackInput{}
+func (x *AwsRestApiUsagePlanIacInput) Reset() {
+	*x = AwsRestApiUsagePlanIacInput{}
 	mi := &file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRestApiUsagePlanStackInput) String() string {
+func (x *AwsRestApiUsagePlanIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRestApiUsagePlanStackInput) ProtoMessage() {}
+func (*AwsRestApiUsagePlanIacInput) ProtoMessage() {}
 
-func (x *AwsRestApiUsagePlanStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRestApiUsagePlanIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsRestApiUsagePlanStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRestApiUsagePlanStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRestApiUsagePlanStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRestApiUsagePlanIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRestApiUsagePlanIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRestApiUsagePlanStackInput) GetTarget() *AwsRestApiUsagePlan {
+func (x *AwsRestApiUsagePlanIacInput) GetTarget() *AwsRestApiUsagePlan {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRestApiUsagePlanStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRestApiUsagePlanIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsrestapiusageplan/v1alpha1/input.proto\x12,dev.planton.aws.awsrestapiusageplan.v1alpha1\x1a2catalog/aws/awsrestapiusageplan/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsRestApiUsagePlanStackInput\x12Y\n" +
+	"4catalog/aws/awsrestapiusageplan/v1alpha1/input.proto\x12,dev.planton.aws.awsrestapiusageplan.v1alpha1\x1a2catalog/aws/awsrestapiusageplan/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsRestApiUsagePlanIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsrestapiusageplan.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRestApiUsagePlanStackInput)(nil), // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackInput
-	(*AwsRestApiUsagePlan)(nil),           // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlan
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRestApiUsagePlanIacInput)(nil), // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanIacInput
+	(*AwsRestApiUsagePlan)(nil),         // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlan
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsrestapiusageplan_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackInput.target:type_name -> dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlan
-	2, // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanIacInput.target:type_name -> dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlan
+	2, // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0CustomDomainSpec creates a custom domain for the Auth0 tenant the provider
 connection's credential belongs to: a name you own (id.example.com) that serves
@@ -43,7 +43,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/customdomain/
 
 ```yaml
 # Auth0 Custom Domain Test Manifest
-# This file is used for testing the Auth0CustomDomain component.
+# This file is used for testing the Auth0CustomDomain kind.
 #
 # Prerequisites:
 # 1. Set the following environment variables:

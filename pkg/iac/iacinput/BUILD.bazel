@@ -5,8 +5,8 @@ go_library(
     srcs = [
         "extract_manifest.go",
         "extract_manifest_bytes.go",
-        "providers.go",
         "iac_input.go",
+        "providers.go",
     ],
     importpath = "github.com/plantonhq/planton/pkg/iac/iacinput",
     visibility = ["//visibility:public"],

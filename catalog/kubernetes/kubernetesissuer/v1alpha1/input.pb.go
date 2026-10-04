@@ -23,9 +23,9 @@ const (
 )
 
 // Input for the KubernetesIssuer IaC stack.
-type KubernetesIssuerStackInput struct {
+type KubernetesIssuerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// Target infra-component.
 	Target *KubernetesIssuer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesIssuerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesIssuerStackInput) Reset() {
-	*x = KubernetesIssuerStackInput{}
+func (x *KubernetesIssuerIacInput) Reset() {
+	*x = KubernetesIssuerIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIssuerStackInput) String() string {
+func (x *KubernetesIssuerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIssuerStackInput) ProtoMessage() {}
+func (*KubernetesIssuerIacInput) ProtoMessage() {}
 
-func (x *KubernetesIssuerStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIssuerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesIssuerStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIssuerStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesIssuerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIssuerIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesIssuerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIssuerStackInput) GetTarget() *KubernetesIssuer {
+func (x *KubernetesIssuerIacInput) GetTarget() *KubernetesIssuer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesIssuerStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesIssuerIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesissuer/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetesissuer.v1alpha1\x1a6catalog/kubernetes/kubernetesissuer/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd3\x01\n" +
-	"\x1aKubernetesIssuerStackInput\x12Z\n" +
+	"8catalog/kubernetes/kubernetesissuer/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetesissuer.v1alpha1\x1a6catalog/kubernetes/kubernetesissuer/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd1\x01\n" +
+	"\x18KubernetesIssuerIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetesissuer.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesIssuerStackInput)(nil),          // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackInput
+	(*KubernetesIssuerIacInput)(nil),            // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerIacInput
 	(*KubernetesIssuer)(nil),                    // 1: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackInput.target:type_name -> dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer
-	2, // 1: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerIacInput.target:type_name -> dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer
+	2, // 1: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

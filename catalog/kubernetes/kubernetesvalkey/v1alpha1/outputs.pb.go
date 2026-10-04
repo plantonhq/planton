@@ -25,7 +25,7 @@ const (
 // *
 // Outputs a KubernetesValkey deployment exports for composition —
 // everything a workload (or an exposure kind) needs to reach the store.
-type KubernetesValkeyStackOutputs struct {
+type KubernetesValkeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the instance runs in.
@@ -67,20 +67,20 @@ type KubernetesValkeyStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesValkeyStackOutputs) Reset() {
-	*x = KubernetesValkeyStackOutputs{}
+func (x *KubernetesValkeyOutputs) Reset() {
+	*x = KubernetesValkeyOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesValkeyStackOutputs) String() string {
+func (x *KubernetesValkeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesValkeyStackOutputs) ProtoMessage() {}
+func (*KubernetesValkeyOutputs) ProtoMessage() {}
 
-func (x *KubernetesValkeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesValkeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,61 +92,61 @@ func (x *KubernetesValkeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesValkeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesValkeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesValkeyOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesValkeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesValkeyStackOutputs) GetNamespace() string {
+func (x *KubernetesValkeyOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetService() string {
+func (x *KubernetesValkeyOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetReadService() string {
+func (x *KubernetesValkeyOutputs) GetReadService() string {
 	if x != nil {
 		return x.ReadService
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetHeadlessService() string {
+func (x *KubernetesValkeyOutputs) GetHeadlessService() string {
 	if x != nil {
 		return x.HeadlessService
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesValkeyOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesValkeyOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetUsername() string {
+func (x *KubernetesValkeyOutputs) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
 	return ""
 }
 
-func (x *KubernetesValkeyStackOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesValkeyOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.PasswordSecret
 	}
@@ -157,8 +157,8 @@ var File_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesvalkey/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesvalkey.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xed\x02\n" +
-	"\x1cKubernetesValkeyStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesvalkey/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesvalkey.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xe8\x02\n" +
+	"\x17KubernetesValkeyOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12!\n" +
 	"\fread_service\x18\x03 \x01(\tR\vreadService\x12)\n" +
@@ -183,11 +183,11 @@ func file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesValkeyStackOutputs)(nil),   // 0: dev.planton.kubernetes.kubernetesvalkey.v1alpha1.KubernetesValkeyStackOutputs
+	(*KubernetesValkeyOutputs)(nil),        // 0: dev.planton.kubernetes.kubernetesvalkey.v1alpha1.KubernetesValkeyOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesvalkey_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesvalkey.v1alpha1.KubernetesValkeyStackOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesvalkey.v1alpha1.KubernetesValkeyOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

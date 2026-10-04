@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustDeviceDefaultProfileStackOutputs captures the
+// CloudflareZeroTrustDeviceDefaultProfileOutputs captures the
 // observable outputs after applying the default device profile.
-type CloudflareZeroTrustDeviceDefaultProfileStackOutputs struct {
+type CloudflareZeroTrustDeviceDefaultProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare account the profile belongs to -- the profile is an
 	// account singleton, so the account IS its identity.
@@ -37,20 +37,20 @@ type CloudflareZeroTrustDeviceDefaultProfileStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) Reset() {
-	*x = CloudflareZeroTrustDeviceDefaultProfileStackOutputs{}
+func (x *CloudflareZeroTrustDeviceDefaultProfileOutputs) Reset() {
+	*x = CloudflareZeroTrustDeviceDefaultProfileOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) String() string {
+func (x *CloudflareZeroTrustDeviceDefaultProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustDeviceDefaultProfileStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustDeviceDefaultProfileOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustDeviceDefaultProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) ProtoReflect() pro
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustDeviceDefaultProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustDeviceDefaultProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustDeviceDefaultProfileOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustDeviceDefaultProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) GetAccountId() string {
+func (x *CloudflareZeroTrustDeviceDefaultProfileOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) GetGatewayUniqueId() string {
+func (x *CloudflareZeroTrustDeviceDefaultProfileOutputs) GetGatewayUniqueId() string {
 	if x != nil {
 		return x.GatewayUniqueId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustDeviceDefaultProfileStackOutputs) GetPolicyId() string {
+func (x *CloudflareZeroTrustDeviceDefaultProfileOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
@@ -92,8 +92,8 @@ var File_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_out
 
 const file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Qcatalog/cloudflare/cloudflarezerotrustdevicedefaultprofile/v1alpha1/outputs.proto\x12Gdev.planton.cloudflare.cloudflarezerotrustdevicedefaultprofile.v1alpha1\"\x9d\x01\n" +
-	"3CloudflareZeroTrustDeviceDefaultProfileStackOutputs\x12\x1d\n" +
+	"Qcatalog/cloudflare/cloudflarezerotrustdevicedefaultprofile/v1alpha1/outputs.proto\x12Gdev.planton.cloudflare.cloudflarezerotrustdevicedefaultprofile.v1alpha1\"\x98\x01\n" +
+	".CloudflareZeroTrustDeviceDefaultProfileOutputs\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tR\taccountId\x12*\n" +
 	"\x11gateway_unique_id\x18\x02 \x01(\tR\x0fgatewayUniqueId\x12\x1b\n" +
@@ -114,7 +114,7 @@ func file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_ou
 
 var file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustDeviceDefaultProfileStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdevicedefaultprofile.v1alpha1.CloudflareZeroTrustDeviceDefaultProfileStackOutputs
+	(*CloudflareZeroTrustDeviceDefaultProfileOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdevicedefaultprofile.v1alpha1.CloudflareZeroTrustDeviceDefaultProfileOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustdevicedefaultprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

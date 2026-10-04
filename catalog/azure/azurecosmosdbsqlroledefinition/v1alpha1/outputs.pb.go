@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCosmosdbSqlRoleDefinitionStackOutputs** captures the outputs of
+// **AzureCosmosdbSqlRoleDefinitionOutputs** captures the outputs of
 // provisioning a Cosmos DB SQL role definition. The fully-scoped ARM
 // resource ID is the definition's identity for composition -- it is
 // exactly what a Cosmos DB SQL role assignment binds -- and the
 // GUID/name coordinates are exported so downstream automation can reason
 // about the role without re-reading the spec.
-type AzureCosmosdbSqlRoleDefinitionStackOutputs struct {
+type AzureCosmosdbSqlRoleDefinitionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully-scoped Azure Resource Manager ID of the role definition.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/sqlRoleDefinitions/{guid}
@@ -49,20 +49,20 @@ type AzureCosmosdbSqlRoleDefinitionStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) Reset() {
-	*x = AzureCosmosdbSqlRoleDefinitionStackOutputs{}
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) Reset() {
+	*x = AzureCosmosdbSqlRoleDefinitionOutputs{}
 	mi := &file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) String() string {
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbSqlRoleDefinitionStackOutputs) ProtoMessage() {}
+func (*AzureCosmosdbSqlRoleDefinitionOutputs) ProtoMessage() {}
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,33 +74,33 @@ func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbSqlRoleDefinitionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbSqlRoleDefinitionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbSqlRoleDefinitionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbSqlRoleDefinitionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) GetRoleDefinitionId() string {
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) GetRoleDefinitionId() string {
 	if x != nil {
 		return x.RoleDefinitionId
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) GetRoleDefinitionGuid() string {
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) GetRoleDefinitionGuid() string {
 	if x != nil {
 		return x.RoleDefinitionGuid
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) GetRoleName() string {
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) GetRoleName() string {
 	if x != nil {
 		return x.RoleName
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbSqlRoleDefinitionStackOutputs) GetCosmosdbAccountName() string {
+func (x *AzureCosmosdbSqlRoleDefinitionOutputs) GetCosmosdbAccountName() string {
 	if x != nil {
 		return x.CosmosdbAccountName
 	}
@@ -111,8 +111,8 @@ var File_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto pro
 
 const file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azurecosmosdbsqlroledefinition/v1alpha1/outputs.proto\x129dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1\"\xdd\x01\n" +
-	"*AzureCosmosdbSqlRoleDefinitionStackOutputs\x12,\n" +
+	"Ccatalog/azure/azurecosmosdbsqlroledefinition/v1alpha1/outputs.proto\x129dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1\"\xd8\x01\n" +
+	"%AzureCosmosdbSqlRoleDefinitionOutputs\x12,\n" +
 	"\x12role_definition_id\x18\x01 \x01(\tR\x10roleDefinitionId\x120\n" +
 	"\x14role_definition_guid\x18\x02 \x01(\tR\x12roleDefinitionGuid\x12\x1b\n" +
 	"\trole_name\x18\x03 \x01(\tR\broleName\x122\n" +
@@ -133,7 +133,7 @@ func file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_ra
 
 var file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCosmosdbSqlRoleDefinitionStackOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1.AzureCosmosdbSqlRoleDefinitionStackOutputs
+	(*AzureCosmosdbSqlRoleDefinitionOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1.AzureCosmosdbSqlRoleDefinitionOutputs
 }
 var file_catalog_azure_azurecosmosdbsqlroledefinition_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

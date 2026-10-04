@@ -6,14 +6,14 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesManifestSpec** deploys raw Kubernetes YAML — the catalog's
 bring-your-own-manifest escape hatch. Hand it any valid manifest (single or
 multi-document, core kinds or custom resources) and both engines apply it
 to the cluster exactly as written.
 
-WHEN NOT TO USE THIS: a first-class catalog component always wins. Typed
+WHEN NOT TO USE THIS: a first-class catalog kind always wins. Typed
 components validate configuration before deploy, export composable outputs
 other resources can reference, and document their trade-offs field by
 field — raw YAML does none of that. Reach for KubernetesManifest only when

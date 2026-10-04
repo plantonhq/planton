@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpEventarcMessageBusStackInput struct {
+type GcpEventarcMessageBusIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpEventarcMessageBus `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpEventarcMessageBusStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpEventarcMessageBusStackInput) Reset() {
-	*x = GcpEventarcMessageBusStackInput{}
+func (x *GcpEventarcMessageBusIacInput) Reset() {
+	*x = GcpEventarcMessageBusIacInput{}
 	mi := &file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpEventarcMessageBusStackInput) String() string {
+func (x *GcpEventarcMessageBusIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpEventarcMessageBusStackInput) ProtoMessage() {}
+func (*GcpEventarcMessageBusIacInput) ProtoMessage() {}
 
-func (x *GcpEventarcMessageBusStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpEventarcMessageBusIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpEventarcMessageBusStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpEventarcMessageBusStackInput.ProtoReflect.Descriptor instead.
-func (*GcpEventarcMessageBusStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpEventarcMessageBusIacInput.ProtoReflect.Descriptor instead.
+func (*GcpEventarcMessageBusIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpEventarcMessageBusStackInput) GetTarget() *GcpEventarcMessageBus {
+func (x *GcpEventarcMessageBusIacInput) GetTarget() *GcpEventarcMessageBus {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpEventarcMessageBusStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpEventarcMessageBusIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpeventarcmessagebus/v1alpha1/input.proto\x12.dev.planton.gcp.gcpeventarcmessagebus.v1alpha1\x1a4catalog/gcp/gcpeventarcmessagebus/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcd\x01\n" +
-	"\x1fGcpEventarcMessageBusStackInput\x12]\n" +
+	"6catalog/gcp/gcpeventarcmessagebus/v1alpha1/input.proto\x12.dev.planton.gcp.gcpeventarcmessagebus.v1alpha1\x1a4catalog/gcp/gcpeventarcmessagebus/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcb\x01\n" +
+	"\x1dGcpEventarcMessageBusIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.gcp.gcpeventarcmessagebus.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_goTypes = []any{
-	(*GcpEventarcMessageBusStackInput)(nil), // 0: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusStackInput
-	(*GcpEventarcMessageBus)(nil),           // 1: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBus
-	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpEventarcMessageBusIacInput)(nil), // 0: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusIacInput
+	(*GcpEventarcMessageBus)(nil),         // 1: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBus
+	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpeventarcmessagebus_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusStackInput.target:type_name -> dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBus
-	2, // 1: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusIacInput.target:type_name -> dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBus
+	2, // 1: dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

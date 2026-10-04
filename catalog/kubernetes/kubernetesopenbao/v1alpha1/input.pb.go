@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesOpenBaoStackInput represents the input to the IaC module for deploying OpenBao.
-type KubernetesOpenBaoStackInput struct {
+// KubernetesOpenBaoIacInput represents the input to the IaC module for deploying OpenBao.
+type KubernetesOpenBaoIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud resource to deploy.
+	// The OpenBao catalog object to deploy.
 	Target *KubernetesOpenBao `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration.
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesOpenBaoStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenBaoStackInput) Reset() {
-	*x = KubernetesOpenBaoStackInput{}
+func (x *KubernetesOpenBaoIacInput) Reset() {
+	*x = KubernetesOpenBaoIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenBaoStackInput) String() string {
+func (x *KubernetesOpenBaoIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenBaoStackInput) ProtoMessage() {}
+func (*KubernetesOpenBaoIacInput) ProtoMessage() {}
 
-func (x *KubernetesOpenBaoStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenBaoIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesOpenBaoStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenBaoStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenBaoStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenBaoIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenBaoStackInput) GetTarget() *KubernetesOpenBao {
+func (x *KubernetesOpenBaoIacInput) GetTarget() *KubernetesOpenBao {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesOpenBaoStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesOpenBaoIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesopenbao/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\x1a7catalog/kubernetes/kubernetesopenbao/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd6\x01\n" +
-	"\x1bKubernetesOpenBaoStackInput\x12\\\n" +
+	"9catalog/kubernetes/kubernetesopenbao/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\x1a7catalog/kubernetes/kubernetesopenbao/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd4\x01\n" +
+	"\x19KubernetesOpenBaoIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesopenbao.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesOpenBaoStackInput)(nil),         // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackInput
+	(*KubernetesOpenBaoIacInput)(nil),           // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoIacInput
 	(*KubernetesOpenBao)(nil),                   // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackInput.target:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao
-	2, // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoIacInput.target:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao
+	2, // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

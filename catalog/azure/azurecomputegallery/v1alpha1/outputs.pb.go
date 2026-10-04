@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureComputeGalleryStackOutputs** captures the outputs from
+// **AzureComputeGalleryOutputs** captures the outputs from
 // provisioning an Azure Compute Gallery.
-type AzureComputeGalleryStackOutputs struct {
+type AzureComputeGalleryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The gallery's Azure Resource Manager ID.
 	GalleryId string `protobuf:"bytes,1,opt,name=gallery_id,json=galleryId,proto3" json:"gallery_id,omitempty"`
@@ -41,20 +41,20 @@ type AzureComputeGalleryStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AzureComputeGalleryStackOutputs) Reset() {
-	*x = AzureComputeGalleryStackOutputs{}
+func (x *AzureComputeGalleryOutputs) Reset() {
+	*x = AzureComputeGalleryOutputs{}
 	mi := &file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureComputeGalleryStackOutputs) String() string {
+func (x *AzureComputeGalleryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureComputeGalleryStackOutputs) ProtoMessage() {}
+func (*AzureComputeGalleryOutputs) ProtoMessage() {}
 
-func (x *AzureComputeGalleryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureComputeGalleryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *AzureComputeGalleryStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureComputeGalleryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureComputeGalleryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureComputeGalleryOutputs.ProtoReflect.Descriptor instead.
+func (*AzureComputeGalleryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureComputeGalleryStackOutputs) GetGalleryId() string {
+func (x *AzureComputeGalleryOutputs) GetGalleryId() string {
 	if x != nil {
 		return x.GalleryId
 	}
 	return ""
 }
 
-func (x *AzureComputeGalleryStackOutputs) GetGalleryName() string {
+func (x *AzureComputeGalleryOutputs) GetGalleryName() string {
 	if x != nil {
 		return x.GalleryName
 	}
 	return ""
 }
 
-func (x *AzureComputeGalleryStackOutputs) GetUniqueName() string {
+func (x *AzureComputeGalleryOutputs) GetUniqueName() string {
 	if x != nil {
 		return x.UniqueName
 	}
 	return ""
 }
 
-func (x *AzureComputeGalleryStackOutputs) GetCommunityGalleryName() string {
+func (x *AzureComputeGalleryOutputs) GetCommunityGalleryName() string {
 	if x != nil {
 		return x.CommunityGalleryName
 	}
@@ -103,8 +103,8 @@ var File_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurecomputegallery/v1alpha1/outputs.proto\x12.dev.planton.azure.azurecomputegallery.v1alpha1\"\xba\x01\n" +
-	"\x1fAzureComputeGalleryStackOutputs\x12\x1d\n" +
+	"8catalog/azure/azurecomputegallery/v1alpha1/outputs.proto\x12.dev.planton.azure.azurecomputegallery.v1alpha1\"\xb5\x01\n" +
+	"\x1aAzureComputeGalleryOutputs\x12\x1d\n" +
 	"\n" +
 	"gallery_id\x18\x01 \x01(\tR\tgalleryId\x12!\n" +
 	"\fgallery_name\x18\x02 \x01(\tR\vgalleryName\x12\x1f\n" +
@@ -127,7 +127,7 @@ func file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureComputeGalleryStackOutputs)(nil), // 0: dev.planton.azure.azurecomputegallery.v1alpha1.AzureComputeGalleryStackOutputs
+	(*AzureComputeGalleryOutputs)(nil), // 0: dev.planton.azure.azurecomputegallery.v1alpha1.AzureComputeGalleryOutputs
 }
 var file_catalog_azure_azurecomputegallery_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

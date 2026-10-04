@@ -24,7 +24,7 @@ Notes:
 - Targets are created as separate Terraform/Pulumi resources but are
   managed as a single unit with the rule.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

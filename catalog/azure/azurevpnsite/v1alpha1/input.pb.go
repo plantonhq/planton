@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureVpnSiteStackInput is the input to the IaC modules
+// AzureVpnSiteIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureVpnSiteStackInput struct {
+type AzureVpnSiteIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPN site resource to deploy.
 	Target *AzureVpnSite `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureVpnSiteStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVpnSiteStackInput) Reset() {
-	*x = AzureVpnSiteStackInput{}
+func (x *AzureVpnSiteIacInput) Reset() {
+	*x = AzureVpnSiteIacInput{}
 	mi := &file_catalog_azure_azurevpnsite_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVpnSiteStackInput) String() string {
+func (x *AzureVpnSiteIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVpnSiteStackInput) ProtoMessage() {}
+func (*AzureVpnSiteIacInput) ProtoMessage() {}
 
-func (x *AzureVpnSiteStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureVpnSiteIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevpnsite_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureVpnSiteStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVpnSiteStackInput.ProtoReflect.Descriptor instead.
-func (*AzureVpnSiteStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVpnSiteIacInput.ProtoReflect.Descriptor instead.
+func (*AzureVpnSiteIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpnsite_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVpnSiteStackInput) GetTarget() *AzureVpnSite {
+func (x *AzureVpnSiteIacInput) GetTarget() *AzureVpnSite {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureVpnSiteStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureVpnSiteIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurevpnsite_v1alpha1_input_proto protoreflect.FileDescri
 
 const file_catalog_azure_azurevpnsite_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/azure/azurevpnsite/v1alpha1/input.proto\x12'dev.planton.azure.azurevpnsite.v1alpha1\x1a-catalog/azure/azurevpnsite/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb8\x01\n" +
-	"\x16AzureVpnSiteStackInput\x12M\n" +
+	"/catalog/azure/azurevpnsite/v1alpha1/input.proto\x12'dev.planton.azure.azurevpnsite.v1alpha1\x1a-catalog/azure/azurevpnsite/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb6\x01\n" +
+	"\x14AzureVpnSiteIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xd1\x02\n" +
 	"+com.dev.planton.azure.azurevpnsite.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurevpnsite_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_azure_azurevpnsite_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevpnsite_v1alpha1_input_proto_goTypes = []any{
-	(*AzureVpnSiteStackInput)(nil),    // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackInput
+	(*AzureVpnSiteIacInput)(nil),      // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteIacInput
 	(*AzureVpnSite)(nil),              // 1: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSite
 	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurevpnsite_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackInput.target:type_name -> dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSite
-	2, // 1: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteIacInput.target:type_name -> dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSite
+	2, // 1: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

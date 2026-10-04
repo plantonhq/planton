@@ -33,7 +33,7 @@ type AzurePublicIp struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzurePublicIpSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AzurePublicIp) GetKind() string {
 	return ""
 }
 
-func (x *AzurePublicIp) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePublicIp) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzurePublicIp) GetStatus() *AzurePublicIpStatus {
 // AzurePublicIpStatus holds the deployment status and outputs.
 type AzurePublicIpStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzurePublicIpStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzurePublicIpOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzurePublicIpStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepublicip_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePublicIpStatus) GetOutputs() *AzurePublicIpStackOutputs {
+func (x *AzurePublicIpStatus) GetOutputs() *AzurePublicIpOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurepublicip_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAzurePublicIpR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStatusR\x06status\"t\n" +
-	"\x13AzurePublicIpStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStackOutputsR\aoutputsB\xd6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStatusR\x06status\"o\n" +
+	"\x13AzurePublicIpStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpOutputsR\aoutputsB\xd6\x02\n" +
 	",com.dev.planton.azure.azurepublicip.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/azure/azurepublicip/v1alpha1;azurepublicipv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Azure.Azurepublicip.V1alpha1\xca\x02(Dev\\Planton\\Azure\\Azurepublicip\\V1alpha1\xe2\x024Dev\\Planton\\Azure\\Azurepublicip\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Azure::Azurepublicip::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azurepublicip_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_azure_azurepublicip_v1alpha1_api_proto_goTypes = []any{
 	(*AzurePublicIp)(nil),                // 0: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIp
 	(*AzurePublicIpStatus)(nil),          // 1: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzurePublicIpSpec)(nil),            // 3: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpSpec
-	(*AzurePublicIpStackOutputs)(nil),    // 4: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStackOutputs
+	(*AzurePublicIpOutputs)(nil),         // 4: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpOutputs
 }
 var file_catalog_azure_azurepublicip_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIp.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIp.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIp.spec:type_name -> dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpSpec
 	1, // 2: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIp.status:type_name -> dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStatus
-	4, // 3: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStatus.outputs:type_name -> dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStackOutputs
+	4, // 3: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStatus.outputs:type_name -> dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

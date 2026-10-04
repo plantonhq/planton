@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareQueueStackOutputs captures the outputs after deploying a Cloudflare Queue.
-type CloudflareQueueStackOutputs struct {
+// CloudflareQueueOutputs captures the outputs after deploying a Cloudflare Queue.
+type CloudflareQueueOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the queue. A consumer references this value.
 	QueueId string `protobuf:"bytes,1,opt,name=queue_id,json=queueId,proto3" json:"queue_id,omitempty"`
@@ -37,20 +37,20 @@ type CloudflareQueueStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareQueueStackOutputs) Reset() {
-	*x = CloudflareQueueStackOutputs{}
+func (x *CloudflareQueueOutputs) Reset() {
+	*x = CloudflareQueueOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareQueueStackOutputs) String() string {
+func (x *CloudflareQueueOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareQueueStackOutputs) ProtoMessage() {}
+func (*CloudflareQueueOutputs) ProtoMessage() {}
 
-func (x *CloudflareQueueStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareQueueOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,33 +62,33 @@ func (x *CloudflareQueueStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareQueueStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareQueueStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareQueueOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareQueueOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareQueueStackOutputs) GetQueueId() string {
+func (x *CloudflareQueueOutputs) GetQueueId() string {
 	if x != nil {
 		return x.QueueId
 	}
 	return ""
 }
 
-func (x *CloudflareQueueStackOutputs) GetQueueName() string {
+func (x *CloudflareQueueOutputs) GetQueueName() string {
 	if x != nil {
 		return x.QueueName
 	}
 	return ""
 }
 
-func (x *CloudflareQueueStackOutputs) GetCreatedOn() string {
+func (x *CloudflareQueueOutputs) GetCreatedOn() string {
 	if x != nil {
 		return x.CreatedOn
 	}
 	return ""
 }
 
-func (x *CloudflareQueueStackOutputs) GetModifiedOn() string {
+func (x *CloudflareQueueOutputs) GetModifiedOn() string {
 	if x != nil {
 		return x.ModifiedOn
 	}
@@ -99,8 +99,8 @@ var File_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/cloudflare/cloudflarequeue/v1alpha1/outputs.proto\x12/dev.planton.cloudflare.cloudflarequeue.v1alpha1\"\x97\x01\n" +
-	"\x1bCloudflareQueueStackOutputs\x12\x19\n" +
+	"9catalog/cloudflare/cloudflarequeue/v1alpha1/outputs.proto\x12/dev.planton.cloudflare.cloudflarequeue.v1alpha1\"\x92\x01\n" +
+	"\x16CloudflareQueueOutputs\x12\x19\n" +
 	"\bqueue_id\x18\x01 \x01(\tR\aqueueId\x12\x1d\n" +
 	"\n" +
 	"queue_name\x18\x02 \x01(\tR\tqueueName\x12\x1d\n" +
@@ -124,7 +124,7 @@ func file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareQueueStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStackOutputs
+	(*CloudflareQueueOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueOutputs
 }
 var file_catalog_cloudflare_cloudflarequeue_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

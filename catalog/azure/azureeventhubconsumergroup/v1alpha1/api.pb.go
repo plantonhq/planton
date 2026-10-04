@@ -34,7 +34,7 @@ type AzureEventHubConsumerGroup struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventHubConsumerGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureEventHubConsumerGroup) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventHubConsumerGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventHubConsumerGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureEventHubConsumerGroup) GetStatus() *AzureEventHubConsumerGroupStat
 // AzureEventHubConsumerGroupStatus holds the deployment status and outputs.
 type AzureEventHubConsumerGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureEventHubConsumerGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureEventHubConsumerGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureEventHubConsumerGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubconsumergroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventHubConsumerGroupStatus) GetOutputs() *AzureEventHubConsumerGroupStackOutputs {
+func (x *AzureEventHubConsumerGroupStatus) GetOutputs() *AzureEventHubConsumerGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azureeventhubconsumergroup_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureEventHubConsumerGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatusR\x06status\"\x9b\x01\n" +
-	" AzureEventHubConsumerGroupStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatusR\x06status\"\x96\x01\n" +
+	" AzureEventHubConsumerGroupStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azureeventhubconsumergroup.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azureeventhubconsumergroup/v1alpha1;azureeventhubconsumergroupv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azureeventhubconsumergroup.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azureeventhubconsumergroup\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azureeventhubconsumergroup\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azureeventhubconsumergroup::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azureeventhubconsumergroup_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azureeventhubconsumergroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventhubconsumergroup_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventHubConsumerGroup)(nil),             // 0: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroup
-	(*AzureEventHubConsumerGroupStatus)(nil),       // 1: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventHubConsumerGroupSpec)(nil),         // 3: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupSpec
-	(*AzureEventHubConsumerGroupStackOutputs)(nil), // 4: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStackOutputs
+	(*AzureEventHubConsumerGroup)(nil),        // 0: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroup
+	(*AzureEventHubConsumerGroupStatus)(nil),  // 1: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventHubConsumerGroupSpec)(nil),    // 3: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupSpec
+	(*AzureEventHubConsumerGroupOutputs)(nil), // 4: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupOutputs
 }
 var file_catalog_azure_azureeventhubconsumergroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroup.spec:type_name -> dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupSpec
 	1, // 2: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroup.status:type_name -> dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatus
-	4, // 3: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatus.outputs:type_name -> dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStackOutputs
+	4, // 3: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStatus.outputs:type_name -> dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

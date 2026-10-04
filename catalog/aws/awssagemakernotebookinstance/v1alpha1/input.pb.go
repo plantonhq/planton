@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerNotebookInstanceStackInput is the input for the IaC
+// AwsSagemakerNotebookInstanceIacInput is the input for the IaC
 // modules that deploy the notebook instance.
-type AwsSagemakerNotebookInstanceStackInput struct {
+type AwsSagemakerNotebookInstanceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSagemakerNotebookInstance resource to deploy.
 	Target *AwsSagemakerNotebookInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerNotebookInstanceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerNotebookInstanceStackInput) Reset() {
-	*x = AwsSagemakerNotebookInstanceStackInput{}
+func (x *AwsSagemakerNotebookInstanceIacInput) Reset() {
+	*x = AwsSagemakerNotebookInstanceIacInput{}
 	mi := &file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerNotebookInstanceStackInput) String() string {
+func (x *AwsSagemakerNotebookInstanceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerNotebookInstanceStackInput) ProtoMessage() {}
+func (*AwsSagemakerNotebookInstanceIacInput) ProtoMessage() {}
 
-func (x *AwsSagemakerNotebookInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerNotebookInstanceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerNotebookInstanceStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerNotebookInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerNotebookInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerNotebookInstanceIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerNotebookInstanceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerNotebookInstanceStackInput) GetTarget() *AwsSagemakerNotebookInstance {
+func (x *AwsSagemakerNotebookInstanceIacInput) GetTarget() *AwsSagemakerNotebookInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSagemakerNotebookInstanceStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSagemakerNotebookInstanceIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto protorefl
 
 const file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awssagemakernotebookinstance/v1alpha1/input.proto\x125dev.planton.aws.awssagemakernotebookinstance.v1alpha1\x1a;catalog/aws/awssagemakernotebookinstance/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe2\x01\n" +
-	"&AwsSagemakerNotebookInstanceStackInput\x12k\n" +
+	"=catalog/aws/awssagemakernotebookinstance/v1alpha1/input.proto\x125dev.planton.aws.awssagemakernotebookinstance.v1alpha1\x1a;catalog/aws/awssagemakernotebookinstance/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe0\x01\n" +
+	"$AwsSagemakerNotebookInstanceIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	"9com.dev.planton.aws.awssagemakernotebookinstance.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_rawDescG
 
 var file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSagemakerNotebookInstanceStackInput)(nil), // 0: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceStackInput
-	(*AwsSagemakerNotebookInstance)(nil),           // 1: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstance
-	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSagemakerNotebookInstanceIacInput)(nil), // 0: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceIacInput
+	(*AwsSagemakerNotebookInstance)(nil),         // 1: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstance
+	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssagemakernotebookinstance_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceStackInput.target:type_name -> dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstance
-	2, // 1: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceIacInput.target:type_name -> dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstance
+	2, // 1: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

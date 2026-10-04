@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-mssql-database stack-input
-type AzureMssqlDatabaseStackInput struct {
+// azure-mssql-database iac-input
+type AzureMssqlDatabaseIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureMssqlDatabase `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureMssqlDatabaseStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureMssqlDatabaseStackInput) Reset() {
-	*x = AzureMssqlDatabaseStackInput{}
+func (x *AzureMssqlDatabaseIacInput) Reset() {
+	*x = AzureMssqlDatabaseIacInput{}
 	mi := &file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMssqlDatabaseStackInput) String() string {
+func (x *AzureMssqlDatabaseIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMssqlDatabaseStackInput) ProtoMessage() {}
+func (*AzureMssqlDatabaseIacInput) ProtoMessage() {}
 
-func (x *AzureMssqlDatabaseStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureMssqlDatabaseIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureMssqlDatabaseStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMssqlDatabaseStackInput.ProtoReflect.Descriptor instead.
-func (*AzureMssqlDatabaseStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMssqlDatabaseIacInput.ProtoReflect.Descriptor instead.
+func (*AzureMssqlDatabaseIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMssqlDatabaseStackInput) GetTarget() *AzureMssqlDatabase {
+func (x *AzureMssqlDatabaseIacInput) GetTarget() *AzureMssqlDatabase {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureMssqlDatabaseStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureMssqlDatabaseIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azuremssqldatabase_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azuremssqldatabase/v1alpha1/input.proto\x12-dev.planton.azure.azuremssqldatabase.v1alpha1\x1a3catalog/azure/azuremssqldatabase/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xca\x01\n" +
-	"\x1cAzureMssqlDatabaseStackInput\x12Y\n" +
+	"5catalog/azure/azuremssqldatabase/v1alpha1/input.proto\x12-dev.planton.azure.azuremssqldatabase.v1alpha1\x1a3catalog/azure/azuremssqldatabase/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc8\x01\n" +
+	"\x1aAzureMssqlDatabaseIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xfb\x02\n" +
 	"1com.dev.planton.azure.azuremssqldatabase.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_goTypes = []any{
-	(*AzureMssqlDatabaseStackInput)(nil), // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackInput
-	(*AzureMssqlDatabase)(nil),           // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase
-	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureMssqlDatabaseIacInput)(nil), // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseIacInput
+	(*AzureMssqlDatabase)(nil),         // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase
+	(*azure.AzureProviderConfig)(nil),  // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremssqldatabase_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackInput.target:type_name -> dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase
-	2, // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseIacInput.target:type_name -> dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase
+	2, // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

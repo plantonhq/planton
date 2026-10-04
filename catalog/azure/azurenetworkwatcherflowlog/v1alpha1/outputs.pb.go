@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureNetworkWatcherFlowLogStackOutputs** captures the outputs of
+// **AzureNetworkWatcherFlowLogOutputs** captures the outputs of
 // provisioning a Network Watcher flow log.
-type AzureNetworkWatcherFlowLogStackOutputs struct {
+type AzureNetworkWatcherFlowLogOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The flow log's ARM resource ID
 	// (.../networkWatchers/{watcher}/flowLogs/{name}).
@@ -37,20 +37,20 @@ type AzureNetworkWatcherFlowLogStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureNetworkWatcherFlowLogStackOutputs) Reset() {
-	*x = AzureNetworkWatcherFlowLogStackOutputs{}
+func (x *AzureNetworkWatcherFlowLogOutputs) Reset() {
+	*x = AzureNetworkWatcherFlowLogOutputs{}
 	mi := &file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureNetworkWatcherFlowLogStackOutputs) String() string {
+func (x *AzureNetworkWatcherFlowLogOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureNetworkWatcherFlowLogStackOutputs) ProtoMessage() {}
+func (*AzureNetworkWatcherFlowLogOutputs) ProtoMessage() {}
 
-func (x *AzureNetworkWatcherFlowLogStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureNetworkWatcherFlowLogOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AzureNetworkWatcherFlowLogStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureNetworkWatcherFlowLogStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureNetworkWatcherFlowLogStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureNetworkWatcherFlowLogOutputs.ProtoReflect.Descriptor instead.
+func (*AzureNetworkWatcherFlowLogOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureNetworkWatcherFlowLogStackOutputs) GetFlowLogId() string {
+func (x *AzureNetworkWatcherFlowLogOutputs) GetFlowLogId() string {
 	if x != nil {
 		return x.FlowLogId
 	}
 	return ""
 }
 
-func (x *AzureNetworkWatcherFlowLogStackOutputs) GetFlowLogName() string {
+func (x *AzureNetworkWatcherFlowLogOutputs) GetFlowLogName() string {
 	if x != nil {
 		return x.FlowLogName
 	}
 	return ""
 }
 
-func (x *AzureNetworkWatcherFlowLogStackOutputs) GetNetworkWatcherName() string {
+func (x *AzureNetworkWatcherFlowLogOutputs) GetNetworkWatcherName() string {
 	if x != nil {
 		return x.NetworkWatcherName
 	}
@@ -92,8 +92,8 @@ var File_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurenetworkwatcherflowlog/v1alpha1/outputs.proto\x125dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1\"\x9e\x01\n" +
-	"&AzureNetworkWatcherFlowLogStackOutputs\x12\x1e\n" +
+	"?catalog/azure/azurenetworkwatcherflowlog/v1alpha1/outputs.proto\x125dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1\"\x99\x01\n" +
+	"!AzureNetworkWatcherFlowLogOutputs\x12\x1e\n" +
 	"\vflow_log_id\x18\x01 \x01(\tR\tflowLogId\x12\"\n" +
 	"\rflow_log_name\x18\x02 \x01(\tR\vflowLogName\x120\n" +
 	"\x14network_watcher_name\x18\x03 \x01(\tR\x12networkWatcherNameB\xb5\x03\n" +
@@ -113,7 +113,7 @@ func file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureNetworkWatcherFlowLogStackOutputs)(nil), // 0: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogStackOutputs
+	(*AzureNetworkWatcherFlowLogOutputs)(nil), // 0: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogOutputs
 }
 var file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

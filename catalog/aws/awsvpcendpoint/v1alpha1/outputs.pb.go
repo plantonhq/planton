@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsVpcEndpointStackOutputs describes the values returned after
+// AwsVpcEndpointOutputs describes the values returned after
 // provisioning a VPC endpoint.
-type AwsVpcEndpointStackOutputs struct {
+type AwsVpcEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// vpc_endpoint_id is the endpoint's id (e.g. "vpce-0abc..."), the
 	// handle every AWS API and route inspection uses.
@@ -57,20 +57,20 @@ type AwsVpcEndpointStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsVpcEndpointStackOutputs) Reset() {
-	*x = AwsVpcEndpointStackOutputs{}
+func (x *AwsVpcEndpointOutputs) Reset() {
+	*x = AwsVpcEndpointOutputs{}
 	mi := &file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsVpcEndpointStackOutputs) String() string {
+func (x *AwsVpcEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsVpcEndpointStackOutputs) ProtoMessage() {}
+func (*AwsVpcEndpointOutputs) ProtoMessage() {}
 
-func (x *AwsVpcEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsVpcEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,54 +82,54 @@ func (x *AwsVpcEndpointStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsVpcEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsVpcEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsVpcEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AwsVpcEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetVpcEndpointId() string {
+func (x *AwsVpcEndpointOutputs) GetVpcEndpointId() string {
 	if x != nil {
 		return x.VpcEndpointId
 	}
 	return ""
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetArn() string {
+func (x *AwsVpcEndpointOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetState() string {
+func (x *AwsVpcEndpointOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetPrefixListId() string {
+func (x *AwsVpcEndpointOutputs) GetPrefixListId() string {
 	if x != nil {
 		return x.PrefixListId
 	}
 	return ""
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetDnsName() string {
+func (x *AwsVpcEndpointOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetHostedZoneId() string {
+func (x *AwsVpcEndpointOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsVpcEndpointStackOutputs) GetNetworkInterfaceIds() []string {
+func (x *AwsVpcEndpointOutputs) GetNetworkInterfaceIds() []string {
 	if x != nil {
 		return x.NetworkInterfaceIds
 	}
@@ -140,8 +140,8 @@ var File_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsvpcendpoint/v1alpha1/outputs.proto\x12'dev.planton.aws.awsvpcendpoint.v1alpha1\"\x87\x02\n" +
-	"\x1aAwsVpcEndpointStackOutputs\x12&\n" +
+	"1catalog/aws/awsvpcendpoint/v1alpha1/outputs.proto\x12'dev.planton.aws.awsvpcendpoint.v1alpha1\"\x82\x02\n" +
+	"\x15AwsVpcEndpointOutputs\x12&\n" +
 	"\x0fvpc_endpoint_id\x18\x01 \x01(\tR\rvpcEndpointId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05state\x12$\n" +
@@ -165,7 +165,7 @@ func file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsVpcEndpointStackOutputs)(nil), // 0: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStackOutputs
+	(*AwsVpcEndpointOutputs)(nil), // 0: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointOutputs
 }
 var file_catalog_aws_awsvpcendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

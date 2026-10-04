@@ -39,7 +39,7 @@ type KubernetesGatekeeper struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesGatekeeperSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -92,7 +92,7 @@ func (x *KubernetesGatekeeper) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesGatekeeper) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesGatekeeper) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -116,8 +116,8 @@ func (x *KubernetesGatekeeper) GetStatus() *KubernetesGatekeeperStatus {
 // KubernetesGatekeeperStatus describes the observed state of the engine.
 type KubernetesGatekeeperStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesGatekeeperStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesGatekeeperOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +152,7 @@ func (*KubernetesGatekeeperStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesGatekeeperStatus) GetOutputs() *KubernetesGatekeeperStackOutputs {
+func (x *KubernetesGatekeeperStatus) GetOutputs() *KubernetesGatekeeperOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -170,11 +170,11 @@ const file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14KubernetesGatekeeperR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatusR\x06status\"\x8e\x01\n" +
-	"\x1aKubernetesGatekeeperStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatusR\x06status\"\x89\x01\n" +
+	"\x1aKubernetesGatekeeperStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgatekeeper/v1alpha1;kubernetesgatekeeperv1alpha1\xa2\x02\x04DPKK\xaa\x024Dev.Planton.Kubernetes.Kubernetesgatekeeper.V1alpha1\xca\x024Dev\\Planton\\Kubernetes\\Kubernetesgatekeeper\\V1alpha1\xe2\x02@Dev\\Planton\\Kubernetes\\Kubernetesgatekeeper\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Kubernetes::Kubernetesgatekeeper::V1alpha1b\x06proto3"
 
 var (
@@ -191,17 +191,17 @@ func file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesGatekeeper)(nil),             // 0: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeper
-	(*KubernetesGatekeeperStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesGatekeeperSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperSpec
-	(*KubernetesGatekeeperStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStackOutputs
+	(*KubernetesGatekeeper)(nil),         // 0: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeper
+	(*KubernetesGatekeeperStatus)(nil),   // 1: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesGatekeeperSpec)(nil),     // 3: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperSpec
+	(*KubernetesGatekeeperOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperOutputs
 }
 var file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeper.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeper.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeper.spec:type_name -> dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperSpec
 	1, // 2: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeper.status:type_name -> dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatus
-	4, // 3: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareEmailRoutingRuleStackOutputs captures the outputs after creating a
+// CloudflareEmailRoutingRuleOutputs captures the outputs after creating a
 // routing rule.
-type CloudflareEmailRoutingRuleStackOutputs struct {
+type CloudflareEmailRoutingRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the routing rule.
 	RuleId string `protobuf:"bytes,1,opt,name=rule_id,json=ruleId,proto3" json:"rule_id,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareEmailRoutingRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareEmailRoutingRuleStackOutputs) Reset() {
-	*x = CloudflareEmailRoutingRuleStackOutputs{}
+func (x *CloudflareEmailRoutingRuleOutputs) Reset() {
+	*x = CloudflareEmailRoutingRuleOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareEmailRoutingRuleStackOutputs) String() string {
+func (x *CloudflareEmailRoutingRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareEmailRoutingRuleStackOutputs) ProtoMessage() {}
+func (*CloudflareEmailRoutingRuleOutputs) ProtoMessage() {}
 
-func (x *CloudflareEmailRoutingRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareEmailRoutingRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareEmailRoutingRuleStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareEmailRoutingRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareEmailRoutingRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareEmailRoutingRuleOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareEmailRoutingRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareEmailRoutingRuleStackOutputs) GetRuleId() string {
+func (x *CloudflareEmailRoutingRuleOutputs) GetRuleId() string {
 	if x != nil {
 		return x.RuleId
 	}
 	return ""
 }
 
-func (x *CloudflareEmailRoutingRuleStackOutputs) GetZoneId() string {
+func (x *CloudflareEmailRoutingRuleOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto pr
 
 const file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflareemailroutingrule/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflareemailroutingrule.v1alpha1\"Z\n" +
-	"&CloudflareEmailRoutingRuleStackOutputs\x12\x17\n" +
+	"Dcatalog/cloudflare/cloudflareemailroutingrule/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflareemailroutingrule.v1alpha1\"U\n" +
+	"!CloudflareEmailRoutingRuleOutputs\x12\x17\n" +
 	"\arule_id\x18\x01 \x01(\tR\x06ruleId\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneIdB\xd3\x03\n" +
 	">com.dev.planton.cloudflare.cloudflareemailroutingrule.v1alpha1B\fOutputsProtoP\x01Zvgithub.com/plantonhq/planton/catalog/cloudflare/cloudflareemailroutingrule/v1alpha1;cloudflareemailroutingrulev1alpha1\xa2\x02\x04DPCC\xaa\x02:Dev.Planton.Cloudflare.Cloudflareemailroutingrule.V1alpha1\xca\x02:Dev\\Planton\\Cloudflare\\Cloudflareemailroutingrule\\V1alpha1\xe2\x02FDev\\Planton\\Cloudflare\\Cloudflareemailroutingrule\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Cloudflare::Cloudflareemailroutingrule::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_r
 
 var file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareEmailRoutingRuleStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingrule.v1alpha1.CloudflareEmailRoutingRuleStackOutputs
+	(*CloudflareEmailRoutingRuleOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingrule.v1alpha1.CloudflareEmailRoutingRuleOutputs
 }
 var file_catalog_cloudflare_cloudflareemailroutingrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

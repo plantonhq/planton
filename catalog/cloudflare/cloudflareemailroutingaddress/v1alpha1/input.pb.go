@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-email-routing-address stack-input
-type CloudflareEmailRoutingAddressStackInput struct {
+// cloudflare-email-routing-address iac-input
+type CloudflareEmailRoutingAddressIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareEmailRoutingAddress `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareEmailRoutingAddressStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareEmailRoutingAddressStackInput) Reset() {
-	*x = CloudflareEmailRoutingAddressStackInput{}
+func (x *CloudflareEmailRoutingAddressIacInput) Reset() {
+	*x = CloudflareEmailRoutingAddressIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareEmailRoutingAddressStackInput) String() string {
+func (x *CloudflareEmailRoutingAddressIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareEmailRoutingAddressStackInput) ProtoMessage() {}
+func (*CloudflareEmailRoutingAddressIacInput) ProtoMessage() {}
 
-func (x *CloudflareEmailRoutingAddressStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareEmailRoutingAddressIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareEmailRoutingAddressStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareEmailRoutingAddressStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareEmailRoutingAddressStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareEmailRoutingAddressIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareEmailRoutingAddressIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareEmailRoutingAddressStackInput) GetTarget() *CloudflareEmailRoutingAddress {
+func (x *CloudflareEmailRoutingAddressIacInput) GetTarget() *CloudflareEmailRoutingAddress {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareEmailRoutingAddressStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareEmailRoutingAddressIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto p
 
 const file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/cloudflare/cloudflareemailroutingaddress/v1alpha1/input.proto\x12=dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1\x1aCcatalog/cloudflare/cloudflareemailroutingaddress/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xfa\x01\n" +
-	"'CloudflareEmailRoutingAddressStackInput\x12t\n" +
+	"Ecatalog/cloudflare/cloudflareemailroutingaddress/v1alpha1/input.proto\x12=dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1\x1aCcatalog/cloudflare/cloudflareemailroutingaddress/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf8\x01\n" +
+	"%CloudflareEmailRoutingAddressIacInput\x12t\n" +
 	"\x06target\x18\x01 \x01(\v2\\.dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xe6\x03\n" +
 	"Acom.dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_
 
 var file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareEmailRoutingAddressStackInput)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressStackInput
-	(*CloudflareEmailRoutingAddress)(nil),           // 1: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddress
-	(*cloudflare.CloudflareProviderConfig)(nil),     // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareEmailRoutingAddressIacInput)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressIacInput
+	(*CloudflareEmailRoutingAddress)(nil),         // 1: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddress
+	(*cloudflare.CloudflareProviderConfig)(nil),   // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareemailroutingaddress_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressStackInput.target:type_name -> dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddress
-	2, // 1: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressIacInput.target:type_name -> dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddress
+	2, // 1: dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1.CloudflareEmailRoutingAddressIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

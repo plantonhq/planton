@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudBuildTriggerStackOutputs carries the trigger's identity.
-type GcpCloudBuildTriggerStackOutputs struct {
+// GcpCloudBuildTriggerOutputs carries the trigger's identity.
+type GcpCloudBuildTriggerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The trigger's full resource ID:
 	// projects/{project}/locations/{location}/triggers/{trigger_id} for a
@@ -38,20 +38,20 @@ type GcpCloudBuildTriggerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudBuildTriggerStackOutputs) Reset() {
-	*x = GcpCloudBuildTriggerStackOutputs{}
+func (x *GcpCloudBuildTriggerOutputs) Reset() {
+	*x = GcpCloudBuildTriggerOutputs{}
 	mi := &file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudBuildTriggerStackOutputs) String() string {
+func (x *GcpCloudBuildTriggerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudBuildTriggerStackOutputs) ProtoMessage() {}
+func (*GcpCloudBuildTriggerOutputs) ProtoMessage() {}
 
-func (x *GcpCloudBuildTriggerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudBuildTriggerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpCloudBuildTriggerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudBuildTriggerStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudBuildTriggerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudBuildTriggerOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudBuildTriggerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudBuildTriggerStackOutputs) GetId() string {
+func (x *GcpCloudBuildTriggerOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildTriggerStackOutputs) GetTriggerId() string {
+func (x *GcpCloudBuildTriggerOutputs) GetTriggerId() string {
 	if x != nil {
 		return x.TriggerId
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildTriggerStackOutputs) GetName() string {
+func (x *GcpCloudBuildTriggerOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpcloudbuildtrigger/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1\"e\n" +
-	" GcpCloudBuildTriggerStackOutputs\x12\x0e\n" +
+	"7catalog/gcp/gcpcloudbuildtrigger/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1\"`\n" +
+	"\x1bGcpCloudBuildTriggerOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"trigger_id\x18\x02 \x01(\tR\ttriggerId\x12\x12\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudBuildTriggerStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStackOutputs
+	(*GcpCloudBuildTriggerOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerOutputs
 }
 var file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

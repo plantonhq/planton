@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EventStreamStackOutputs contains the outputs from an Auth0 Event Stream deployment.
+// Auth0EventStreamOutputs contains the outputs from an Auth0 Event Stream deployment.
 // These outputs provide essential identifiers and status information for monitoring
 // and integrating the event stream with downstream systems.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/event_stream#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/eventstream/#outputs
-type Auth0EventStreamStackOutputs struct {
+type Auth0EventStreamOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the Auth0 event stream.
 	// This is used internally by Auth0 to identify the event stream.
@@ -63,20 +63,20 @@ type Auth0EventStreamStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *Auth0EventStreamStackOutputs) Reset() {
-	*x = Auth0EventStreamStackOutputs{}
+func (x *Auth0EventStreamOutputs) Reset() {
+	*x = Auth0EventStreamOutputs{}
 	mi := &file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0EventStreamStackOutputs) String() string {
+func (x *Auth0EventStreamOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0EventStreamStackOutputs) ProtoMessage() {}
+func (*Auth0EventStreamOutputs) ProtoMessage() {}
 
-func (x *Auth0EventStreamStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0EventStreamOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,61 +88,61 @@ func (x *Auth0EventStreamStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0EventStreamStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0EventStreamStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0EventStreamOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0EventStreamOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0EventStreamStackOutputs) GetId() string {
+func (x *Auth0EventStreamOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0EventStreamStackOutputs) GetName() string {
+func (x *Auth0EventStreamOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0EventStreamStackOutputs) GetStatus() string {
+func (x *Auth0EventStreamOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *Auth0EventStreamStackOutputs) GetDestinationType() string {
+func (x *Auth0EventStreamOutputs) GetDestinationType() string {
 	if x != nil {
 		return x.DestinationType
 	}
 	return ""
 }
 
-func (x *Auth0EventStreamStackOutputs) GetCreatedAt() string {
+func (x *Auth0EventStreamOutputs) GetCreatedAt() string {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return ""
 }
 
-func (x *Auth0EventStreamStackOutputs) GetUpdatedAt() string {
+func (x *Auth0EventStreamOutputs) GetUpdatedAt() string {
 	if x != nil {
 		return x.UpdatedAt
 	}
 	return ""
 }
 
-func (x *Auth0EventStreamStackOutputs) GetSubscriptions() []string {
+func (x *Auth0EventStreamOutputs) GetSubscriptions() []string {
 	if x != nil {
 		return x.Subscriptions
 	}
 	return nil
 }
 
-func (x *Auth0EventStreamStackOutputs) GetAwsPartnerEventSource() string {
+func (x *Auth0EventStreamOutputs) GetAwsPartnerEventSource() string {
 	if x != nil {
 		return x.AwsPartnerEventSource
 	}
@@ -153,8 +153,8 @@ var File_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/auth0/auth0eventstream/v1alpha1/outputs.proto\x12+dev.planton.auth0.auth0eventstream.v1alpha1\"\xa2\x02\n" +
-	"\x1cAuth0EventStreamStackOutputs\x12\x0e\n" +
+	"5catalog/auth0/auth0eventstream/v1alpha1/outputs.proto\x12+dev.planton.auth0.auth0eventstream.v1alpha1\"\x9d\x02\n" +
+	"\x17Auth0EventStreamOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12)\n" +
@@ -181,7 +181,7 @@ func file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0EventStreamStackOutputs)(nil), // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackOutputs
+	(*Auth0EventStreamOutputs)(nil), // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamOutputs
 }
 var file_catalog_auth0_auth0eventstream_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

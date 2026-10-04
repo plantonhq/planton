@@ -31,7 +31,7 @@ type AwsFsxOntapFileSystem struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsFsxOntapFileSystemSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsFsxOntapFileSystem) GetKind() string {
 	return ""
 }
 
-func (x *AwsFsxOntapFileSystem) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsFsxOntapFileSystem) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsFsxOntapFileSystem) GetStatus() *AwsFsxOntapFileSystemStatus {
 // aws-fsx-ontap-file-system status
 type AwsFsxOntapFileSystemStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsFsxOntapFileSystemStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsFsxOntapFileSystemOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsFsxOntapFileSystemStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxontapfilesystem_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsFsxOntapFileSystemStatus) GetOutputs() *AwsFsxOntapFileSystemStackOutputs {
+func (x *AwsFsxOntapFileSystemStatus) GetOutputs() *AwsFsxOntapFileSystemOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsfsxontapfilesystem_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AwsFsxOntapFileSystemR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatusR\x06status\"\x8a\x01\n" +
-	"\x1bAwsFsxOntapFileSystemStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatusR\x06status\"\x85\x01\n" +
+	"\x1bAwsFsxOntapFileSystemStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.aws.awsfsxontapfilesystem.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awsfsxontapfilesystem/v1alpha1;awsfsxontapfilesystemv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awsfsxontapfilesystem.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awsfsxontapfilesystem\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awsfsxontapfilesystem\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awsfsxontapfilesystem::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsfsxontapfilesystem_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsfsxontapfilesystem_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsfsxontapfilesystem_v1alpha1_api_proto_goTypes = []any{
-	(*AwsFsxOntapFileSystem)(nil),             // 0: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystem
-	(*AwsFsxOntapFileSystemStatus)(nil),       // 1: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsFsxOntapFileSystemSpec)(nil),         // 3: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemSpec
-	(*AwsFsxOntapFileSystemStackOutputs)(nil), // 4: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStackOutputs
+	(*AwsFsxOntapFileSystem)(nil),        // 0: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystem
+	(*AwsFsxOntapFileSystemStatus)(nil),  // 1: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsFsxOntapFileSystemSpec)(nil),    // 3: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemSpec
+	(*AwsFsxOntapFileSystemOutputs)(nil), // 4: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemOutputs
 }
 var file_catalog_aws_awsfsxontapfilesystem_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystem.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystem.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystem.spec:type_name -> dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemSpec
 	1, // 2: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystem.status:type_name -> dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatus
-	4, // 3: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatus.outputs:type_name -> dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStackOutputs
+	4, // 3: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStatus.outputs:type_name -> dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -38,7 +38,7 @@ type KubernetesServiceAccount struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the ServiceAccount resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the ServiceAccount.
 	// Defines the target namespace, image-pull secrets, token automount behavior,
 	// and cloud workload-identity binding.
@@ -94,7 +94,7 @@ func (x *KubernetesServiceAccount) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesServiceAccount) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesServiceAccount) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -122,7 +122,7 @@ type KubernetesServiceAccountStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the ServiceAccount deployment.
 	// Contains the identity handles downstream resources compose on.
-	Outputs       *KubernetesServiceAccountStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesServiceAccountOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -157,7 +157,7 @@ func (*KubernetesServiceAccountStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesServiceAccountStatus) GetOutputs() *KubernetesServiceAccountStackOutputs {
+func (x *KubernetesServiceAccountStatus) GetOutputs() *KubernetesServiceAccountOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -175,11 +175,11 @@ const file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_api_proto_rawDes
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18KubernetesServiceAccountR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatusR\x06status\"\x9a\x01\n" +
-	"\x1eKubernetesServiceAccountStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatusR\x06status\"\x95\x01\n" +
+	"\x1eKubernetesServiceAccountStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountOutputsR\aoutputsB\xc1\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesserviceaccount/v1alpha1;kubernetesserviceaccountv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesserviceaccount.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesserviceaccount\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesserviceaccount\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesserviceaccount::V1alpha1b\x06proto3"
 
 var (
@@ -196,17 +196,17 @@ func file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_api_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesServiceAccount)(nil),             // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount
-	(*KubernetesServiceAccountStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesServiceAccountSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountSpec
-	(*KubernetesServiceAccountStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackOutputs
+	(*KubernetesServiceAccount)(nil),        // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount
+	(*KubernetesServiceAccountStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesServiceAccountSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountSpec
+	(*KubernetesServiceAccountOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountOutputs
 }
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount.spec:type_name -> dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountSpec
 	1, // 2: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount.status:type_name -> dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatus
-	4, // 3: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

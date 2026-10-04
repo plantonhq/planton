@@ -31,7 +31,7 @@ Notes:
 - `kms_key_id` and `subnet_ids` are ForceNew — changing them destroys and
   recreates the cache. Design encryption and networking choices upfront.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

@@ -36,7 +36,7 @@ type AzureRedisCacheAccessPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureRedisCacheAccessPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureRedisCacheAccessPolicy) GetKind() string {
 	return ""
 }
 
-func (x *AzureRedisCacheAccessPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureRedisCacheAccessPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureRedisCacheAccessPolicy) GetStatus() *AzureRedisCacheAccessPolicySt
 // AzureRedisCacheAccessPolicyStatus holds the deployment status and outputs.
 type AzureRedisCacheAccessPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureRedisCacheAccessPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureRedisCacheAccessPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureRedisCacheAccessPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureRedisCacheAccessPolicyStatus) GetOutputs() *AzureRedisCacheAccessPolicyStackOutputs {
+func (x *AzureRedisCacheAccessPolicyStatus) GetOutputs() *AzureRedisCacheAccessPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAzureRedisCacheAccessPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatusR\x06status\"\x9e\x01\n" +
-	"!AzureRedisCacheAccessPolicyStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatusR\x06status\"\x99\x01\n" +
+	"!AzureRedisCacheAccessPolicyStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyOutputsR\aoutputsB\xb8\x03\n" +
 	":com.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/azure/azurerediscacheaccesspolicy/v1alpha1;azurerediscacheaccesspolicyv1alpha1\xa2\x02\x04DPAA\xaa\x026Dev.Planton.Azure.Azurerediscacheaccesspolicy.V1alpha1\xca\x026Dev\\Planton\\Azure\\Azurerediscacheaccesspolicy\\V1alpha1\xe2\x02BDev\\Planton\\Azure\\Azurerediscacheaccesspolicy\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Azure::Azurerediscacheaccesspolicy::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_api_proto_goTypes = []any{
-	(*AzureRedisCacheAccessPolicy)(nil),             // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy
-	(*AzureRedisCacheAccessPolicyStatus)(nil),       // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureRedisCacheAccessPolicySpec)(nil),         // 3: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicySpec
-	(*AzureRedisCacheAccessPolicyStackOutputs)(nil), // 4: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStackOutputs
+	(*AzureRedisCacheAccessPolicy)(nil),        // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy
+	(*AzureRedisCacheAccessPolicyStatus)(nil),  // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureRedisCacheAccessPolicySpec)(nil),    // 3: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicySpec
+	(*AzureRedisCacheAccessPolicyOutputs)(nil), // 4: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyOutputs
 }
 var file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy.spec:type_name -> dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicySpec
 	1, // 2: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy.status:type_name -> dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatus
-	4, // 3: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatus.outputs:type_name -> dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStackOutputs
+	4, // 3: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStatus.outputs:type_name -> dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

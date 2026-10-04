@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureMachineLearningOnlineEndpointStackInput is the input to the IaC
+// AzureMachineLearningOnlineEndpointIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureMachineLearningOnlineEndpointStackInput struct {
+type AzureMachineLearningOnlineEndpointIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The online endpoint resource to deploy.
 	Target *AzureMachineLearningOnlineEndpoint `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureMachineLearningOnlineEndpointStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackInput) Reset() {
-	*x = AzureMachineLearningOnlineEndpointStackInput{}
+func (x *AzureMachineLearningOnlineEndpointIacInput) Reset() {
+	*x = AzureMachineLearningOnlineEndpointIacInput{}
 	mi := &file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackInput) String() string {
+func (x *AzureMachineLearningOnlineEndpointIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningOnlineEndpointStackInput) ProtoMessage() {}
+func (*AzureMachineLearningOnlineEndpointIacInput) ProtoMessage() {}
 
-func (x *AzureMachineLearningOnlineEndpointStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningOnlineEndpointIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMachineLearningOnlineEndpointStackInput) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningOnlineEndpointStackInput.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningOnlineEndpointStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningOnlineEndpointIacInput.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningOnlineEndpointIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackInput) GetTarget() *AzureMachineLearningOnlineEndpoint {
+func (x *AzureMachineLearningOnlineEndpointIacInput) GetTarget() *AzureMachineLearningOnlineEndpoint {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureMachineLearningOnlineEndpointIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto p
 
 const file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/azure/azuremachinelearningonlineendpoint/v1alpha1/input.proto\x12=dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1\x1aCcatalog/azure/azuremachinelearningonlineendpoint/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xfa\x01\n" +
-	",AzureMachineLearningOnlineEndpointStackInput\x12y\n" +
+	"Ecatalog/azure/azuremachinelearningonlineendpoint/v1alpha1/input.proto\x12=dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1\x1aCcatalog/azure/azuremachinelearningonlineendpoint/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf8\x01\n" +
+	"*AzureMachineLearningOnlineEndpointIacInput\x12y\n" +
 	"\x06target\x18\x01 \x01(\v2a.dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xec\x03\n" +
 	"Acom.dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_
 
 var file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_goTypes = []any{
-	(*AzureMachineLearningOnlineEndpointStackInput)(nil), // 0: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointStackInput
-	(*AzureMachineLearningOnlineEndpoint)(nil),           // 1: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpoint
-	(*azure.AzureProviderConfig)(nil),                    // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureMachineLearningOnlineEndpointIacInput)(nil), // 0: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointIacInput
+	(*AzureMachineLearningOnlineEndpoint)(nil),         // 1: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpoint
+	(*azure.AzureProviderConfig)(nil),                  // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointStackInput.target:type_name -> dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpoint
-	2, // 1: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointIacInput.target:type_name -> dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpoint
+	2, // 1: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

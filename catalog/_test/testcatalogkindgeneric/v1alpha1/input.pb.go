@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: catalog/_test/testcloudresourcegeneric/v1alpha1/input.proto
+// source: catalog/_test/testcatalogkindgeneric/v1alpha1/input.proto
 
-package testcloudresourcegenericv1alpha1
+package testcatalogkindgenericv1alpha1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,34 +21,34 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TestCloudResourceGenericStackInput is the IaC input for the hermetic test
+// TestCatalogKindGenericIacInput is the IaC input for the hermetic test
 // kind. Unlike real kinds there is deliberately NO provider configuration:
 // the kind's modules provision nothing outside the IaC engine's own state,
-// so the full manifest -> stack-input -> module -> outputs pipeline can be
+// so the full manifest -> iac-input -> module -> outputs pipeline can be
 // exercised with zero credentials, zero network, and zero cost.
-type TestCloudResourceGenericStackInput struct {
+type TestCatalogKindGenericIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The target test resource to "deploy".
-	Target        *TestCloudResourceGeneric `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target        *TestCatalogKindGeneric `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TestCloudResourceGenericStackInput) Reset() {
-	*x = TestCloudResourceGenericStackInput{}
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_msgTypes[0]
+func (x *TestCatalogKindGenericIacInput) Reset() {
+	*x = TestCatalogKindGenericIacInput{}
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TestCloudResourceGenericStackInput) String() string {
+func (x *TestCatalogKindGenericIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TestCloudResourceGenericStackInput) ProtoMessage() {}
+func (*TestCatalogKindGenericIacInput) ProtoMessage() {}
 
-func (x *TestCloudResourceGenericStackInput) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_msgTypes[0]
+func (x *TestCatalogKindGenericIacInput) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,47 +59,47 @@ func (x *TestCloudResourceGenericStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TestCloudResourceGenericStackInput.ProtoReflect.Descriptor instead.
-func (*TestCloudResourceGenericStackInput) Descriptor() ([]byte, []int) {
-	return file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use TestCatalogKindGenericIacInput.ProtoReflect.Descriptor instead.
+func (*TestCatalogKindGenericIacInput) Descriptor() ([]byte, []int) {
+	return file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TestCloudResourceGenericStackInput) GetTarget() *TestCloudResourceGeneric {
+func (x *TestCatalogKindGenericIacInput) GetTarget() *TestCatalogKindGeneric {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-var File_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto protoreflect.FileDescriptor
+var File_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto protoreflect.FileDescriptor
 
-const file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDesc = "" +
+const file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/_test/testcloudresourcegeneric/v1alpha1/input.proto\x123dev.planton._test.testcloudresourcegeneric.v1alpha1\x1a9catalog/_test/testcloudresourcegeneric/v1alpha1/api.proto\"\x8b\x01\n" +
-	"\"TestCloudResourceGenericStackInput\x12e\n" +
-	"\x06target\x18\x01 \x01(\v2M.dev.planton._test.testcloudresourcegeneric.v1alpha1.TestCloudResourceGenericR\x06targetB\xa1\x03\n" +
-	"7com.dev.planton._test.testcloudresourcegeneric.v1alpha1B\n" +
-	"InputProtoP\x01Zmgithub.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1;testcloudresourcegenericv1alpha1\xa2\x02\x04DP_T\xaa\x022Dev.Planton.Test.Testcloudresourcegeneric.V1alpha1\xca\x022Dev\\Planton\\Test\\Testcloudresourcegeneric\\V1alpha1\xe2\x02>Dev\\Planton\\Test\\Testcloudresourcegeneric\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Test::Testcloudresourcegeneric::V1alpha1b\x06proto3"
+	"9catalog/_test/testcatalogkindgeneric/v1alpha1/input.proto\x121dev.planton._test.testcatalogkindgeneric.v1alpha1\x1a7catalog/_test/testcatalogkindgeneric/v1alpha1/api.proto\"\x83\x01\n" +
+	"\x1eTestCatalogKindGenericIacInput\x12a\n" +
+	"\x06target\x18\x01 \x01(\v2I.dev.planton._test.testcatalogkindgeneric.v1alpha1.TestCatalogKindGenericR\x06targetB\x93\x03\n" +
+	"5com.dev.planton._test.testcatalogkindgeneric.v1alpha1B\n" +
+	"InputProtoP\x01Zigithub.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha1;testcatalogkindgenericv1alpha1\xa2\x02\x04DP_T\xaa\x020Dev.Planton.Test.Testcatalogkindgeneric.V1alpha1\xca\x020Dev\\Planton\\Test\\Testcatalogkindgeneric\\V1alpha1\xe2\x02<Dev\\Planton\\Test\\Testcatalogkindgeneric\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Test::Testcatalogkindgeneric::V1alpha1b\x06proto3"
 
 var (
-	file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescOnce sync.Once
-	file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescData []byte
+	file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescOnce sync.Once
+	file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescData []byte
 )
 
-func file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescGZIP() []byte {
-	file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescOnce.Do(func() {
-		file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDesc), len(file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDesc)))
+func file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescGZIP() []byte {
+	file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescOnce.Do(func() {
+		file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDesc), len(file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDesc)))
 	})
-	return file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDescData
+	return file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDescData
 }
 
-var file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_goTypes = []any{
-	(*TestCloudResourceGenericStackInput)(nil), // 0: dev.planton._test.testcloudresourcegeneric.v1alpha1.TestCloudResourceGenericStackInput
-	(*TestCloudResourceGeneric)(nil),           // 1: dev.planton._test.testcloudresourcegeneric.v1alpha1.TestCloudResourceGeneric
+var file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_goTypes = []any{
+	(*TestCatalogKindGenericIacInput)(nil), // 0: dev.planton._test.testcatalogkindgeneric.v1alpha1.TestCatalogKindGenericIacInput
+	(*TestCatalogKindGeneric)(nil),         // 1: dev.planton._test.testcatalogkindgeneric.v1alpha1.TestCatalogKindGeneric
 }
-var file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton._test.testcloudresourcegeneric.v1alpha1.TestCloudResourceGenericStackInput.target:type_name -> dev.planton._test.testcloudresourcegeneric.v1alpha1.TestCloudResourceGeneric
+var file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_depIdxs = []int32{
+	1, // 0: dev.planton._test.testcatalogkindgeneric.v1alpha1.TestCatalogKindGenericIacInput.target:type_name -> dev.planton._test.testcatalogkindgeneric.v1alpha1.TestCatalogKindGeneric
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -107,27 +107,27 @@ var file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_depIdxs = [
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_init() }
-func file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_init() {
-	if File_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto != nil {
+func init() { file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_init() }
+func file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_init() {
+	if File_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto != nil {
 		return
 	}
-	file_catalog__test_testcloudresourcegeneric_v1alpha1_api_proto_init()
+	file_catalog__test_testcatalogkindgeneric_v1alpha1_api_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDesc), len(file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDesc), len(file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_goTypes,
-		DependencyIndexes: file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_depIdxs,
-		MessageInfos:      file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_msgTypes,
+		GoTypes:           file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_goTypes,
+		DependencyIndexes: file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_depIdxs,
+		MessageInfos:      file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_msgTypes,
 	}.Build()
-	File_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto = out.File
-	file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_goTypes = nil
-	file_catalog__test_testcloudresourcegeneric_v1alpha1_input_proto_depIdxs = nil
+	File_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto = out.File
+	file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_goTypes = nil
+	file_catalog__test_testcatalogkindgeneric_v1alpha1_input_proto_depIdxs = nil
 }

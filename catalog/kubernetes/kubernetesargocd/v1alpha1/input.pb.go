@@ -23,9 +23,9 @@ const (
 )
 
 // input for argocd-kubernetes stack
-type KubernetesArgocdStackInput struct {
+type KubernetesArgocdIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesArgocd `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesArgocdStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesArgocdStackInput) Reset() {
-	*x = KubernetesArgocdStackInput{}
+func (x *KubernetesArgocdIacInput) Reset() {
+	*x = KubernetesArgocdIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesArgocdStackInput) String() string {
+func (x *KubernetesArgocdIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesArgocdStackInput) ProtoMessage() {}
+func (*KubernetesArgocdIacInput) ProtoMessage() {}
 
-func (x *KubernetesArgocdStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesArgocdIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesArgocdStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesArgocdStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesArgocdStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesArgocdIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesArgocdIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesArgocdStackInput) GetTarget() *KubernetesArgocd {
+func (x *KubernetesArgocdIacInput) GetTarget() *KubernetesArgocd {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesArgocdStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesArgocdIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesargocd/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetesargocd.v1alpha1\x1a6catalog/kubernetes/kubernetesargocd/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd3\x01\n" +
-	"\x1aKubernetesArgocdStackInput\x12Z\n" +
+	"8catalog/kubernetes/kubernetesargocd/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetesargocd.v1alpha1\x1a6catalog/kubernetes/kubernetesargocd/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd1\x01\n" +
+	"\x18KubernetesArgocdIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetesargocd.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesArgocdStackInput)(nil),          // 0: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdStackInput
+	(*KubernetesArgocdIacInput)(nil),            // 0: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdIacInput
 	(*KubernetesArgocd)(nil),                    // 1: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocd
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesargocd_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdStackInput.target:type_name -> dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocd
-	2, // 1: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdIacInput.target:type_name -> dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocd
+	2, // 1: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

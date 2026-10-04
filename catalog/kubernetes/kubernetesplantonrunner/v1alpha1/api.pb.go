@@ -37,7 +37,7 @@ type KubernetesPlantonRunner struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration defining where the runner lives,
 	// how big it is, which build it runs, and the token it joins with.
 	Spec *KubernetesPlantonRunnerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -91,7 +91,7 @@ func (x *KubernetesPlantonRunner) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPlantonRunner) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPlantonRunner) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -118,7 +118,7 @@ type KubernetesPlantonRunnerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after
 	// provisioning.
-	Outputs       *KubernetesPlantonRunnerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesPlantonRunnerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -153,7 +153,7 @@ func (*KubernetesPlantonRunnerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPlantonRunnerStatus) GetOutputs() *KubernetesPlantonRunnerStackOutputs {
+func (x *KubernetesPlantonRunnerStatus) GetOutputs() *KubernetesPlantonRunnerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -171,11 +171,11 @@ const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesPlantonRunnerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesPlantonRunnerStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesPlantonRunnerStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonrunner/v1alpha1;kubernetesplantonrunnerv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesplantonrunner.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesplantonrunner\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesplantonrunner\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesplantonrunner::V1alpha1b\x06proto3"
 
 var (
@@ -192,17 +192,17 @@ func file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPlantonRunner)(nil),             // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunner
-	(*KubernetesPlantonRunnerStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPlantonRunnerSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec
-	(*KubernetesPlantonRunnerStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStackOutputs
+	(*KubernetesPlantonRunner)(nil),        // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunner
+	(*KubernetesPlantonRunnerStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPlantonRunnerSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec
+	(*KubernetesPlantonRunnerOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerOutputs
 }
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunner.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunner.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunner.spec:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec
 	1, // 2: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunner.status:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatus
-	4, // 3: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -32,7 +32,7 @@ Notes:
 - `access_string` and the authentication mode update in place — tightening
   permissions or rotating passwords never recreates the user.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

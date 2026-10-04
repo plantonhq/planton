@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsVpcPeeringStackInput is the input for the IaC modules that manage
+// AwsVpcPeeringIacInput is the input for the IaC modules that manage
 // one side of a VPC peering connection.
-type AwsVpcPeeringStackInput struct {
+type AwsVpcPeeringIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsVpcPeering resource to deploy.
 	Target *AwsVpcPeering `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsVpcPeeringStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsVpcPeeringStackInput) Reset() {
-	*x = AwsVpcPeeringStackInput{}
+func (x *AwsVpcPeeringIacInput) Reset() {
+	*x = AwsVpcPeeringIacInput{}
 	mi := &file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsVpcPeeringStackInput) String() string {
+func (x *AwsVpcPeeringIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsVpcPeeringStackInput) ProtoMessage() {}
+func (*AwsVpcPeeringIacInput) ProtoMessage() {}
 
-func (x *AwsVpcPeeringStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsVpcPeeringIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsVpcPeeringStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsVpcPeeringStackInput.ProtoReflect.Descriptor instead.
-func (*AwsVpcPeeringStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsVpcPeeringIacInput.ProtoReflect.Descriptor instead.
+func (*AwsVpcPeeringIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsVpcPeeringStackInput) GetTarget() *AwsVpcPeering {
+func (x *AwsVpcPeeringIacInput) GetTarget() *AwsVpcPeering {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsVpcPeeringStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsVpcPeeringIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsvpcpeering_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsvpcpeering/v1alpha1/input.proto\x12&dev.planton.aws.awsvpcpeering.v1alpha1\x1a,catalog/aws/awsvpcpeering/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb5\x01\n" +
-	"\x17AwsVpcPeeringStackInput\x12M\n" +
+	".catalog/aws/awsvpcpeering/v1alpha1/input.proto\x12&dev.planton.aws.awsvpcpeering.v1alpha1\x1a,catalog/aws/awsvpcpeering/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb3\x01\n" +
+	"\x15AwsVpcPeeringIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.aws.awsvpcpeering.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_goTypes = []any{
-	(*AwsVpcPeeringStackInput)(nil), // 0: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringStackInput
-	(*AwsVpcPeering)(nil),           // 1: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeering
-	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsVpcPeeringIacInput)(nil), // 0: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringIacInput
+	(*AwsVpcPeering)(nil),         // 1: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeering
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsvpcpeering_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringStackInput.target:type_name -> dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeering
-	2, // 1: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringIacInput.target:type_name -> dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeering
+	2, // 1: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

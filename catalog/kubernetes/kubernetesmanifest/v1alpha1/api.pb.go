@@ -39,7 +39,7 @@ type KubernetesManifest struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the manifest resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the manifest to apply: the anchor namespace, the raw
 	// YAML, and the await behavior.
 	Spec *KubernetesManifestSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -94,7 +94,7 @@ func (x *KubernetesManifest) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesManifest) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesManifest) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -122,7 +122,7 @@ type KubernetesManifestStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the manifest apply.
 	// Contains the anchor namespace and the applied-resource inventory.
-	Outputs       *KubernetesManifestStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesManifestOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -157,7 +157,7 @@ func (*KubernetesManifestStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmanifest_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesManifestStatus) GetOutputs() *KubernetesManifestStackOutputs {
+func (x *KubernetesManifestStatus) GetOutputs() *KubernetesManifestOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -175,11 +175,11 @@ const file_catalog_kubernetes_kubernetesmanifest_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12KubernetesManifestR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12f\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12f\n" +
 	"\x04spec\x18\x04 \x01(\v2J.dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12d\n" +
-	"\x06status\x18\x05 \x01(\v2L.dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatusR\x06status\"\x88\x01\n" +
-	"\x18KubernetesManifestStatus\x12l\n" +
-	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2L.dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatusR\x06status\"\x83\x01\n" +
+	"\x18KubernetesManifestStatus\x12g\n" +
+	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestOutputsR\aoutputsB\x97\x03\n" +
 	"6com.dev.planton.kubernetes.kubernetesmanifest.v1alpha1B\bApiProtoP\x01Zfgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesmanifest/v1alpha1;kubernetesmanifestv1alpha1\xa2\x02\x04DPKK\xaa\x022Dev.Planton.Kubernetes.Kubernetesmanifest.V1alpha1\xca\x022Dev\\Planton\\Kubernetes\\Kubernetesmanifest\\V1alpha1\xe2\x02>Dev\\Planton\\Kubernetes\\Kubernetesmanifest\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Kubernetes::Kubernetesmanifest::V1alpha1b\x06proto3"
 
 var (
@@ -196,17 +196,17 @@ func file_catalog_kubernetes_kubernetesmanifest_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesmanifest_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesmanifest_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesManifest)(nil),             // 0: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifest
-	(*KubernetesManifestStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesManifestSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestSpec
-	(*KubernetesManifestStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStackOutputs
+	(*KubernetesManifest)(nil),           // 0: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifest
+	(*KubernetesManifestStatus)(nil),     // 1: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesManifestSpec)(nil),       // 3: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestSpec
+	(*KubernetesManifestOutputs)(nil),    // 4: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestOutputs
 }
 var file_catalog_kubernetes_kubernetesmanifest_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifest.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifest.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifest.spec:type_name -> dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestSpec
 	1, // 2: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifest.status:type_name -> dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatus
-	4, // 3: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

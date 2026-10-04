@@ -31,7 +31,7 @@ type GcpAlloydbUser struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpAlloydbUserSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpAlloydbUser) GetKind() string {
 	return ""
 }
 
-func (x *GcpAlloydbUser) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpAlloydbUser) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpAlloydbUser) GetStatus() *GcpAlloydbUserStatus {
 // gcp-alloydb-user status
 type GcpAlloydbUserStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpAlloydbUserStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpAlloydbUserOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpAlloydbUserStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpalloydbuser_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpAlloydbUserStatus) GetOutputs() *GcpAlloydbUserStackOutputs {
+func (x *GcpAlloydbUserStatus) GetOutputs() *GcpAlloydbUserOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpalloydbuser_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eGcpAlloydbUserR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStatusR\x06status\"u\n" +
-	"\x14GcpAlloydbUserStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStatusR\x06status\"p\n" +
+	"\x14GcpAlloydbUserStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.gcp.gcpalloydbuser.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/gcp/gcpalloydbuser/v1alpha1;gcpalloydbuserv1alpha1\xa2\x02\x04DPGG\xaa\x02'Dev.Planton.Gcp.Gcpalloydbuser.V1alpha1\xca\x02'Dev\\Planton\\Gcp\\Gcpalloydbuser\\V1alpha1\xe2\x023Dev\\Planton\\Gcp\\Gcpalloydbuser\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Gcp::Gcpalloydbuser::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpalloydbuser_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_gcp_gcpalloydbuser_v1alpha1_api_proto_goTypes = []any{
 	(*GcpAlloydbUser)(nil),               // 0: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUser
 	(*GcpAlloydbUserStatus)(nil),         // 1: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpAlloydbUserSpec)(nil),           // 3: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserSpec
-	(*GcpAlloydbUserStackOutputs)(nil),   // 4: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStackOutputs
+	(*GcpAlloydbUserOutputs)(nil),        // 4: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserOutputs
 }
 var file_catalog_gcp_gcpalloydbuser_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUser.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUser.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUser.spec:type_name -> dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserSpec
 	1, // 2: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUser.status:type_name -> dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStatus
-	4, // 3: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStatus.outputs:type_name -> dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStackOutputs
+	4, // 3: dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserStatus.outputs:type_name -> dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

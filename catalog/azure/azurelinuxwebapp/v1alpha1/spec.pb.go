@@ -1083,7 +1083,7 @@ type AzureLinuxWebAppSpec struct {
 	//
 	// When identity is configured with SYSTEM_ASSIGNED, the web app gets
 	// a system-assigned identity whose principal_id and tenant_id are exported
-	// as stack outputs.
+	// as outputs.
 	Identity *AzureLinuxWebAppIdentity `protobuf:"bytes,20,opt,name=identity,proto3" json:"identity,omitempty"`
 	// User Assigned Identity ID for accessing Key Vault references.
 	// When the Web App uses Key Vault references in app_settings

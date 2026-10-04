@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0EmailProviderSpec manages the service the Auth0 tenant the provider
 connection's credential belongs to sends its emails through.
@@ -35,7 +35,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_
 
 ```yaml
 # Auth0 Email Provider Test Manifest
-# This file is used for testing the Auth0EmailProvider component.
+# This file is used for testing the Auth0EmailProvider kind.
 #
 # Applying it REPLACES the email provider of the tenant the credential
 # belongs to: run it only against a test tenant whose emails nobody relies

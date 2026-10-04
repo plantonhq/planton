@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureRouteTableStackOutputs captures the outputs of provisioning an Azure
+// AzureRouteTableOutputs captures the outputs of provisioning an Azure
 // route table.
 //
 // The primary output is `route_table_id`, the join key subnets use to attach
 // the table (an AzureSubnet references it to adopt the table's routing).
-type AzureRouteTableStackOutputs struct {
+type AzureRouteTableOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the route table.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/routeTables/{name}
@@ -38,20 +38,20 @@ type AzureRouteTableStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureRouteTableStackOutputs) Reset() {
-	*x = AzureRouteTableStackOutputs{}
+func (x *AzureRouteTableOutputs) Reset() {
+	*x = AzureRouteTableOutputs{}
 	mi := &file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRouteTableStackOutputs) String() string {
+func (x *AzureRouteTableOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRouteTableStackOutputs) ProtoMessage() {}
+func (*AzureRouteTableOutputs) ProtoMessage() {}
 
-func (x *AzureRouteTableStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureRouteTableOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureRouteTableStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRouteTableStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureRouteTableStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRouteTableOutputs.ProtoReflect.Descriptor instead.
+func (*AzureRouteTableOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRouteTableStackOutputs) GetRouteTableId() string {
+func (x *AzureRouteTableOutputs) GetRouteTableId() string {
 	if x != nil {
 		return x.RouteTableId
 	}
 	return ""
 }
 
-func (x *AzureRouteTableStackOutputs) GetRouteTableName() string {
+func (x *AzureRouteTableOutputs) GetRouteTableName() string {
 	if x != nil {
 		return x.RouteTableName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azureroutetable_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azureroutetable/v1alpha1/outputs.proto\x12*dev.planton.azure.azureroutetable.v1alpha1\"m\n" +
-	"\x1bAzureRouteTableStackOutputs\x12$\n" +
+	"4catalog/azure/azureroutetable/v1alpha1/outputs.proto\x12*dev.planton.azure.azureroutetable.v1alpha1\"h\n" +
+	"\x16AzureRouteTableOutputs\x12$\n" +
 	"\x0eroute_table_id\x18\x01 \x01(\tR\frouteTableId\x12(\n" +
 	"\x10route_table_name\x18\x02 \x01(\tR\x0erouteTableNameB\xe8\x02\n" +
 	".com.dev.planton.azure.azureroutetable.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/azure/azureroutetable/v1alpha1;azureroutetablev1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Azure.Azureroutetable.V1alpha1\xca\x02*Dev\\Planton\\Azure\\Azureroutetable\\V1alpha1\xe2\x026Dev\\Planton\\Azure\\Azureroutetable\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Azure::Azureroutetable::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureRouteTableStackOutputs)(nil), // 0: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableStackOutputs
+	(*AzureRouteTableOutputs)(nil), // 0: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableOutputs
 }
 var file_catalog_azure_azureroutetable_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

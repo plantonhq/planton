@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpBigQueryCapacityCommitmentSpec defines a BigQuery capacity commitment
 (`google_bigquery_capacity_commitment`) -- a purchase of slots for a

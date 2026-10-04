@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesKeycloakStackOutputs** — the composition handles a
+// **KubernetesKeycloakOutputs** — the composition handles a
 // deployed Keycloak exports. Child names follow the operator's own
 // naming contract (all derived from this resource's name).
-type KubernetesKeycloakStackOutputs struct {
+type KubernetesKeycloakOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the server runs in.
@@ -68,20 +68,20 @@ type KubernetesKeycloakStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesKeycloakStackOutputs) Reset() {
-	*x = KubernetesKeycloakStackOutputs{}
+func (x *KubernetesKeycloakOutputs) Reset() {
+	*x = KubernetesKeycloakOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKeycloakStackOutputs) String() string {
+func (x *KubernetesKeycloakOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKeycloakStackOutputs) ProtoMessage() {}
+func (*KubernetesKeycloakOutputs) ProtoMessage() {}
 
-func (x *KubernetesKeycloakStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKeycloakOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,61 +93,61 @@ func (x *KubernetesKeycloakStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKeycloakStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKeycloakStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKeycloakOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKeycloakOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetNamespace() string {
+func (x *KubernetesKeycloakOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetStatefulSet() string {
+func (x *KubernetesKeycloakOutputs) GetStatefulSet() string {
 	if x != nil {
 		return x.StatefulSet
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetService() string {
+func (x *KubernetesKeycloakOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetDiscoveryService() string {
+func (x *KubernetesKeycloakOutputs) GetDiscoveryService() string {
 	if x != nil {
 		return x.DiscoveryService
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetApiEndpoint() string {
+func (x *KubernetesKeycloakOutputs) GetApiEndpoint() string {
 	if x != nil {
 		return x.ApiEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetManagementEndpoint() string {
+func (x *KubernetesKeycloakOutputs) GetManagementEndpoint() string {
 	if x != nil {
 		return x.ManagementEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetInitialAdminSecretName() string {
+func (x *KubernetesKeycloakOutputs) GetInitialAdminSecretName() string {
 	if x != nil {
 		return x.InitialAdminSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesKeycloakOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -158,8 +158,8 @@ var File_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kuberneteskeycloak/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kuberneteskeycloak.v1alpha1\"\xe9\x02\n" +
-	"\x1eKubernetesKeycloakStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kuberneteskeycloak/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kuberneteskeycloak.v1alpha1\"\xe4\x02\n" +
+	"\x19KubernetesKeycloakOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fstateful_set\x18\x02 \x01(\tR\vstatefulSet\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12+\n" +
@@ -184,7 +184,7 @@ func file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKeycloakStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskeycloak.v1alpha1.KubernetesKeycloakStackOutputs
+	(*KubernetesKeycloakOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskeycloak.v1alpha1.KubernetesKeycloakOutputs
 }
 var file_catalog_kubernetes_kuberneteskeycloak_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

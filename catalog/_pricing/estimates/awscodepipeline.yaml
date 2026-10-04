@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awscodepipeline
 spec:
@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each push to main runs both actions, billing V2 action-execution minutes rounded up per action -- against the account's shared 100 free action minutes each calendar month
-        - the CodeBuild project the Build action invokes bills its own build minutes on the AwsCodeBuildProject component, usually dwarfing the orchestration charge
+        - the CodeBuild project the Build action invokes bills its own build minutes on the AwsCodeBuildProject kind, usually dwarfing the orchestration charge
         - every execution writes artifacts into the referenced bucket, billing S3 storage and requests there
       notes: Zero committed cost -- the pipeline is free scaffolding; the meter turns exactly as often as main receives a push.
     - preset: 02-ecr-ecs-deploy
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each new latest-tag image runs three actions, each billing its execution minutes rounded up -- the ECS deploy action holds its stage open and bills every minute the rolling deployment takes
-        - the deploy-prep CodeBuild project bills build minutes on its own component, and the ECS service being deployed bills its own compute
+        - the deploy-prep CodeBuild project bills build minutes on its own kind, and the ECS service being deployed bills its own compute
         - artifacts bill S3 storage and requests on the referenced bucket
       notes: Zero committed cost -- nothing bills until an image lands in ECR; slow deployments, not pipeline shape, are what stretch the billed minutes.
     - preset: 03-s3-lambda-deploy
@@ -38,7 +38,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each new package object runs two actions billing their execution minutes; SUPERSEDED mode cancels an in-progress execution when a newer one arrives, cutting its remaining billed minutes
-        - the deployer function's invocation and duration bill on its AwsLambda component
+        - the deployer function's invocation and duration bill on its AwsLambda kind
         - artifacts bill S3 storage and requests on the referenced bucket
       notes: Zero committed cost -- with polling disabled, only a genuine package upload starts the meter, and supersession keeps rapid-fire uploads from stacking billed executions.
     - preset: 04-gated-deploy-with-rollback
@@ -49,7 +49,7 @@ spec:
       exclusions:
         - each push runs the source, build, and deploy actions billing execution minutes rounded up per action -- and the failure handling trades minutes for hands-off recovery, RETRY re-billing the failed build actions fresh and ROLLBACK running a billed rollback execution of its own
         - the deployment-window rule defers production entry outside business hours -- a timing gate, not a meter
-        - the CodeBuild project and ECS service invoked bill on their own components; artifacts bill on the referenced bucket
+        - the CodeBuild project and ECS service invoked bill on their own kinds; artifacts bill on the referenced bucket
       notes: Zero committed cost -- gates and rollback change when and how executions run, not whether an idle pipeline bills; commits remain the only thing that starts the meter.
     - preset: 05-inline-compute-checks
       region_assumption: us-east-1
@@ -59,5 +59,5 @@ spec:
       exclusions:
         - each push bills the three actions' execution minutes -- and the Compute (Commands) action additionally runs its shell commands on CodePipeline-managed CodeBuild compute, billed separately at CodeBuild rates (default BUILD_GENERAL1_SMALL) on top of its own action minutes
         - those managed builds count against the account's CodeBuild concurrency limits even though no CodeBuild project exists in the manifest
-        - the ECS deploy bills its stage-open minutes here and its service compute on the ECS component; artifacts bill on the referenced bucket
+        - the ECS deploy bills its stage-open minutes here and its service compute on the ECS kind; artifacts bill on the referenced bucket
       notes: Zero committed cost -- inline checks trade a standing CodeBuild project for per-execution managed compute, so the double meter (action minutes plus build minutes) runs only when commits arrive.

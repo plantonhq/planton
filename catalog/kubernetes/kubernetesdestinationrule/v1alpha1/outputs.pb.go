@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesDestinationRuleStackOutputs captures observable outputs after the DestinationRule
+// KubernetesDestinationRuleOutputs captures observable outputs after the DestinationRule
 // is created on the target cluster. A DestinationRule is a policy resource consumed by istiod
 // (it has no controller-reconciled status subresource useful to surface here), so only the
 // resource identity is exported.
-type KubernetesDestinationRuleStackOutputs struct {
+type KubernetesDestinationRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created DestinationRule (equals metadata.name).
 	DestinationRuleName string `protobuf:"bytes,1,opt,name=destination_rule_name,json=destinationRuleName,proto3" json:"destination_rule_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesDestinationRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesDestinationRuleStackOutputs) Reset() {
-	*x = KubernetesDestinationRuleStackOutputs{}
+func (x *KubernetesDestinationRuleOutputs) Reset() {
+	*x = KubernetesDestinationRuleOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesDestinationRuleStackOutputs) String() string {
+func (x *KubernetesDestinationRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesDestinationRuleStackOutputs) ProtoMessage() {}
+func (*KubernetesDestinationRuleOutputs) ProtoMessage() {}
 
-func (x *KubernetesDestinationRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesDestinationRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesDestinationRuleStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesDestinationRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesDestinationRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesDestinationRuleOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesDestinationRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesDestinationRuleStackOutputs) GetDestinationRuleName() string {
+func (x *KubernetesDestinationRuleOutputs) GetDestinationRuleName() string {
 	if x != nil {
 		return x.DestinationRuleName
 	}
 	return ""
 }
 
-func (x *KubernetesDestinationRuleStackOutputs) GetNamespace() string {
+func (x *KubernetesDestinationRuleOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto pro
 
 const file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kubernetesdestinationrule/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesdestinationrule.v1alpha1\"y\n" +
-	"%KubernetesDestinationRuleStackOutputs\x122\n" +
+	"Ccatalog/kubernetes/kubernetesdestinationrule/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesdestinationrule.v1alpha1\"t\n" +
+	" KubernetesDestinationRuleOutputs\x122\n" +
 	"\x15destination_rule_name\x18\x01 \x01(\tR\x13destinationRuleName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xcc\x03\n" +
 	"=com.dev.planton.kubernetes.kubernetesdestinationrule.v1alpha1B\fOutputsProtoP\x01Ztgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesdestinationrule/v1alpha1;kubernetesdestinationrulev1alpha1\xa2\x02\x04DPKK\xaa\x029Dev.Planton.Kubernetes.Kubernetesdestinationrule.V1alpha1\xca\x029Dev\\Planton\\Kubernetes\\Kubernetesdestinationrule\\V1alpha1\xe2\x02EDev\\Planton\\Kubernetes\\Kubernetesdestinationrule\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Kubernetes::Kubernetesdestinationrule::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_ra
 
 var file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesDestinationRuleStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesdestinationrule.v1alpha1.KubernetesDestinationRuleStackOutputs
+	(*KubernetesDestinationRuleOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesdestinationrule.v1alpha1.KubernetesDestinationRuleOutputs
 }
 var file_catalog_kubernetes_kubernetesdestinationrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

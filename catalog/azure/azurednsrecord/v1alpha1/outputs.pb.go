@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDnsRecordStackOutputs** captures the outputs from provisioning an
+// **AzureDnsRecordOutputs** captures the outputs from provisioning an
 // Azure DNS record set.
-type AzureDnsRecordStackOutputs struct {
+type AzureDnsRecordOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the record set.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{zone}/{TYPE}/{name}
@@ -38,20 +38,20 @@ type AzureDnsRecordStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDnsRecordStackOutputs) Reset() {
-	*x = AzureDnsRecordStackOutputs{}
+func (x *AzureDnsRecordOutputs) Reset() {
+	*x = AzureDnsRecordOutputs{}
 	mi := &file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDnsRecordStackOutputs) String() string {
+func (x *AzureDnsRecordOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDnsRecordStackOutputs) ProtoMessage() {}
+func (*AzureDnsRecordOutputs) ProtoMessage() {}
 
-func (x *AzureDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDnsRecordOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDnsRecordStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDnsRecordStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDnsRecordOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDnsRecordOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDnsRecordStackOutputs) GetRecordId() string {
+func (x *AzureDnsRecordOutputs) GetRecordId() string {
 	if x != nil {
 		return x.RecordId
 	}
 	return ""
 }
 
-func (x *AzureDnsRecordStackOutputs) GetFqdn() string {
+func (x *AzureDnsRecordOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azurednsrecord_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/azure/azurednsrecord/v1alpha1/outputs.proto\x12)dev.planton.azure.azurednsrecord.v1alpha1\"M\n" +
-	"\x1aAzureDnsRecordStackOutputs\x12\x1b\n" +
+	"3catalog/azure/azurednsrecord/v1alpha1/outputs.proto\x12)dev.planton.azure.azurednsrecord.v1alpha1\"H\n" +
+	"\x15AzureDnsRecordOutputs\x12\x1b\n" +
 	"\trecord_id\x18\x01 \x01(\tR\brecordId\x12\x12\n" +
 	"\x04fqdn\x18\x02 \x01(\tR\x04fqdnB\xe1\x02\n" +
 	"-com.dev.planton.azure.azurednsrecord.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/azure/azurednsrecord/v1alpha1;azurednsrecordv1alpha1\xa2\x02\x04DPAA\xaa\x02)Dev.Planton.Azure.Azurednsrecord.V1alpha1\xca\x02)Dev\\Planton\\Azure\\Azurednsrecord\\V1alpha1\xe2\x025Dev\\Planton\\Azure\\Azurednsrecord\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Azure::Azurednsrecord::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDnsRecordStackOutputs)(nil), // 0: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordStackOutputs
+	(*AzureDnsRecordOutputs)(nil), // 0: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordOutputs
 }
 var file_catalog_azure_azurednsrecord_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLambdaLayerStackOutputs captures the observable state of the
+// AwsLambdaLayerOutputs captures the observable state of the
 // published layer version after apply.
-type AwsLambdaLayerStackOutputs struct {
+type AwsLambdaLayerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The layer's unversioned ARN
 	// (arn:aws:lambda:region:account:layer:name) - the identity that
@@ -45,20 +45,20 @@ type AwsLambdaLayerStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AwsLambdaLayerStackOutputs) Reset() {
-	*x = AwsLambdaLayerStackOutputs{}
+func (x *AwsLambdaLayerOutputs) Reset() {
+	*x = AwsLambdaLayerOutputs{}
 	mi := &file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLambdaLayerStackOutputs) String() string {
+func (x *AwsLambdaLayerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLambdaLayerStackOutputs) ProtoMessage() {}
+func (*AwsLambdaLayerOutputs) ProtoMessage() {}
 
-func (x *AwsLambdaLayerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsLambdaLayerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *AwsLambdaLayerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLambdaLayerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsLambdaLayerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLambdaLayerOutputs.ProtoReflect.Descriptor instead.
+func (*AwsLambdaLayerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLambdaLayerStackOutputs) GetLayerArn() string {
+func (x *AwsLambdaLayerOutputs) GetLayerArn() string {
 	if x != nil {
 		return x.LayerArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaLayerStackOutputs) GetLayerVersionArn() string {
+func (x *AwsLambdaLayerOutputs) GetLayerVersionArn() string {
 	if x != nil {
 		return x.LayerVersionArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaLayerStackOutputs) GetVersion() string {
+func (x *AwsLambdaLayerOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AwsLambdaLayerStackOutputs) GetCodeSha256() string {
+func (x *AwsLambdaLayerOutputs) GetCodeSha256() string {
 	if x != nil {
 		return x.CodeSha256
 	}
 	return ""
 }
 
-func (x *AwsLambdaLayerStackOutputs) GetPermissionRevisionIds() map[string]string {
+func (x *AwsLambdaLayerOutputs) GetPermissionRevisionIds() map[string]string {
 	if x != nil {
 		return x.PermissionRevisionIds
 	}
@@ -114,14 +114,14 @@ var File_catalog_aws_awslambdalayer_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awslambdalayer/v1alpha1/outputs.proto\x12'dev.planton.aws.awslambdalayer.v1alpha1\"\x83\x03\n" +
-	"\x1aAwsLambdaLayerStackOutputs\x12\x1b\n" +
+	"1catalog/aws/awslambdalayer/v1alpha1/outputs.proto\x12'dev.planton.aws.awslambdalayer.v1alpha1\"\xf9\x02\n" +
+	"\x15AwsLambdaLayerOutputs\x12\x1b\n" +
 	"\tlayer_arn\x18\x01 \x01(\tR\blayerArn\x12*\n" +
 	"\x11layer_version_arn\x18\x02 \x01(\tR\x0flayerVersionArn\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1f\n" +
 	"\vcode_sha256\x18\x04 \x01(\tR\n" +
-	"codeSha256\x12\x96\x01\n" +
-	"\x17permission_revision_ids\x18\x05 \x03(\v2^.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs.PermissionRevisionIdsEntryR\x15permissionRevisionIds\x1aH\n" +
+	"codeSha256\x12\x91\x01\n" +
+	"\x17permission_revision_ids\x18\x05 \x03(\v2Y.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs.PermissionRevisionIdsEntryR\x15permissionRevisionIds\x1aH\n" +
 	"\x1aPermissionRevisionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xd5\x02\n" +
@@ -141,11 +141,11 @@ func file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsLambdaLayerStackOutputs)(nil), // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs
-	nil,                                // 1: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs.PermissionRevisionIdsEntry
+	(*AwsLambdaLayerOutputs)(nil), // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs
+	nil,                           // 1: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs.PermissionRevisionIdsEntry
 }
 var file_catalog_aws_awslambdalayer_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs.permission_revision_ids:type_name -> dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs.PermissionRevisionIdsEntry
+	1, // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs.permission_revision_ids:type_name -> dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs.PermissionRevisionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

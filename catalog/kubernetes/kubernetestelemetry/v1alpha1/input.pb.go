@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesTelemetryStackInput provides the inputs for creating the Telemetry
+// KubernetesTelemetryIacInput provides the inputs for creating the Telemetry
 // resource on a Kubernetes cluster.
-type KubernetesTelemetryStackInput struct {
+type KubernetesTelemetryIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesTelemetry `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesTelemetryStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesTelemetryStackInput) Reset() {
-	*x = KubernetesTelemetryStackInput{}
+func (x *KubernetesTelemetryIacInput) Reset() {
+	*x = KubernetesTelemetryIacInput{}
 	mi := &file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTelemetryStackInput) String() string {
+func (x *KubernetesTelemetryIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTelemetryStackInput) ProtoMessage() {}
+func (*KubernetesTelemetryIacInput) ProtoMessage() {}
 
-func (x *KubernetesTelemetryStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTelemetryIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesTelemetryStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTelemetryStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesTelemetryStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTelemetryIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesTelemetryIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTelemetryStackInput) GetTarget() *KubernetesTelemetry {
+func (x *KubernetesTelemetryIacInput) GetTarget() *KubernetesTelemetry {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesTelemetryStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesTelemetryIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto protoreflec
 
 const file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetestelemetry/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetestelemetry.v1alpha1\x1a9catalog/kubernetes/kubernetestelemetry/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdc\x01\n" +
-	"\x1dKubernetesTelemetryStackInput\x12`\n" +
+	";catalog/kubernetes/kubernetestelemetry/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetestelemetry.v1alpha1\x1a9catalog/kubernetes/kubernetestelemetry/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xda\x01\n" +
+	"\x1bKubernetesTelemetryIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetestelemetry.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesTelemetryStackInput)(nil),       // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackInput
+	(*KubernetesTelemetryIacInput)(nil),         // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryIacInput
 	(*KubernetesTelemetry)(nil),                 // 1: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackInput.target:type_name -> dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry
-	2, // 1: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryIacInput.target:type_name -> dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry
+	2, // 1: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

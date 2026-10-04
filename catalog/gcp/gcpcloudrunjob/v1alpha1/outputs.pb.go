@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudRunJobStackOutputs captures values returned after provisioning.
-type GcpCloudRunJobStackOutputs struct {
+// GcpCloudRunJobOutputs captures values returned after provisioning.
+type GcpCloudRunJobOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the Cloud Run job as created in GCP — the handle gcloud and
 	// Scheduler reference when triggering executions.
@@ -39,20 +39,20 @@ type GcpCloudRunJobStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *GcpCloudRunJobStackOutputs) Reset() {
-	*x = GcpCloudRunJobStackOutputs{}
+func (x *GcpCloudRunJobOutputs) Reset() {
+	*x = GcpCloudRunJobOutputs{}
 	mi := &file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudRunJobStackOutputs) String() string {
+func (x *GcpCloudRunJobOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudRunJobStackOutputs) ProtoMessage() {}
+func (*GcpCloudRunJobOutputs) ProtoMessage() {}
 
-func (x *GcpCloudRunJobStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudRunJobOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *GcpCloudRunJobStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudRunJobStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudRunJobStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudRunJobOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunJobOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudRunJobStackOutputs) GetJobName() string {
+func (x *GcpCloudRunJobOutputs) GetJobName() string {
 	if x != nil {
 		return x.JobName
 	}
 	return ""
 }
 
-func (x *GcpCloudRunJobStackOutputs) GetLocation() string {
+func (x *GcpCloudRunJobOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpCloudRunJobStackOutputs) GetUid() string {
+func (x *GcpCloudRunJobOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
 	return ""
 }
 
-func (x *GcpCloudRunJobStackOutputs) GetLatestCreatedExecution() string {
+func (x *GcpCloudRunJobOutputs) GetLatestCreatedExecution() string {
 	if x != nil {
 		return x.LatestCreatedExecution
 	}
@@ -101,8 +101,8 @@ var File_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpcloudrunjob/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcpcloudrunjob.v1alpha1\"\x9f\x01\n" +
-	"\x1aGcpCloudRunJobStackOutputs\x12\x19\n" +
+	"1catalog/gcp/gcpcloudrunjob/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcpcloudrunjob.v1alpha1\"\x9a\x01\n" +
+	"\x15GcpCloudRunJobOutputs\x12\x19\n" +
 	"\bjob_name\x18\x01 \x01(\tR\ajobName\x12\x1a\n" +
 	"\blocation\x18\x02 \x01(\tR\blocation\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uid\x128\n" +
@@ -123,7 +123,7 @@ func file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudRunJobStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobStackOutputs
+	(*GcpCloudRunJobOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobOutputs
 }
 var file_catalog_gcp_gcpcloudrunjob_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

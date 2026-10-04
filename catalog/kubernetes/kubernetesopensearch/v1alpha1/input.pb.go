@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// elasticsearch-kubernetes stack-input
-type KubernetesOpenSearchStackInput struct {
+// elasticsearch-kubernetes iac-input
+type KubernetesOpenSearchIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesOpenSearch `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesOpenSearchStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenSearchStackInput) Reset() {
-	*x = KubernetesOpenSearchStackInput{}
+func (x *KubernetesOpenSearchIacInput) Reset() {
+	*x = KubernetesOpenSearchIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenSearchStackInput) String() string {
+func (x *KubernetesOpenSearchIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenSearchStackInput) ProtoMessage() {}
+func (*KubernetesOpenSearchIacInput) ProtoMessage() {}
 
-func (x *KubernetesOpenSearchStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenSearchIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesOpenSearchStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenSearchStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenSearchStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenSearchIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenSearchIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenSearchStackInput) GetTarget() *KubernetesOpenSearch {
+func (x *KubernetesOpenSearchIacInput) GetTarget() *KubernetesOpenSearch {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesOpenSearchStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesOpenSearchIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto protorefle
 
 const file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesopensearch/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesopensearch.v1alpha1\x1a:catalog/kubernetes/kubernetesopensearch/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdf\x01\n" +
-	"\x1eKubernetesOpenSearchStackInput\x12b\n" +
+	"<catalog/kubernetes/kubernetesopensearch/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesopensearch.v1alpha1\x1a:catalog/kubernetes/kubernetesopensearch/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdd\x01\n" +
+	"\x1cKubernetesOpenSearchIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetesopensearch.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesOpenSearchStackInput)(nil),      // 0: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchStackInput
+	(*KubernetesOpenSearchIacInput)(nil),        // 0: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchIacInput
 	(*KubernetesOpenSearch)(nil),                // 1: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearch
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesopensearch_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchStackInput.target:type_name -> dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearch
-	2, // 1: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchIacInput.target:type_name -> dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearch
+	2, // 1: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

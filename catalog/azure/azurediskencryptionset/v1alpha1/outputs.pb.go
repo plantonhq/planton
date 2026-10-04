@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDiskEncryptionSetStackOutputs** captures the outputs of
+// **AzureDiskEncryptionSetOutputs** captures the outputs of
 // provisioning an Azure Disk Encryption Set.
-type AzureDiskEncryptionSetStackOutputs struct {
+type AzureDiskEncryptionSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the set. This is the composition seam:
 	// AzureManagedDisk, AzureVirtualMachine, and AzureVirtualMachineScaleSet
@@ -44,20 +44,20 @@ type AzureDiskEncryptionSetStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureDiskEncryptionSetStackOutputs) Reset() {
-	*x = AzureDiskEncryptionSetStackOutputs{}
+func (x *AzureDiskEncryptionSetOutputs) Reset() {
+	*x = AzureDiskEncryptionSetOutputs{}
 	mi := &file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDiskEncryptionSetStackOutputs) String() string {
+func (x *AzureDiskEncryptionSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDiskEncryptionSetStackOutputs) ProtoMessage() {}
+func (*AzureDiskEncryptionSetOutputs) ProtoMessage() {}
 
-func (x *AzureDiskEncryptionSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDiskEncryptionSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *AzureDiskEncryptionSetStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDiskEncryptionSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDiskEncryptionSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDiskEncryptionSetOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDiskEncryptionSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDiskEncryptionSetStackOutputs) GetDiskEncryptionSetId() string {
+func (x *AzureDiskEncryptionSetOutputs) GetDiskEncryptionSetId() string {
 	if x != nil {
 		return x.DiskEncryptionSetId
 	}
 	return ""
 }
 
-func (x *AzureDiskEncryptionSetStackOutputs) GetDiskEncryptionSetName() string {
+func (x *AzureDiskEncryptionSetOutputs) GetDiskEncryptionSetName() string {
 	if x != nil {
 		return x.DiskEncryptionSetName
 	}
 	return ""
 }
 
-func (x *AzureDiskEncryptionSetStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureDiskEncryptionSetOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureDiskEncryptionSetStackOutputs) GetIdentityTenantId() string {
+func (x *AzureDiskEncryptionSetOutputs) GetIdentityTenantId() string {
 	if x != nil {
 		return x.IdentityTenantId
 	}
@@ -106,8 +106,8 @@ var File_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azurediskencryptionset/v1alpha1/outputs.proto\x121dev.planton.azure.azurediskencryptionset.v1alpha1\"\xf4\x01\n" +
-	"\"AzureDiskEncryptionSetStackOutputs\x123\n" +
+	";catalog/azure/azurediskencryptionset/v1alpha1/outputs.proto\x121dev.planton.azure.azurediskencryptionset.v1alpha1\"\xef\x01\n" +
+	"\x1dAzureDiskEncryptionSetOutputs\x123\n" +
 	"\x16disk_encryption_set_id\x18\x01 \x01(\tR\x13diskEncryptionSetId\x127\n" +
 	"\x18disk_encryption_set_name\x18\x02 \x01(\tR\x15diskEncryptionSetName\x122\n" +
 	"\x15identity_principal_id\x18\x03 \x01(\tR\x13identityPrincipalId\x12,\n" +
@@ -128,7 +128,7 @@ func file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDiskEncryptionSetStackOutputs)(nil), // 0: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetStackOutputs
+	(*AzureDiskEncryptionSetOutputs)(nil), // 0: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetOutputs
 }
 var file_catalog_azure_azurediskencryptionset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDatabaseFirewallStackOutputs captures the key outputs after
+// DigitalOceanDatabaseFirewallOutputs captures the key outputs after
 // provisioning a database firewall rule set. The rule set is a property of
 // its cluster -- DigitalOcean mints no stable standalone id for it (the
 // Terraform state id is a random unique string), so the cluster UUID IS
 // the durable identity and the only output.
-type DigitalOceanDatabaseFirewallStackOutputs struct {
+type DigitalOceanDatabaseFirewallOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the database cluster whose inbound sources this rule set
 	// defines.
@@ -35,20 +35,20 @@ type DigitalOceanDatabaseFirewallStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseFirewallStackOutputs) Reset() {
-	*x = DigitalOceanDatabaseFirewallStackOutputs{}
+func (x *DigitalOceanDatabaseFirewallOutputs) Reset() {
+	*x = DigitalOceanDatabaseFirewallOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseFirewallStackOutputs) String() string {
+func (x *DigitalOceanDatabaseFirewallOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseFirewallStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDatabaseFirewallOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseFirewallStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseFirewallOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,12 +60,12 @@ func (x *DigitalOceanDatabaseFirewallStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseFirewallStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseFirewallStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseFirewallOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseFirewallOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseFirewallStackOutputs) GetClusterId() string {
+func (x *DigitalOceanDatabaseFirewallOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
@@ -76,8 +76,8 @@ var File_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_prot
 
 const file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/digitalocean/digitaloceandatabasefirewall/v1alpha1/outputs.proto\x12>dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1\"I\n" +
-	"(DigitalOceanDatabaseFirewallStackOutputs\x12\x1d\n" +
+	"Hcatalog/digitalocean/digitaloceandatabasefirewall/v1alpha1/outputs.proto\x12>dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1\"D\n" +
+	"#DigitalOceanDatabaseFirewallOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterIdB\xed\x03\n" +
 	"Bcom.dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1B\fOutputsProtoP\x01Z|github.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasefirewall/v1alpha1;digitaloceandatabasefirewallv1alpha1\xa2\x02\x04DPDD\xaa\x02>Dev.Planton.Digitalocean.Digitaloceandatabasefirewall.V1alpha1\xca\x02>Dev\\Planton\\Digitalocean\\Digitaloceandatabasefirewall\\V1alpha1\xe2\x02JDev\\Planton\\Digitalocean\\Digitaloceandatabasefirewall\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Digitalocean::Digitaloceandatabasefirewall::V1alpha1b\x06proto3"
@@ -96,7 +96,7 @@ func file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_pro
 
 var file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDatabaseFirewallStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1.DigitalOceanDatabaseFirewallStackOutputs
+	(*DigitalOceanDatabaseFirewallOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1.DigitalOceanDatabaseFirewallOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

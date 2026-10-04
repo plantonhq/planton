@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRestApiUsagePlanStackOutputs captures observable identifiers from
+// AwsRestApiUsagePlanOutputs captures observable identifiers from
 // a provisioned usage plan and its API keys. Key VALUES are secrets
 // and deliberately not exported - read them from the AWS API/console
 // when distributing to consumers.
-type AwsRestApiUsagePlanStackOutputs struct {
+type AwsRestApiUsagePlanOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The usage plan ID.
 	UsagePlanId string `protobuf:"bytes,1,opt,name=usage_plan_id,json=usagePlanId,proto3" json:"usage_plan_id,omitempty"`
@@ -39,20 +39,20 @@ type AwsRestApiUsagePlanStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsRestApiUsagePlanStackOutputs) Reset() {
-	*x = AwsRestApiUsagePlanStackOutputs{}
+func (x *AwsRestApiUsagePlanOutputs) Reset() {
+	*x = AwsRestApiUsagePlanOutputs{}
 	mi := &file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRestApiUsagePlanStackOutputs) String() string {
+func (x *AwsRestApiUsagePlanOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRestApiUsagePlanStackOutputs) ProtoMessage() {}
+func (*AwsRestApiUsagePlanOutputs) ProtoMessage() {}
 
-func (x *AwsRestApiUsagePlanStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRestApiUsagePlanOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsRestApiUsagePlanStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRestApiUsagePlanStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRestApiUsagePlanStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRestApiUsagePlanOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRestApiUsagePlanOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRestApiUsagePlanStackOutputs) GetUsagePlanId() string {
+func (x *AwsRestApiUsagePlanOutputs) GetUsagePlanId() string {
 	if x != nil {
 		return x.UsagePlanId
 	}
 	return ""
 }
 
-func (x *AwsRestApiUsagePlanStackOutputs) GetUsagePlanArn() string {
+func (x *AwsRestApiUsagePlanOutputs) GetUsagePlanArn() string {
 	if x != nil {
 		return x.UsagePlanArn
 	}
 	return ""
 }
 
-func (x *AwsRestApiUsagePlanStackOutputs) GetApiKeyIds() map[string]string {
+func (x *AwsRestApiUsagePlanOutputs) GetApiKeyIds() map[string]string {
 	if x != nil {
 		return x.ApiKeyIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiUsagePlanStackOutputs) GetApiKeyArns() map[string]string {
+func (x *AwsRestApiUsagePlanOutputs) GetApiKeyArns() map[string]string {
 	if x != nil {
 		return x.ApiKeyArns
 	}
@@ -101,12 +101,12 @@ var File_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsrestapiusageplan/v1alpha1/outputs.proto\x12,dev.planton.aws.awsrestapiusageplan.v1alpha1\"\xe7\x03\n" +
-	"\x1fAwsRestApiUsagePlanStackOutputs\x12\"\n" +
+	"6catalog/aws/awsrestapiusageplan/v1alpha1/outputs.proto\x12,dev.planton.aws.awsrestapiusageplan.v1alpha1\"\xd8\x03\n" +
+	"\x1aAwsRestApiUsagePlanOutputs\x12\"\n" +
 	"\rusage_plan_id\x18\x01 \x01(\tR\vusagePlanId\x12$\n" +
-	"\x0eusage_plan_arn\x18\x02 \x01(\tR\fusagePlanArn\x12|\n" +
-	"\vapi_key_ids\x18\x03 \x03(\v2\\.dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.ApiKeyIdsEntryR\tapiKeyIds\x12\x7f\n" +
-	"\fapi_key_arns\x18\x04 \x03(\v2].dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.ApiKeyArnsEntryR\n" +
+	"\x0eusage_plan_arn\x18\x02 \x01(\tR\fusagePlanArn\x12w\n" +
+	"\vapi_key_ids\x18\x03 \x03(\v2W.dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.ApiKeyIdsEntryR\tapiKeyIds\x12z\n" +
+	"\fapi_key_arns\x18\x04 \x03(\v2X.dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.ApiKeyArnsEntryR\n" +
 	"apiKeyArns\x1a<\n" +
 	"\x0eApiKeyIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -130,13 +130,13 @@ func file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRestApiUsagePlanStackOutputs)(nil), // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs
-	nil,                                     // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.ApiKeyIdsEntry
-	nil,                                     // 2: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.ApiKeyArnsEntry
+	(*AwsRestApiUsagePlanOutputs)(nil), // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs
+	nil,                                // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.ApiKeyIdsEntry
+	nil,                                // 2: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.ApiKeyArnsEntry
 }
 var file_catalog_aws_awsrestapiusageplan_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.api_key_ids:type_name -> dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.ApiKeyIdsEntry
-	2, // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.api_key_arns:type_name -> dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanStackOutputs.ApiKeyArnsEntry
+	1, // 0: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.api_key_ids:type_name -> dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.ApiKeyIdsEntry
+	2, // 1: dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.api_key_arns:type_name -> dev.planton.aws.awsrestapiusageplan.v1alpha1.AwsRestApiUsagePlanOutputs.ApiKeyArnsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

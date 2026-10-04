@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmPatchBaselineStackInput is the input for the IaC modules that
+// AwsSsmPatchBaselineIacInput is the input for the IaC modules that
 // manage a patch baseline with its folded patch groups and default
 // designation.
-type AwsSsmPatchBaselineStackInput struct {
+type AwsSsmPatchBaselineIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSsmPatchBaseline resource to deploy.
 	Target *AwsSsmPatchBaseline `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsSsmPatchBaselineStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSsmPatchBaselineStackInput) Reset() {
-	*x = AwsSsmPatchBaselineStackInput{}
+func (x *AwsSsmPatchBaselineIacInput) Reset() {
+	*x = AwsSsmPatchBaselineIacInput{}
 	mi := &file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmPatchBaselineStackInput) String() string {
+func (x *AwsSsmPatchBaselineIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmPatchBaselineStackInput) ProtoMessage() {}
+func (*AwsSsmPatchBaselineIacInput) ProtoMessage() {}
 
-func (x *AwsSsmPatchBaselineStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmPatchBaselineIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsSsmPatchBaselineStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmPatchBaselineStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSsmPatchBaselineStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmPatchBaselineIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSsmPatchBaselineIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmPatchBaselineStackInput) GetTarget() *AwsSsmPatchBaseline {
+func (x *AwsSsmPatchBaselineIacInput) GetTarget() *AwsSsmPatchBaseline {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSsmPatchBaselineStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSsmPatchBaselineIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsssmpatchbaseline/v1alpha1/input.proto\x12,dev.planton.aws.awsssmpatchbaseline.v1alpha1\x1a2catalog/aws/awsssmpatchbaseline/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsSsmPatchBaselineStackInput\x12Y\n" +
+	"4catalog/aws/awsssmpatchbaseline/v1alpha1/input.proto\x12,dev.planton.aws.awsssmpatchbaseline.v1alpha1\x1a2catalog/aws/awsssmpatchbaseline/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsSsmPatchBaselineIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsssmpatchbaseline.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSsmPatchBaselineStackInput)(nil), // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackInput
-	(*AwsSsmPatchBaseline)(nil),           // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSsmPatchBaselineIacInput)(nil), // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineIacInput
+	(*AwsSsmPatchBaseline)(nil),         // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackInput.target:type_name -> dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline
-	2, // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineIacInput.target:type_name -> dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline
+	2, // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

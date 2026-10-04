@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupVaultStackInput is the input for the IaC modules that
+// AwsBackupVaultIacInput is the input for the IaC modules that
 // manage an AWS Backup vault.
-type AwsBackupVaultStackInput struct {
+type AwsBackupVaultIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBackupVault resource to deploy.
 	Target *AwsBackupVault `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBackupVaultStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBackupVaultStackInput) Reset() {
-	*x = AwsBackupVaultStackInput{}
+func (x *AwsBackupVaultIacInput) Reset() {
+	*x = AwsBackupVaultIacInput{}
 	mi := &file_catalog_aws_awsbackupvault_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupVaultStackInput) String() string {
+func (x *AwsBackupVaultIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupVaultStackInput) ProtoMessage() {}
+func (*AwsBackupVaultIacInput) ProtoMessage() {}
 
-func (x *AwsBackupVaultStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupVaultIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackupvault_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBackupVaultStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupVaultStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBackupVaultStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupVaultIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBackupVaultIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupvault_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupVaultStackInput) GetTarget() *AwsBackupVault {
+func (x *AwsBackupVaultIacInput) GetTarget() *AwsBackupVault {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBackupVaultStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBackupVaultIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbackupvault_v1alpha1_input_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsbackupvault_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsbackupvault/v1alpha1/input.proto\x12'dev.planton.aws.awsbackupvault.v1alpha1\x1a-catalog/aws/awsbackupvault/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb8\x01\n" +
-	"\x18AwsBackupVaultStackInput\x12O\n" +
+	"/catalog/aws/awsbackupvault/v1alpha1/input.proto\x12'dev.planton.aws.awsbackupvault.v1alpha1\x1a-catalog/aws/awsbackupvault/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb6\x01\n" +
+	"\x16AwsBackupVaultIacInput\x12O\n" +
 	"\x06target\x18\x01 \x01(\v27.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xd3\x02\n" +
 	"+com.dev.planton.aws.awsbackupvault.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbackupvault_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsbackupvault_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackupvault_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBackupVaultStackInput)(nil), // 0: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultStackInput
-	(*AwsBackupVault)(nil),           // 1: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVault
-	(*aws.AwsProviderConfig)(nil),    // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBackupVaultIacInput)(nil), // 0: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultIacInput
+	(*AwsBackupVault)(nil),         // 1: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVault
+	(*aws.AwsProviderConfig)(nil),  // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbackupvault_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultStackInput.target:type_name -> dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVault
-	2, // 1: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultIacInput.target:type_name -> dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVault
+	2, // 1: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppSyncApiStackOutputs captures the observable state of the API
+// AwsAppSyncApiOutputs captures the observable state of the API
 // after apply.
-type AwsAppSyncApiStackOutputs struct {
+type AwsAppSyncApiOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The API's id - the provider's import ID for the pivot, the
 	// prefix of every satellite's composite import ID, and the join
@@ -71,20 +71,20 @@ type AwsAppSyncApiStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsAppSyncApiStackOutputs) Reset() {
-	*x = AwsAppSyncApiStackOutputs{}
+func (x *AwsAppSyncApiOutputs) Reset() {
+	*x = AwsAppSyncApiOutputs{}
 	mi := &file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppSyncApiStackOutputs) String() string {
+func (x *AwsAppSyncApiOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppSyncApiStackOutputs) ProtoMessage() {}
+func (*AwsAppSyncApiOutputs) ProtoMessage() {}
 
-func (x *AwsAppSyncApiStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAppSyncApiOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,103 +96,103 @@ func (x *AwsAppSyncApiStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppSyncApiStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAppSyncApiStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppSyncApiOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAppSyncApiOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetApiId() string {
+func (x *AwsAppSyncApiOutputs) GetApiId() string {
 	if x != nil {
 		return x.ApiId
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetApiArn() string {
+func (x *AwsAppSyncApiOutputs) GetApiArn() string {
 	if x != nil {
 		return x.ApiArn
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetGraphqlUrl() string {
+func (x *AwsAppSyncApiOutputs) GetGraphqlUrl() string {
 	if x != nil {
 		return x.GraphqlUrl
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetRealtimeUrl() string {
+func (x *AwsAppSyncApiOutputs) GetRealtimeUrl() string {
 	if x != nil {
 		return x.RealtimeUrl
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetEventsHttpEndpoint() string {
+func (x *AwsAppSyncApiOutputs) GetEventsHttpEndpoint() string {
 	if x != nil {
 		return x.EventsHttpEndpoint
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetEventsRealtimeEndpoint() string {
+func (x *AwsAppSyncApiOutputs) GetEventsRealtimeEndpoint() string {
 	if x != nil {
 		return x.EventsRealtimeEndpoint
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetAppsyncDomainName() string {
+func (x *AwsAppSyncApiOutputs) GetAppsyncDomainName() string {
 	if x != nil {
 		return x.AppsyncDomainName
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetDomainHostedZoneId() string {
+func (x *AwsAppSyncApiOutputs) GetDomainHostedZoneId() string {
 	if x != nil {
 		return x.DomainHostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetDatasourceArns() map[string]string {
+func (x *AwsAppSyncApiOutputs) GetDatasourceArns() map[string]string {
 	if x != nil {
 		return x.DatasourceArns
 	}
 	return nil
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetFunctionIds() map[string]string {
+func (x *AwsAppSyncApiOutputs) GetFunctionIds() map[string]string {
 	if x != nil {
 		return x.FunctionIds
 	}
 	return nil
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetApiKeyIds() map[string]string {
+func (x *AwsAppSyncApiOutputs) GetApiKeyIds() map[string]string {
 	if x != nil {
 		return x.ApiKeyIds
 	}
 	return nil
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetChannelNamespaceArns() map[string]string {
+func (x *AwsAppSyncApiOutputs) GetChannelNamespaceArns() map[string]string {
 	if x != nil {
 		return x.ChannelNamespaceArns
 	}
 	return nil
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetSourceApiAssociationIds() map[string]string {
+func (x *AwsAppSyncApiOutputs) GetSourceApiAssociationIds() map[string]string {
 	if x != nil {
 		return x.SourceApiAssociationIds
 	}
 	return nil
 }
 
-func (x *AwsAppSyncApiStackOutputs) GetTypeFormats() map[string]string {
+func (x *AwsAppSyncApiOutputs) GetTypeFormats() map[string]string {
 	if x != nil {
 		return x.TypeFormats
 	}
@@ -203,8 +203,8 @@ var File_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsappsyncapi/v1alpha1/outputs.proto\x12&dev.planton.aws.awsappsyncapi.v1alpha1\"\x86\f\n" +
-	"\x19AwsAppSyncApiStackOutputs\x12\x15\n" +
+	"0catalog/aws/awsappsyncapi/v1alpha1/outputs.proto\x12&dev.planton.aws.awsappsyncapi.v1alpha1\"\xe3\v\n" +
+	"\x14AwsAppSyncApiOutputs\x12\x15\n" +
 	"\x06api_id\x18\x01 \x01(\tR\x05apiId\x12\x17\n" +
 	"\aapi_arn\x18\x02 \x01(\tR\x06apiArn\x12\x1f\n" +
 	"\vgraphql_url\x18\x03 \x01(\tR\n" +
@@ -213,14 +213,14 @@ const file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x14events_http_endpoint\x18\x05 \x01(\tR\x12eventsHttpEndpoint\x128\n" +
 	"\x18events_realtime_endpoint\x18\x06 \x01(\tR\x16eventsRealtimeEndpoint\x12.\n" +
 	"\x13appsync_domain_name\x18\a \x01(\tR\x11appsyncDomainName\x121\n" +
-	"\x15domain_hosted_zone_id\x18\b \x01(\tR\x12domainHostedZoneId\x12~\n" +
-	"\x0fdatasource_arns\x18\t \x03(\v2U.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.DatasourceArnsEntryR\x0edatasourceArns\x12u\n" +
+	"\x15domain_hosted_zone_id\x18\b \x01(\tR\x12domainHostedZoneId\x12y\n" +
+	"\x0fdatasource_arns\x18\t \x03(\v2P.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.DatasourceArnsEntryR\x0edatasourceArns\x12p\n" +
 	"\ffunction_ids\x18\n" +
-	" \x03(\v2R.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.FunctionIdsEntryR\vfunctionIds\x12p\n" +
-	"\vapi_key_ids\x18\v \x03(\v2P.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.ApiKeyIdsEntryR\tapiKeyIds\x12\x91\x01\n" +
-	"\x16channel_namespace_arns\x18\f \x03(\v2[.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.ChannelNamespaceArnsEntryR\x14channelNamespaceArns\x12\x9b\x01\n" +
-	"\x1asource_api_association_ids\x18\r \x03(\v2^.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.SourceApiAssociationIdsEntryR\x17sourceApiAssociationIds\x12u\n" +
-	"\ftype_formats\x18\x0e \x03(\v2R.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.TypeFormatsEntryR\vtypeFormats\x1aA\n" +
+	" \x03(\v2M.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.FunctionIdsEntryR\vfunctionIds\x12k\n" +
+	"\vapi_key_ids\x18\v \x03(\v2K.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.ApiKeyIdsEntryR\tapiKeyIds\x12\x8c\x01\n" +
+	"\x16channel_namespace_arns\x18\f \x03(\v2V.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.ChannelNamespaceArnsEntryR\x14channelNamespaceArns\x12\x96\x01\n" +
+	"\x1asource_api_association_ids\x18\r \x03(\v2Y.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.SourceApiAssociationIdsEntryR\x17sourceApiAssociationIds\x12p\n" +
+	"\ftype_formats\x18\x0e \x03(\v2M.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.TypeFormatsEntryR\vtypeFormats\x1aA\n" +
 	"\x13DatasourceArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
@@ -255,21 +255,21 @@ func file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAppSyncApiStackOutputs)(nil), // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs
-	nil,                               // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.DatasourceArnsEntry
-	nil,                               // 2: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.FunctionIdsEntry
-	nil,                               // 3: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.ApiKeyIdsEntry
-	nil,                               // 4: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.ChannelNamespaceArnsEntry
-	nil,                               // 5: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.SourceApiAssociationIdsEntry
-	nil,                               // 6: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.TypeFormatsEntry
+	(*AwsAppSyncApiOutputs)(nil), // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs
+	nil,                          // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.DatasourceArnsEntry
+	nil,                          // 2: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.FunctionIdsEntry
+	nil,                          // 3: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.ApiKeyIdsEntry
+	nil,                          // 4: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.ChannelNamespaceArnsEntry
+	nil,                          // 5: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.SourceApiAssociationIdsEntry
+	nil,                          // 6: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.TypeFormatsEntry
 }
 var file_catalog_aws_awsappsyncapi_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.datasource_arns:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.DatasourceArnsEntry
-	2, // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.function_ids:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.FunctionIdsEntry
-	3, // 2: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.api_key_ids:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.ApiKeyIdsEntry
-	4, // 3: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.channel_namespace_arns:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.ChannelNamespaceArnsEntry
-	5, // 4: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.source_api_association_ids:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.SourceApiAssociationIdsEntry
-	6, // 5: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.type_formats:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackOutputs.TypeFormatsEntry
+	1, // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.datasource_arns:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.DatasourceArnsEntry
+	2, // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.function_ids:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.FunctionIdsEntry
+	3, // 2: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.api_key_ids:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.ApiKeyIdsEntry
+	4, // 3: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.channel_namespace_arns:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.ChannelNamespaceArnsEntry
+	5, // 4: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.source_api_association_ids:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.SourceApiAssociationIdsEntry
+	6, // 5: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.type_formats:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiOutputs.TypeFormatsEntry
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

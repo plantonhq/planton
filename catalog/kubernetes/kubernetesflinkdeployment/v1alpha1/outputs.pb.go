@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// flink-deployment-kubernetes stack outputs
-type KubernetesFlinkDeploymentStackOutputs struct {
+// flink-deployment-kubernetes outputs
+type KubernetesFlinkDeploymentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the Flink cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -40,20 +40,20 @@ type KubernetesFlinkDeploymentStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesFlinkDeploymentStackOutputs) Reset() {
-	*x = KubernetesFlinkDeploymentStackOutputs{}
+func (x *KubernetesFlinkDeploymentOutputs) Reset() {
+	*x = KubernetesFlinkDeploymentOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesFlinkDeploymentStackOutputs) String() string {
+func (x *KubernetesFlinkDeploymentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesFlinkDeploymentStackOutputs) ProtoMessage() {}
+func (*KubernetesFlinkDeploymentOutputs) ProtoMessage() {}
 
-func (x *KubernetesFlinkDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesFlinkDeploymentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *KubernetesFlinkDeploymentStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesFlinkDeploymentStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesFlinkDeploymentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesFlinkDeploymentOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesFlinkDeploymentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesFlinkDeploymentStackOutputs) GetNamespace() string {
+func (x *KubernetesFlinkDeploymentOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesFlinkDeploymentStackOutputs) GetRestService() string {
+func (x *KubernetesFlinkDeploymentOutputs) GetRestService() string {
 	if x != nil {
 		return x.RestService
 	}
 	return ""
 }
 
-func (x *KubernetesFlinkDeploymentStackOutputs) GetRestEndpoint() string {
+func (x *KubernetesFlinkDeploymentOutputs) GetRestEndpoint() string {
 	if x != nil {
 		return x.RestEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesFlinkDeploymentStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesFlinkDeploymentOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -102,8 +102,8 @@ var File_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto pro
 
 const file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kubernetesflinkdeployment/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1\"\xbf\x01\n" +
-	"%KubernetesFlinkDeploymentStackOutputs\x12\x1c\n" +
+	"Ccatalog/kubernetes/kubernetesflinkdeployment/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1\"\xba\x01\n" +
+	" KubernetesFlinkDeploymentOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frest_service\x18\x02 \x01(\tR\vrestService\x12#\n" +
 	"\rrest_endpoint\x18\x03 \x01(\tR\frestEndpoint\x120\n" +
@@ -124,7 +124,7 @@ func file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_ra
 
 var file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesFlinkDeploymentStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1.KubernetesFlinkDeploymentStackOutputs
+	(*KubernetesFlinkDeploymentOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1.KubernetesFlinkDeploymentOutputs
 }
 var file_catalog_kubernetes_kubernetesflinkdeployment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

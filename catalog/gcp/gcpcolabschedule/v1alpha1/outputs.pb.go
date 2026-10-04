@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpColabScheduleStackOutputs carries the schedule's identity.
-type GcpColabScheduleStackOutputs struct {
+// GcpColabScheduleOutputs carries the schedule's identity.
+type GcpColabScheduleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/schedules/{schedule_id}.
@@ -35,20 +35,20 @@ type GcpColabScheduleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpColabScheduleStackOutputs) Reset() {
-	*x = GcpColabScheduleStackOutputs{}
+func (x *GcpColabScheduleOutputs) Reset() {
+	*x = GcpColabScheduleOutputs{}
 	mi := &file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpColabScheduleStackOutputs) String() string {
+func (x *GcpColabScheduleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpColabScheduleStackOutputs) ProtoMessage() {}
+func (*GcpColabScheduleOutputs) ProtoMessage() {}
 
-func (x *GcpColabScheduleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpColabScheduleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *GcpColabScheduleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpColabScheduleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpColabScheduleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpColabScheduleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpColabScheduleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpColabScheduleStackOutputs) GetName() string {
+func (x *GcpColabScheduleOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpColabScheduleStackOutputs) GetScheduleId() string {
+func (x *GcpColabScheduleOutputs) GetScheduleId() string {
 	if x != nil {
 		return x.ScheduleId
 	}
 	return ""
 }
 
-func (x *GcpColabScheduleStackOutputs) GetLocation() string {
+func (x *GcpColabScheduleOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -90,8 +90,8 @@ var File_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpcolabschedule/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpcolabschedule.v1alpha1\"o\n" +
-	"\x1cGcpColabScheduleStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpcolabschedule/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpcolabschedule.v1alpha1\"j\n" +
+	"\x17GcpColabScheduleOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vschedule_id\x18\x02 \x01(\tR\n" +
 	"scheduleId\x12\x1a\n" +
@@ -112,7 +112,7 @@ func file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpColabScheduleStackOutputs)(nil), // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackOutputs
+	(*GcpColabScheduleOutputs)(nil), // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleOutputs
 }
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

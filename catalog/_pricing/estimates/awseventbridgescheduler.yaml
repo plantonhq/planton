@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awseventbridgescheduler
 spec:
@@ -21,7 +21,7 @@ spec:
         - the report generator's execution bills on the referenced AwsLambda -- invocations and duration per nightly run, with up to 3 retries multiplying the function's own invocation count on failure
         - undeliverable fires land in the dead-letter queue, billing SQS requests on the referenced AwsSqsQueue
         - the owned schedule group is a free container -- no meter counts it
-      notes: "The zero is free-tier coverage, not idleness: ~30 committed invocations per month cost $0.00 under the permanent 14M-per-month allowance, and they would still round to $0.00 at the paid rate ($1.00 per million). The nightly Lambda run is where real spend lives, on its own component."
+      notes: "The zero is free-tier coverage, not idleness: ~30 committed invocations per month cost $0.00 under the permanent 14M-per-month allowance, and they would still round to $0.00 at the paid rate ($1.00 per million). The nightly Lambda run is where real spend lives, on its own kind."
     - preset: 02-rate-to-ecs-task
       region_assumption: us-east-1
       currency: USD
@@ -29,7 +29,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - rate(15 minutes) COMMITS ~2,880 fires per 30-day month (~2,920 per 730-hour month) -- a committed volume sitting ~4,800x inside Scheduler's standing free allowance of 14,000,000 invocations per month (permanent, recalculated monthly, never rolling over; $1.00 per million only beyond it), so the schedule's own meter reads $0.00
-        - "EVERY fire launches a REAL Fargate task: ~2,900 monthly RunTask launches of the queue-drainer task definition, whose vCPU-seconds and GB-seconds of runtime bill on the ECS target components (the referenced AwsEcsCluster / AwsEcsTaskDefinition) -- this preset's actual spend lives there, scaling with task size and how long each drain runs"
+        - "EVERY fire launches a REAL Fargate task: ~2,900 monthly RunTask launches of the queue-drainer task definition, whose vCPU-seconds and GB-seconds of runtime bill on the ECS target kinds (the referenced AwsEcsCluster / AwsEcsTaskDefinition) -- this preset's actual spend lives there, scaling with task size and how long each drain runs"
         - the FLEXIBLE 5-minute window spreads WHEN fires land; it never changes how many fire or bill
         - this instance only JOINS the batch-jobs group by name -- no group resource, no group cost
       notes: "The zero belongs to the SCHEDULER meter alone -- ~2,880 committed fires cost $0.00 under the permanent free tier. The preset's real commitment is downstream: a Fargate task every 15 minutes is ~2,900 task runs a month billed on the ECS side, a spend this model deliberately routes rather than estimates (task duration is unknowable from the manifest)."

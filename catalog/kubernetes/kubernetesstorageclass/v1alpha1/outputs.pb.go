@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesStorageClassStackOutputs** captures the observable handles of a
+// **KubernetesStorageClassOutputs** captures the observable handles of a
 // deployed StorageClass. `storage_class_name` is the composition handle:
 // PersistentVolumeClaims (and workload volume-claim templates) reference it to
 // pin their storage characteristics to this class.
-type KubernetesStorageClassStackOutputs struct {
+type KubernetesStorageClassOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the StorageClass object as created in the cluster — the value
 	// claims put in their `storage_class_name`.
@@ -39,20 +39,20 @@ type KubernetesStorageClassStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesStorageClassStackOutputs) Reset() {
-	*x = KubernetesStorageClassStackOutputs{}
+func (x *KubernetesStorageClassOutputs) Reset() {
+	*x = KubernetesStorageClassOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesStorageClassStackOutputs) String() string {
+func (x *KubernetesStorageClassOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesStorageClassStackOutputs) ProtoMessage() {}
+func (*KubernetesStorageClassOutputs) ProtoMessage() {}
 
-func (x *KubernetesStorageClassStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesStorageClassOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *KubernetesStorageClassStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesStorageClassStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesStorageClassStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesStorageClassOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesStorageClassOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesStorageClassStackOutputs) GetStorageClassName() string {
+func (x *KubernetesStorageClassOutputs) GetStorageClassName() string {
 	if x != nil {
 		return x.StorageClassName
 	}
 	return ""
 }
 
-func (x *KubernetesStorageClassStackOutputs) GetProvisioner() string {
+func (x *KubernetesStorageClassOutputs) GetProvisioner() string {
 	if x != nil {
 		return x.Provisioner
 	}
 	return ""
 }
 
-func (x *KubernetesStorageClassStackOutputs) GetIsDefaultClass() bool {
+func (x *KubernetesStorageClassOutputs) GetIsDefaultClass() bool {
 	if x != nil {
 		return x.IsDefaultClass
 	}
@@ -94,8 +94,8 @@ var File_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto protor
 
 const file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesstorageclass/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesstorageclass.v1alpha1\"\x9e\x01\n" +
-	"\"KubernetesStorageClassStackOutputs\x12,\n" +
+	"@catalog/kubernetes/kubernetesstorageclass/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesstorageclass.v1alpha1\"\x99\x01\n" +
+	"\x1dKubernetesStorageClassOutputs\x12,\n" +
 	"\x12storage_class_name\x18\x01 \x01(\tR\x10storageClassName\x12 \n" +
 	"\vprovisioner\x18\x02 \x01(\tR\vprovisioner\x12(\n" +
 	"\x10is_default_class\x18\x03 \x01(\bR\x0eisDefaultClassB\xb7\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesStorageClassStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackOutputs
+	(*KubernetesStorageClassOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassOutputs
 }
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

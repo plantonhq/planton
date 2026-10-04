@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamRoleStackOutputs captures the observable outputs of a provisioned IAM
+// AwsIamRoleOutputs captures the observable outputs of a provisioned IAM
 // role, for downstream resources (Lambda functions, ECS services, instance
 // profiles, trust relationships, ...) to reference.
-type AwsIamRoleStackOutputs struct {
+type AwsIamRoleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the IAM role (e.g. "arn:aws:iam::123456789012:role/my-role").
 	// What most service integrations reference via status.outputs.role_arn --
@@ -44,20 +44,20 @@ type AwsIamRoleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsIamRoleStackOutputs) Reset() {
-	*x = AwsIamRoleStackOutputs{}
+func (x *AwsIamRoleOutputs) Reset() {
+	*x = AwsIamRoleOutputs{}
 	mi := &file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamRoleStackOutputs) String() string {
+func (x *AwsIamRoleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamRoleStackOutputs) ProtoMessage() {}
+func (*AwsIamRoleOutputs) ProtoMessage() {}
 
-func (x *AwsIamRoleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamRoleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,26 +69,26 @@ func (x *AwsIamRoleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamRoleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamRoleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamRoleOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamRoleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamRoleStackOutputs) GetRoleArn() string {
+func (x *AwsIamRoleOutputs) GetRoleArn() string {
 	if x != nil {
 		return x.RoleArn
 	}
 	return ""
 }
 
-func (x *AwsIamRoleStackOutputs) GetRoleName() string {
+func (x *AwsIamRoleOutputs) GetRoleName() string {
 	if x != nil {
 		return x.RoleName
 	}
 	return ""
 }
 
-func (x *AwsIamRoleStackOutputs) GetRoleId() string {
+func (x *AwsIamRoleOutputs) GetRoleId() string {
 	if x != nil {
 		return x.RoleId
 	}
@@ -99,8 +99,8 @@ var File_catalog_aws_awsiamrole_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsiamrole/v1alpha1/outputs.proto\x12#dev.planton.aws.awsiamrole.v1alpha1\"i\n" +
-	"\x16AwsIamRoleStackOutputs\x12\x19\n" +
+	"-catalog/aws/awsiamrole/v1alpha1/outputs.proto\x12#dev.planton.aws.awsiamrole.v1alpha1\"d\n" +
+	"\x11AwsIamRoleOutputs\x12\x19\n" +
 	"\brole_arn\x18\x01 \x01(\tR\aroleArn\x12\x1b\n" +
 	"\trole_name\x18\x02 \x01(\tR\broleName\x12\x17\n" +
 	"\arole_id\x18\x03 \x01(\tR\x06roleIdB\xb9\x02\n" +
@@ -120,7 +120,7 @@ func file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamRoleStackOutputs)(nil), // 0: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStackOutputs
+	(*AwsIamRoleOutputs)(nil), // 0: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleOutputs
 }
 var file_catalog_aws_awsiamrole_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

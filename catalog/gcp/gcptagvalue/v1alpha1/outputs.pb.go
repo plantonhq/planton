@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpTagValueStackOutputs captures the tag value's identity after
+// GcpTagValueOutputs captures the tag value's identity after
 // provisioning.
-type GcpTagValueStackOutputs struct {
+type GcpTagValueOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The value's resource name, `tagValues/{numeric_id}` -- what a
 	// GcpTagBinding's tag_value references, what a GcpFolder's or
@@ -42,20 +42,20 @@ type GcpTagValueStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpTagValueStackOutputs) Reset() {
-	*x = GcpTagValueStackOutputs{}
+func (x *GcpTagValueOutputs) Reset() {
+	*x = GcpTagValueOutputs{}
 	mi := &file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTagValueStackOutputs) String() string {
+func (x *GcpTagValueOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTagValueStackOutputs) ProtoMessage() {}
+func (*GcpTagValueOutputs) ProtoMessage() {}
 
-func (x *GcpTagValueStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpTagValueOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *GcpTagValueStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTagValueStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpTagValueStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTagValueOutputs.ProtoReflect.Descriptor instead.
+func (*GcpTagValueOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTagValueStackOutputs) GetName() string {
+func (x *GcpTagValueOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpTagValueStackOutputs) GetNamespacedName() string {
+func (x *GcpTagValueOutputs) GetNamespacedName() string {
 	if x != nil {
 		return x.NamespacedName
 	}
 	return ""
 }
 
-func (x *GcpTagValueStackOutputs) GetTagValueId() string {
+func (x *GcpTagValueOutputs) GetTagValueId() string {
 	if x != nil {
 		return x.TagValueId
 	}
 	return ""
 }
 
-func (x *GcpTagValueStackOutputs) GetCreateTime() string {
+func (x *GcpTagValueOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
@@ -104,8 +104,8 @@ var File_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcptagvalue/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcptagvalue.v1alpha1\"\x99\x01\n" +
-	"\x17GcpTagValueStackOutputs\x12\x12\n" +
+	".catalog/gcp/gcptagvalue/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcptagvalue.v1alpha1\"\x94\x01\n" +
+	"\x12GcpTagValueOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12'\n" +
 	"\x0fnamespaced_name\x18\x02 \x01(\tR\x0enamespacedName\x12 \n" +
 	"\ftag_value_id\x18\x03 \x01(\tR\n" +
@@ -128,7 +128,7 @@ func file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpTagValueStackOutputs)(nil), // 0: dev.planton.gcp.gcptagvalue.v1alpha1.GcpTagValueStackOutputs
+	(*GcpTagValueOutputs)(nil), // 0: dev.planton.gcp.gcptagvalue.v1alpha1.GcpTagValueOutputs
 }
 var file_catalog_gcp_gcptagvalue_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

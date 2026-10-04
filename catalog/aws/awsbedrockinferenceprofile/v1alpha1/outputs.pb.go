@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockInferenceProfileStackOutputs captures observable identifiers
+// AwsBedrockInferenceProfileOutputs captures observable identifiers
 // from a provisioned Bedrock application inference profile.
-type AwsBedrockInferenceProfileStackOutputs struct {
+type AwsBedrockInferenceProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ARN of the inference profile - the modelId applications pass to
 	// InvokeModel/Converse and the resource IAM policies scope to.
@@ -39,20 +39,20 @@ type AwsBedrockInferenceProfileStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockInferenceProfileStackOutputs) Reset() {
-	*x = AwsBedrockInferenceProfileStackOutputs{}
+func (x *AwsBedrockInferenceProfileOutputs) Reset() {
+	*x = AwsBedrockInferenceProfileOutputs{}
 	mi := &file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockInferenceProfileStackOutputs) String() string {
+func (x *AwsBedrockInferenceProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockInferenceProfileStackOutputs) ProtoMessage() {}
+func (*AwsBedrockInferenceProfileOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockInferenceProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockInferenceProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsBedrockInferenceProfileStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockInferenceProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockInferenceProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockInferenceProfileOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockInferenceProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockInferenceProfileStackOutputs) GetInferenceProfileArn() string {
+func (x *AwsBedrockInferenceProfileOutputs) GetInferenceProfileArn() string {
 	if x != nil {
 		return x.InferenceProfileArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockInferenceProfileStackOutputs) GetInferenceProfileId() string {
+func (x *AwsBedrockInferenceProfileOutputs) GetInferenceProfileId() string {
 	if x != nil {
 		return x.InferenceProfileId
 	}
 	return ""
 }
 
-func (x *AwsBedrockInferenceProfileStackOutputs) GetStatus() string {
+func (x *AwsBedrockInferenceProfileOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AwsBedrockInferenceProfileStackOutputs) GetType() string {
+func (x *AwsBedrockInferenceProfileOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
@@ -101,8 +101,8 @@ var File_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsbedrockinferenceprofile/v1alpha1/outputs.proto\x123dev.planton.aws.awsbedrockinferenceprofile.v1alpha1\"\xba\x01\n" +
-	"&AwsBedrockInferenceProfileStackOutputs\x122\n" +
+	"=catalog/aws/awsbedrockinferenceprofile/v1alpha1/outputs.proto\x123dev.planton.aws.awsbedrockinferenceprofile.v1alpha1\"\xb5\x01\n" +
+	"!AwsBedrockInferenceProfileOutputs\x122\n" +
 	"\x15inference_profile_arn\x18\x01 \x01(\tR\x13inferenceProfileArn\x120\n" +
 	"\x14inference_profile_id\x18\x02 \x01(\tR\x12inferenceProfileId\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12\x12\n" +
@@ -123,7 +123,7 @@ func file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockInferenceProfileStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackOutputs
+	(*AwsBedrockInferenceProfileOutputs)(nil), // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileOutputs
 }
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

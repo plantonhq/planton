@@ -31,7 +31,7 @@ type DigitalOceanCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanCertificate) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanCertificate) GetStatus() *DigitalOceanCertificateStatus {
 // digital-ocean-certificate status
 type DigitalOceanCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-certificate stack-outputs
-	Outputs       *DigitalOceanCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-certificate outputs
+	Outputs       *DigitalOceanCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanCertificateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceancertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanCertificateStatus) GetOutputs() *DigitalOceanCertificateStackOutputs {
+func (x *DigitalOceanCertificateStatus) GetOutputs() *DigitalOceanCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceancertificate_v1alpha1_api_proto_rawDe
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17DigitalOceanCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatusR\x06status\"\x99\x01\n" +
-	"\x1dDigitalOceanCertificateStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStackOutputsR\aoutputsB\xc6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatusR\x06status\"\x94\x01\n" +
+	"\x1dDigitalOceanCertificateStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateOutputsR\aoutputsB\xc6\x03\n" +
 	"=com.dev.planton.digitalocean.digitaloceancertificate.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceancertificate/v1alpha1;digitaloceancertificatev1alpha1\xa2\x02\x04DPDD\xaa\x029Dev.Planton.Digitalocean.Digitaloceancertificate.V1alpha1\xca\x029Dev\\Planton\\Digitalocean\\Digitaloceancertificate\\V1alpha1\xe2\x02EDev\\Planton\\Digitalocean\\Digitaloceancertificate\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Digitalocean::Digitaloceancertificate::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceancertificate_v1alpha1_api_proto_rawDes
 
 var file_catalog_digitalocean_digitaloceancertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceancertificate_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanCertificate)(nil),             // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate
-	(*DigitalOceanCertificateStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanCertificateSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateSpec
-	(*DigitalOceanCertificateStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStackOutputs
+	(*DigitalOceanCertificate)(nil),        // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate
+	(*DigitalOceanCertificateStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanCertificateSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateSpec
+	(*DigitalOceanCertificateOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateOutputs
 }
 var file_catalog_digitalocean_digitaloceancertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate.spec:type_name -> dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateSpec
 	1, // 2: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate.status:type_name -> dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatus
-	4, // 3: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

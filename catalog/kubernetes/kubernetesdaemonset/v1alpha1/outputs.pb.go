@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesDaemonSetStackOutputs** captures the observable handles of a deployed
+// **KubernetesDaemonSetOutputs** captures the observable handles of a deployed
 // node agent. DaemonSets have no Service or ingress, so the composition surface is
 // the object identity and its selector labels.
-type KubernetesDaemonSetStackOutputs struct {
+type KubernetesDaemonSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the workload was deployed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -40,20 +40,20 @@ type KubernetesDaemonSetStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesDaemonSetStackOutputs) Reset() {
-	*x = KubernetesDaemonSetStackOutputs{}
+func (x *KubernetesDaemonSetOutputs) Reset() {
+	*x = KubernetesDaemonSetOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesDaemonSetStackOutputs) String() string {
+func (x *KubernetesDaemonSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesDaemonSetStackOutputs) ProtoMessage() {}
+func (*KubernetesDaemonSetOutputs) ProtoMessage() {}
 
-func (x *KubernetesDaemonSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesDaemonSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *KubernetesDaemonSetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesDaemonSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesDaemonSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesDaemonSetOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesDaemonSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesDaemonSetStackOutputs) GetNamespace() string {
+func (x *KubernetesDaemonSetOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesDaemonSetStackOutputs) GetDaemonSetName() string {
+func (x *KubernetesDaemonSetOutputs) GetDaemonSetName() string {
 	if x != nil {
 		return x.DaemonSetName
 	}
 	return ""
 }
 
-func (x *KubernetesDaemonSetStackOutputs) GetSelectorLabels() string {
+func (x *KubernetesDaemonSetOutputs) GetSelectorLabels() string {
 	if x != nil {
 		return x.SelectorLabels
 	}
@@ -95,8 +95,8 @@ var File_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetesdaemonset/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesdaemonset.v1alpha1\"\x90\x01\n" +
-	"\x1fKubernetesDaemonSetStackOutputs\x12\x1c\n" +
+	"=catalog/kubernetes/kubernetesdaemonset/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesdaemonset.v1alpha1\"\x8b\x01\n" +
+	"\x1aKubernetesDaemonSetOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12&\n" +
 	"\x0fdaemon_set_name\x18\x02 \x01(\tR\rdaemonSetName\x12'\n" +
 	"\x0fselector_labels\x18\x03 \x01(\tR\x0eselectorLabelsB\xa2\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesDaemonSetStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackOutputs
+	(*KubernetesDaemonSetOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetOutputs
 }
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -40,7 +40,7 @@ const (
 //   - Subscriptions are first-class AwsSnsSubscription resources that reference this topic's
 //     `topic_arn` output. A topic owns its identity, policy, and delivery posture; each
 //     subscription owns its own protocol, endpoint, filtering, and redrive lifecycle.
-//   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+//   - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsSnsTopicSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

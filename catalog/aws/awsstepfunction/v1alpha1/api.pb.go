@@ -32,7 +32,7 @@ type AwsStepFunction struct {
 	// resource-kind for this Step Functions state machine, must be "AwsStepFunction".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the state machine.
 	Spec *AwsStepFunctionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -85,7 +85,7 @@ func (x *AwsStepFunction) GetKind() string {
 	return ""
 }
 
-func (x *AwsStepFunction) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsStepFunction) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *AwsStepFunction) GetStatus() *AwsStepFunctionStatus {
 // AwsStepFunctionStatus captures lifecycle, audit, job linkage, and observable outputs.
 type AwsStepFunctionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsStepFunctionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsStepFunctionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*AwsStepFunctionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsstepfunction_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsStepFunctionStatus) GetOutputs() *AwsStepFunctionStackOutputs {
+func (x *AwsStepFunctionStatus) GetOutputs() *AwsStepFunctionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_aws_awsstepfunction_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAwsStepFunctionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
 	"\x04spec\x18\x04 \x01(\v2=.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12W\n" +
-	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStatusR\x06status\"x\n" +
-	"\x15AwsStepFunctionStatus\x12_\n" +
-	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputsR\aoutputsB\xd8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStatusR\x06status\"s\n" +
+	"\x15AwsStepFunctionStatus\x12Z\n" +
+	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputsR\aoutputsB\xd8\x02\n" +
 	",com.dev.planton.aws.awsstepfunction.v1alpha1B\bApiProtoP\x01ZYgithub.com/plantonhq/planton/catalog/aws/awsstepfunction/v1alpha1;awsstepfunctionv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Aws.Awsstepfunction.V1alpha1\xca\x02(Dev\\Planton\\Aws\\Awsstepfunction\\V1alpha1\xe2\x024Dev\\Planton\\Aws\\Awsstepfunction\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Aws::Awsstepfunction::V1alpha1b\x06proto3"
 
 var (
@@ -186,15 +186,15 @@ var file_catalog_aws_awsstepfunction_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_aws_awsstepfunction_v1alpha1_api_proto_goTypes = []any{
 	(*AwsStepFunction)(nil),              // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction
 	(*AwsStepFunctionStatus)(nil),        // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsStepFunctionSpec)(nil),          // 3: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionSpec
-	(*AwsStepFunctionStackOutputs)(nil),  // 4: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs
+	(*AwsStepFunctionOutputs)(nil),       // 4: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs
 }
 var file_catalog_aws_awsstepfunction_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction.spec:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionSpec
 	1, // 2: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction.status:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStatus
-	4, // 3: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStatus.outputs:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs
+	4, // 3: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStatus.outputs:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

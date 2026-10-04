@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareListStackOutputs captures the outputs after provisioning a list.
-type CloudflareListStackOutputs struct {
+// CloudflareListOutputs captures the outputs after provisioning a list.
+type CloudflareListOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the list. A CloudflareListItem
 	// references this value to add entries to the list.
@@ -35,20 +35,20 @@ type CloudflareListStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareListStackOutputs) Reset() {
-	*x = CloudflareListStackOutputs{}
+func (x *CloudflareListOutputs) Reset() {
+	*x = CloudflareListOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareListStackOutputs) String() string {
+func (x *CloudflareListOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareListStackOutputs) ProtoMessage() {}
+func (*CloudflareListOutputs) ProtoMessage() {}
 
-func (x *CloudflareListStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareListOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *CloudflareListStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareListStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareListStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareListOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareListOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareListStackOutputs) GetListId() string {
+func (x *CloudflareListOutputs) GetListId() string {
 	if x != nil {
 		return x.ListId
 	}
 	return ""
 }
 
-func (x *CloudflareListStackOutputs) GetName() string {
+func (x *CloudflareListOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *CloudflareListStackOutputs) GetKind() string {
+func (x *CloudflareListOutputs) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
@@ -90,8 +90,8 @@ var File_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/cloudflare/cloudflarelist/v1alpha1/outputs.proto\x12.dev.planton.cloudflare.cloudflarelist.v1alpha1\"]\n" +
-	"\x1aCloudflareListStackOutputs\x12\x17\n" +
+	"8catalog/cloudflare/cloudflarelist/v1alpha1/outputs.proto\x12.dev.planton.cloudflare.cloudflarelist.v1alpha1\"X\n" +
+	"\x15CloudflareListOutputs\x12\x17\n" +
 	"\alist_id\x18\x01 \x01(\tR\x06listId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
 	"\x04kind\x18\x03 \x01(\tR\x04kindB\xff\x02\n" +
@@ -111,7 +111,7 @@ func file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareListStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarelist.v1alpha1.CloudflareListStackOutputs
+	(*CloudflareListOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarelist.v1alpha1.CloudflareListOutputs
 }
 var file_catalog_cloudflare_cloudflarelist_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

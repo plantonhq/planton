@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpFirebaseWebAppStackOutputs captures the app registration's identity
+// GcpFirebaseWebAppOutputs captures the app registration's identity
 // and the firebaseConfig object a browser client is initialised with.
 //
 // None of these values is a secret. Every firebaseConfig value -- the API
@@ -29,7 +29,7 @@ const (
 // design; that is how the Firebase web SDK works. Access to the project's
 // backends is governed by IAM, Firebase Security Rules, and App Check --
 // never by keeping these values hidden.
-type GcpFirebaseWebAppStackOutputs struct {
+type GcpFirebaseWebAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Firebase-assigned app id (firebaseConfig.appId), e.g.
 	// 1:123456789012:web:0123456789abcdef. Globally unique and immutable.
@@ -70,20 +70,20 @@ type GcpFirebaseWebAppStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) Reset() {
-	*x = GcpFirebaseWebAppStackOutputs{}
+func (x *GcpFirebaseWebAppOutputs) Reset() {
+	*x = GcpFirebaseWebAppOutputs{}
 	mi := &file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) String() string {
+func (x *GcpFirebaseWebAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirebaseWebAppStackOutputs) ProtoMessage() {}
+func (*GcpFirebaseWebAppOutputs) ProtoMessage() {}
 
-func (x *GcpFirebaseWebAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirebaseWebAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -95,82 +95,82 @@ func (x *GcpFirebaseWebAppStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirebaseWebAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirebaseWebAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirebaseWebAppOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirebaseWebAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetAppId() string {
+func (x *GcpFirebaseWebAppOutputs) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetName() string {
+func (x *GcpFirebaseWebAppOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetApiKeyId() string {
+func (x *GcpFirebaseWebAppOutputs) GetApiKeyId() string {
 	if x != nil {
 		return x.ApiKeyId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetAppUrls() []string {
+func (x *GcpFirebaseWebAppOutputs) GetAppUrls() []string {
 	if x != nil {
 		return x.AppUrls
 	}
 	return nil
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetApiKey() string {
+func (x *GcpFirebaseWebAppOutputs) GetApiKey() string {
 	if x != nil {
 		return x.ApiKey
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetAuthDomain() string {
+func (x *GcpFirebaseWebAppOutputs) GetAuthDomain() string {
 	if x != nil {
 		return x.AuthDomain
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetDatabaseUrl() string {
+func (x *GcpFirebaseWebAppOutputs) GetDatabaseUrl() string {
 	if x != nil {
 		return x.DatabaseUrl
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetStorageBucket() string {
+func (x *GcpFirebaseWebAppOutputs) GetStorageBucket() string {
 	if x != nil {
 		return x.StorageBucket
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetLocationId() string {
+func (x *GcpFirebaseWebAppOutputs) GetLocationId() string {
 	if x != nil {
 		return x.LocationId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetMessagingSenderId() string {
+func (x *GcpFirebaseWebAppOutputs) GetMessagingSenderId() string {
 	if x != nil {
 		return x.MessagingSenderId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseWebAppStackOutputs) GetMeasurementId() string {
+func (x *GcpFirebaseWebAppOutputs) GetMeasurementId() string {
 	if x != nil {
 		return x.MeasurementId
 	}
@@ -181,8 +181,8 @@ var File_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpfirebasewebapp/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpfirebasewebapp.v1alpha1\"\xff\x02\n" +
-	"\x1dGcpFirebaseWebAppStackOutputs\x12\x15\n" +
+	"4catalog/gcp/gcpfirebasewebapp/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpfirebasewebapp.v1alpha1\"\xfa\x02\n" +
+	"\x18GcpFirebaseWebAppOutputs\x12\x15\n" +
 	"\x06app_id\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
 	"\n" +
@@ -214,7 +214,7 @@ func file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirebaseWebAppStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirebasewebapp.v1alpha1.GcpFirebaseWebAppStackOutputs
+	(*GcpFirebaseWebAppOutputs)(nil), // 0: dev.planton.gcp.gcpfirebasewebapp.v1alpha1.GcpFirebaseWebAppOutputs
 }
 var file_catalog_gcp_gcpfirebasewebapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

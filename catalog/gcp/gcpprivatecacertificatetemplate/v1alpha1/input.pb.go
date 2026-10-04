@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPrivateCaCertificateTemplate stack-input
-type GcpPrivateCaCertificateTemplateStackInput struct {
+// GcpPrivateCaCertificateTemplate iac-input
+type GcpPrivateCaCertificateTemplateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpPrivateCaCertificateTemplate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpPrivateCaCertificateTemplateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackInput) Reset() {
-	*x = GcpPrivateCaCertificateTemplateStackInput{}
+func (x *GcpPrivateCaCertificateTemplateIacInput) Reset() {
+	*x = GcpPrivateCaCertificateTemplateIacInput{}
 	mi := &file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackInput) String() string {
+func (x *GcpPrivateCaCertificateTemplateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPrivateCaCertificateTemplateStackInput) ProtoMessage() {}
+func (*GcpPrivateCaCertificateTemplateIacInput) ProtoMessage() {}
 
-func (x *GcpPrivateCaCertificateTemplateStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpPrivateCaCertificateTemplateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpPrivateCaCertificateTemplateStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPrivateCaCertificateTemplateStackInput.ProtoReflect.Descriptor instead.
-func (*GcpPrivateCaCertificateTemplateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPrivateCaCertificateTemplateIacInput.ProtoReflect.Descriptor instead.
+func (*GcpPrivateCaCertificateTemplateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackInput) GetTarget() *GcpPrivateCaCertificateTemplate {
+func (x *GcpPrivateCaCertificateTemplateIacInput) GetTarget() *GcpPrivateCaCertificateTemplate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpPrivateCaCertificateTemplateIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto protor
 
 const file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1/input.proto\x128dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1\x1a>catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xeb\x01\n" +
-	")GcpPrivateCaCertificateTemplateStackInput\x12q\n" +
+	"@catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1/input.proto\x128dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1\x1a>catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe9\x01\n" +
+	"'GcpPrivateCaCertificateTemplateIacInput\x12q\n" +
 	"\x06target\x18\x01 \x01(\v2Y.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xca\x03\n" +
 	"<com.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_rawDe
 
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_goTypes = []any{
-	(*GcpPrivateCaCertificateTemplateStackInput)(nil), // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackInput
-	(*GcpPrivateCaCertificateTemplate)(nil),           // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate
-	(*gcp.GcpProviderConfig)(nil),                     // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpPrivateCaCertificateTemplateIacInput)(nil), // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateIacInput
+	(*GcpPrivateCaCertificateTemplate)(nil),         // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate
+	(*gcp.GcpProviderConfig)(nil),                   // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackInput.target:type_name -> dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate
-	2, // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateIacInput.target:type_name -> dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate
+	2, // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

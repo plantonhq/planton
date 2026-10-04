@@ -31,7 +31,7 @@ type DigitalOceanSpacesKey struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanSpacesKeySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanSpacesKey) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanSpacesKey) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanSpacesKey) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanSpacesKey) GetStatus() *DigitalOceanSpacesKeyStatus {
 // digital-ocean-spaces-key status
 type DigitalOceanSpacesKeyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-spaces-key stack-outputs
-	Outputs       *DigitalOceanSpacesKeyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-spaces-key outputs
+	Outputs       *DigitalOceanSpacesKeyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanSpacesKeyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanSpacesKeyStatus) GetOutputs() *DigitalOceanSpacesKeyStackOutputs {
+func (x *DigitalOceanSpacesKeyStatus) GetOutputs() *DigitalOceanSpacesKeyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_api_proto_rawDesc
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15DigitalOceanSpacesKeyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatusR\x06status\"\x93\x01\n" +
-	"\x1bDigitalOceanSpacesKeyStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatusR\x06status\"\x8e\x01\n" +
+	"\x1bDigitalOceanSpacesKeyStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyOutputsR\aoutputsB\xb8\x03\n" +
 	";com.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanspaceskey/v1alpha1;digitaloceanspaceskeyv1alpha1\xa2\x02\x04DPDD\xaa\x027Dev.Planton.Digitalocean.Digitaloceanspaceskey.V1alpha1\xca\x027Dev\\Planton\\Digitalocean\\Digitaloceanspaceskey\\V1alpha1\xe2\x02CDev\\Planton\\Digitalocean\\Digitaloceanspaceskey\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Digitalocean::Digitaloceanspaceskey::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_api_proto_rawDescG
 
 var file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanSpacesKey)(nil),             // 0: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKey
-	(*DigitalOceanSpacesKeyStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanSpacesKeySpec)(nil),         // 3: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeySpec
-	(*DigitalOceanSpacesKeyStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStackOutputs
+	(*DigitalOceanSpacesKey)(nil),        // 0: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKey
+	(*DigitalOceanSpacesKeyStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanSpacesKeySpec)(nil),    // 3: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeySpec
+	(*DigitalOceanSpacesKeyOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyOutputs
 }
 var file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKey.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKey.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKey.spec:type_name -> dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeySpec
 	1, // 2: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKey.status:type_name -> dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatus
-	4, // 3: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

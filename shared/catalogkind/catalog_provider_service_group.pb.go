@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: shared/cloudresourcekind/cloud_provider_service_group.proto
+// source: shared/catalogkind/catalog_provider_service_group.proto
 
-package cloudresourcekind
+package catalogkind
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -27,8 +27,8 @@ const (
 // Azure "Networking", GCP "Data Analytics"). every kind of a grouped provider
 // carries EXACTLY ONE group on its kind_meta (field: service_group); grouping
 // is how explorers, docs navigation, and AI grounding organize a provider's
-// components, so each component needs exactly one home. multi-service
-// relationships belong in the component's documentation, never in a second
+// components, so each kind needs exactly one home. multi-service
+// relationships belong in the kind's documentation, never in a second
 // group.
 //
 // this is deliberately COARSER than the kind enum's family sub-bands: a
@@ -46,99 +46,99 @@ const (
 // providers without a service taxonomy (managed services like auth0 and
 // openfga, and the _test provider) have no values here, and their kinds must
 // NOT carry a service_group — the registry tests enforce both directions.
-type CloudProviderServiceGroup int32
+type CatalogProviderServiceGroup int32
 
 const (
-	CloudProviderServiceGroup_cloud_provider_service_group_unspecified CloudProviderServiceGroup = 0
+	CatalogProviderServiceGroup_catalog_provider_service_group_unspecified CatalogProviderServiceGroup = 0
 	// 100–199: AWS — mirrors the AWS Management Console's service categories.
-	CloudProviderServiceGroup_aws_compute                      CloudProviderServiceGroup = 100
-	CloudProviderServiceGroup_aws_containers                   CloudProviderServiceGroup = 101
-	CloudProviderServiceGroup_aws_storage                      CloudProviderServiceGroup = 102
-	CloudProviderServiceGroup_aws_database                     CloudProviderServiceGroup = 103
-	CloudProviderServiceGroup_aws_networking_content_delivery  CloudProviderServiceGroup = 104
-	CloudProviderServiceGroup_aws_security_identity_compliance CloudProviderServiceGroup = 105
-	CloudProviderServiceGroup_aws_analytics                    CloudProviderServiceGroup = 106
-	CloudProviderServiceGroup_aws_application_integration      CloudProviderServiceGroup = 107
-	CloudProviderServiceGroup_aws_machine_learning             CloudProviderServiceGroup = 108
-	CloudProviderServiceGroup_aws_management_governance        CloudProviderServiceGroup = 109
-	CloudProviderServiceGroup_aws_developer_tools              CloudProviderServiceGroup = 110
-	CloudProviderServiceGroup_aws_cloud_financial_management   CloudProviderServiceGroup = 111
+	CatalogProviderServiceGroup_aws_compute                      CatalogProviderServiceGroup = 100
+	CatalogProviderServiceGroup_aws_containers                   CatalogProviderServiceGroup = 101
+	CatalogProviderServiceGroup_aws_storage                      CatalogProviderServiceGroup = 102
+	CatalogProviderServiceGroup_aws_database                     CatalogProviderServiceGroup = 103
+	CatalogProviderServiceGroup_aws_networking_content_delivery  CatalogProviderServiceGroup = 104
+	CatalogProviderServiceGroup_aws_security_identity_compliance CatalogProviderServiceGroup = 105
+	CatalogProviderServiceGroup_aws_analytics                    CatalogProviderServiceGroup = 106
+	CatalogProviderServiceGroup_aws_application_integration      CatalogProviderServiceGroup = 107
+	CatalogProviderServiceGroup_aws_machine_learning             CatalogProviderServiceGroup = 108
+	CatalogProviderServiceGroup_aws_management_governance        CatalogProviderServiceGroup = 109
+	CatalogProviderServiceGroup_aws_developer_tools              CatalogProviderServiceGroup = 110
+	CatalogProviderServiceGroup_aws_cloud_financial_management   CatalogProviderServiceGroup = 111
 	// 200–299: Azure — mirrors the Azure portal's service categories.
-	CloudProviderServiceGroup_azure_compute     CloudProviderServiceGroup = 200
-	CloudProviderServiceGroup_azure_containers  CloudProviderServiceGroup = 201
-	CloudProviderServiceGroup_azure_web         CloudProviderServiceGroup = 202
-	CloudProviderServiceGroup_azure_storage     CloudProviderServiceGroup = 203
-	CloudProviderServiceGroup_azure_databases   CloudProviderServiceGroup = 204
-	CloudProviderServiceGroup_azure_networking  CloudProviderServiceGroup = 205
-	CloudProviderServiceGroup_azure_security    CloudProviderServiceGroup = 206
-	CloudProviderServiceGroup_azure_identity    CloudProviderServiceGroup = 207
-	CloudProviderServiceGroup_azure_ai_ml       CloudProviderServiceGroup = 208
-	CloudProviderServiceGroup_azure_analytics   CloudProviderServiceGroup = 209
-	CloudProviderServiceGroup_azure_integration CloudProviderServiceGroup = 210
-	CloudProviderServiceGroup_azure_management  CloudProviderServiceGroup = 211
-	CloudProviderServiceGroup_azure_backup      CloudProviderServiceGroup = 212
+	CatalogProviderServiceGroup_azure_compute     CatalogProviderServiceGroup = 200
+	CatalogProviderServiceGroup_azure_containers  CatalogProviderServiceGroup = 201
+	CatalogProviderServiceGroup_azure_web         CatalogProviderServiceGroup = 202
+	CatalogProviderServiceGroup_azure_storage     CatalogProviderServiceGroup = 203
+	CatalogProviderServiceGroup_azure_databases   CatalogProviderServiceGroup = 204
+	CatalogProviderServiceGroup_azure_networking  CatalogProviderServiceGroup = 205
+	CatalogProviderServiceGroup_azure_security    CatalogProviderServiceGroup = 206
+	CatalogProviderServiceGroup_azure_identity    CatalogProviderServiceGroup = 207
+	CatalogProviderServiceGroup_azure_ai_ml       CatalogProviderServiceGroup = 208
+	CatalogProviderServiceGroup_azure_analytics   CatalogProviderServiceGroup = 209
+	CatalogProviderServiceGroup_azure_integration CatalogProviderServiceGroup = 210
+	CatalogProviderServiceGroup_azure_management  CatalogProviderServiceGroup = 211
+	CatalogProviderServiceGroup_azure_backup      CatalogProviderServiceGroup = 212
 	// 300–399: GCP — mirrors the Google Cloud console's product categories.
-	CloudProviderServiceGroup_gcp_compute         CloudProviderServiceGroup = 300
-	CloudProviderServiceGroup_gcp_containers      CloudProviderServiceGroup = 301
-	CloudProviderServiceGroup_gcp_storage         CloudProviderServiceGroup = 302
-	CloudProviderServiceGroup_gcp_databases       CloudProviderServiceGroup = 303
-	CloudProviderServiceGroup_gcp_networking      CloudProviderServiceGroup = 304
-	CloudProviderServiceGroup_gcp_data_analytics  CloudProviderServiceGroup = 305
-	CloudProviderServiceGroup_gcp_ai_ml           CloudProviderServiceGroup = 306
-	CloudProviderServiceGroup_gcp_security        CloudProviderServiceGroup = 307
-	CloudProviderServiceGroup_gcp_identity_access CloudProviderServiceGroup = 308
-	CloudProviderServiceGroup_gcp_observability   CloudProviderServiceGroup = 309
-	CloudProviderServiceGroup_gcp_developer_tools CloudProviderServiceGroup = 310
-	CloudProviderServiceGroup_gcp_integration     CloudProviderServiceGroup = 311
-	CloudProviderServiceGroup_gcp_serverless      CloudProviderServiceGroup = 312
+	CatalogProviderServiceGroup_gcp_compute         CatalogProviderServiceGroup = 300
+	CatalogProviderServiceGroup_gcp_containers      CatalogProviderServiceGroup = 301
+	CatalogProviderServiceGroup_gcp_storage         CatalogProviderServiceGroup = 302
+	CatalogProviderServiceGroup_gcp_databases       CatalogProviderServiceGroup = 303
+	CatalogProviderServiceGroup_gcp_networking      CatalogProviderServiceGroup = 304
+	CatalogProviderServiceGroup_gcp_data_analytics  CatalogProviderServiceGroup = 305
+	CatalogProviderServiceGroup_gcp_ai_ml           CatalogProviderServiceGroup = 306
+	CatalogProviderServiceGroup_gcp_security        CatalogProviderServiceGroup = 307
+	CatalogProviderServiceGroup_gcp_identity_access CatalogProviderServiceGroup = 308
+	CatalogProviderServiceGroup_gcp_observability   CatalogProviderServiceGroup = 309
+	CatalogProviderServiceGroup_gcp_developer_tools CatalogProviderServiceGroup = 310
+	CatalogProviderServiceGroup_gcp_integration     CatalogProviderServiceGroup = 311
+	CatalogProviderServiceGroup_gcp_serverless      CatalogProviderServiceGroup = 312
 	// Firebase is its own product line inside Google Cloud -- the console
 	// files it under a separate top-level entry, and its kinds (project
 	// enablement, app registrations, the mobile-facing services) belong to
 	// none of the infrastructure shelves above.
-	CloudProviderServiceGroup_gcp_firebase CloudProviderServiceGroup = 313
+	CatalogProviderServiceGroup_gcp_firebase CatalogProviderServiceGroup = 313
 	// Resource Manager governance: the hierarchy (projects, folders), the
 	// guardrails on it (organization policies and custom constraints), and
 	// the tags policies key on. IAM roles and bindings stay under Identity &
 	// Access; a project is filed here because it is the unit governance acts
 	// on. Same label as the AWS shelf so the console groups both clouds'
 	// governance blocks under one word.
-	CloudProviderServiceGroup_gcp_management_governance CloudProviderServiceGroup = 314
+	CatalogProviderServiceGroup_gcp_management_governance CatalogProviderServiceGroup = 314
 	// 400–499: Kubernetes — three groups: native API objects, cluster
 	// machinery, and applications deployed on the cluster.
-	CloudProviderServiceGroup_kubernetes_core_workloads_apis   CloudProviderServiceGroup = 400
-	CloudProviderServiceGroup_kubernetes_operators_controllers CloudProviderServiceGroup = 401
-	CloudProviderServiceGroup_kubernetes_open_source_software  CloudProviderServiceGroup = 402
+	CatalogProviderServiceGroup_kubernetes_core_workloads_apis   CatalogProviderServiceGroup = 400
+	CatalogProviderServiceGroup_kubernetes_operators_controllers CatalogProviderServiceGroup = 401
+	CatalogProviderServiceGroup_kubernetes_open_source_software  CatalogProviderServiceGroup = 402
 	// 500–599: DigitalOcean — mirrors the DigitalOcean control panel's
 	// navigation.
-	CloudProviderServiceGroup_digital_ocean_compute            CloudProviderServiceGroup = 500
-	CloudProviderServiceGroup_digital_ocean_kubernetes         CloudProviderServiceGroup = 501
-	CloudProviderServiceGroup_digital_ocean_serverless         CloudProviderServiceGroup = 502
-	CloudProviderServiceGroup_digital_ocean_databases          CloudProviderServiceGroup = 503
-	CloudProviderServiceGroup_digital_ocean_storage            CloudProviderServiceGroup = 504
-	CloudProviderServiceGroup_digital_ocean_networking         CloudProviderServiceGroup = 505
-	CloudProviderServiceGroup_digital_ocean_container_registry CloudProviderServiceGroup = 506
-	CloudProviderServiceGroup_digital_ocean_monitoring         CloudProviderServiceGroup = 507
-	CloudProviderServiceGroup_digital_ocean_account            CloudProviderServiceGroup = 508
+	CatalogProviderServiceGroup_digital_ocean_compute            CatalogProviderServiceGroup = 500
+	CatalogProviderServiceGroup_digital_ocean_kubernetes         CatalogProviderServiceGroup = 501
+	CatalogProviderServiceGroup_digital_ocean_serverless         CatalogProviderServiceGroup = 502
+	CatalogProviderServiceGroup_digital_ocean_databases          CatalogProviderServiceGroup = 503
+	CatalogProviderServiceGroup_digital_ocean_storage            CatalogProviderServiceGroup = 504
+	CatalogProviderServiceGroup_digital_ocean_networking         CatalogProviderServiceGroup = 505
+	CatalogProviderServiceGroup_digital_ocean_container_registry CatalogProviderServiceGroup = 506
+	CatalogProviderServiceGroup_digital_ocean_monitoring         CatalogProviderServiceGroup = 507
+	CatalogProviderServiceGroup_digital_ocean_account            CatalogProviderServiceGroup = 508
 	// 700–799: Cloudflare — mirrors the Cloudflare dashboard's navigation
 	// (zone sections plus the Zero Trust and Workers dashboards).
-	CloudProviderServiceGroup_cloudflare_dns                CloudProviderServiceGroup = 700
-	CloudProviderServiceGroup_cloudflare_tls                CloudProviderServiceGroup = 701
-	CloudProviderServiceGroup_cloudflare_security           CloudProviderServiceGroup = 702
-	CloudProviderServiceGroup_cloudflare_rules              CloudProviderServiceGroup = 703
-	CloudProviderServiceGroup_cloudflare_performance        CloudProviderServiceGroup = 704
-	CloudProviderServiceGroup_cloudflare_traffic            CloudProviderServiceGroup = 705
-	CloudProviderServiceGroup_cloudflare_zero_trust         CloudProviderServiceGroup = 706
-	CloudProviderServiceGroup_cloudflare_developer_platform CloudProviderServiceGroup = 707
-	CloudProviderServiceGroup_cloudflare_storage            CloudProviderServiceGroup = 708
-	CloudProviderServiceGroup_cloudflare_ai                 CloudProviderServiceGroup = 709
-	CloudProviderServiceGroup_cloudflare_observability      CloudProviderServiceGroup = 710
-	CloudProviderServiceGroup_cloudflare_account            CloudProviderServiceGroup = 711
+	CatalogProviderServiceGroup_cloudflare_dns                CatalogProviderServiceGroup = 700
+	CatalogProviderServiceGroup_cloudflare_tls                CatalogProviderServiceGroup = 701
+	CatalogProviderServiceGroup_cloudflare_security           CatalogProviderServiceGroup = 702
+	CatalogProviderServiceGroup_cloudflare_rules              CatalogProviderServiceGroup = 703
+	CatalogProviderServiceGroup_cloudflare_performance        CatalogProviderServiceGroup = 704
+	CatalogProviderServiceGroup_cloudflare_traffic            CatalogProviderServiceGroup = 705
+	CatalogProviderServiceGroup_cloudflare_zero_trust         CatalogProviderServiceGroup = 706
+	CatalogProviderServiceGroup_cloudflare_developer_platform CatalogProviderServiceGroup = 707
+	CatalogProviderServiceGroup_cloudflare_storage            CatalogProviderServiceGroup = 708
+	CatalogProviderServiceGroup_cloudflare_ai                 CatalogProviderServiceGroup = 709
+	CatalogProviderServiceGroup_cloudflare_observability      CatalogProviderServiceGroup = 710
+	CatalogProviderServiceGroup_cloudflare_account            CatalogProviderServiceGroup = 711
 )
 
-// Enum value maps for CloudProviderServiceGroup.
+// Enum value maps for CatalogProviderServiceGroup.
 var (
-	CloudProviderServiceGroup_name = map[int32]string{
-		0:   "cloud_provider_service_group_unspecified",
+	CatalogProviderServiceGroup_name = map[int32]string{
+		0:   "catalog_provider_service_group_unspecified",
 		100: "aws_compute",
 		101: "aws_containers",
 		102: "aws_storage",
@@ -204,8 +204,8 @@ var (
 		710: "cloudflare_observability",
 		711: "cloudflare_account",
 	}
-	CloudProviderServiceGroup_value = map[string]int32{
-		"cloud_provider_service_group_unspecified": 0,
+	CatalogProviderServiceGroup_value = map[string]int32{
+		"catalog_provider_service_group_unspecified": 0,
 		"aws_compute":                      100,
 		"aws_containers":                   101,
 		"aws_storage":                      102,
@@ -273,42 +273,42 @@ var (
 	}
 )
 
-func (x CloudProviderServiceGroup) Enum() *CloudProviderServiceGroup {
-	p := new(CloudProviderServiceGroup)
+func (x CatalogProviderServiceGroup) Enum() *CatalogProviderServiceGroup {
+	p := new(CatalogProviderServiceGroup)
 	*p = x
 	return p
 }
 
-func (x CloudProviderServiceGroup) String() string {
+func (x CatalogProviderServiceGroup) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (CloudProviderServiceGroup) Descriptor() protoreflect.EnumDescriptor {
-	return file_shared_cloudresourcekind_cloud_provider_service_group_proto_enumTypes[0].Descriptor()
+func (CatalogProviderServiceGroup) Descriptor() protoreflect.EnumDescriptor {
+	return file_shared_catalogkind_catalog_provider_service_group_proto_enumTypes[0].Descriptor()
 }
 
-func (CloudProviderServiceGroup) Type() protoreflect.EnumType {
-	return &file_shared_cloudresourcekind_cloud_provider_service_group_proto_enumTypes[0]
+func (CatalogProviderServiceGroup) Type() protoreflect.EnumType {
+	return &file_shared_catalogkind_catalog_provider_service_group_proto_enumTypes[0]
 }
 
-func (x CloudProviderServiceGroup) Number() protoreflect.EnumNumber {
+func (x CatalogProviderServiceGroup) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use CloudProviderServiceGroup.Descriptor instead.
-func (CloudProviderServiceGroup) EnumDescriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogProviderServiceGroup.Descriptor instead.
+func (CatalogProviderServiceGroup) EnumDescriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_provider_service_group_proto_rawDescGZIP(), []int{0}
 }
 
-// metadata for one cloud-provider service group. like kind_meta and
+// metadata for one catalog provider service group. like kind_meta and
 // provider_meta, this is compile-time data read off descriptors; the
-// crkreflect registry tests enforce that every group value carries it.
-type CloudProviderServiceGroupMeta struct {
+// catalogkindreflect registry tests enforce that every group value carries it.
+type CatalogProviderServiceGroupMeta struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the provider this group belongs to. a kind's service_group must belong to
 	// the kind's own provider — the registry coherence test enforces it, so a
 	// copy-paste of the wrong provider's group is a committed-test failure.
-	Provider CloudResourceProvider `protobuf:"varint,1,opt,name=provider,proto3,enum=dev.planton.shared.cloudresourcekind.CloudResourceProvider" json:"provider,omitempty"`
+	Provider CatalogProvider `protobuf:"varint,1,opt,name=provider,proto3,enum=dev.planton.shared.catalogkind.CatalogProvider" json:"provider,omitempty"`
 	// the group's display label, exactly as catalog surfaces render it
 	// ("Networking & Content Delivery"). authored once here so OSS surfaces
 	// (CLI, docs) render labels without a console mapping; console-side label
@@ -319,21 +319,21 @@ type CloudProviderServiceGroupMeta struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudProviderServiceGroupMeta) Reset() {
-	*x = CloudProviderServiceGroupMeta{}
-	mi := &file_shared_cloudresourcekind_cloud_provider_service_group_proto_msgTypes[0]
+func (x *CatalogProviderServiceGroupMeta) Reset() {
+	*x = CatalogProviderServiceGroupMeta{}
+	mi := &file_shared_catalogkind_catalog_provider_service_group_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudProviderServiceGroupMeta) String() string {
+func (x *CatalogProviderServiceGroupMeta) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudProviderServiceGroupMeta) ProtoMessage() {}
+func (*CatalogProviderServiceGroupMeta) ProtoMessage() {}
 
-func (x *CloudProviderServiceGroupMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_cloudresourcekind_cloud_provider_service_group_proto_msgTypes[0]
+func (x *CatalogProviderServiceGroupMeta) ProtoReflect() protoreflect.Message {
+	mi := &file_shared_catalogkind_catalog_provider_service_group_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -344,52 +344,52 @@ func (x *CloudProviderServiceGroupMeta) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudProviderServiceGroupMeta.ProtoReflect.Descriptor instead.
-func (*CloudProviderServiceGroupMeta) Descriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogProviderServiceGroupMeta.ProtoReflect.Descriptor instead.
+func (*CatalogProviderServiceGroupMeta) Descriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_provider_service_group_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudProviderServiceGroupMeta) GetProvider() CloudResourceProvider {
+func (x *CatalogProviderServiceGroupMeta) GetProvider() CatalogProvider {
 	if x != nil {
 		return x.Provider
 	}
-	return CloudResourceProvider_cloud_resource_provider_unspecified
+	return CatalogProvider_catalog_provider_unspecified
 }
 
-func (x *CloudProviderServiceGroupMeta) GetDisplayName() string {
+func (x *CatalogProviderServiceGroupMeta) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-var file_shared_cloudresourcekind_cloud_provider_service_group_proto_extTypes = []protoimpl.ExtensionInfo{
+var file_shared_catalogkind_catalog_provider_service_group_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
-		ExtensionType: (*CloudProviderServiceGroupMeta)(nil),
+		ExtensionType: (*CatalogProviderServiceGroupMeta)(nil),
 		Field:         81102,
-		Name:          "dev.planton.shared.cloudresourcekind.service_group_meta",
+		Name:          "dev.planton.shared.catalogkind.service_group_meta",
 		Tag:           "bytes,81102,opt,name=service_group_meta",
-		Filename:      "shared/cloudresourcekind/cloud_provider_service_group.proto",
+		Filename:      "shared/catalogkind/catalog_provider_service_group.proto",
 	},
 }
 
 // Extension fields to descriptorpb.EnumValueOptions.
 var (
-	// optional dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupMeta service_group_meta = 81102;
-	E_ServiceGroupMeta = &file_shared_cloudresourcekind_cloud_provider_service_group_proto_extTypes[0]
+	// optional dev.planton.shared.catalogkind.CatalogProviderServiceGroupMeta service_group_meta = 81102;
+	E_ServiceGroupMeta = &file_shared_catalogkind_catalog_provider_service_group_proto_extTypes[0]
 )
 
-var File_shared_cloudresourcekind_cloud_provider_service_group_proto protoreflect.FileDescriptor
+var File_shared_catalogkind_catalog_provider_service_group_proto protoreflect.FileDescriptor
 
-const file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc = "" +
+const file_shared_catalogkind_catalog_provider_service_group_proto_rawDesc = "" +
 	"\n" +
-	";shared/cloudresourcekind/cloud_provider_service_group.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\x9b\x01\n" +
-	"\x1dCloudProviderServiceGroupMeta\x12W\n" +
-	"\bprovider\x18\x01 \x01(\x0e2;.dev.planton.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd4\x18\n" +
-	"\x19CloudProviderServiceGroup\x12,\n" +
-	"(cloud_provider_service_group_unspecified\x10\x00\x12 \n" +
+	"7shared/catalogkind/catalog_provider_service_group.proto\x12\x1edev.planton.shared.catalogkind\x1a google/protobuf/descriptor.proto\x1a)shared/catalogkind/catalog_provider.proto\"\x91\x01\n" +
+	"\x1fCatalogProviderServiceGroupMeta\x12K\n" +
+	"\bprovider\x18\x01 \x01(\x0e2/.dev.planton.shared.catalogkind.CatalogProviderR\bprovider\x12!\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd8\x18\n" +
+	"\x1bCatalogProviderServiceGroup\x12.\n" +
+	"*catalog_provider_service_group_unspecified\x10\x00\x12 \n" +
 	"\vaws_compute\x10d\x1a\x0f\xf2\xcc'\v\b\f\x12\aCompute\x12&\n" +
 	"\x0eaws_containers\x10e\x1a\x12\xf2\xcc'\x0e\b\f\x12\n" +
 	"Containers\x12 \n" +
@@ -465,34 +465,34 @@ const file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc =
 	"\rcloudflare_ai\x10\xc5\x05\x1a\n" +
 	"\xf2\xcc'\x06\b\x0f\x12\x02AI\x127\n" +
 	"\x18cloudflare_observability\x10\xc6\x05\x1a\x18\xf2\xcc'\x14\b\x0f\x12\x10Analytics & Logs\x123\n" +
-	"\x12cloudflare_account\x10\xc7\x05\x1a\x1a\xf2\xcc'\x16\b\x0f\x12\x12Account Management:\x96\x01\n" +
-	"\x12service_group_meta\x12!.google.protobuf.EnumValueOptions\x18\xce\xf9\x04 \x01(\v2C.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupMetaR\x10serviceGroupMetaB\xb5\x02\n" +
-	"(com.dev.planton.shared.cloudresourcekindB\x1eCloudProviderServiceGroupProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
+	"\x12cloudflare_account\x10\xc7\x05\x1a\x1a\xf2\xcc'\x16\b\x0f\x12\x12Account Management:\x92\x01\n" +
+	"\x12service_group_meta\x12!.google.protobuf.EnumValueOptions\x18\xce\xf9\x04 \x01(\v2?.dev.planton.shared.catalogkind.CatalogProviderServiceGroupMetaR\x10serviceGroupMetaB\x93\x02\n" +
+	"\"com.dev.planton.shared.catalogkindB CatalogProviderServiceGroupProtoP\x01Z/github.com/plantonhq/planton/shared/catalogkind\xa2\x02\x04DPSC\xaa\x02\x1eDev.Planton.Shared.Catalogkind\xca\x02\x1eDev\\Planton\\Shared\\Catalogkind\xe2\x02*Dev\\Planton\\Shared\\Catalogkind\\GPBMetadata\xea\x02!Dev::Planton::Shared::Catalogkindb\x06proto3"
 
 var (
-	file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescOnce sync.Once
-	file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescData []byte
+	file_shared_catalogkind_catalog_provider_service_group_proto_rawDescOnce sync.Once
+	file_shared_catalogkind_catalog_provider_service_group_proto_rawDescData []byte
 )
 
-func file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescGZIP() []byte {
-	file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescOnce.Do(func() {
-		file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc), len(file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc)))
+func file_shared_catalogkind_catalog_provider_service_group_proto_rawDescGZIP() []byte {
+	file_shared_catalogkind_catalog_provider_service_group_proto_rawDescOnce.Do(func() {
+		file_shared_catalogkind_catalog_provider_service_group_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_shared_catalogkind_catalog_provider_service_group_proto_rawDesc), len(file_shared_catalogkind_catalog_provider_service_group_proto_rawDesc)))
 	})
-	return file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDescData
+	return file_shared_catalogkind_catalog_provider_service_group_proto_rawDescData
 }
 
-var file_shared_cloudresourcekind_cloud_provider_service_group_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_shared_cloudresourcekind_cloud_provider_service_group_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_shared_cloudresourcekind_cloud_provider_service_group_proto_goTypes = []any{
-	(CloudProviderServiceGroup)(0),        // 0: dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup
-	(*CloudProviderServiceGroupMeta)(nil), // 1: dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupMeta
-	(CloudResourceProvider)(0),            // 2: dev.planton.shared.cloudresourcekind.CloudResourceProvider
-	(*descriptorpb.EnumValueOptions)(nil), // 3: google.protobuf.EnumValueOptions
+var file_shared_catalogkind_catalog_provider_service_group_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_shared_catalogkind_catalog_provider_service_group_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_shared_catalogkind_catalog_provider_service_group_proto_goTypes = []any{
+	(CatalogProviderServiceGroup)(0),        // 0: dev.planton.shared.catalogkind.CatalogProviderServiceGroup
+	(*CatalogProviderServiceGroupMeta)(nil), // 1: dev.planton.shared.catalogkind.CatalogProviderServiceGroupMeta
+	(CatalogProvider)(0),                    // 2: dev.planton.shared.catalogkind.CatalogProvider
+	(*descriptorpb.EnumValueOptions)(nil),   // 3: google.protobuf.EnumValueOptions
 }
-var file_shared_cloudresourcekind_cloud_provider_service_group_proto_depIdxs = []int32{
-	2, // 0: dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupMeta.provider:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceProvider
-	3, // 1: dev.planton.shared.cloudresourcekind.service_group_meta:extendee -> google.protobuf.EnumValueOptions
-	1, // 2: dev.planton.shared.cloudresourcekind.service_group_meta:type_name -> dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupMeta
+var file_shared_catalogkind_catalog_provider_service_group_proto_depIdxs = []int32{
+	2, // 0: dev.planton.shared.catalogkind.CatalogProviderServiceGroupMeta.provider:type_name -> dev.planton.shared.catalogkind.CatalogProvider
+	3, // 1: dev.planton.shared.catalogkind.service_group_meta:extendee -> google.protobuf.EnumValueOptions
+	1, // 2: dev.planton.shared.catalogkind.service_group_meta:type_name -> dev.planton.shared.catalogkind.CatalogProviderServiceGroupMeta
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	2, // [2:3] is the sub-list for extension type_name
@@ -500,29 +500,29 @@ var file_shared_cloudresourcekind_cloud_provider_service_group_proto_depIdxs = [
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_shared_cloudresourcekind_cloud_provider_service_group_proto_init() }
-func file_shared_cloudresourcekind_cloud_provider_service_group_proto_init() {
-	if File_shared_cloudresourcekind_cloud_provider_service_group_proto != nil {
+func init() { file_shared_catalogkind_catalog_provider_service_group_proto_init() }
+func file_shared_catalogkind_catalog_provider_service_group_proto_init() {
+	if File_shared_catalogkind_catalog_provider_service_group_proto != nil {
 		return
 	}
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_init()
+	file_shared_catalogkind_catalog_provider_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc), len(file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_catalogkind_catalog_provider_service_group_proto_rawDesc), len(file_shared_catalogkind_catalog_provider_service_group_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   1,
 			NumExtensions: 1,
 			NumServices:   0,
 		},
-		GoTypes:           file_shared_cloudresourcekind_cloud_provider_service_group_proto_goTypes,
-		DependencyIndexes: file_shared_cloudresourcekind_cloud_provider_service_group_proto_depIdxs,
-		EnumInfos:         file_shared_cloudresourcekind_cloud_provider_service_group_proto_enumTypes,
-		MessageInfos:      file_shared_cloudresourcekind_cloud_provider_service_group_proto_msgTypes,
-		ExtensionInfos:    file_shared_cloudresourcekind_cloud_provider_service_group_proto_extTypes,
+		GoTypes:           file_shared_catalogkind_catalog_provider_service_group_proto_goTypes,
+		DependencyIndexes: file_shared_catalogkind_catalog_provider_service_group_proto_depIdxs,
+		EnumInfos:         file_shared_catalogkind_catalog_provider_service_group_proto_enumTypes,
+		MessageInfos:      file_shared_catalogkind_catalog_provider_service_group_proto_msgTypes,
+		ExtensionInfos:    file_shared_catalogkind_catalog_provider_service_group_proto_extTypes,
 	}.Build()
-	File_shared_cloudresourcekind_cloud_provider_service_group_proto = out.File
-	file_shared_cloudresourcekind_cloud_provider_service_group_proto_goTypes = nil
-	file_shared_cloudresourcekind_cloud_provider_service_group_proto_depIdxs = nil
+	File_shared_catalogkind_catalog_provider_service_group_proto = out.File
+	file_shared_catalogkind_catalog_provider_service_group_proto_goTypes = nil
+	file_shared_catalogkind_catalog_provider_service_group_proto_depIdxs = nil
 }

@@ -28,7 +28,7 @@ type GcpAddress struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpAddressSpec               `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpAddressStatus             `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpAddress) GetKind() string {
 	return ""
 }
 
-func (x *GcpAddress) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpAddress) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpAddress) GetStatus() *GcpAddressStatus {
 }
 
 type GcpAddressStatus struct {
-	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Outputs       *GcpAddressStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *GcpAddressOutputs     `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpAddressStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpaddress_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpAddressStatus) GetOutputs() *GcpAddressStackOutputs {
+func (x *GcpAddressStatus) GetOutputs() *GcpAddressOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -157,11 +157,11 @@ const file_catalog_gcp_gcpaddress_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\x11\xbaH\x0er\f\n" +
 	"\n" +
 	"GcpAddressR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
 	"\x04spec\x18\x04 \x01(\v23.dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12M\n" +
-	"\x06status\x18\x05 \x01(\v25.dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStatusR\x06status\"i\n" +
-	"\x10GcpAddressStatus\x12U\n" +
-	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStackOutputsR\aoutputsB\xb5\x02\n" +
+	"\x06status\x18\x05 \x01(\v25.dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStatusR\x06status\"d\n" +
+	"\x10GcpAddressStatus\x12P\n" +
+	"\aoutputs\x18\x01 \x01(\v26.dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressOutputsR\aoutputsB\xb5\x02\n" +
 	"'com.dev.planton.gcp.gcpaddress.v1alpha1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/catalog/gcp/gcpaddress/v1alpha1;gcpaddressv1alpha1\xa2\x02\x04DPGG\xaa\x02#Dev.Planton.Gcp.Gcpaddress.V1alpha1\xca\x02#Dev\\Planton\\Gcp\\Gcpaddress\\V1alpha1\xe2\x02/Dev\\Planton\\Gcp\\Gcpaddress\\V1alpha1\\GPBMetadata\xea\x02'Dev::Planton::Gcp::Gcpaddress::V1alpha1b\x06proto3"
 
 var (
@@ -180,15 +180,15 @@ var file_catalog_gcp_gcpaddress_v1alpha1_api_proto_msgTypes = make([]protoimpl.M
 var file_catalog_gcp_gcpaddress_v1alpha1_api_proto_goTypes = []any{
 	(*GcpAddress)(nil),                   // 0: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddress
 	(*GcpAddressStatus)(nil),             // 1: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpAddressSpec)(nil),               // 3: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressSpec
-	(*GcpAddressStackOutputs)(nil),       // 4: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStackOutputs
+	(*GcpAddressOutputs)(nil),            // 4: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressOutputs
 }
 var file_catalog_gcp_gcpaddress_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddress.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddress.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddress.spec:type_name -> dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressSpec
 	1, // 2: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddress.status:type_name -> dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStatus
-	4, // 3: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStatus.outputs:type_name -> dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStackOutputs
+	4, // 3: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStatus.outputs:type_name -> dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

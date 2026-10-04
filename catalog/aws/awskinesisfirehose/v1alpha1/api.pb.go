@@ -32,7 +32,7 @@ type AwsKinesisFirehose struct {
 	// resource-kind for this Firehose delivery stream, must be "AwsKinesisFirehose".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the Firehose delivery stream.
 	Spec *AwsKinesisFirehoseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -85,7 +85,7 @@ func (x *AwsKinesisFirehose) GetKind() string {
 	return ""
 }
 
-func (x *AwsKinesisFirehose) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsKinesisFirehose) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *AwsKinesisFirehose) GetStatus() *AwsKinesisFirehoseStatus {
 // AwsKinesisFirehoseStatus captures lifecycle, audit, job linkage, and observable outputs.
 type AwsKinesisFirehoseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsKinesisFirehoseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsKinesisFirehoseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*AwsKinesisFirehoseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskinesisfirehose_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsKinesisFirehoseStatus) GetOutputs() *AwsKinesisFirehoseStackOutputs {
+func (x *AwsKinesisFirehoseStatus) GetOutputs() *AwsKinesisFirehoseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_aws_awskinesisfirehose_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsKinesisFirehoseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsKinesisFirehoseStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatusR\x06status\"|\n" +
+	"\x18AwsKinesisFirehoseStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awskinesisfirehose.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awskinesisfirehose/v1alpha1;awskinesisfirehosev1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awskinesisfirehose.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awskinesisfirehose\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awskinesisfirehose\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awskinesisfirehose::V1alpha1b\x06proto3"
 
 var (
@@ -184,17 +184,17 @@ func file_catalog_aws_awskinesisfirehose_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awskinesisfirehose_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awskinesisfirehose_v1alpha1_api_proto_goTypes = []any{
-	(*AwsKinesisFirehose)(nil),             // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose
-	(*AwsKinesisFirehoseStatus)(nil),       // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsKinesisFirehoseSpec)(nil),         // 3: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseSpec
-	(*AwsKinesisFirehoseStackOutputs)(nil), // 4: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackOutputs
+	(*AwsKinesisFirehose)(nil),           // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose
+	(*AwsKinesisFirehoseStatus)(nil),     // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsKinesisFirehoseSpec)(nil),       // 3: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseSpec
+	(*AwsKinesisFirehoseOutputs)(nil),    // 4: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOutputs
 }
 var file_catalog_aws_awskinesisfirehose_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose.spec:type_name -> dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseSpec
 	1, // 2: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose.status:type_name -> dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatus
-	4, // 3: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatus.outputs:type_name -> dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackOutputs
+	4, // 3: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStatus.outputs:type_name -> dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

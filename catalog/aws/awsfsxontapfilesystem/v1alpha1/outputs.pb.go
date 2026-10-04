@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxOntapFileSystemStackOutputs captures observable identifiers and
+// AwsFsxOntapFileSystemOutputs captures observable identifiers and
 // endpoints from a provisioned FSx for ONTAP file system. These outputs are
 // used by downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -32,7 +32,7 @@ const (
 // - SnapMirror replication: needs `intercluster_dns_name` and `intercluster_ip_addresses`
 // - ONTAP CLI administration: needs `management_dns_name` or `management_ip_addresses`
 // - Network troubleshooting: needs `network_interface_ids`, `vpc_id`
-type AwsFsxOntapFileSystemStackOutputs struct {
+type AwsFsxOntapFileSystemOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
 	// identifier used by Storage Virtual Machines and other AWS services.
@@ -69,20 +69,20 @@ type AwsFsxOntapFileSystemStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) Reset() {
-	*x = AwsFsxOntapFileSystemStackOutputs{}
+func (x *AwsFsxOntapFileSystemOutputs) Reset() {
+	*x = AwsFsxOntapFileSystemOutputs{}
 	mi := &file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) String() string {
+func (x *AwsFsxOntapFileSystemOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxOntapFileSystemStackOutputs) ProtoMessage() {}
+func (*AwsFsxOntapFileSystemOutputs) ProtoMessage() {}
 
-func (x *AwsFsxOntapFileSystemStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxOntapFileSystemOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -94,68 +94,68 @@ func (x *AwsFsxOntapFileSystemStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxOntapFileSystemStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxOntapFileSystemStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxOntapFileSystemOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxOntapFileSystemOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetFileSystemId() string {
+func (x *AwsFsxOntapFileSystemOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetFileSystemArn() string {
+func (x *AwsFsxOntapFileSystemOutputs) GetFileSystemArn() string {
 	if x != nil {
 		return x.FileSystemArn
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetManagementDnsName() string {
+func (x *AwsFsxOntapFileSystemOutputs) GetManagementDnsName() string {
 	if x != nil {
 		return x.ManagementDnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetManagementIpAddresses() []string {
+func (x *AwsFsxOntapFileSystemOutputs) GetManagementIpAddresses() []string {
 	if x != nil {
 		return x.ManagementIpAddresses
 	}
 	return nil
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetInterclusterDnsName() string {
+func (x *AwsFsxOntapFileSystemOutputs) GetInterclusterDnsName() string {
 	if x != nil {
 		return x.InterclusterDnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetInterclusterIpAddresses() []string {
+func (x *AwsFsxOntapFileSystemOutputs) GetInterclusterIpAddresses() []string {
 	if x != nil {
 		return x.InterclusterIpAddresses
 	}
 	return nil
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetNetworkInterfaceIds() []string {
+func (x *AwsFsxOntapFileSystemOutputs) GetNetworkInterfaceIds() []string {
 	if x != nil {
 		return x.NetworkInterfaceIds
 	}
 	return nil
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetVpcId() string {
+func (x *AwsFsxOntapFileSystemOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapFileSystemStackOutputs) GetOwnerId() string {
+func (x *AwsFsxOntapFileSystemOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
@@ -166,8 +166,8 @@ var File_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsfsxontapfilesystem/v1alpha1/outputs.proto\x12.dev.planton.aws.awsfsxontapfilesystem.v1alpha1\"\xaf\x03\n" +
-	"!AwsFsxOntapFileSystemStackOutputs\x12$\n" +
+	"8catalog/aws/awsfsxontapfilesystem/v1alpha1/outputs.proto\x12.dev.planton.aws.awsfsxontapfilesystem.v1alpha1\"\xaa\x03\n" +
+	"\x1cAwsFsxOntapFileSystemOutputs\x12$\n" +
 	"\x0efile_system_id\x18\x01 \x01(\tR\ffileSystemId\x12&\n" +
 	"\x0ffile_system_arn\x18\x02 \x01(\tR\rfileSystemArn\x12.\n" +
 	"\x13management_dns_name\x18\x03 \x01(\tR\x11managementDnsName\x126\n" +
@@ -193,7 +193,7 @@ func file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxOntapFileSystemStackOutputs)(nil), // 0: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemStackOutputs
+	(*AwsFsxOntapFileSystemOutputs)(nil), // 0: dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemOutputs
 }
 var file_catalog_aws_awsfsxontapfilesystem_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

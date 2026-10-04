@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpHaVpnConnectionStackOutputs captures the identities of everything the
+// GcpHaVpnConnectionOutputs captures the identities of everything the
 // connection created, and the keys the modules generated. The tunnel lists
 // are index-aligned with spec.tunnels -- the one place a repeated output
 // is right, because the tunnels are the connection's own many.
-type GcpHaVpnConnectionStackOutputs struct {
+type GcpHaVpnConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The self links of the tunnels, in spec order.
 	TunnelSelfLinks []string `protobuf:"bytes,1,rep,name=tunnel_self_links,json=tunnelSelfLinks,proto3" json:"tunnel_self_links,omitempty"`
@@ -65,20 +65,20 @@ type GcpHaVpnConnectionStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) Reset() {
-	*x = GcpHaVpnConnectionStackOutputs{}
+func (x *GcpHaVpnConnectionOutputs) Reset() {
+	*x = GcpHaVpnConnectionOutputs{}
 	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) String() string {
+func (x *GcpHaVpnConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpHaVpnConnectionStackOutputs) ProtoMessage() {}
+func (*GcpHaVpnConnectionOutputs) ProtoMessage() {}
 
-func (x *GcpHaVpnConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpHaVpnConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -90,68 +90,68 @@ func (x *GcpHaVpnConnectionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpHaVpnConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpHaVpnConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpHaVpnConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpHaVpnConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetTunnelSelfLinks() []string {
+func (x *GcpHaVpnConnectionOutputs) GetTunnelSelfLinks() []string {
 	if x != nil {
 		return x.TunnelSelfLinks
 	}
 	return nil
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetTunnelNames() []string {
+func (x *GcpHaVpnConnectionOutputs) GetTunnelNames() []string {
 	if x != nil {
 		return x.TunnelNames
 	}
 	return nil
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetRouterInterfaceNames() []string {
+func (x *GcpHaVpnConnectionOutputs) GetRouterInterfaceNames() []string {
 	if x != nil {
 		return x.RouterInterfaceNames
 	}
 	return nil
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetBgpPeerNames() []string {
+func (x *GcpHaVpnConnectionOutputs) GetBgpPeerNames() []string {
 	if x != nil {
 		return x.BgpPeerNames
 	}
 	return nil
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetExternalGatewaySelfLink() string {
+func (x *GcpHaVpnConnectionOutputs) GetExternalGatewaySelfLink() string {
 	if x != nil {
 		return x.ExternalGatewaySelfLink
 	}
 	return ""
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetGatewaySelfLink() string {
+func (x *GcpHaVpnConnectionOutputs) GetGatewaySelfLink() string {
 	if x != nil {
 		return x.GatewaySelfLink
 	}
 	return ""
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetRouterName() string {
+func (x *GcpHaVpnConnectionOutputs) GetRouterName() string {
 	if x != nil {
 		return x.RouterName
 	}
 	return ""
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetSharedSecret() string {
+func (x *GcpHaVpnConnectionOutputs) GetSharedSecret() string {
 	if x != nil {
 		return x.SharedSecret
 	}
 	return ""
 }
 
-func (x *GcpHaVpnConnectionStackOutputs) GetMd5AuthenticationKey() string {
+func (x *GcpHaVpnConnectionOutputs) GetMd5AuthenticationKey() string {
 	if x != nil {
 		return x.Md5AuthenticationKey
 	}
@@ -162,8 +162,8 @@ var File_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcphavpnconnection/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcphavpnconnection.v1alpha1\x1a\x1cshared/options/options.proto\"\xbc\x03\n" +
-	"\x1eGcpHaVpnConnectionStackOutputs\x12*\n" +
+	"5catalog/gcp/gcphavpnconnection/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcphavpnconnection.v1alpha1\x1a\x1cshared/options/options.proto\"\xb7\x03\n" +
+	"\x19GcpHaVpnConnectionOutputs\x12*\n" +
 	"\x11tunnel_self_links\x18\x01 \x03(\tR\x0ftunnelSelfLinks\x12!\n" +
 	"\ftunnel_names\x18\x02 \x03(\tR\vtunnelNames\x124\n" +
 	"\x16router_interface_names\x18\x03 \x03(\tR\x14routerInterfaceNames\x12$\n" +
@@ -190,7 +190,7 @@ func file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpHaVpnConnectionStackOutputs)(nil), // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStackOutputs
+	(*GcpHaVpnConnectionOutputs)(nil), // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionOutputs
 }
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

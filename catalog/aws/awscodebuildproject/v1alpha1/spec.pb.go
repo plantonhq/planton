@@ -95,7 +95,7 @@ type AwsCodeBuildProjectSpec struct {
 	// to 10. Omit (or 0) to disable automatic retry.
 	AutoRetryLimit int32 `protobuf:"varint,14,opt,name=auto_retry_limit,json=autoRetryLimit,proto3" json:"auto_retry_limit,omitempty"`
 	// badge_enabled publishes a dynamic build badge for the project. The badge
-	// URL is exported as the badge_url stack output and can be embedded in a
+	// URL is exported as the badge_url output and can be embedded in a
 	// repository README. Not supported for CODEPIPELINE or S3 sources.
 	BadgeEnabled bool `protobuf:"varint,15,opt,name=badge_enabled,json=badgeEnabled,proto3" json:"badge_enabled,omitempty"`
 	// source_version is the default branch, tag, or commit ID to build.
@@ -1870,7 +1870,7 @@ type AwsCodeBuildWebhook struct {
 	// manual_creation makes CodeBuild return the payload URL and HMAC secret
 	// WITHOUT registering the webhook with the provider — you configure the
 	// repository webhook by hand from the webhook_payload_url and
-	// webhook_secret stack outputs. Required for GitHub Enterprise; useful
+	// webhook_secret outputs. Required for GitHub Enterprise; useful
 	// when the connection lacks admin rights on the repository.
 	ManualCreation bool `protobuf:"varint,2,opt,name=manual_creation,json=manualCreation,proto3" json:"manual_creation,omitempty"`
 	// filter_groups define which repository events trigger a build.

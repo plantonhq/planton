@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamGroupStackInput is the input for the IaC modules that manage
+// AwsIamGroupIacInput is the input for the IaC modules that manage
 // an IAM group, its declarative membership, and its policies.
-type AwsIamGroupStackInput struct {
+type AwsIamGroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsIamGroup resource to deploy.
 	Target *AwsIamGroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsIamGroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsIamGroupStackInput) Reset() {
-	*x = AwsIamGroupStackInput{}
+func (x *AwsIamGroupIacInput) Reset() {
+	*x = AwsIamGroupIacInput{}
 	mi := &file_catalog_aws_awsiamgroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamGroupStackInput) String() string {
+func (x *AwsIamGroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamGroupStackInput) ProtoMessage() {}
+func (*AwsIamGroupIacInput) ProtoMessage() {}
 
-func (x *AwsIamGroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsIamGroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamgroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsIamGroupStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamGroupStackInput.ProtoReflect.Descriptor instead.
-func (*AwsIamGroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamGroupIacInput.ProtoReflect.Descriptor instead.
+func (*AwsIamGroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamgroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamGroupStackInput) GetTarget() *AwsIamGroup {
+func (x *AwsIamGroupIacInput) GetTarget() *AwsIamGroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsIamGroupStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsIamGroupIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsiamgroup_v1alpha1_input_proto protoreflect.FileDescripto
 
 const file_catalog_aws_awsiamgroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	",catalog/aws/awsiamgroup/v1alpha1/input.proto\x12$dev.planton.aws.awsiamgroup.v1alpha1\x1a*catalog/aws/awsiamgroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xaf\x01\n" +
-	"\x15AwsIamGroupStackInput\x12I\n" +
+	",catalog/aws/awsiamgroup/v1alpha1/input.proto\x12$dev.planton.aws.awsiamgroup.v1alpha1\x1a*catalog/aws/awsiamgroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xad\x01\n" +
+	"\x13AwsIamGroupIacInput\x12I\n" +
 	"\x06target\x18\x01 \x01(\v21.dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xbe\x02\n" +
 	"(com.dev.planton.aws.awsiamgroup.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsiamgroup_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsiamgroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamgroup_v1alpha1_input_proto_goTypes = []any{
-	(*AwsIamGroupStackInput)(nil), // 0: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupStackInput
+	(*AwsIamGroupIacInput)(nil),   // 0: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupIacInput
 	(*AwsIamGroup)(nil),           // 1: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroup
 	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsiamgroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupStackInput.target:type_name -> dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroup
-	2, // 1: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupIacInput.target:type_name -> dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroup
+	2, // 1: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

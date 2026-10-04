@@ -25,15 +25,15 @@ const (
 // PriceBook is a provider's pinned list-price snapshot -- the single home of
 // every unit price the catalog's cost estimates cite. One book per provider,
 // at catalog/_pricing/pricebook/<provider>.yaml (filename = metadata.name =
-// the provider directory name under catalog/). Component estimate models
+// the provider directory name under catalog/). Kind estimate models
 // reference entries by their slug name and never restate a price; the
 // estimate generator joins the two, so a price exists in exactly one place
 // and every estimate that cites it moves together when it is refreshed.
 // Follows the KRM pattern (apiVersion + kind + metadata + spec).
 //
-// Entries are identified by their own slug, never by a component's meter
+// Entries are identified by their own slug, never by a kind's meter
 // label: a price's true identity is the provider's SKU (a P10 disk in
-// eastus, a Standard_D4s_v5 hour), and multiple components with the same
+// eastus, a Standard_D4s_v5 hour), and multiple kinds with the same
 // meter label may need different SKUs' prices.
 //
 // Refresh discipline: prices enter the book pinned -- each entry carries the
@@ -62,7 +62,7 @@ type PriceBook struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *PriceBookSpec                `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -112,7 +112,7 @@ func (x *PriceBook) GetKind() string {
 	return ""
 }
 
-func (x *PriceBook) GetMetadata() *shared.CloudResourceMetadata {
+func (x *PriceBook) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -135,7 +135,7 @@ const file_finops_pricebook_v1_api_proto_rawDesc = "" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12B\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12B\n" +
 	"\x04spec\x18\x04 \x01(\v2..dev.planton.finops.pricebook.v1.PriceBookSpecR\x04specB\x8e\x02\n" +
 	"#com.dev.planton.finops.pricebook.v1B\bApiProtoP\x01Z<github.com/plantonhq/planton/finops/pricebook/v1;pricebookv1\xa2\x02\x04DPFP\xaa\x02\x1fDev.Planton.Finops.Pricebook.V1\xca\x02\x1fDev\\Planton\\Finops\\Pricebook\\V1\xe2\x02+Dev\\Planton\\Finops\\Pricebook\\V1\\GPBMetadata\xea\x02#Dev::Planton::Finops::Pricebook::V1b\x06proto3"
 
@@ -154,11 +154,11 @@ func file_finops_pricebook_v1_api_proto_rawDescGZIP() []byte {
 var file_finops_pricebook_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_finops_pricebook_v1_api_proto_goTypes = []any{
 	(*PriceBook)(nil),                    // 0: dev.planton.finops.pricebook.v1.PriceBook
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
 	(*PriceBookSpec)(nil),                // 2: dev.planton.finops.pricebook.v1.PriceBookSpec
 }
 var file_finops_pricebook_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.finops.pricebook.v1.PriceBook.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	1, // 0: dev.planton.finops.pricebook.v1.PriceBook.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	2, // 1: dev.planton.finops.pricebook.v1.PriceBook.spec:type_name -> dev.planton.finops.pricebook.v1.PriceBookSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type

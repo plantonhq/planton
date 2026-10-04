@@ -31,7 +31,7 @@ type AzureAksNodePool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureAksNodePoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureAksNodePool) GetKind() string {
 	return ""
 }
 
-func (x *AzureAksNodePool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureAksNodePool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureAksNodePool) GetStatus() *AzureAksNodePoolStatus {
 // azure-aks-node-pool status
 type AzureAksNodePoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-aks-node-pool stack-outputs
-	Outputs       *AzureAksNodePoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-aks-node-pool outputs
+	Outputs       *AzureAksNodePoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureAksNodePoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureaksnodepool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureAksNodePoolStatus) GetOutputs() *AzureAksNodePoolStackOutputs {
+func (x *AzureAksNodePoolStatus) GetOutputs() *AzureAksNodePoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azureaksnodepool_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10AzureAksNodePoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStatusR\x06status\"}\n" +
-	"\x16AzureAksNodePoolStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStackOutputsR\aoutputsB\xeb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStatusR\x06status\"x\n" +
+	"\x16AzureAksNodePoolStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolOutputsR\aoutputsB\xeb\x02\n" +
 	"/com.dev.planton.azure.azureaksnodepool.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/azure/azureaksnodepool/v1alpha1;azureaksnodepoolv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Azure.Azureaksnodepool.V1alpha1\xca\x02+Dev\\Planton\\Azure\\Azureaksnodepool\\V1alpha1\xe2\x027Dev\\Planton\\Azure\\Azureaksnodepool\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Azure::Azureaksnodepool::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azureaksnodepool_v1alpha1_api_proto_msgTypes = make([]pro
 var file_catalog_azure_azureaksnodepool_v1alpha1_api_proto_goTypes = []any{
 	(*AzureAksNodePool)(nil),             // 0: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePool
 	(*AzureAksNodePoolStatus)(nil),       // 1: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureAksNodePoolSpec)(nil),         // 3: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolSpec
-	(*AzureAksNodePoolStackOutputs)(nil), // 4: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStackOutputs
+	(*AzureAksNodePoolOutputs)(nil),      // 4: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolOutputs
 }
 var file_catalog_azure_azureaksnodepool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePool.spec:type_name -> dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolSpec
 	1, // 2: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePool.status:type_name -> dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStatus
-	4, // 3: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStatus.outputs:type_name -> dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStackOutputs
+	4, // 3: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStatus.outputs:type_name -> dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

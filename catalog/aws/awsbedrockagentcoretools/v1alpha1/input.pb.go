@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreToolsStackInput is the input for the IaC modules
+// AwsBedrockAgentCoreToolsIacInput is the input for the IaC modules
 // that deploy the AgentCore tools bundle.
-type AwsBedrockAgentCoreToolsStackInput struct {
+type AwsBedrockAgentCoreToolsIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockAgentCoreTools resource to deploy.
 	Target *AwsBedrockAgentCoreTools `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockAgentCoreToolsStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreToolsStackInput) Reset() {
-	*x = AwsBedrockAgentCoreToolsStackInput{}
+func (x *AwsBedrockAgentCoreToolsIacInput) Reset() {
+	*x = AwsBedrockAgentCoreToolsIacInput{}
 	mi := &file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreToolsStackInput) String() string {
+func (x *AwsBedrockAgentCoreToolsIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreToolsStackInput) ProtoMessage() {}
+func (*AwsBedrockAgentCoreToolsIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreToolsStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreToolsIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockAgentCoreToolsStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreToolsStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreToolsStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreToolsIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreToolsIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreToolsStackInput) GetTarget() *AwsBedrockAgentCoreTools {
+func (x *AwsBedrockAgentCoreToolsIacInput) GetTarget() *AwsBedrockAgentCoreTools {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreToolsStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockAgentCoreToolsIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto protoreflect.
 
 const file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awsbedrockagentcoretools/v1alpha1/input.proto\x121dev.planton.aws.awsbedrockagentcoretools.v1alpha1\x1a7catalog/aws/awsbedrockagentcoretools/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd6\x01\n" +
-	"\"AwsBedrockAgentCoreToolsStackInput\x12c\n" +
+	"9catalog/aws/awsbedrockagentcoretools/v1alpha1/input.proto\x121dev.planton.aws.awsbedrockagentcoretools.v1alpha1\x1a7catalog/aws/awsbedrockagentcoretools/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd4\x01\n" +
+	" AwsBedrockAgentCoreToolsIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"5com.dev.planton.aws.awsbedrockagentcoretools.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreToolsStackInput)(nil), // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackInput
-	(*AwsBedrockAgentCoreTools)(nil),           // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreTools
-	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockAgentCoreToolsIacInput)(nil), // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsIacInput
+	(*AwsBedrockAgentCoreTools)(nil),         // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreTools
+	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockagentcoretools_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackInput.target:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreTools
-	2, // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsIacInput.target:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreTools
+	2, // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

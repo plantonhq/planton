@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanVpcPeeringStackOutputs captures the key outputs after
+// DigitalOceanVpcPeeringOutputs captures the key outputs after
 // provisioning a VPC peering connection.
 //
 // The peering's lifecycle status is deliberately NOT an output: both
@@ -30,7 +30,7 @@ const (
 // DigitalOcean moved the peering to DELETING or removed it. Live status is
 // read from the API by whoever needs it (GET /v2/vpcs/peerings/{id}); the
 // E2E verifier asserts existence that way.
-type DigitalOceanVpcPeeringStackOutputs struct {
+type DigitalOceanVpcPeeringOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the VPC peering connection (the resource's API identity and
 	// its import id).
@@ -39,20 +39,20 @@ type DigitalOceanVpcPeeringStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanVpcPeeringStackOutputs) Reset() {
-	*x = DigitalOceanVpcPeeringStackOutputs{}
+func (x *DigitalOceanVpcPeeringOutputs) Reset() {
+	*x = DigitalOceanVpcPeeringOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanVpcPeeringStackOutputs) String() string {
+func (x *DigitalOceanVpcPeeringOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanVpcPeeringStackOutputs) ProtoMessage() {}
+func (*DigitalOceanVpcPeeringOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanVpcPeeringStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanVpcPeeringOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,12 +64,12 @@ func (x *DigitalOceanVpcPeeringStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanVpcPeeringStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanVpcPeeringStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanVpcPeeringOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanVpcPeeringOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanVpcPeeringStackOutputs) GetPeeringId() string {
+func (x *DigitalOceanVpcPeeringOutputs) GetPeeringId() string {
 	if x != nil {
 		return x.PeeringId
 	}
@@ -80,8 +80,8 @@ var File_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto prot
 
 const file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/digitalocean/digitaloceanvpcpeering/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1\"Q\n" +
-	"\"DigitalOceanVpcPeeringStackOutputs\x12\x1d\n" +
+	"Bcatalog/digitalocean/digitaloceanvpcpeering/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1\"L\n" +
+	"\x1dDigitalOceanVpcPeeringOutputs\x12\x1d\n" +
 	"\n" +
 	"peering_id\x18\x01 \x01(\tR\tpeeringIdJ\x04\b\x02\x10\x03R\x06statusB\xc3\x03\n" +
 	"<com.dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanvpcpeering/v1alpha1;digitaloceanvpcpeeringv1alpha1\xa2\x02\x04DPDD\xaa\x028Dev.Planton.Digitalocean.Digitaloceanvpcpeering.V1alpha1\xca\x028Dev\\Planton\\Digitalocean\\Digitaloceanvpcpeering\\V1alpha1\xe2\x02DDev\\Planton\\Digitalocean\\Digitaloceanvpcpeering\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Digitalocean::Digitaloceanvpcpeering::V1alpha1b\x06proto3"
@@ -100,7 +100,7 @@ func file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_raw
 
 var file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanVpcPeeringStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringStackOutputs
+	(*DigitalOceanVpcPeeringOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringOutputs
 }
 var file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

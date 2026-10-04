@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePrivateDnsRecordStackInput is the input to the IaC modules
+// AzurePrivateDnsRecordIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzurePrivateDnsRecordStackInput struct {
+type AzurePrivateDnsRecordIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The private DNS record resource to deploy.
 	Target *AzurePrivateDnsRecord `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzurePrivateDnsRecordStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzurePrivateDnsRecordStackInput) Reset() {
-	*x = AzurePrivateDnsRecordStackInput{}
+func (x *AzurePrivateDnsRecordIacInput) Reset() {
+	*x = AzurePrivateDnsRecordIacInput{}
 	mi := &file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateDnsRecordStackInput) String() string {
+func (x *AzurePrivateDnsRecordIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateDnsRecordStackInput) ProtoMessage() {}
+func (*AzurePrivateDnsRecordIacInput) ProtoMessage() {}
 
-func (x *AzurePrivateDnsRecordStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateDnsRecordIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzurePrivateDnsRecordStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateDnsRecordStackInput.ProtoReflect.Descriptor instead.
-func (*AzurePrivateDnsRecordStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateDnsRecordIacInput.ProtoReflect.Descriptor instead.
+func (*AzurePrivateDnsRecordIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateDnsRecordStackInput) GetTarget() *AzurePrivateDnsRecord {
+func (x *AzurePrivateDnsRecordIacInput) GetTarget() *AzurePrivateDnsRecord {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzurePrivateDnsRecordStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzurePrivateDnsRecordIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azureprivatednsrecord/v1alpha1/input.proto\x120dev.planton.azure.azureprivatednsrecord.v1alpha1\x1a6catalog/azure/azureprivatednsrecord/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd3\x01\n" +
-	"\x1fAzurePrivateDnsRecordStackInput\x12_\n" +
+	"8catalog/azure/azureprivatednsrecord/v1alpha1/input.proto\x120dev.planton.azure.azureprivatednsrecord.v1alpha1\x1a6catalog/azure/azureprivatednsrecord/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd1\x01\n" +
+	"\x1dAzurePrivateDnsRecordIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x90\x03\n" +
 	"4com.dev.planton.azure.azureprivatednsrecord.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_goTypes = []any{
-	(*AzurePrivateDnsRecordStackInput)(nil), // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStackInput
-	(*AzurePrivateDnsRecord)(nil),           // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord
-	(*azure.AzureProviderConfig)(nil),       // 2: dev.planton.azure.AzureProviderConfig
+	(*AzurePrivateDnsRecordIacInput)(nil), // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordIacInput
+	(*AzurePrivateDnsRecord)(nil),         // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord
+	(*azure.AzureProviderConfig)(nil),     // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureprivatednsrecord_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStackInput.target:type_name -> dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord
-	2, // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordIacInput.target:type_name -> dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord
+	2, // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

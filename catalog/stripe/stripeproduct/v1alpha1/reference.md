@@ -6,7 +6,7 @@
 
 **apiVersion**: `stripe.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 StripeProductSpec declares one thing an account sells -- a plan, a seat, a physical good -- as
 Checkout, Payment Links, subscriptions and pricing tables show it, and the entitlement features

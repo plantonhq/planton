@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesStorageClassStackInput** defines the input structure for
+// **KubernetesStorageClassIacInput** defines the input structure for
 // deploying a Kubernetes StorageClass. It carries the target StorageClass
 // specification and the Kubernetes cluster configuration the IaC modules
 // (Pulumi and Terraform) need to reach the cluster.
-type KubernetesStorageClassStackInput struct {
+type KubernetesStorageClassIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target StorageClass resource to be created.
@@ -43,20 +43,20 @@ type KubernetesStorageClassStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesStorageClassStackInput) Reset() {
-	*x = KubernetesStorageClassStackInput{}
+func (x *KubernetesStorageClassIacInput) Reset() {
+	*x = KubernetesStorageClassIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesStorageClassStackInput) String() string {
+func (x *KubernetesStorageClassIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesStorageClassStackInput) ProtoMessage() {}
+func (*KubernetesStorageClassIacInput) ProtoMessage() {}
 
-func (x *KubernetesStorageClassStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesStorageClassIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,19 +68,19 @@ func (x *KubernetesStorageClassStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesStorageClassStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesStorageClassStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesStorageClassIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesStorageClassIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesStorageClassStackInput) GetTarget() *KubernetesStorageClass {
+func (x *KubernetesStorageClassIacInput) GetTarget() *KubernetesStorageClass {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesStorageClassStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesStorageClassIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -91,8 +91,8 @@ var File_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto protoref
 
 const file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesstorageclass/v1alpha1/input.proto\x126dev.planton.kubernetes.kubernetesstorageclass.v1alpha1\x1a<catalog/kubernetes/kubernetesstorageclass/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe5\x01\n" +
-	" KubernetesStorageClassStackInput\x12f\n" +
+	">catalog/kubernetes/kubernetesstorageclass/v1alpha1/input.proto\x126dev.planton.kubernetes.kubernetesstorageclass.v1alpha1\x1a<catalog/kubernetes/kubernetesstorageclass/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe3\x01\n" +
+	"\x1eKubernetesStorageClassIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1B\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesStorageClassStackInput)(nil),    // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackInput
+	(*KubernetesStorageClassIacInput)(nil),      // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassIacInput
 	(*KubernetesStorageClass)(nil),              // 1: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackInput.target:type_name -> dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass
-	2, // 1: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassIacInput.target:type_name -> dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass
+	2, // 1: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerFeatureGroupStackOutputs captures observable identifiers
+// AwsSagemakerFeatureGroupOutputs captures observable identifiers
 // from a provisioned feature group.
-type AwsSagemakerFeatureGroupStackOutputs struct {
+type AwsSagemakerFeatureGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The feature group name (the AWS identity ingestion and serving
 	// calls use).
@@ -34,20 +34,20 @@ type AwsSagemakerFeatureGroupStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerFeatureGroupStackOutputs) Reset() {
-	*x = AwsSagemakerFeatureGroupStackOutputs{}
+func (x *AwsSagemakerFeatureGroupOutputs) Reset() {
+	*x = AwsSagemakerFeatureGroupOutputs{}
 	mi := &file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerFeatureGroupStackOutputs) String() string {
+func (x *AwsSagemakerFeatureGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerFeatureGroupStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerFeatureGroupOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerFeatureGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerFeatureGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerFeatureGroupStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerFeatureGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerFeatureGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerFeatureGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerFeatureGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerFeatureGroupStackOutputs) GetFeatureGroupName() string {
+func (x *AwsSagemakerFeatureGroupOutputs) GetFeatureGroupName() string {
 	if x != nil {
 		return x.FeatureGroupName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerFeatureGroupStackOutputs) GetFeatureGroupArn() string {
+func (x *AwsSagemakerFeatureGroupOutputs) GetFeatureGroupArn() string {
 	if x != nil {
 		return x.FeatureGroupArn
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awssagemakerfeaturegroup/v1alpha1/outputs.proto\x121dev.planton.aws.awssagemakerfeaturegroup.v1alpha1\"\x80\x01\n" +
-	"$AwsSagemakerFeatureGroupStackOutputs\x12,\n" +
+	";catalog/aws/awssagemakerfeaturegroup/v1alpha1/outputs.proto\x121dev.planton.aws.awssagemakerfeaturegroup.v1alpha1\"{\n" +
+	"\x1fAwsSagemakerFeatureGroupOutputs\x12,\n" +
 	"\x12feature_group_name\x18\x01 \x01(\tR\x10featureGroupName\x12*\n" +
 	"\x11feature_group_arn\x18\x02 \x01(\tR\x0ffeatureGroupArnB\x9b\x03\n" +
 	"5com.dev.planton.aws.awssagemakerfeaturegroup.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/aws/awssagemakerfeaturegroup/v1alpha1;awssagemakerfeaturegroupv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Aws.Awssagemakerfeaturegroup.V1alpha1\xca\x021Dev\\Planton\\Aws\\Awssagemakerfeaturegroup\\V1alpha1\xe2\x02=Dev\\Planton\\Aws\\Awssagemakerfeaturegroup\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Aws::Awssagemakerfeaturegroup::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerFeatureGroupStackOutputs)(nil), // 0: dev.planton.aws.awssagemakerfeaturegroup.v1alpha1.AwsSagemakerFeatureGroupStackOutputs
+	(*AwsSagemakerFeatureGroupOutputs)(nil), // 0: dev.planton.aws.awssagemakerfeaturegroup.v1alpha1.AwsSagemakerFeatureGroupOutputs
 }
 var file_catalog_aws_awssagemakerfeaturegroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

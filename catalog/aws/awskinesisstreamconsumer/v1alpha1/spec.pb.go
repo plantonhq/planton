@@ -52,7 +52,7 @@ const (
 // Notes:
 //   - The consumer name (from metadata.name) is immutable after creation.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsKinesisStreamConsumerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

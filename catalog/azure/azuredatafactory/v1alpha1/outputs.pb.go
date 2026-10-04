@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryStackOutputs** captures the outputs from
+// **AzureDataFactoryOutputs** captures the outputs from
 // provisioning an Azure Data Factory.
-type AzureDataFactoryStackOutputs struct {
+type AzureDataFactoryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The factory's Azure Resource Manager ID -- the target an
 	// AzureDataFactoryPipeline's data_factory_id references.
@@ -47,20 +47,20 @@ type AzureDataFactoryStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryStackOutputs) Reset() {
-	*x = AzureDataFactoryStackOutputs{}
+func (x *AzureDataFactoryOutputs) Reset() {
+	*x = AzureDataFactoryOutputs{}
 	mi := &file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryStackOutputs) String() string {
+func (x *AzureDataFactoryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,40 +72,40 @@ func (x *AzureDataFactoryStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryStackOutputs) GetDataFactoryId() string {
+func (x *AzureDataFactoryOutputs) GetDataFactoryId() string {
 	if x != nil {
 		return x.DataFactoryId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryStackOutputs) GetDataFactoryName() string {
+func (x *AzureDataFactoryOutputs) GetDataFactoryName() string {
 	if x != nil {
 		return x.DataFactoryName
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureDataFactoryOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryStackOutputs) GetCredentialIds() map[string]string {
+func (x *AzureDataFactoryOutputs) GetCredentialIds() map[string]string {
 	if x != nil {
 		return x.CredentialIds
 	}
 	return nil
 }
 
-func (x *AzureDataFactoryStackOutputs) GetManagedPrivateEndpointIds() map[string]string {
+func (x *AzureDataFactoryOutputs) GetManagedPrivateEndpointIds() map[string]string {
 	if x != nil {
 		return x.ManagedPrivateEndpointIds
 	}
@@ -116,13 +116,13 @@ var File_catalog_azure_azuredatafactory_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azuredatafactory/v1alpha1/outputs.proto\x12+dev.planton.azure.azuredatafactory.v1alpha1\"\xe8\x04\n" +
-	"\x1cAzureDataFactoryStackOutputs\x12&\n" +
+	"5catalog/azure/azuredatafactory/v1alpha1/outputs.proto\x12+dev.planton.azure.azuredatafactory.v1alpha1\"\xd8\x04\n" +
+	"\x17AzureDataFactoryOutputs\x12&\n" +
 	"\x0fdata_factory_id\x18\x01 \x01(\tR\rdataFactoryId\x12*\n" +
 	"\x11data_factory_name\x18\x02 \x01(\tR\x0fdataFactoryName\x122\n" +
-	"\x15identity_principal_id\x18\x03 \x01(\tR\x13identityPrincipalId\x12\x83\x01\n" +
-	"\x0ecredential_ids\x18\x04 \x03(\v2\\.dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.CredentialIdsEntryR\rcredentialIds\x12\xa9\x01\n" +
-	"\x1cmanaged_private_endpoint_ids\x18\x05 \x03(\v2h.dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.ManagedPrivateEndpointIdsEntryR\x19managedPrivateEndpointIds\x1a@\n" +
+	"\x15identity_principal_id\x18\x03 \x01(\tR\x13identityPrincipalId\x12~\n" +
+	"\x0ecredential_ids\x18\x04 \x03(\v2W.dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.CredentialIdsEntryR\rcredentialIds\x12\xa4\x01\n" +
+	"\x1cmanaged_private_endpoint_ids\x18\x05 \x03(\v2c.dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.ManagedPrivateEndpointIdsEntryR\x19managedPrivateEndpointIds\x1a@\n" +
 	"\x12CredentialIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aL\n" +
@@ -145,13 +145,13 @@ func file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs
-	nil,                                  // 1: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.CredentialIdsEntry
-	nil,                                  // 2: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.ManagedPrivateEndpointIdsEntry
+	(*AzureDataFactoryOutputs)(nil), // 0: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs
+	nil,                             // 1: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.CredentialIdsEntry
+	nil,                             // 2: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.ManagedPrivateEndpointIdsEntry
 }
 var file_catalog_azure_azuredatafactory_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.credential_ids:type_name -> dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.CredentialIdsEntry
-	2, // 1: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.managed_private_endpoint_ids:type_name -> dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryStackOutputs.ManagedPrivateEndpointIdsEntry
+	1, // 0: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.credential_ids:type_name -> dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.CredentialIdsEntry
+	2, // 1: dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.managed_private_endpoint_ids:type_name -> dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryOutputs.ManagedPrivateEndpointIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

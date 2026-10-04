@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsServerlessElasticacheStackOutputs captures observable identifiers and
+// AwsServerlessElasticacheOutputs captures observable identifiers and
 // endpoints from a provisioned ElastiCache Serverless cache. These outputs
 // are used by downstream resources to wire dependencies via StringValueOrRef.
-type AwsServerlessElasticacheStackOutputs struct {
+type AwsServerlessElasticacheOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name of the serverless cache. Used in IAM policies
 	// and cross-service permissions.
@@ -49,20 +49,20 @@ type AwsServerlessElasticacheStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) Reset() {
-	*x = AwsServerlessElasticacheStackOutputs{}
+func (x *AwsServerlessElasticacheOutputs) Reset() {
+	*x = AwsServerlessElasticacheOutputs{}
 	mi := &file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) String() string {
+func (x *AwsServerlessElasticacheOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsServerlessElasticacheStackOutputs) ProtoMessage() {}
+func (*AwsServerlessElasticacheOutputs) ProtoMessage() {}
 
-func (x *AwsServerlessElasticacheStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsServerlessElasticacheOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,54 +74,54 @@ func (x *AwsServerlessElasticacheStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsServerlessElasticacheStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsServerlessElasticacheStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsServerlessElasticacheOutputs.ProtoReflect.Descriptor instead.
+func (*AwsServerlessElasticacheOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetArn() string {
+func (x *AwsServerlessElasticacheOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetEndpointAddress() string {
+func (x *AwsServerlessElasticacheOutputs) GetEndpointAddress() string {
 	if x != nil {
 		return x.EndpointAddress
 	}
 	return ""
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetEndpointPort() int32 {
+func (x *AwsServerlessElasticacheOutputs) GetEndpointPort() int32 {
 	if x != nil {
 		return x.EndpointPort
 	}
 	return 0
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetReaderEndpointAddress() string {
+func (x *AwsServerlessElasticacheOutputs) GetReaderEndpointAddress() string {
 	if x != nil {
 		return x.ReaderEndpointAddress
 	}
 	return ""
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetReaderEndpointPort() int32 {
+func (x *AwsServerlessElasticacheOutputs) GetReaderEndpointPort() int32 {
 	if x != nil {
 		return x.ReaderEndpointPort
 	}
 	return 0
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetFullEngineVersion() string {
+func (x *AwsServerlessElasticacheOutputs) GetFullEngineVersion() string {
 	if x != nil {
 		return x.FullEngineVersion
 	}
 	return ""
 }
 
-func (x *AwsServerlessElasticacheStackOutputs) GetName() string {
+func (x *AwsServerlessElasticacheOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -132,8 +132,8 @@ var File_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsserverlesselasticache/v1alpha1/outputs.proto\x121dev.planton.aws.awsserverlesselasticache.v1alpha1\"\xb6\x02\n" +
-	"$AwsServerlessElasticacheStackOutputs\x12\x10\n" +
+	";catalog/aws/awsserverlesselasticache/v1alpha1/outputs.proto\x121dev.planton.aws.awsserverlesselasticache.v1alpha1\"\xb1\x02\n" +
+	"\x1fAwsServerlessElasticacheOutputs\x12\x10\n" +
 	"\x03arn\x18\x01 \x01(\tR\x03arn\x12)\n" +
 	"\x10endpoint_address\x18\x02 \x01(\tR\x0fendpointAddress\x12#\n" +
 	"\rendpoint_port\x18\x03 \x01(\x05R\fendpointPort\x126\n" +
@@ -157,7 +157,7 @@ func file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsServerlessElasticacheStackOutputs)(nil), // 0: dev.planton.aws.awsserverlesselasticache.v1alpha1.AwsServerlessElasticacheStackOutputs
+	(*AwsServerlessElasticacheOutputs)(nil), // 0: dev.planton.aws.awsserverlesselasticache.v1alpha1.AwsServerlessElasticacheOutputs
 }
 var file_catalog_aws_awsserverlesselasticache_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

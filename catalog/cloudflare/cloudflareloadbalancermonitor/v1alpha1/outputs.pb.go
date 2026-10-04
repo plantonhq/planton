@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareLoadBalancerMonitorStackOutputs captures the outputs after deploying
+// CloudflareLoadBalancerMonitorOutputs captures the outputs after deploying
 // a Cloudflare Load Balancer monitor.
-type CloudflareLoadBalancerMonitorStackOutputs struct {
+type CloudflareLoadBalancerMonitorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the monitor. A
 	// CloudflareLoadBalancerPool references this value via its `monitor` field.
@@ -34,20 +34,20 @@ type CloudflareLoadBalancerMonitorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareLoadBalancerMonitorStackOutputs) Reset() {
-	*x = CloudflareLoadBalancerMonitorStackOutputs{}
+func (x *CloudflareLoadBalancerMonitorOutputs) Reset() {
+	*x = CloudflareLoadBalancerMonitorOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareLoadBalancerMonitorStackOutputs) String() string {
+func (x *CloudflareLoadBalancerMonitorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareLoadBalancerMonitorStackOutputs) ProtoMessage() {}
+func (*CloudflareLoadBalancerMonitorOutputs) ProtoMessage() {}
 
-func (x *CloudflareLoadBalancerMonitorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareLoadBalancerMonitorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareLoadBalancerMonitorStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareLoadBalancerMonitorStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareLoadBalancerMonitorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareLoadBalancerMonitorOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareLoadBalancerMonitorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareLoadBalancerMonitorStackOutputs) GetMonitorId() string {
+func (x *CloudflareLoadBalancerMonitorOutputs) GetMonitorId() string {
 	if x != nil {
 		return x.MonitorId
 	}
 	return ""
 }
 
-func (x *CloudflareLoadBalancerMonitorStackOutputs) GetMonitorType() string {
+func (x *CloudflareLoadBalancerMonitorOutputs) GetMonitorType() string {
 	if x != nil {
 		return x.MonitorType
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto
 
 const file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/cloudflare/cloudflareloadbalancermonitor/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflareloadbalancermonitor.v1alpha1\"m\n" +
-	")CloudflareLoadBalancerMonitorStackOutputs\x12\x1d\n" +
+	"Gcatalog/cloudflare/cloudflareloadbalancermonitor/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflareloadbalancermonitor.v1alpha1\"h\n" +
+	"$CloudflareLoadBalancerMonitorOutputs\x12\x1d\n" +
 	"\n" +
 	"monitor_id\x18\x01 \x01(\tR\tmonitorId\x12!\n" +
 	"\fmonitor_type\x18\x02 \x01(\tR\vmonitorTypeB\xe8\x03\n" +
@@ -103,7 +103,7 @@ func file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_prot
 
 var file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareLoadBalancerMonitorStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareloadbalancermonitor.v1alpha1.CloudflareLoadBalancerMonitorStackOutputs
+	(*CloudflareLoadBalancerMonitorOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareloadbalancermonitor.v1alpha1.CloudflareLoadBalancerMonitorOutputs
 }
 var file_catalog_cloudflare_cloudflareloadbalancermonitor_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

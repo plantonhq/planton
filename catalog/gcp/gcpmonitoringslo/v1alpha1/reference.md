@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpMonitoringSloSpec defines a Cloud Monitoring service-level objective
 (SLO) — the formal reliability target ("99.9% of requests succeed,

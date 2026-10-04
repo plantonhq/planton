@@ -23,9 +23,9 @@ const (
 )
 
 // input for kubernetes-cert-manager stack
-type KubernetesCertManagerStackInput struct {
+type KubernetesCertManagerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesCertManager `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesCertManagerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesCertManagerStackInput) Reset() {
-	*x = KubernetesCertManagerStackInput{}
+func (x *KubernetesCertManagerIacInput) Reset() {
+	*x = KubernetesCertManagerIacInput{}
 	mi := &file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCertManagerStackInput) String() string {
+func (x *KubernetesCertManagerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCertManagerStackInput) ProtoMessage() {}
+func (*KubernetesCertManagerIacInput) ProtoMessage() {}
 
-func (x *KubernetesCertManagerStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCertManagerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesCertManagerStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCertManagerStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesCertManagerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCertManagerIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesCertManagerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCertManagerStackInput) GetTarget() *KubernetesCertManager {
+func (x *KubernetesCertManagerIacInput) GetTarget() *KubernetesCertManager {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesCertManagerStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesCertManagerIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto protorefl
 
 const file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetescertmanager/v1alpha1/input.proto\x125dev.planton.kubernetes.kubernetescertmanager.v1alpha1\x1a;catalog/kubernetes/kubernetescertmanager/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe2\x01\n" +
-	"\x1fKubernetesCertManagerStackInput\x12d\n" +
+	"=catalog/kubernetes/kubernetescertmanager/v1alpha1/input.proto\x125dev.planton.kubernetes.kubernetescertmanager.v1alpha1\x1a;catalog/kubernetes/kubernetescertmanager/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe0\x01\n" +
+	"\x1dKubernetesCertManagerIacInput\x12d\n" +
 	"\x06target\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetescertmanager.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesCertManagerStackInput)(nil),     // 0: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerStackInput
+	(*KubernetesCertManagerIacInput)(nil),       // 0: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerIacInput
 	(*KubernetesCertManager)(nil),               // 1: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManager
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetescertmanager_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerStackInput.target:type_name -> dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManager
-	2, // 1: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerIacInput.target:type_name -> dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManager
+	2, // 1: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

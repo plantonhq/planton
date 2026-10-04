@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Certificate Manager certificate
 // issuance config.
-type GcpCertManagerIssuanceConfigStackOutputs struct {
+type GcpCertManagerIssuanceConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the issuance config
 	// (projects/{project}/locations/{location}/certificateIssuanceConfigs/{name})
@@ -38,20 +38,20 @@ type GcpCertManagerIssuanceConfigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCertManagerIssuanceConfigStackOutputs) Reset() {
-	*x = GcpCertManagerIssuanceConfigStackOutputs{}
+func (x *GcpCertManagerIssuanceConfigOutputs) Reset() {
+	*x = GcpCertManagerIssuanceConfigOutputs{}
 	mi := &file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCertManagerIssuanceConfigStackOutputs) String() string {
+func (x *GcpCertManagerIssuanceConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCertManagerIssuanceConfigStackOutputs) ProtoMessage() {}
+func (*GcpCertManagerIssuanceConfigOutputs) ProtoMessage() {}
 
-func (x *GcpCertManagerIssuanceConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCertManagerIssuanceConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpCertManagerIssuanceConfigStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCertManagerIssuanceConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCertManagerIssuanceConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCertManagerIssuanceConfigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCertManagerIssuanceConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCertManagerIssuanceConfigStackOutputs) GetIssuanceConfigId() string {
+func (x *GcpCertManagerIssuanceConfigOutputs) GetIssuanceConfigId() string {
 	if x != nil {
 		return x.IssuanceConfigId
 	}
 	return ""
 }
 
-func (x *GcpCertManagerIssuanceConfigStackOutputs) GetIssuanceConfigName() string {
+func (x *GcpCertManagerIssuanceConfigOutputs) GetIssuanceConfigName() string {
 	if x != nil {
 		return x.IssuanceConfigName
 	}
 	return ""
 }
 
-func (x *GcpCertManagerIssuanceConfigStackOutputs) GetLocation() string {
+func (x *GcpCertManagerIssuanceConfigOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto protore
 
 const file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1/outputs.proto\x125dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1\"\xa6\x01\n" +
-	"(GcpCertManagerIssuanceConfigStackOutputs\x12,\n" +
+	"?catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1/outputs.proto\x125dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1\"\xa1\x01\n" +
+	"#GcpCertManagerIssuanceConfigOutputs\x12,\n" +
 	"\x12issuance_config_id\x18\x01 \x01(\tR\x10issuanceConfigId\x120\n" +
 	"\x14issuance_config_name\x18\x02 \x01(\tR\x12issuanceConfigName\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\xb7\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCertManagerIssuanceConfigStackOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackOutputs
+	(*GcpCertManagerIssuanceConfigOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigOutputs
 }
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGhaRunnerScaleSetStackInput defines the inputs required for the IaC modules.
-type KubernetesGhaRunnerScaleSetStackInput struct {
+// KubernetesGhaRunnerScaleSetIacInput defines the inputs required for the IaC modules.
+type KubernetesGhaRunnerScaleSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesGhaRunnerScaleSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Kubernetes
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesGhaRunnerScaleSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackInput) Reset() {
-	*x = KubernetesGhaRunnerScaleSetStackInput{}
+func (x *KubernetesGhaRunnerScaleSetIacInput) Reset() {
+	*x = KubernetesGhaRunnerScaleSetIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackInput) String() string {
+func (x *KubernetesGhaRunnerScaleSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGhaRunnerScaleSetStackInput) ProtoMessage() {}
+func (*KubernetesGhaRunnerScaleSetIacInput) ProtoMessage() {}
 
-func (x *KubernetesGhaRunnerScaleSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGhaRunnerScaleSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesGhaRunnerScaleSetStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGhaRunnerScaleSetStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesGhaRunnerScaleSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGhaRunnerScaleSetIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesGhaRunnerScaleSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackInput) GetTarget() *KubernetesGhaRunnerScaleSet {
+func (x *KubernetesGhaRunnerScaleSetIacInput) GetTarget() *KubernetesGhaRunnerScaleSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesGhaRunnerScaleSetIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto pro
 
 const file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1/input.proto\x12;dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1\x1aAcatalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf4\x01\n" +
-	"%KubernetesGhaRunnerScaleSetStackInput\x12p\n" +
+	"Ccatalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1/input.proto\x12;dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1\x1aAcatalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf2\x01\n" +
+	"#KubernetesGhaRunnerScaleSetIacInput\x12p\n" +
 	"\x06target\x18\x01 \x01(\v2X.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xd8\x03\n" +
 	"?com.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_ra
 
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesGhaRunnerScaleSetStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackInput
-	(*KubernetesGhaRunnerScaleSet)(nil),           // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet
-	(*kubernetes.KubernetesProviderConfig)(nil),   // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesGhaRunnerScaleSetIacInput)(nil), // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetIacInput
+	(*KubernetesGhaRunnerScaleSet)(nil),         // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet
+	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackInput.target:type_name -> dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet
-	2, // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetIacInput.target:type_name -> dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet
+	2, // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

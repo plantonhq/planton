@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-vertex-ai-search-data-connector stack-input
-type GcpVertexAiSearchDataConnectorStackInput struct {
+// gcp-vertex-ai-search-data-connector iac-input
+type GcpVertexAiSearchDataConnectorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpVertexAiSearchDataConnector `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpVertexAiSearchDataConnectorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackInput) Reset() {
-	*x = GcpVertexAiSearchDataConnectorStackInput{}
+func (x *GcpVertexAiSearchDataConnectorIacInput) Reset() {
+	*x = GcpVertexAiSearchDataConnectorIacInput{}
 	mi := &file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackInput) String() string {
+func (x *GcpVertexAiSearchDataConnectorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiSearchDataConnectorStackInput) ProtoMessage() {}
+func (*GcpVertexAiSearchDataConnectorIacInput) ProtoMessage() {}
 
-func (x *GcpVertexAiSearchDataConnectorStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiSearchDataConnectorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpVertexAiSearchDataConnectorStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiSearchDataConnectorStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiSearchDataConnectorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiSearchDataConnectorIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiSearchDataConnectorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackInput) GetTarget() *GcpVertexAiSearchDataConnector {
+func (x *GcpVertexAiSearchDataConnectorIacInput) GetTarget() *GcpVertexAiSearchDataConnector {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVertexAiSearchDataConnectorIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto protore
 
 const file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/gcp/gcpvertexaisearchdataconnector/v1alpha1/input.proto\x127dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1\x1a=catalog/gcp/gcpvertexaisearchdataconnector/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe8\x01\n" +
-	"(GcpVertexAiSearchDataConnectorStackInput\x12o\n" +
+	"?catalog/gcp/gcpvertexaisearchdataconnector/v1alpha1/input.proto\x127dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1\x1a=catalog/gcp/gcpvertexaisearchdataconnector/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe6\x01\n" +
+	"&GcpVertexAiSearchDataConnectorIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_rawDes
 
 var file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVertexAiSearchDataConnectorStackInput)(nil), // 0: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorStackInput
-	(*GcpVertexAiSearchDataConnector)(nil),           // 1: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnector
-	(*gcp.GcpProviderConfig)(nil),                    // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVertexAiSearchDataConnectorIacInput)(nil), // 0: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorIacInput
+	(*GcpVertexAiSearchDataConnector)(nil),         // 1: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnector
+	(*gcp.GcpProviderConfig)(nil),                  // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorStackInput.target:type_name -> dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnector
-	2, // 1: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorIacInput.target:type_name -> dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnector
+	2, // 1: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -64,12 +64,12 @@ type StripePaymentMethodConfiguration struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripePaymentMethodConfiguration" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the payment methods checkout offers.
 	Spec *StripePaymentMethodConfigurationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the configuration as created, populated after deployment.
@@ -122,7 +122,7 @@ func (x *StripePaymentMethodConfiguration) GetKind() string {
 	return ""
 }
 
-func (x *StripePaymentMethodConfiguration) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripePaymentMethodConfiguration) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -147,8 +147,8 @@ func (x *StripePaymentMethodConfiguration) GetStatus() *StripePaymentMethodConfi
 // StripePaymentMethodConfiguration resource. Populated by the deployment system.
 type StripePaymentMethodConfigurationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the configuration's id and the methods it offers.
-	Outputs       *StripePaymentMethodConfigurationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the configuration's id and the methods it offers.
+	Outputs       *StripePaymentMethodConfigurationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -183,7 +183,7 @@ func (*StripePaymentMethodConfigurationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripePaymentMethodConfigurationStatus) GetOutputs() *StripePaymentMethodConfigurationStackOutputs {
+func (x *StripePaymentMethodConfigurationStatus) GetOutputs() *StripePaymentMethodConfigurationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -201,11 +201,11 @@ const file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_api_proto_ra
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" StripePaymentMethodConfigurationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
 	"\x04spec\x18\x04 \x01(\v2b.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12|\n" +
-	"\x06status\x18\x05 \x01(\v2d.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatusR\x06status\"\xaf\x01\n" +
-	"&StripePaymentMethodConfigurationStatus\x12\x84\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2j.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackOutputsR\aoutputsB\xe1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2d.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatusR\x06status\"\xa9\x01\n" +
+	"&StripePaymentMethodConfigurationStatus\x12\x7f\n" +
+	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationOutputsR\aoutputsB\xe1\x03\n" +
 	"@com.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1B\bApiProtoP\x01Z~github.com/plantonhq/planton/catalog/stripe/stripepaymentmethodconfiguration/v1alpha1;stripepaymentmethodconfigurationv1alpha1\xa2\x02\x04DPSS\xaa\x02<Dev.Planton.Stripe.Stripepaymentmethodconfiguration.V1alpha1\xca\x02<Dev\\Planton\\Stripe\\Stripepaymentmethodconfiguration\\V1alpha1\xe2\x02HDev\\Planton\\Stripe\\Stripepaymentmethodconfiguration\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Stripe::Stripepaymentmethodconfiguration::V1alpha1b\x06proto3"
 
 var (
@@ -222,17 +222,17 @@ func file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_api_proto_raw
 
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_api_proto_goTypes = []any{
-	(*StripePaymentMethodConfiguration)(nil),             // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration
-	(*StripePaymentMethodConfigurationStatus)(nil),       // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripePaymentMethodConfigurationSpec)(nil),         // 3: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationSpec
-	(*StripePaymentMethodConfigurationStackOutputs)(nil), // 4: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackOutputs
+	(*StripePaymentMethodConfiguration)(nil),        // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration
+	(*StripePaymentMethodConfigurationStatus)(nil),  // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripePaymentMethodConfigurationSpec)(nil),    // 3: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationSpec
+	(*StripePaymentMethodConfigurationOutputs)(nil), // 4: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationOutputs
 }
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration.spec:type_name -> dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationSpec
 	1, // 2: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration.status:type_name -> dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatus
-	4, // 3: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatus.outputs:type_name -> dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackOutputs
+	4, // 3: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStatus.outputs:type_name -> dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

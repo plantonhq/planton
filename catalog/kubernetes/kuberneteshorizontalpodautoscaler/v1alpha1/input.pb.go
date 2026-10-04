@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesHorizontalPodAutoscalerStackInput** defines the input structure
+// **KubernetesHorizontalPodAutoscalerIacInput** defines the input structure
 // for deploying a Kubernetes HorizontalPodAutoscaler. It carries the target
 // autoscaler specification and the Kubernetes cluster configuration the IaC
 // modules (Pulumi and Terraform) need to reach the cluster.
-type KubernetesHorizontalPodAutoscalerStackInput struct {
+type KubernetesHorizontalPodAutoscalerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target HorizontalPodAutoscaler resource to be created.
@@ -43,20 +43,20 @@ type KubernetesHorizontalPodAutoscalerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackInput) Reset() {
-	*x = KubernetesHorizontalPodAutoscalerStackInput{}
+func (x *KubernetesHorizontalPodAutoscalerIacInput) Reset() {
+	*x = KubernetesHorizontalPodAutoscalerIacInput{}
 	mi := &file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackInput) String() string {
+func (x *KubernetesHorizontalPodAutoscalerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesHorizontalPodAutoscalerStackInput) ProtoMessage() {}
+func (*KubernetesHorizontalPodAutoscalerIacInput) ProtoMessage() {}
 
-func (x *KubernetesHorizontalPodAutoscalerStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesHorizontalPodAutoscalerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,19 +68,19 @@ func (x *KubernetesHorizontalPodAutoscalerStackInput) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesHorizontalPodAutoscalerStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesHorizontalPodAutoscalerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesHorizontalPodAutoscalerIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesHorizontalPodAutoscalerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackInput) GetTarget() *KubernetesHorizontalPodAutoscaler {
+func (x *KubernetesHorizontalPodAutoscalerIacInput) GetTarget() *KubernetesHorizontalPodAutoscaler {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesHorizontalPodAutoscalerIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -91,8 +91,8 @@ var File_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_pro
 
 const file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/input.proto\x12Adev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1\x1aGcatalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x86\x02\n" +
-	"+KubernetesHorizontalPodAutoscalerStackInput\x12|\n" +
+	"Icatalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/input.proto\x12Adev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1\x1aGcatalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x84\x02\n" +
+	")KubernetesHorizontalPodAutoscalerIacInput\x12|\n" +
 	"\x06target\x18\x01 \x01(\v2d.dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x83\x04\n" +
 	"Ecom.dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1B\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_pr
 
 var file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesHorizontalPodAutoscalerStackInput)(nil), // 0: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerStackInput
-	(*KubernetesHorizontalPodAutoscaler)(nil),           // 1: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscaler
-	(*kubernetes.KubernetesProviderConfig)(nil),         // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesHorizontalPodAutoscalerIacInput)(nil), // 0: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerIacInput
+	(*KubernetesHorizontalPodAutoscaler)(nil),         // 1: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscaler
+	(*kubernetes.KubernetesProviderConfig)(nil),       // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerStackInput.target:type_name -> dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscaler
-	2, // 1: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerIacInput.target:type_name -> dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscaler
+	2, // 1: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

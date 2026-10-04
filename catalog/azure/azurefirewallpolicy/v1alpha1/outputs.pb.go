@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFirewallPolicyStackOutputs** captures the outputs of provisioning
+// **AzureFirewallPolicyOutputs** captures the outputs of provisioning
 // an Azure Firewall Policy.
-type AzureFirewallPolicyStackOutputs struct {
+type AzureFirewallPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the firewall policy. This is the
 	// composition seam: rule collection groups nest under it
@@ -42,20 +42,20 @@ type AzureFirewallPolicyStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureFirewallPolicyStackOutputs) Reset() {
-	*x = AzureFirewallPolicyStackOutputs{}
+func (x *AzureFirewallPolicyOutputs) Reset() {
+	*x = AzureFirewallPolicyOutputs{}
 	mi := &file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFirewallPolicyStackOutputs) String() string {
+func (x *AzureFirewallPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFirewallPolicyStackOutputs) ProtoMessage() {}
+func (*AzureFirewallPolicyOutputs) ProtoMessage() {}
 
-func (x *AzureFirewallPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFirewallPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AzureFirewallPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFirewallPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFirewallPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFirewallPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFirewallPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFirewallPolicyStackOutputs) GetFirewallPolicyId() string {
+func (x *AzureFirewallPolicyOutputs) GetFirewallPolicyId() string {
 	if x != nil {
 		return x.FirewallPolicyId
 	}
 	return ""
 }
 
-func (x *AzureFirewallPolicyStackOutputs) GetFirewallPolicyName() string {
+func (x *AzureFirewallPolicyOutputs) GetFirewallPolicyName() string {
 	if x != nil {
 		return x.FirewallPolicyName
 	}
 	return ""
 }
 
-func (x *AzureFirewallPolicyStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureFirewallPolicyOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -97,8 +97,8 @@ var File_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurefirewallpolicy/v1alpha1/outputs.proto\x12.dev.planton.azure.azurefirewallpolicy.v1alpha1\"\xb5\x01\n" +
-	"\x1fAzureFirewallPolicyStackOutputs\x12,\n" +
+	"8catalog/azure/azurefirewallpolicy/v1alpha1/outputs.proto\x12.dev.planton.azure.azurefirewallpolicy.v1alpha1\"\xb0\x01\n" +
+	"\x1aAzureFirewallPolicyOutputs\x12,\n" +
 	"\x12firewall_policy_id\x18\x01 \x01(\tR\x10firewallPolicyId\x120\n" +
 	"\x14firewall_policy_name\x18\x02 \x01(\tR\x12firewallPolicyName\x122\n" +
 	"\x15identity_principal_id\x18\x03 \x01(\tR\x13identityPrincipalIdB\x84\x03\n" +
@@ -118,7 +118,7 @@ func file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFirewallPolicyStackOutputs)(nil), // 0: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStackOutputs
+	(*AzureFirewallPolicyOutputs)(nil), // 0: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyOutputs
 }
 var file_catalog_azure_azurefirewallpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

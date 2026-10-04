@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-filestore-instance stack-input
-type GcpFilestoreInstanceStackInput struct {
+// gcp-filestore-instance iac-input
+type GcpFilestoreInstanceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpFilestoreInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpFilestoreInstanceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpFilestoreInstanceStackInput) Reset() {
-	*x = GcpFilestoreInstanceStackInput{}
+func (x *GcpFilestoreInstanceIacInput) Reset() {
+	*x = GcpFilestoreInstanceIacInput{}
 	mi := &file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFilestoreInstanceStackInput) String() string {
+func (x *GcpFilestoreInstanceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFilestoreInstanceStackInput) ProtoMessage() {}
+func (*GcpFilestoreInstanceIacInput) ProtoMessage() {}
 
-func (x *GcpFilestoreInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpFilestoreInstanceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpFilestoreInstanceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFilestoreInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*GcpFilestoreInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFilestoreInstanceIacInput.ProtoReflect.Descriptor instead.
+func (*GcpFilestoreInstanceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFilestoreInstanceStackInput) GetTarget() *GcpFilestoreInstance {
+func (x *GcpFilestoreInstanceIacInput) GetTarget() *GcpFilestoreInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpFilestoreInstanceStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpFilestoreInstanceIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpfilestoreinstance/v1alpha1/input.proto\x12-dev.planton.gcp.gcpfilestoreinstance.v1alpha1\x1a3catalog/gcp/gcpfilestoreinstance/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xca\x01\n" +
-	"\x1eGcpFilestoreInstanceStackInput\x12[\n" +
+	"5catalog/gcp/gcpfilestoreinstance/v1alpha1/input.proto\x12-dev.planton.gcp.gcpfilestoreinstance.v1alpha1\x1a3catalog/gcp/gcpfilestoreinstance/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc8\x01\n" +
+	"\x1cGcpFilestoreInstanceIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.gcp.gcpfilestoreinstance.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_goTypes = []any{
-	(*GcpFilestoreInstanceStackInput)(nil), // 0: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceStackInput
-	(*GcpFilestoreInstance)(nil),           // 1: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstance
-	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpFilestoreInstanceIacInput)(nil), // 0: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceIacInput
+	(*GcpFilestoreInstance)(nil),         // 1: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstance
+	(*gcp.GcpProviderConfig)(nil),        // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpfilestoreinstance_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceStackInput.target:type_name -> dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstance
-	2, // 1: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceIacInput.target:type_name -> dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstance
+	2, // 1: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

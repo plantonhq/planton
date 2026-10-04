@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiSearchDataConnectorStackOutputs captures what the connector
+// GcpVertexAiSearchDataConnectorOutputs captures what the connector
 // and the collection it created resolved to.
-type GcpVertexAiSearchDataConnectorStackOutputs struct {
+type GcpVertexAiSearchDataConnectorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the connector:
 	// projects/{project}/locations/{location}/collections/{collection_id}/dataConnector.
@@ -50,20 +50,20 @@ type GcpVertexAiSearchDataConnectorStackOutputs struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) Reset() {
-	*x = GcpVertexAiSearchDataConnectorStackOutputs{}
+func (x *GcpVertexAiSearchDataConnectorOutputs) Reset() {
+	*x = GcpVertexAiSearchDataConnectorOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) String() string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiSearchDataConnectorStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiSearchDataConnectorOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiSearchDataConnectorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,54 +75,54 @@ func (x *GcpVertexAiSearchDataConnectorStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiSearchDataConnectorStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiSearchDataConnectorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiSearchDataConnectorOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiSearchDataConnectorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetName() string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetCollectionId() string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetCollectionId() string {
 	if x != nil {
 		return x.CollectionId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetLocation() string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetState() string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetEntityDataStores() []string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetEntityDataStores() []string {
 	if x != nil {
 		return x.EntityDataStores
 	}
 	return nil
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetStaticIpAddresses() []string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetStaticIpAddresses() []string {
 	if x != nil {
 		return x.StaticIpAddresses
 	}
 	return nil
 }
 
-func (x *GcpVertexAiSearchDataConnectorStackOutputs) GetPrivateConnectivityProjectId() string {
+func (x *GcpVertexAiSearchDataConnectorOutputs) GetPrivateConnectivityProjectId() string {
 	if x != nil {
 		return x.PrivateConnectivityProjectId
 	}
@@ -133,8 +133,8 @@ var File_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto proto
 
 const file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/gcp/gcpvertexaisearchdataconnector/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1\"\xbc\x02\n" +
-	"*GcpVertexAiSearchDataConnectorStackOutputs\x12\x12\n" +
+	"Acatalog/gcp/gcpvertexaisearchdataconnector/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1\"\xb7\x02\n" +
+	"%GcpVertexAiSearchDataConnectorOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rcollection_id\x18\x02 \x01(\tR\fcollectionId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12\x14\n" +
@@ -158,7 +158,7 @@ func file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_rawD
 
 var file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiSearchDataConnectorStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorStackOutputs
+	(*GcpVertexAiSearchDataConnectorOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorOutputs
 }
 var file_catalog_gcp_gcpvertexaisearchdataconnector_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

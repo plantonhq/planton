@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpComputeInstanceStackOutputs captures values returned after provisioning a Compute Engine instance.
-type GcpComputeInstanceStackOutputs struct {
+// GcpComputeInstanceOutputs captures values returned after provisioning a Compute Engine instance.
+type GcpComputeInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the Compute Engine instance.
 	InstanceName string `protobuf:"bytes,1,opt,name=instance_name,json=instanceName,proto3" json:"instance_name,omitempty"`
@@ -46,20 +46,20 @@ type GcpComputeInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpComputeInstanceStackOutputs) Reset() {
-	*x = GcpComputeInstanceStackOutputs{}
+func (x *GcpComputeInstanceOutputs) Reset() {
+	*x = GcpComputeInstanceOutputs{}
 	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpComputeInstanceStackOutputs) String() string {
+func (x *GcpComputeInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpComputeInstanceStackOutputs) ProtoMessage() {}
+func (*GcpComputeInstanceOutputs) ProtoMessage() {}
 
-func (x *GcpComputeInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpComputeInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,68 +71,68 @@ func (x *GcpComputeInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpComputeInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpComputeInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpComputeInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpComputeInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetInstanceName() string {
+func (x *GcpComputeInstanceOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetInstanceId() string {
+func (x *GcpComputeInstanceOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetSelfLink() string {
+func (x *GcpComputeInstanceOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetInternalIp() string {
+func (x *GcpComputeInstanceOutputs) GetInternalIp() string {
 	if x != nil {
 		return x.InternalIp
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetExternalIp() string {
+func (x *GcpComputeInstanceOutputs) GetExternalIp() string {
 	if x != nil {
 		return x.ExternalIp
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetStatus() string {
+func (x *GcpComputeInstanceOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetZone() string {
+func (x *GcpComputeInstanceOutputs) GetZone() string {
 	if x != nil {
 		return x.Zone
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetMachineType() string {
+func (x *GcpComputeInstanceOutputs) GetMachineType() string {
 	if x != nil {
 		return x.MachineType
 	}
 	return ""
 }
 
-func (x *GcpComputeInstanceStackOutputs) GetCpuPlatform() string {
+func (x *GcpComputeInstanceOutputs) GetCpuPlatform() string {
 	if x != nil {
 		return x.CpuPlatform
 	}
@@ -143,8 +143,8 @@ var File_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpcomputeinstance/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpcomputeinstance.v1alpha1\"\xb7\x02\n" +
-	"\x1eGcpComputeInstanceStackOutputs\x12#\n" +
+	"5catalog/gcp/gcpcomputeinstance/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpcomputeinstance.v1alpha1\"\xb2\x02\n" +
+	"\x19GcpComputeInstanceOutputs\x12#\n" +
 	"\rinstance_name\x18\x01 \x01(\tR\finstanceName\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
 	"instanceId\x12\x1b\n" +
@@ -173,7 +173,7 @@ func file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpComputeInstanceStackOutputs)(nil), // 0: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceStackOutputs
+	(*GcpComputeInstanceOutputs)(nil), // 0: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceOutputs
 }
 var file_catalog_gcp_gcpcomputeinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPrivateCaCertificateStackOutputs captures the issued certificate -- what the workload
+// GcpPrivateCaCertificateOutputs captures the issued certificate -- what the workload
 // installs beside its private key.
-type GcpPrivateCaCertificateStackOutputs struct {
+type GcpPrivateCaCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/caPools/{pool}/certificates/{certificate_id}.
@@ -40,20 +40,20 @@ type GcpPrivateCaCertificateStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) Reset() {
-	*x = GcpPrivateCaCertificateStackOutputs{}
+func (x *GcpPrivateCaCertificateOutputs) Reset() {
+	*x = GcpPrivateCaCertificateOutputs{}
 	mi := &file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) String() string {
+func (x *GcpPrivateCaCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPrivateCaCertificateStackOutputs) ProtoMessage() {}
+func (*GcpPrivateCaCertificateOutputs) ProtoMessage() {}
 
-func (x *GcpPrivateCaCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPrivateCaCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *GcpPrivateCaCertificateStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPrivateCaCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPrivateCaCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPrivateCaCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPrivateCaCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) GetName() string {
+func (x *GcpPrivateCaCertificateOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) GetCertificateId() string {
+func (x *GcpPrivateCaCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) GetPemCertificate() string {
+func (x *GcpPrivateCaCertificateOutputs) GetPemCertificate() string {
 	if x != nil {
 		return x.PemCertificate
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) GetPemCertificateChain() []string {
+func (x *GcpPrivateCaCertificateOutputs) GetPemCertificateChain() []string {
 	if x != nil {
 		return x.PemCertificateChain
 	}
 	return nil
 }
 
-func (x *GcpPrivateCaCertificateStackOutputs) GetIssuerCertificateAuthority() string {
+func (x *GcpPrivateCaCertificateOutputs) GetIssuerCertificateAuthority() string {
 	if x != nil {
 		return x.IssuerCertificateAuthority
 	}
@@ -109,8 +109,8 @@ var File_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpprivatecacertificate/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpprivatecacertificate.v1alpha1\"\xff\x01\n" +
-	"#GcpPrivateCaCertificateStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpprivatecacertificate/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpprivatecacertificate.v1alpha1\"\xfa\x01\n" +
+	"\x1eGcpPrivateCaCertificateOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
 	"\x0ecertificate_id\x18\x02 \x01(\tR\rcertificateId\x12'\n" +
 	"\x0fpem_certificate\x18\x03 \x01(\tR\x0epemCertificate\x122\n" +
@@ -132,7 +132,7 @@ func file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPrivateCaCertificateStackOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecacertificate.v1alpha1.GcpPrivateCaCertificateStackOutputs
+	(*GcpPrivateCaCertificateOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecacertificate.v1alpha1.GcpPrivateCaCertificateOutputs
 }
 var file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

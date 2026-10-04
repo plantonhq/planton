@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeBillingPortalConfigurationStackOutputs identifies the configuration a portal session
+// StripeBillingPortalConfigurationOutputs identifies the configuration a portal session
 // names.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_portal_configuration
-type StripeBillingPortalConfigurationStackOutputs struct {
+type StripeBillingPortalConfigurationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the configuration's Stripe id (bpc_...), the value an application passes as
 	// `configuration` when it creates a portal session.
@@ -41,20 +41,20 @@ type StripeBillingPortalConfigurationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeBillingPortalConfigurationStackOutputs) Reset() {
-	*x = StripeBillingPortalConfigurationStackOutputs{}
+func (x *StripeBillingPortalConfigurationOutputs) Reset() {
+	*x = StripeBillingPortalConfigurationOutputs{}
 	mi := &file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeBillingPortalConfigurationStackOutputs) String() string {
+func (x *StripeBillingPortalConfigurationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeBillingPortalConfigurationStackOutputs) ProtoMessage() {}
+func (*StripeBillingPortalConfigurationOutputs) ProtoMessage() {}
 
-func (x *StripeBillingPortalConfigurationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeBillingPortalConfigurationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *StripeBillingPortalConfigurationStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeBillingPortalConfigurationStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeBillingPortalConfigurationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeBillingPortalConfigurationOutputs.ProtoReflect.Descriptor instead.
+func (*StripeBillingPortalConfigurationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeBillingPortalConfigurationStackOutputs) GetId() string {
+func (x *StripeBillingPortalConfigurationOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeBillingPortalConfigurationStackOutputs) GetIsDefault() bool {
+func (x *StripeBillingPortalConfigurationOutputs) GetIsDefault() bool {
 	if x != nil {
 		return x.IsDefault
 	}
 	return false
 }
 
-func (x *StripeBillingPortalConfigurationStackOutputs) GetActive() bool {
+func (x *StripeBillingPortalConfigurationOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
 	return false
 }
 
-func (x *StripeBillingPortalConfigurationStackOutputs) GetLoginPageUrl() string {
+func (x *StripeBillingPortalConfigurationOutputs) GetLoginPageUrl() string {
 	if x != nil {
 		return x.LoginPageUrl
 	}
@@ -103,8 +103,8 @@ var File_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto 
 
 const file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/stripe/stripebillingportalconfiguration/v1alpha1/outputs.proto\x12<dev.planton.stripe.stripebillingportalconfiguration.v1alpha1\"\x9b\x01\n" +
-	",StripeBillingPortalConfigurationStackOutputs\x12\x0e\n" +
+	"Fcatalog/stripe/stripebillingportalconfiguration/v1alpha1/outputs.proto\x12<dev.planton.stripe.stripebillingportalconfiguration.v1alpha1\"\x96\x01\n" +
+	"'StripeBillingPortalConfigurationOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"is_default\x18\x02 \x01(\bR\tisDefault\x12\x16\n" +
@@ -126,7 +126,7 @@ func file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto
 
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeBillingPortalConfigurationStackOutputs)(nil), // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackOutputs
+	(*StripeBillingPortalConfigurationOutputs)(nil), // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationOutputs
 }
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

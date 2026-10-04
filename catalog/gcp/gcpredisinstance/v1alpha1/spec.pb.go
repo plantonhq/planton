@@ -198,7 +198,7 @@ func (x *GcpRedisInstancePersistenceConfig) GetRdbSnapshotStartTime() string {
 //     after creation. Changing them requires replacing the instance.
 //
 //   - When auth_enabled is true, GCP generates a random AUTH string that is
-//     rotated automatically. The current AUTH string is exported in stack outputs.
+//     rotated automatically. The current AUTH string is exported in outputs.
 //
 //   - Read replicas are only available with STANDARD_HA tier and require
 //     read_replicas_mode to be set to READ_REPLICAS_ENABLED.
@@ -273,13 +273,13 @@ type GcpRedisInstanceSpec struct {
 	// field you set when scaling an in-place instance out to read replicas.
 	SecondaryIpRange string `protobuf:"bytes,13,opt,name=secondary_ip_range,json=secondaryIpRange,proto3" json:"secondary_ip_range,omitempty"`
 	// Whether Redis AUTH is enabled. When true, clients must provide
-	// the AUTH string (exported in stack outputs) to connect.
+	// the AUTH string (exported in outputs) to connect.
 	// AUTH provides an additional layer of security beyond network controls.
 	AuthEnabled bool `protobuf:"varint,14,opt,name=auth_enabled,json=authEnabled,proto3" json:"auth_enabled,omitempty"`
 	// TLS encryption mode for client-to-server traffic.
 	// DISABLED: no encryption (default).
 	// SERVER_AUTHENTICATION: clients verify the server's identity via TLS;
-	// pair with the server_ca_certs stack output, which carries the CA
+	// pair with the server_ca_certs output, which carries the CA
 	// certificates clients must trust.
 	// Immutable after creation.
 	TransitEncryptionMode string `protobuf:"bytes,15,opt,name=transit_encryption_mode,json=transitEncryptionMode,proto3" json:"transit_encryption_mode,omitempty"`

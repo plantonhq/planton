@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsRestApiGatewaySpec defines the desired configuration for an AWS
 API Gateway REST API (API Gateway v1).
@@ -50,7 +50,7 @@ Key design choices:
   role to be configured once per region.
 
 Credentials, region, and deployment workflow live outside this spec
-in stack inputs.
+in IaC inputs.
 
 ## Example
 

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-aks-cluster stack-input
-type AzureAksClusterStackInput struct {
+// azure-aks-cluster iac-input
+type AzureAksClusterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureAksCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureAksClusterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureAksClusterStackInput) Reset() {
-	*x = AzureAksClusterStackInput{}
+func (x *AzureAksClusterIacInput) Reset() {
+	*x = AzureAksClusterIacInput{}
 	mi := &file_catalog_azure_azureakscluster_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureAksClusterStackInput) String() string {
+func (x *AzureAksClusterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureAksClusterStackInput) ProtoMessage() {}
+func (*AzureAksClusterIacInput) ProtoMessage() {}
 
-func (x *AzureAksClusterStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureAksClusterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureakscluster_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureAksClusterStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureAksClusterStackInput.ProtoReflect.Descriptor instead.
-func (*AzureAksClusterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureAksClusterIacInput.ProtoReflect.Descriptor instead.
+func (*AzureAksClusterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureakscluster_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureAksClusterStackInput) GetTarget() *AzureAksCluster {
+func (x *AzureAksClusterIacInput) GetTarget() *AzureAksCluster {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureAksClusterStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureAksClusterIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azureakscluster_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_azure_azureakscluster_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/azure/azureakscluster/v1alpha1/input.proto\x12*dev.planton.azure.azureakscluster.v1alpha1\x1a0catalog/azure/azureakscluster/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc1\x01\n" +
-	"\x19AzureAksClusterStackInput\x12S\n" +
+	"2catalog/azure/azureakscluster/v1alpha1/input.proto\x12*dev.planton.azure.azureakscluster.v1alpha1\x1a0catalog/azure/azureakscluster/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xbf\x01\n" +
+	"\x17AzureAksClusterIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xe6\x02\n" +
 	".com.dev.planton.azure.azureakscluster.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azureakscluster_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azureakscluster_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureakscluster_v1alpha1_input_proto_goTypes = []any{
-	(*AzureAksClusterStackInput)(nil), // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackInput
+	(*AzureAksClusterIacInput)(nil),   // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterIacInput
 	(*AzureAksCluster)(nil),           // 1: dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster
 	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureakscluster_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackInput.target:type_name -> dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster
-	2, // 1: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterIacInput.target:type_name -> dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster
+	2, // 1: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

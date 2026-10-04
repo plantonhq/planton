@@ -34,7 +34,7 @@ Key design notes:
   time with an API error.
 - Security groups must allow NFS traffic (TCP port 2049) from the clients.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

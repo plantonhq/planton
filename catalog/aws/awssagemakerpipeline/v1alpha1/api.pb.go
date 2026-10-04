@@ -27,7 +27,7 @@ type AwsSagemakerPipeline struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsSagemakerPipelineSpec     `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsSagemakerPipelineStatus   `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsSagemakerPipeline) GetKind() string {
 	return ""
 }
 
-func (x *AwsSagemakerPipeline) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSagemakerPipeline) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsSagemakerPipeline) GetStatus() *AwsSagemakerPipelineStatus {
 }
 
 type AwsSagemakerPipelineStatus struct {
-	state         protoimpl.MessageState            `protogen:"open.v1"`
-	Outputs       *AwsSagemakerPipelineStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState       `protogen:"open.v1"`
+	Outputs       *AwsSagemakerPipelineOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsSagemakerPipelineStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerpipeline_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSagemakerPipelineStatus) GetOutputs() *AwsSagemakerPipelineStackOutputs {
+func (x *AwsSagemakerPipelineStatus) GetOutputs() *AwsSagemakerPipelineOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awssagemakerpipeline_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AwsSagemakerPipelineR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatusR\x06status\"\x87\x01\n" +
-	"\x1aAwsSagemakerPipelineStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatusR\x06status\"\x82\x01\n" +
+	"\x1aAwsSagemakerPipelineStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.aws.awssagemakerpipeline.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/aws/awssagemakerpipeline/v1alpha1;awssagemakerpipelinev1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Aws.Awssagemakerpipeline.V1alpha1\xca\x02-Dev\\Planton\\Aws\\Awssagemakerpipeline\\V1alpha1\xe2\x029Dev\\Planton\\Aws\\Awssagemakerpipeline\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Aws::Awssagemakerpipeline::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awssagemakerpipeline_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSagemakerPipeline)(nil),             // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline
-	(*AwsSagemakerPipelineStatus)(nil),       // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSagemakerPipelineSpec)(nil),         // 3: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineSpec
-	(*AwsSagemakerPipelineStackOutputs)(nil), // 4: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackOutputs
+	(*AwsSagemakerPipeline)(nil),         // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline
+	(*AwsSagemakerPipelineStatus)(nil),   // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSagemakerPipelineSpec)(nil),     // 3: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineSpec
+	(*AwsSagemakerPipelineOutputs)(nil),  // 4: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineOutputs
 }
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline.spec:type_name -> dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineSpec
 	1, // 2: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline.status:type_name -> dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatus
-	4, // 3: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatus.outputs:type_name -> dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackOutputs
+	4, // 3: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStatus.outputs:type_name -> dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

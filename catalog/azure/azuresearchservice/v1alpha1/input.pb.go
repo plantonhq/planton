@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureSearchServiceStackInput is the input to the IaC modules
+// AzureSearchServiceIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureSearchServiceStackInput struct {
+type AzureSearchServiceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The search service resource to deploy.
 	Target *AzureSearchService `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureSearchServiceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureSearchServiceStackInput) Reset() {
-	*x = AzureSearchServiceStackInput{}
+func (x *AzureSearchServiceIacInput) Reset() {
+	*x = AzureSearchServiceIacInput{}
 	mi := &file_catalog_azure_azuresearchservice_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureSearchServiceStackInput) String() string {
+func (x *AzureSearchServiceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureSearchServiceStackInput) ProtoMessage() {}
+func (*AzureSearchServiceIacInput) ProtoMessage() {}
 
-func (x *AzureSearchServiceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureSearchServiceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuresearchservice_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureSearchServiceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureSearchServiceStackInput.ProtoReflect.Descriptor instead.
-func (*AzureSearchServiceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureSearchServiceIacInput.ProtoReflect.Descriptor instead.
+func (*AzureSearchServiceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuresearchservice_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureSearchServiceStackInput) GetTarget() *AzureSearchService {
+func (x *AzureSearchServiceIacInput) GetTarget() *AzureSearchService {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureSearchServiceStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureSearchServiceIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuresearchservice_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_azure_azuresearchservice_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azuresearchservice/v1alpha1/input.proto\x12-dev.planton.azure.azuresearchservice.v1alpha1\x1a3catalog/azure/azuresearchservice/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xca\x01\n" +
-	"\x1cAzureSearchServiceStackInput\x12Y\n" +
+	"5catalog/azure/azuresearchservice/v1alpha1/input.proto\x12-dev.planton.azure.azuresearchservice.v1alpha1\x1a3catalog/azure/azuresearchservice/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc8\x01\n" +
+	"\x1aAzureSearchServiceIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xfb\x02\n" +
 	"1com.dev.planton.azure.azuresearchservice.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuresearchservice_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_azure_azuresearchservice_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuresearchservice_v1alpha1_input_proto_goTypes = []any{
-	(*AzureSearchServiceStackInput)(nil), // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackInput
-	(*AzureSearchService)(nil),           // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService
-	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureSearchServiceIacInput)(nil), // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceIacInput
+	(*AzureSearchService)(nil),         // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService
+	(*azure.AzureProviderConfig)(nil),  // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuresearchservice_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackInput.target:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService
-	2, // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceIacInput.target:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService
+	2, // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

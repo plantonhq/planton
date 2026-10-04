@@ -38,7 +38,7 @@ const (
 // must be updated.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsBedrockInferenceProfileSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the inference profile is created.

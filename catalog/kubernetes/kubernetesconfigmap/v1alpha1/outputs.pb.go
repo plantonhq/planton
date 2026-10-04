@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesConfigMapStackOutputs** captures observable outputs from a Kubernetes ConfigMap
+// **KubernetesConfigMapOutputs** captures observable outputs from a Kubernetes ConfigMap
 // deployment. Downstream resources (workloads mounting the ConfigMap, charts wiring
 // `configMapRef` env sources) compose on these handles.
-type KubernetesConfigMapStackOutputs struct {
+type KubernetesConfigMapOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The name of the created ConfigMap — the handle workloads use in `configMapRef`,
@@ -39,20 +39,20 @@ type KubernetesConfigMapStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesConfigMapStackOutputs) Reset() {
-	*x = KubernetesConfigMapStackOutputs{}
+func (x *KubernetesConfigMapOutputs) Reset() {
+	*x = KubernetesConfigMapOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesConfigMapStackOutputs) String() string {
+func (x *KubernetesConfigMapOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesConfigMapStackOutputs) ProtoMessage() {}
+func (*KubernetesConfigMapOutputs) ProtoMessage() {}
 
-func (x *KubernetesConfigMapStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesConfigMapOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *KubernetesConfigMapStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesConfigMapStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesConfigMapStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesConfigMapOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesConfigMapOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesConfigMapStackOutputs) GetConfigmapName() string {
+func (x *KubernetesConfigMapOutputs) GetConfigmapName() string {
 	if x != nil {
 		return x.ConfigmapName
 	}
 	return ""
 }
 
-func (x *KubernetesConfigMapStackOutputs) GetNamespace() string {
+func (x *KubernetesConfigMapOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -87,8 +87,8 @@ var File_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetesconfigmap/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesconfigmap.v1alpha1\"f\n" +
-	"\x1fKubernetesConfigMapStackOutputs\x12%\n" +
+	"=catalog/kubernetes/kubernetesconfigmap/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesconfigmap.v1alpha1\"a\n" +
+	"\x1aKubernetesConfigMapOutputs\x12%\n" +
 	"\x0econfigmap_name\x18\x01 \x01(\tR\rconfigmapName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xa2\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1B\fOutputsProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesconfigmap/v1alpha1;kubernetesconfigmapv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetesconfigmap.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetesconfigmap\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetesconfigmap\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetesconfigmap::V1alpha1b\x06proto3"
@@ -107,7 +107,7 @@ func file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesConfigMapStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackOutputs
+	(*KubernetesConfigMapOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapOutputs
 }
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

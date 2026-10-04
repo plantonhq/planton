@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: shared/cloudresourcekind/kubernetes.proto
+// source: shared/catalogkind/kubernetes.proto
 
-package cloudresourcekind
+package catalogkind
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -20,15 +20,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_shared_cloudresourcekind_kubernetes_proto protoreflect.FileDescriptor
+var File_shared_catalogkind_kubernetes_proto protoreflect.FileDescriptor
 
-const file_shared_cloudresourcekind_kubernetes_proto_rawDesc = "" +
+const file_shared_catalogkind_kubernetes_proto_rawDesc = "" +
 	"\n" +
-	")shared/cloudresourcekind/kubernetes.proto\x12$dev.planton.shared.cloudresourcekindB\xa6\x02\n" +
-	"(com.dev.planton.shared.cloudresourcekindB\x0fKubernetesProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
+	"#shared/catalogkind/kubernetes.proto\x12\x1edev.planton.shared.catalogkindB\x82\x02\n" +
+	"\"com.dev.planton.shared.catalogkindB\x0fKubernetesProtoP\x01Z/github.com/plantonhq/planton/shared/catalogkind\xa2\x02\x04DPSC\xaa\x02\x1eDev.Planton.Shared.Catalogkind\xca\x02\x1eDev\\Planton\\Shared\\Catalogkind\xe2\x02*Dev\\Planton\\Shared\\Catalogkind\\GPBMetadata\xea\x02!Dev::Planton::Shared::Catalogkindb\x06proto3"
 
-var file_shared_cloudresourcekind_kubernetes_proto_goTypes = []any{}
-var file_shared_cloudresourcekind_kubernetes_proto_depIdxs = []int32{
+var file_shared_catalogkind_kubernetes_proto_goTypes = []any{}
+var file_shared_catalogkind_kubernetes_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -36,25 +36,25 @@ var file_shared_cloudresourcekind_kubernetes_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_shared_cloudresourcekind_kubernetes_proto_init() }
-func file_shared_cloudresourcekind_kubernetes_proto_init() {
-	if File_shared_cloudresourcekind_kubernetes_proto != nil {
+func init() { file_shared_catalogkind_kubernetes_proto_init() }
+func file_shared_catalogkind_kubernetes_proto_init() {
+	if File_shared_catalogkind_kubernetes_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_kubernetes_proto_rawDesc), len(file_shared_cloudresourcekind_kubernetes_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_catalogkind_kubernetes_proto_rawDesc), len(file_shared_catalogkind_kubernetes_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_shared_cloudresourcekind_kubernetes_proto_goTypes,
-		DependencyIndexes: file_shared_cloudresourcekind_kubernetes_proto_depIdxs,
+		GoTypes:           file_shared_catalogkind_kubernetes_proto_goTypes,
+		DependencyIndexes: file_shared_catalogkind_kubernetes_proto_depIdxs,
 	}.Build()
-	File_shared_cloudresourcekind_kubernetes_proto = out.File
-	file_shared_cloudresourcekind_kubernetes_proto_goTypes = nil
-	file_shared_cloudresourcekind_kubernetes_proto_depIdxs = nil
+	File_shared_catalogkind_kubernetes_proto = out.File
+	file_shared_catalogkind_kubernetes_proto_goTypes = nil
+	file_shared_catalogkind_kubernetes_proto_depIdxs = nil
 }

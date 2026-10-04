@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ConnectionStackOutputs contains the outputs from an Auth0 Connection deployment.
+// Auth0ConnectionOutputs contains the outputs from an Auth0 Connection deployment.
 // These outputs provide essential identifiers and information for integrating
 // the connection with applications and monitoring its configuration.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/connection#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/connection/#outputs
-type Auth0ConnectionStackOutputs struct {
+type Auth0ConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the Auth0 connection.
 	// This is the primary identifier used in Auth0 APIs and Management Dashboard.
@@ -73,20 +73,20 @@ type Auth0ConnectionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0ConnectionStackOutputs) Reset() {
-	*x = Auth0ConnectionStackOutputs{}
+func (x *Auth0ConnectionOutputs) Reset() {
+	*x = Auth0ConnectionOutputs{}
 	mi := &file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ConnectionStackOutputs) String() string {
+func (x *Auth0ConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ConnectionStackOutputs) ProtoMessage() {}
+func (*Auth0ConnectionOutputs) ProtoMessage() {}
 
-func (x *Auth0ConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0ConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,75 +98,75 @@ func (x *Auth0ConnectionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0ConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0ConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ConnectionStackOutputs) GetId() string {
+func (x *Auth0ConnectionOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetName() string {
+func (x *Auth0ConnectionOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetStrategy() string {
+func (x *Auth0ConnectionOutputs) GetStrategy() string {
 	if x != nil {
 		return x.Strategy
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetIsEnabled() string {
+func (x *Auth0ConnectionOutputs) GetIsEnabled() string {
 	if x != nil {
 		return x.IsEnabled
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetProvisioningTicketUrl() string {
+func (x *Auth0ConnectionOutputs) GetProvisioningTicketUrl() string {
 	if x != nil {
 		return x.ProvisioningTicketUrl
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetCallbackUrl() string {
+func (x *Auth0ConnectionOutputs) GetCallbackUrl() string {
 	if x != nil {
 		return x.CallbackUrl
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetMetadataUrl() string {
+func (x *Auth0ConnectionOutputs) GetMetadataUrl() string {
 	if x != nil {
 		return x.MetadataUrl
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetEntityId() string {
+func (x *Auth0ConnectionOutputs) GetEntityId() string {
 	if x != nil {
 		return x.EntityId
 	}
 	return ""
 }
 
-func (x *Auth0ConnectionStackOutputs) GetEnabledClientIds() []string {
+func (x *Auth0ConnectionOutputs) GetEnabledClientIds() []string {
 	if x != nil {
 		return x.EnabledClientIds
 	}
 	return nil
 }
 
-func (x *Auth0ConnectionStackOutputs) GetRealms() []string {
+func (x *Auth0ConnectionOutputs) GetRealms() []string {
 	if x != nil {
 		return x.Realms
 	}
@@ -177,8 +177,8 @@ var File_catalog_auth0_auth0connection_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/auth0/auth0connection/v1alpha1/outputs.proto\x12*dev.planton.auth0.auth0connection.v1alpha1\"\xdd\x02\n" +
-	"\x1bAuth0ConnectionStackOutputs\x12\x0e\n" +
+	"4catalog/auth0/auth0connection/v1alpha1/outputs.proto\x12*dev.planton.auth0.auth0connection.v1alpha1\"\xd8\x02\n" +
+	"\x16Auth0ConnectionOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\bstrategy\x18\x03 \x01(\tR\bstrategy\x12\x1d\n" +
@@ -207,7 +207,7 @@ func file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0ConnectionStackOutputs)(nil), // 0: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStackOutputs
+	(*Auth0ConnectionOutputs)(nil), // 0: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionOutputs
 }
 var file_catalog_auth0_auth0connection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

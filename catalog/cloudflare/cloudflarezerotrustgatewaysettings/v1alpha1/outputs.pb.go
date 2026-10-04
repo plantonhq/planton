@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustGatewaySettingsStackOutputs captures the observable
+// CloudflareZeroTrustGatewaySettingsOutputs captures the observable
 // outputs after applying the Gateway configuration.
-type CloudflareZeroTrustGatewaySettingsStackOutputs struct {
+type CloudflareZeroTrustGatewaySettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare account the configuration was applied to (the
 	// singleton's identity -- the harness and import recipes key on it).
@@ -38,20 +38,20 @@ type CloudflareZeroTrustGatewaySettingsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustGatewaySettingsStackOutputs) Reset() {
-	*x = CloudflareZeroTrustGatewaySettingsStackOutputs{}
+func (x *CloudflareZeroTrustGatewaySettingsOutputs) Reset() {
+	*x = CloudflareZeroTrustGatewaySettingsOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustGatewaySettingsStackOutputs) String() string {
+func (x *CloudflareZeroTrustGatewaySettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustGatewaySettingsStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustGatewaySettingsOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustGatewaySettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustGatewaySettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *CloudflareZeroTrustGatewaySettingsStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustGatewaySettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustGatewaySettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustGatewaySettingsOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustGatewaySettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustGatewaySettingsStackOutputs) GetAccountId() string {
+func (x *CloudflareZeroTrustGatewaySettingsOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustGatewaySettingsStackOutputs) GetPacfileIds() map[string]string {
+func (x *CloudflareZeroTrustGatewaySettingsOutputs) GetPacfileIds() map[string]string {
 	if x != nil {
 		return x.PacfileIds
 	}
@@ -86,11 +86,11 @@ var File_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_
 
 const file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/cloudflare/cloudflarezerotrustgatewaysettings/v1alpha1/outputs.proto\x12Bdev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1\"\xb5\x02\n" +
-	".CloudflareZeroTrustGatewaySettingsStackOutputs\x12\x1d\n" +
+	"Lcatalog/cloudflare/cloudflarezerotrustgatewaysettings/v1alpha1/outputs.proto\x12Bdev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1\"\xaa\x02\n" +
+	")CloudflareZeroTrustGatewaySettingsOutputs\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tR\taccountId\x12\xa4\x01\n" +
-	"\vpacfile_ids\x18\x02 \x03(\v2\x82\x01.dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsStackOutputs.PacfileIdsEntryR\n" +
+	"account_id\x18\x01 \x01(\tR\taccountId\x12\x9e\x01\n" +
+	"\vpacfile_ids\x18\x02 \x03(\v2}.dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsOutputs.PacfileIdsEntryR\n" +
 	"pacfileIds\x1a=\n" +
 	"\x0fPacfileIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -111,11 +111,11 @@ func file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs
 
 var file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustGatewaySettingsStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsStackOutputs
-	nil, // 1: dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsStackOutputs.PacfileIdsEntry
+	(*CloudflareZeroTrustGatewaySettingsOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsOutputs
+	nil, // 1: dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsOutputs.PacfileIdsEntry
 }
 var file_catalog_cloudflare_cloudflarezerotrustgatewaysettings_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsStackOutputs.pacfile_ids:type_name -> dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsStackOutputs.PacfileIdsEntry
+	1, // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsOutputs.pacfile_ids:type_name -> dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1.CloudflareZeroTrustGatewaySettingsOutputs.PacfileIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

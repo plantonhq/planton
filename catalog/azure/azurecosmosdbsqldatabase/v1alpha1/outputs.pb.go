@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCosmosdbSqlDatabaseStackOutputs** captures the outputs of
+// **AzureCosmosdbSqlDatabaseOutputs** captures the outputs of
 // provisioning a Cosmos DB SQL (NoSQL) API database.
 //
 // No endpoint or credential outputs on purpose: connectivity and keys
 // live on the ACCOUNT (AzureCosmosdbAccount's endpoint and key outputs);
 // the database is addressed inside that connection by name.
-type AzureCosmosdbSqlDatabaseStackOutputs struct {
+type AzureCosmosdbSqlDatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the database -- what
 	// AzureCosmosdbSqlContainer's sql_database_id references, and the
@@ -45,20 +45,20 @@ type AzureCosmosdbSqlDatabaseStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbSqlDatabaseStackOutputs) Reset() {
-	*x = AzureCosmosdbSqlDatabaseStackOutputs{}
+func (x *AzureCosmosdbSqlDatabaseOutputs) Reset() {
+	*x = AzureCosmosdbSqlDatabaseOutputs{}
 	mi := &file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbSqlDatabaseStackOutputs) String() string {
+func (x *AzureCosmosdbSqlDatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbSqlDatabaseStackOutputs) ProtoMessage() {}
+func (*AzureCosmosdbSqlDatabaseOutputs) ProtoMessage() {}
 
-func (x *AzureCosmosdbSqlDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbSqlDatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,26 +70,26 @@ func (x *AzureCosmosdbSqlDatabaseStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbSqlDatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbSqlDatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbSqlDatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbSqlDatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbSqlDatabaseStackOutputs) GetSqlDatabaseId() string {
+func (x *AzureCosmosdbSqlDatabaseOutputs) GetSqlDatabaseId() string {
 	if x != nil {
 		return x.SqlDatabaseId
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbSqlDatabaseStackOutputs) GetSqlDatabaseName() string {
+func (x *AzureCosmosdbSqlDatabaseOutputs) GetSqlDatabaseName() string {
 	if x != nil {
 		return x.SqlDatabaseName
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbSqlDatabaseStackOutputs) GetCosmosdbAccountName() string {
+func (x *AzureCosmosdbSqlDatabaseOutputs) GetCosmosdbAccountName() string {
 	if x != nil {
 		return x.CosmosdbAccountName
 	}
@@ -100,8 +100,8 @@ var File_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurecosmosdbsqldatabase/v1alpha1/outputs.proto\x123dev.planton.azure.azurecosmosdbsqldatabase.v1alpha1\"\xae\x01\n" +
-	"$AzureCosmosdbSqlDatabaseStackOutputs\x12&\n" +
+	"=catalog/azure/azurecosmosdbsqldatabase/v1alpha1/outputs.proto\x123dev.planton.azure.azurecosmosdbsqldatabase.v1alpha1\"\xa9\x01\n" +
+	"\x1fAzureCosmosdbSqlDatabaseOutputs\x12&\n" +
 	"\x0fsql_database_id\x18\x01 \x01(\tR\rsqlDatabaseId\x12*\n" +
 	"\x11sql_database_name\x18\x02 \x01(\tR\x0fsqlDatabaseName\x122\n" +
 	"\x15cosmosdb_account_name\x18\x03 \x01(\tR\x13cosmosdbAccountNameB\xa7\x03\n" +
@@ -121,7 +121,7 @@ func file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCosmosdbSqlDatabaseStackOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbsqldatabase.v1alpha1.AzureCosmosdbSqlDatabaseStackOutputs
+	(*AzureCosmosdbSqlDatabaseOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbsqldatabase.v1alpha1.AzureCosmosdbSqlDatabaseOutputs
 }
 var file_catalog_azure_azurecosmosdbsqldatabase_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

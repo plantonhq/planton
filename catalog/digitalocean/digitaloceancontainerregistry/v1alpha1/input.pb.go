@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-container-registry stack-input
-type DigitalOceanContainerRegistryStackInput struct {
+// digital-ocean-container-registry iac-input
+type DigitalOceanContainerRegistryIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanContainerRegistry `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanContainerRegistryStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanContainerRegistryStackInput) Reset() {
-	*x = DigitalOceanContainerRegistryStackInput{}
+func (x *DigitalOceanContainerRegistryIacInput) Reset() {
+	*x = DigitalOceanContainerRegistryIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanContainerRegistryStackInput) String() string {
+func (x *DigitalOceanContainerRegistryIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanContainerRegistryStackInput) ProtoMessage() {}
+func (*DigitalOceanContainerRegistryIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanContainerRegistryStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanContainerRegistryIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanContainerRegistryStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanContainerRegistryStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanContainerRegistryStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanContainerRegistryIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanContainerRegistryIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanContainerRegistryStackInput) GetTarget() *DigitalOceanContainerRegistry {
+func (x *DigitalOceanContainerRegistryIacInput) GetTarget() *DigitalOceanContainerRegistry {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanContainerRegistryStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanContainerRegistryIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto
 
 const file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/input.proto\x12?dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1\x1aEcatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x80\x02\n" +
-	"'DigitalOceanContainerRegistryStackInput\x12v\n" +
+	"Gcatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/input.proto\x12?dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1\x1aEcatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xfe\x01\n" +
+	"%DigitalOceanContainerRegistryIacInput\x12v\n" +
 	"\x06target\x18\x01 \x01(\v2^.dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xf2\x03\n" +
 	"Ccom.dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_prot
 
 var file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanContainerRegistryStackInput)(nil), // 0: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryStackInput
+	(*DigitalOceanContainerRegistryIacInput)(nil),   // 0: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryIacInput
 	(*DigitalOceanContainerRegistry)(nil),           // 1: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistry
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryStackInput.target:type_name -> dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistry
-	2, // 1: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryIacInput.target:type_name -> dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistry
+	2, // 1: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

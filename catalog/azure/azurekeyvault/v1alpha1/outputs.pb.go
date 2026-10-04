@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureKeyVaultStackOutputs** captures the outputs of provisioning an Azure
+// **AzureKeyVaultOutputs** captures the outputs of provisioning an Azure
 // Key Vault -- the values downstream resources reference to compose with the
 // vault.
-type AzureKeyVaultStackOutputs struct {
+type AzureKeyVaultOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The vault's ARM resource ID:
 	// /subscriptions/{subscription}/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{name}
@@ -47,20 +47,20 @@ type AzureKeyVaultStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureKeyVaultStackOutputs) Reset() {
-	*x = AzureKeyVaultStackOutputs{}
+func (x *AzureKeyVaultOutputs) Reset() {
+	*x = AzureKeyVaultOutputs{}
 	mi := &file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureKeyVaultStackOutputs) String() string {
+func (x *AzureKeyVaultOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureKeyVaultStackOutputs) ProtoMessage() {}
+func (*AzureKeyVaultOutputs) ProtoMessage() {}
 
-func (x *AzureKeyVaultStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureKeyVaultOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,40 +72,40 @@ func (x *AzureKeyVaultStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureKeyVaultStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureKeyVaultStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureKeyVaultOutputs.ProtoReflect.Descriptor instead.
+func (*AzureKeyVaultOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureKeyVaultStackOutputs) GetKeyVaultId() string {
+func (x *AzureKeyVaultOutputs) GetKeyVaultId() string {
 	if x != nil {
 		return x.KeyVaultId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultStackOutputs) GetKeyVaultName() string {
+func (x *AzureKeyVaultOutputs) GetKeyVaultName() string {
 	if x != nil {
 		return x.KeyVaultName
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultStackOutputs) GetVaultUri() string {
+func (x *AzureKeyVaultOutputs) GetVaultUri() string {
 	if x != nil {
 		return x.VaultUri
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultStackOutputs) GetTenantId() string {
+func (x *AzureKeyVaultOutputs) GetTenantId() string {
 	if x != nil {
 		return x.TenantId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultStackOutputs) GetResourceGroupName() string {
+func (x *AzureKeyVaultOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
@@ -116,8 +116,8 @@ var File_catalog_azure_azurekeyvault_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/azure/azurekeyvault/v1alpha1/outputs.proto\x12(dev.planton.azure.azurekeyvault.v1alpha1\"\xcd\x01\n" +
-	"\x19AzureKeyVaultStackOutputs\x12 \n" +
+	"2catalog/azure/azurekeyvault/v1alpha1/outputs.proto\x12(dev.planton.azure.azurekeyvault.v1alpha1\"\xc8\x01\n" +
+	"\x14AzureKeyVaultOutputs\x12 \n" +
 	"\fkey_vault_id\x18\x01 \x01(\tR\n" +
 	"keyVaultId\x12$\n" +
 	"\x0ekey_vault_name\x18\x02 \x01(\tR\fkeyVaultName\x12\x1b\n" +
@@ -140,7 +140,7 @@ func file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureKeyVaultStackOutputs)(nil), // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackOutputs
+	(*AzureKeyVaultOutputs)(nil), // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultOutputs
 }
 var file_catalog_azure_azurekeyvault_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

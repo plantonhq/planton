@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesPrometheusRuleStackOutputs captures observable outputs after the
+// KubernetesPrometheusRuleOutputs captures observable outputs after the
 // PrometheusRule is created on the target cluster. Which Prometheus instances
 // load the rules is decided by their selectors, not by the object, so only the
 // resource identity is exported.
-type KubernetesPrometheusRuleStackOutputs struct {
+type KubernetesPrometheusRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created PrometheusRule (equals metadata.name).
 	PrometheusRuleName string `protobuf:"bytes,1,opt,name=prometheus_rule_name,json=prometheusRuleName,proto3" json:"prometheus_rule_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesPrometheusRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPrometheusRuleStackOutputs) Reset() {
-	*x = KubernetesPrometheusRuleStackOutputs{}
+func (x *KubernetesPrometheusRuleOutputs) Reset() {
+	*x = KubernetesPrometheusRuleOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPrometheusRuleStackOutputs) String() string {
+func (x *KubernetesPrometheusRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPrometheusRuleStackOutputs) ProtoMessage() {}
+func (*KubernetesPrometheusRuleOutputs) ProtoMessage() {}
 
-func (x *KubernetesPrometheusRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPrometheusRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesPrometheusRuleStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPrometheusRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPrometheusRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPrometheusRuleOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPrometheusRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPrometheusRuleStackOutputs) GetPrometheusRuleName() string {
+func (x *KubernetesPrometheusRuleOutputs) GetPrometheusRuleName() string {
 	if x != nil {
 		return x.PrometheusRuleName
 	}
 	return ""
 }
 
-func (x *KubernetesPrometheusRuleStackOutputs) GetNamespace() string {
+func (x *KubernetesPrometheusRuleOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesprometheusrule/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1\"v\n" +
-	"$KubernetesPrometheusRuleStackOutputs\x120\n" +
+	"Bcatalog/kubernetes/kubernetesprometheusrule/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1\"q\n" +
+	"\x1fKubernetesPrometheusRuleOutputs\x120\n" +
 	"\x14prometheus_rule_name\x18\x01 \x01(\tR\x12prometheusRuleName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xc5\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesprometheusrule/v1alpha1;kubernetesprometheusrulev1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesprometheusrule.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesprometheusrule\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesprometheusrule\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesprometheusrule::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPrometheusRuleStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStackOutputs
+	(*KubernetesPrometheusRuleOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleOutputs
 }
 var file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

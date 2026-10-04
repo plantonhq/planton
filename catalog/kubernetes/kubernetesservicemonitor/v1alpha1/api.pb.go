@@ -33,7 +33,7 @@ type KubernetesServiceMonitor struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesServiceMonitorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesServiceMonitor) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesServiceMonitor) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesServiceMonitor) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesServiceMonitor) GetStatus() *KubernetesServiceMonitorStatus {
 // KubernetesServiceMonitorStatus holds the deployment status and outputs.
 type KubernetesServiceMonitorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesServiceMonitorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesServiceMonitorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesServiceMonitorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesServiceMonitorStatus) GetOutputs() *KubernetesServiceMonitorStackOutputs {
+func (x *KubernetesServiceMonitorStatus) GetOutputs() *KubernetesServiceMonitorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_api_proto_rawDes
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18KubernetesServiceMonitorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatusR\x06status\"\x9a\x01\n" +
-	"\x1eKubernetesServiceMonitorStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatusR\x06status\"\x95\x01\n" +
+	"\x1eKubernetesServiceMonitorStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorOutputsR\aoutputsB\xc1\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesservicemonitor/v1alpha1;kubernetesservicemonitorv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesservicemonitor.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesservicemonitor\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesservicemonitor\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesservicemonitor::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_api_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesServiceMonitor)(nil),             // 0: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitor
-	(*KubernetesServiceMonitorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesServiceMonitorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorSpec
-	(*KubernetesServiceMonitorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStackOutputs
+	(*KubernetesServiceMonitor)(nil),        // 0: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitor
+	(*KubernetesServiceMonitorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesServiceMonitorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorSpec
+	(*KubernetesServiceMonitorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorOutputs
 }
 var file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitor.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitor.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitor.spec:type_name -> dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitor.status:type_name -> dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

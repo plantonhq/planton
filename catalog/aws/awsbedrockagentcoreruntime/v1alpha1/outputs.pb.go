@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreRuntimeStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreRuntimeOutputs captures observable identifiers
 // from a provisioned AgentCore agent runtime. Downstream resources
 // (gateway targets pointing at this runtime, evaluation harnesses,
 // callers building invoke ARNs) wire dependencies via StringValueOrRef.
-type AwsBedrockAgentCoreRuntimeStackOutputs struct {
+type AwsBedrockAgentCoreRuntimeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique runtime identifier (e.g. "my_agent-AbC1dEf2Gh").
 	AgentRuntimeId string `protobuf:"bytes,1,opt,name=agent_runtime_id,json=agentRuntimeId,proto3" json:"agent_runtime_id,omitempty"`
@@ -45,20 +45,20 @@ type AwsBedrockAgentCoreRuntimeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreRuntimeStackOutputs{}
+func (x *AwsBedrockAgentCoreRuntimeOutputs) Reset() {
+	*x = AwsBedrockAgentCoreRuntimeOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreRuntimeStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreRuntimeOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *AwsBedrockAgentCoreRuntimeStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreRuntimeStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreRuntimeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreRuntimeOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreRuntimeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) GetAgentRuntimeId() string {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) GetAgentRuntimeId() string {
 	if x != nil {
 		return x.AgentRuntimeId
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) GetAgentRuntimeArn() string {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) GetAgentRuntimeArn() string {
 	if x != nil {
 		return x.AgentRuntimeArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) GetAgentRuntimeVersion() string {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) GetAgentRuntimeVersion() string {
 	if x != nil {
 		return x.AgentRuntimeVersion
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) GetWorkloadIdentityArn() string {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) GetWorkloadIdentityArn() string {
 	if x != nil {
 		return x.WorkloadIdentityArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackOutputs) GetEndpointArns() map[string]string {
+func (x *AwsBedrockAgentCoreRuntimeOutputs) GetEndpointArns() map[string]string {
 	if x != nil {
 		return x.EndpointArns
 	}
@@ -114,13 +114,13 @@ var File_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsbedrockagentcoreruntime/v1alpha1/outputs.proto\x123dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1\"\xbc\x03\n" +
-	"&AwsBedrockAgentCoreRuntimeStackOutputs\x12(\n" +
+	"=catalog/aws/awsbedrockagentcoreruntime/v1alpha1/outputs.proto\x123dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1\"\xb2\x03\n" +
+	"!AwsBedrockAgentCoreRuntimeOutputs\x12(\n" +
 	"\x10agent_runtime_id\x18\x01 \x01(\tR\x0eagentRuntimeId\x12*\n" +
 	"\x11agent_runtime_arn\x18\x02 \x01(\tR\x0fagentRuntimeArn\x122\n" +
 	"\x15agent_runtime_version\x18\x03 \x01(\tR\x13agentRuntimeVersion\x122\n" +
-	"\x15workload_identity_arn\x18\x04 \x01(\tR\x13workloadIdentityArn\x12\x92\x01\n" +
-	"\rendpoint_arns\x18\x05 \x03(\v2m.dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackOutputs.EndpointArnsEntryR\fendpointArns\x1a?\n" +
+	"\x15workload_identity_arn\x18\x04 \x01(\tR\x13workloadIdentityArn\x12\x8d\x01\n" +
+	"\rendpoint_arns\x18\x05 \x03(\v2h.dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeOutputs.EndpointArnsEntryR\fendpointArns\x1a?\n" +
 	"\x11EndpointArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa9\x03\n" +
@@ -140,11 +140,11 @@ func file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreRuntimeStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackOutputs.EndpointArnsEntry
+	(*AwsBedrockAgentCoreRuntimeOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeOutputs
+	nil, // 1: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeOutputs.EndpointArnsEntry
 }
 var file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackOutputs.endpoint_arns:type_name -> dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackOutputs.EndpointArnsEntry
+	1, // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeOutputs.endpoint_arns:type_name -> dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeOutputs.EndpointArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

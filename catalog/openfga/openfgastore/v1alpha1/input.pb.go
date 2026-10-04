@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaStoreStackInput is the input message for the OpenFGA Store IaC modules.
+// OpenFgaStoreIacInput is the input message for the OpenFGA Store IaC modules.
 //
 // This message aggregates all information needed to deploy an OpenFGA Store:
 // - The target OpenFgaStore resource specification
@@ -33,7 +33,7 @@ const (
 //
 // The Terraform module receives this as input and uses it to create/update
 // the OpenFGA store via the OpenFGA API.
-type OpenFgaStoreStackInput struct {
+type OpenFgaStoreIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the OpenFgaStore resource to deploy.
 	// Contains the complete specification of the desired store configuration.
@@ -54,20 +54,20 @@ type OpenFgaStoreStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *OpenFgaStoreStackInput) Reset() {
-	*x = OpenFgaStoreStackInput{}
+func (x *OpenFgaStoreIacInput) Reset() {
+	*x = OpenFgaStoreIacInput{}
 	mi := &file_catalog_openfga_openfgastore_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenFgaStoreStackInput) String() string {
+func (x *OpenFgaStoreIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenFgaStoreStackInput) ProtoMessage() {}
+func (*OpenFgaStoreIacInput) ProtoMessage() {}
 
-func (x *OpenFgaStoreStackInput) ProtoReflect() protoreflect.Message {
+func (x *OpenFgaStoreIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_openfga_openfgastore_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,19 +79,19 @@ func (x *OpenFgaStoreStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenFgaStoreStackInput.ProtoReflect.Descriptor instead.
-func (*OpenFgaStoreStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenFgaStoreIacInput.ProtoReflect.Descriptor instead.
+func (*OpenFgaStoreIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgastore_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *OpenFgaStoreStackInput) GetTarget() *OpenFgaStore {
+func (x *OpenFgaStoreIacInput) GetTarget() *OpenFgaStore {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *OpenFgaStoreStackInput) GetProviderConfig() *openfga.OpenFgaProviderConfig {
+func (x *OpenFgaStoreIacInput) GetProviderConfig() *openfga.OpenFgaProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -102,8 +102,8 @@ var File_catalog_openfga_openfgastore_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_openfga_openfgastore_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/openfga/openfgastore/v1alpha1/input.proto\x12)dev.planton.openfga.openfgastore.v1alpha1\x1a/catalog/openfga/openfgastore/v1alpha1/api.proto\x1a\x1ecatalog/openfga/provider.proto\"\xbe\x01\n" +
-	"\x16OpenFgaStoreStackInput\x12O\n" +
+	"1catalog/openfga/openfgastore/v1alpha1/input.proto\x12)dev.planton.openfga.openfgastore.v1alpha1\x1a/catalog/openfga/openfgastore/v1alpha1/api.proto\x1a\x1ecatalog/openfga/provider.proto\"\xbc\x01\n" +
+	"\x14OpenFgaStoreIacInput\x12O\n" +
 	"\x06target\x18\x01 \x01(\v27.dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreR\x06target\x12S\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2*.dev.planton.openfga.OpenFgaProviderConfigR\x0eproviderConfigB\xdd\x02\n" +
 	"-com.dev.planton.openfga.openfgastore.v1alpha1B\n" +
@@ -123,13 +123,13 @@ func file_catalog_openfga_openfgastore_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_openfga_openfgastore_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_openfga_openfgastore_v1alpha1_input_proto_goTypes = []any{
-	(*OpenFgaStoreStackInput)(nil),        // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackInput
+	(*OpenFgaStoreIacInput)(nil),          // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreIacInput
 	(*OpenFgaStore)(nil),                  // 1: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore
 	(*openfga.OpenFgaProviderConfig)(nil), // 2: dev.planton.openfga.OpenFgaProviderConfig
 }
 var file_catalog_openfga_openfgastore_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackInput.target:type_name -> dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore
-	2, // 1: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackInput.provider_config:type_name -> dev.planton.openfga.OpenFgaProviderConfig
+	1, // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreIacInput.target:type_name -> dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore
+	2, // 1: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreIacInput.provider_config:type_name -> dev.planton.openfga.OpenFgaProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustAccessServiceTokenStackOutputs captures the observable
+// CloudflareZeroTrustAccessServiceTokenOutputs captures the observable
 // outputs after creating an Access service token.
-type CloudflareZeroTrustAccessServiceTokenStackOutputs struct {
+type CloudflareZeroTrustAccessServiceTokenOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The UUID of the service token (the API identity used for import and
 	// policy `service_token` rules).
@@ -45,20 +45,20 @@ type CloudflareZeroTrustAccessServiceTokenStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) Reset() {
-	*x = CloudflareZeroTrustAccessServiceTokenStackOutputs{}
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) Reset() {
+	*x = CloudflareZeroTrustAccessServiceTokenOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) String() string {
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustAccessServiceTokenStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustAccessServiceTokenOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustAccessServiceTokenStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustAccessServiceTokenStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustAccessServiceTokenOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustAccessServiceTokenOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) GetServiceTokenId() string {
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) GetServiceTokenId() string {
 	if x != nil {
 		return x.ServiceTokenId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) GetClientId() string {
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) GetClientSecret() string {
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) GetClientSecret() string {
 	if x != nil {
 		return x.ClientSecret
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackOutputs) GetExpiresAt() string {
+func (x *CloudflareZeroTrustAccessServiceTokenOutputs) GetExpiresAt() string {
 	if x != nil {
 		return x.ExpiresAt
 	}
@@ -107,8 +107,8 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outpu
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ocatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/outputs.proto\x12Edev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1\x1a\x1cshared/options/options.proto\"\xc4\x01\n" +
-	"1CloudflareZeroTrustAccessServiceTokenStackOutputs\x12(\n" +
+	"Ocatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/outputs.proto\x12Edev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1\x1a\x1cshared/options/options.proto\"\xbf\x01\n" +
+	",CloudflareZeroTrustAccessServiceTokenOutputs\x12(\n" +
 	"\x10service_token_id\x18\x01 \x01(\tR\x0eserviceTokenId\x12\x1b\n" +
 	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12)\n" +
 	"\rclient_secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12\x1d\n" +
@@ -130,7 +130,7 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outp
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessServiceTokenStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackOutputs
+	(*CloudflareZeroTrustAccessServiceTokenOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

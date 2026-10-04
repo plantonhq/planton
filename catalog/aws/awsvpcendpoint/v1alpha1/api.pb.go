@@ -34,7 +34,7 @@ type AwsVpcEndpoint struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining how the endpoint is provisioned.
 	Spec *AwsVpcEndpointSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsVpcEndpoint) GetKind() string {
 	return ""
 }
 
-func (x *AwsVpcEndpoint) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsVpcEndpoint) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsVpcEndpoint) GetStatus() *AwsVpcEndpointStatus {
 type AwsVpcEndpointStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsVpcEndpointStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsVpcEndpointOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsVpcEndpointStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsvpcendpoint_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsVpcEndpointStatus) GetOutputs() *AwsVpcEndpointStackOutputs {
+func (x *AwsVpcEndpointStatus) GetOutputs() *AwsVpcEndpointOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awsvpcendpoint_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eAwsVpcEndpointR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStatusR\x06status\"u\n" +
-	"\x14AwsVpcEndpointStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStatusR\x06status\"p\n" +
+	"\x14AwsVpcEndpointStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.aws.awsvpcendpoint.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/aws/awsvpcendpoint/v1alpha1;awsvpcendpointv1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Aws.Awsvpcendpoint.V1alpha1\xca\x02'Dev\\Planton\\Aws\\Awsvpcendpoint\\V1alpha1\xe2\x023Dev\\Planton\\Aws\\Awsvpcendpoint\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Aws::Awsvpcendpoint::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_aws_awsvpcendpoint_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_aws_awsvpcendpoint_v1alpha1_api_proto_goTypes = []any{
 	(*AwsVpcEndpoint)(nil),               // 0: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpoint
 	(*AwsVpcEndpointStatus)(nil),         // 1: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsVpcEndpointSpec)(nil),           // 3: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointSpec
-	(*AwsVpcEndpointStackOutputs)(nil),   // 4: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStackOutputs
+	(*AwsVpcEndpointOutputs)(nil),        // 4: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointOutputs
 }
 var file_catalog_aws_awsvpcendpoint_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpoint.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpoint.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpoint.spec:type_name -> dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointSpec
 	1, // 2: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpoint.status:type_name -> dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStatus
-	4, // 3: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStatus.outputs:type_name -> dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStackOutputs
+	4, // 3: dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointStatus.outputs:type_name -> dev.planton.aws.awsvpcendpoint.v1alpha1.AwsVpcEndpointOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

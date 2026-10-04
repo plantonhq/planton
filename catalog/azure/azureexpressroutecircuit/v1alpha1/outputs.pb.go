@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureExpressRouteCircuitStackOutputs** captures the outputs of
+// **AzureExpressRouteCircuitOutputs** captures the outputs of
 // provisioning an ExpressRoute circuit.
-type AzureExpressRouteCircuitStackOutputs struct {
+type AzureExpressRouteCircuitOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the circuit.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRouteCircuits/{name}
@@ -51,20 +51,20 @@ type AzureExpressRouteCircuitStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) Reset() {
-	*x = AzureExpressRouteCircuitStackOutputs{}
+func (x *AzureExpressRouteCircuitOutputs) Reset() {
+	*x = AzureExpressRouteCircuitOutputs{}
 	mi := &file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) String() string {
+func (x *AzureExpressRouteCircuitOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRouteCircuitStackOutputs) ProtoMessage() {}
+func (*AzureExpressRouteCircuitOutputs) ProtoMessage() {}
 
-func (x *AzureExpressRouteCircuitStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRouteCircuitOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,40 +76,40 @@ func (x *AzureExpressRouteCircuitStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRouteCircuitStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureExpressRouteCircuitStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRouteCircuitOutputs.ProtoReflect.Descriptor instead.
+func (*AzureExpressRouteCircuitOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) GetExpressRouteCircuitId() string {
+func (x *AzureExpressRouteCircuitOutputs) GetExpressRouteCircuitId() string {
 	if x != nil {
 		return x.ExpressRouteCircuitId
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) GetExpressRouteCircuitName() string {
+func (x *AzureExpressRouteCircuitOutputs) GetExpressRouteCircuitName() string {
 	if x != nil {
 		return x.ExpressRouteCircuitName
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) GetServiceKey() string {
+func (x *AzureExpressRouteCircuitOutputs) GetServiceKey() string {
 	if x != nil {
 		return x.ServiceKey
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) GetServiceProviderProvisioningState() string {
+func (x *AzureExpressRouteCircuitOutputs) GetServiceProviderProvisioningState() string {
 	if x != nil {
 		return x.ServiceProviderProvisioningState
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitStackOutputs) GetAuthorizationKeys() map[string]string {
+func (x *AzureExpressRouteCircuitOutputs) GetAuthorizationKeys() map[string]string {
 	if x != nil {
 		return x.AuthorizationKeys
 	}
@@ -120,14 +120,14 @@ var File_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureexpressroutecircuit/v1alpha1/outputs.proto\x123dev.planton.azure.azureexpressroutecircuit.v1alpha1\x1a\x1cshared/options/options.proto\"\x80\x04\n" +
-	"$AzureExpressRouteCircuitStackOutputs\x127\n" +
+	"=catalog/azure/azureexpressroutecircuit/v1alpha1/outputs.proto\x123dev.planton.azure.azureexpressroutecircuit.v1alpha1\x1a\x1cshared/options/options.proto\"\xf6\x03\n" +
+	"\x1fAzureExpressRouteCircuitOutputs\x127\n" +
 	"\x18express_route_circuit_id\x18\x01 \x01(\tR\x15expressRouteCircuitId\x12;\n" +
 	"\x1aexpress_route_circuit_name\x18\x02 \x01(\tR\x17expressRouteCircuitName\x12%\n" +
 	"\vservice_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"serviceKey\x12M\n" +
-	"#service_provider_provisioning_state\x18\x04 \x01(\tR serviceProviderProvisioningState\x12\xa5\x01\n" +
-	"\x12authorization_keys\x18\x05 \x03(\v2p.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs.AuthorizationKeysEntryB\x04\xa0\xa6\x1d\x01R\x11authorizationKeys\x1aD\n" +
+	"#service_provider_provisioning_state\x18\x04 \x01(\tR serviceProviderProvisioningState\x12\xa0\x01\n" +
+	"\x12authorization_keys\x18\x05 \x03(\v2k.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs.AuthorizationKeysEntryB\x04\xa0\xa6\x1d\x01R\x11authorizationKeys\x1aD\n" +
 	"\x16AuthorizationKeysEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa7\x03\n" +
@@ -147,11 +147,11 @@ func file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureExpressRouteCircuitStackOutputs)(nil), // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs
-	nil, // 1: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs.AuthorizationKeysEntry
+	(*AzureExpressRouteCircuitOutputs)(nil), // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs
+	nil,                                     // 1: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs.AuthorizationKeysEntry
 }
 var file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs.authorization_keys:type_name -> dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs.AuthorizationKeysEntry
+	1, // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs.authorization_keys:type_name -> dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs.AuthorizationKeysEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -36,7 +36,7 @@ type AzureEventHub struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventHubSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureEventHub) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventHub) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventHub) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureEventHub) GetStatus() *AzureEventHubStatus {
 // AzureEventHubStatus holds the deployment status and outputs.
 type AzureEventHubStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureEventHubStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureEventHubOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureEventHubStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhub_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventHubStatus) GetOutputs() *AzureEventHubStackOutputs {
+func (x *AzureEventHubStatus) GetOutputs() *AzureEventHubOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azureeventhub_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAzureEventHubR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStatusR\x06status\"t\n" +
-	"\x13AzureEventHubStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStackOutputsR\aoutputsB\xd6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStatusR\x06status\"o\n" +
+	"\x13AzureEventHubStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubOutputsR\aoutputsB\xd6\x02\n" +
 	",com.dev.planton.azure.azureeventhub.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/azure/azureeventhub/v1alpha1;azureeventhubv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Azure.Azureeventhub.V1alpha1\xca\x02(Dev\\Planton\\Azure\\Azureeventhub\\V1alpha1\xe2\x024Dev\\Planton\\Azure\\Azureeventhub\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Azure::Azureeventhub::V1alpha1b\x06proto3"
 
 var (
@@ -190,15 +190,15 @@ var file_catalog_azure_azureeventhub_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_azure_azureeventhub_v1alpha1_api_proto_goTypes = []any{
 	(*AzureEventHub)(nil),                // 0: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHub
 	(*AzureEventHubStatus)(nil),          // 1: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureEventHubSpec)(nil),            // 3: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubSpec
-	(*AzureEventHubStackOutputs)(nil),    // 4: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStackOutputs
+	(*AzureEventHubOutputs)(nil),         // 4: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubOutputs
 }
 var file_catalog_azure_azureeventhub_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHub.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHub.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHub.spec:type_name -> dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubSpec
 	1, // 2: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHub.status:type_name -> dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStatus
-	4, // 3: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStatus.outputs:type_name -> dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStackOutputs
+	4, // 3: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStatus.outputs:type_name -> dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

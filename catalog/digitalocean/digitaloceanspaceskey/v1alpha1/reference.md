@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanSpacesKeySpec models the full digitalocean_spaces_key resource
 surface: an access-key pair for Spaces (DigitalOcean's S3-compatible object

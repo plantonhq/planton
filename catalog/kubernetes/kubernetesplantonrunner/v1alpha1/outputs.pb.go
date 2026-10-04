@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesPlantonRunnerStackOutputs captures the observable identifiers
+// KubernetesPlantonRunnerOutputs captures the observable identifiers
 // of a deployed runner — the handles for day-2 operations: finding the
 // release, the namespace it lives in, and the name it registered itself
 // under with the control plane.
-type KubernetesPlantonRunnerStackOutputs struct {
+type KubernetesPlantonRunnerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the runner is installed in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -43,20 +43,20 @@ type KubernetesPlantonRunnerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPlantonRunnerStackOutputs) Reset() {
-	*x = KubernetesPlantonRunnerStackOutputs{}
+func (x *KubernetesPlantonRunnerOutputs) Reset() {
+	*x = KubernetesPlantonRunnerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPlantonRunnerStackOutputs) String() string {
+func (x *KubernetesPlantonRunnerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPlantonRunnerStackOutputs) ProtoMessage() {}
+func (*KubernetesPlantonRunnerOutputs) ProtoMessage() {}
 
-func (x *KubernetesPlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPlantonRunnerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *KubernetesPlantonRunnerStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPlantonRunnerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPlantonRunnerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPlantonRunnerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonRunnerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPlantonRunnerStackOutputs) GetNamespace() string {
+func (x *KubernetesPlantonRunnerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonRunnerStackOutputs) GetReleaseName() string {
+func (x *KubernetesPlantonRunnerOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonRunnerStackOutputs) GetTokenSecretName() string {
+func (x *KubernetesPlantonRunnerOutputs) GetTokenSecretName() string {
 	if x != nil {
 		return x.TokenSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonRunnerStackOutputs) GetRunnerName() string {
+func (x *KubernetesPlantonRunnerOutputs) GetRunnerName() string {
 	if x != nil {
 		return x.RunnerName
 	}
@@ -105,8 +105,8 @@ var File_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesplantonrunner/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1\"\xb3\x01\n" +
-	"#KubernetesPlantonRunnerStackOutputs\x12\x1c\n" +
+	"Acatalog/kubernetes/kubernetesplantonrunner/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1\"\xae\x01\n" +
+	"\x1eKubernetesPlantonRunnerOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12*\n" +
 	"\x11token_secret_name\x18\x03 \x01(\tR\x0ftokenSecretName\x12\x1f\n" +
@@ -128,7 +128,7 @@ func file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPlantonRunnerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerStackOutputs
+	(*KubernetesPlantonRunnerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerOutputs
 }
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

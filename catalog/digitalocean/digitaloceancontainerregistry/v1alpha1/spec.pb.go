@@ -97,7 +97,7 @@ type DigitalOceanContainerRegistrySpec struct {
 	Region digitalocean.DigitalOceanRegion `protobuf:"varint,3,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanRegion" json:"region,omitempty"`
 	// (Optional) Docker credentials to mint for this registry. When set, both provisioners
 	// create a credential (a base64-encoded Docker `config.json`) exported through the
-	// `docker_credentials` stack output. When omitted, no credential is created -- the secure
+	// `docker_credentials` output. When omitted, no credential is created -- the secure
 	// default, since an unconfigured credential would otherwise live for ~50 years.
 	DockerCredentials *DigitalOceanContainerRegistryDockerCredentials `protobuf:"bytes,5,opt,name=docker_credentials,json=dockerCredentials,proto3" json:"docker_credentials,omitempty"`
 	unknownFields     protoimpl.UnknownFields

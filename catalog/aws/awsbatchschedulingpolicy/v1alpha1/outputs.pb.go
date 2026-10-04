@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBatchSchedulingPolicyStackOutputs captures the observable identifiers
+// AwsBatchSchedulingPolicyOutputs captures the observable identifiers
 // of the AWS Batch scheduling policy.
-type AwsBatchSchedulingPolicyStackOutputs struct {
+type AwsBatchSchedulingPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the scheduling policy -- what job
 	// queues reference through their scheduling_policy field.
@@ -34,20 +34,20 @@ type AwsBatchSchedulingPolicyStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsBatchSchedulingPolicyStackOutputs) Reset() {
-	*x = AwsBatchSchedulingPolicyStackOutputs{}
+func (x *AwsBatchSchedulingPolicyOutputs) Reset() {
+	*x = AwsBatchSchedulingPolicyOutputs{}
 	mi := &file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBatchSchedulingPolicyStackOutputs) String() string {
+func (x *AwsBatchSchedulingPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBatchSchedulingPolicyStackOutputs) ProtoMessage() {}
+func (*AwsBatchSchedulingPolicyOutputs) ProtoMessage() {}
 
-func (x *AwsBatchSchedulingPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBatchSchedulingPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBatchSchedulingPolicyStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBatchSchedulingPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBatchSchedulingPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBatchSchedulingPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBatchSchedulingPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBatchSchedulingPolicyStackOutputs) GetSchedulingPolicyArn() string {
+func (x *AwsBatchSchedulingPolicyOutputs) GetSchedulingPolicyArn() string {
 	if x != nil {
 		return x.SchedulingPolicyArn
 	}
 	return ""
 }
 
-func (x *AwsBatchSchedulingPolicyStackOutputs) GetSchedulingPolicyName() string {
+func (x *AwsBatchSchedulingPolicyOutputs) GetSchedulingPolicyName() string {
 	if x != nil {
 		return x.SchedulingPolicyName
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsbatchschedulingpolicy/v1alpha1/outputs.proto\x121dev.planton.aws.awsbatchschedulingpolicy.v1alpha1\"\x90\x01\n" +
-	"$AwsBatchSchedulingPolicyStackOutputs\x122\n" +
+	";catalog/aws/awsbatchschedulingpolicy/v1alpha1/outputs.proto\x121dev.planton.aws.awsbatchschedulingpolicy.v1alpha1\"\x8b\x01\n" +
+	"\x1fAwsBatchSchedulingPolicyOutputs\x122\n" +
 	"\x15scheduling_policy_arn\x18\x01 \x01(\tR\x13schedulingPolicyArn\x124\n" +
 	"\x16scheduling_policy_name\x18\x02 \x01(\tR\x14schedulingPolicyNameB\x9b\x03\n" +
 	"5com.dev.planton.aws.awsbatchschedulingpolicy.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/aws/awsbatchschedulingpolicy/v1alpha1;awsbatchschedulingpolicyv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Aws.Awsbatchschedulingpolicy.V1alpha1\xca\x021Dev\\Planton\\Aws\\Awsbatchschedulingpolicy\\V1alpha1\xe2\x02=Dev\\Planton\\Aws\\Awsbatchschedulingpolicy\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Aws::Awsbatchschedulingpolicy::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBatchSchedulingPolicyStackOutputs)(nil), // 0: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyStackOutputs
+	(*AwsBatchSchedulingPolicyOutputs)(nil), // 0: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyOutputs
 }
 var file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

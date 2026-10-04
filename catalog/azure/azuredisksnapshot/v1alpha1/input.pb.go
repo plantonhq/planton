@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureDiskSnapshotStackInput is the input to the IaC modules
+// AzureDiskSnapshotIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureDiskSnapshotStackInput struct {
+type AzureDiskSnapshotIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The disk snapshot resource to deploy.
 	Target *AzureDiskSnapshot `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureDiskSnapshotStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureDiskSnapshotStackInput) Reset() {
-	*x = AzureDiskSnapshotStackInput{}
+func (x *AzureDiskSnapshotIacInput) Reset() {
+	*x = AzureDiskSnapshotIacInput{}
 	mi := &file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDiskSnapshotStackInput) String() string {
+func (x *AzureDiskSnapshotIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDiskSnapshotStackInput) ProtoMessage() {}
+func (*AzureDiskSnapshotIacInput) ProtoMessage() {}
 
-func (x *AzureDiskSnapshotStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureDiskSnapshotIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDiskSnapshotStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDiskSnapshotStackInput.ProtoReflect.Descriptor instead.
-func (*AzureDiskSnapshotStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDiskSnapshotIacInput.ProtoReflect.Descriptor instead.
+func (*AzureDiskSnapshotIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDiskSnapshotStackInput) GetTarget() *AzureDiskSnapshot {
+func (x *AzureDiskSnapshotIacInput) GetTarget() *AzureDiskSnapshot {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureDiskSnapshotStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureDiskSnapshotIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredisksnapshot_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azuredisksnapshot/v1alpha1/input.proto\x12,dev.planton.azure.azuredisksnapshot.v1alpha1\x1a2catalog/azure/azuredisksnapshot/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc7\x01\n" +
-	"\x1bAzureDiskSnapshotStackInput\x12W\n" +
+	"4catalog/azure/azuredisksnapshot/v1alpha1/input.proto\x12,dev.planton.azure.azuredisksnapshot.v1alpha1\x1a2catalog/azure/azuredisksnapshot/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc5\x01\n" +
+	"\x19AzureDiskSnapshotIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xf4\x02\n" +
 	"0com.dev.planton.azure.azuredisksnapshot.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_goTypes = []any{
-	(*AzureDiskSnapshotStackInput)(nil), // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackInput
-	(*AzureDiskSnapshot)(nil),           // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot
-	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureDiskSnapshotIacInput)(nil), // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotIacInput
+	(*AzureDiskSnapshot)(nil),         // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuredisksnapshot_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackInput.target:type_name -> dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot
-	2, // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotIacInput.target:type_name -> dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot
+	2, // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azuredatafactoryintegrationruntime
 spec:
@@ -39,6 +39,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - "created stopped and unbilled: node-hours bill only from START to STOP (Microsoft's status model -- billing starts at Starting, stops at Stopped), and starting is an operational action outside this manifest; while started, this preset's single Standard_D4_v3 Standard-edition license-included node bills \"0.969\" USD/hour (East US), around 707 USD for a full month left running"
-        - on the FIRST start Azure creates the SSISDB catalog database at pricing_tier S1 on your Azure SQL server -- from then on it bills continuously on that server's own component and survives stopping (and even deleting) the runtime
+        - on the FIRST start Azure creates the SSISDB catalog database at pricing_tier S1 on your Azure SQL server -- from then on it bills continuously on that server's own kind and survives stopping (and even deleting) the runtime
         - SSIS package executions also bill the factory's orchestration and external-activity meters per run
       notes: "Zero committed cost at deploy -- the manifest ships a stopped engine. The honest warning is the other direction: one start without a stop turns this into a round-the-clock node-hour bill plus a permanent S1 database; Microsoft's own guidance is to schedule start/stop around package runs."

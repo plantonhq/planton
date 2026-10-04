@@ -63,12 +63,12 @@ type Auth0PromptCustomText struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0PromptCustomText" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the prompt, the language, and the words to show.
 	Spec *Auth0PromptCustomTextSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the resource as applied, populated after deployment.
@@ -121,7 +121,7 @@ func (x *Auth0PromptCustomText) GetKind() string {
 	return ""
 }
 
-func (x *Auth0PromptCustomText) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0PromptCustomText) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -146,8 +146,8 @@ func (x *Auth0PromptCustomText) GetStatus() *Auth0PromptCustomTextStatus {
 // Populated by the deployment system.
 type Auth0PromptCustomTextStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the prompt and language managed.
-	Outputs       *Auth0PromptCustomTextStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the prompt and language managed.
+	Outputs       *Auth0PromptCustomTextOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -182,7 +182,7 @@ func (*Auth0PromptCustomTextStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0promptcustomtext_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0PromptCustomTextStatus) GetOutputs() *Auth0PromptCustomTextStackOutputs {
+func (x *Auth0PromptCustomTextStatus) GetOutputs() *Auth0PromptCustomTextOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -200,11 +200,11 @@ const file_catalog_auth0_auth0promptcustomtext_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15Auth0PromptCustomTextR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAuth0PromptCustomTextStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatusR\x06status\"\x87\x01\n" +
+	"\x1bAuth0PromptCustomTextStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.auth0.auth0promptcustomtext.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/auth0/auth0promptcustomtext/v1alpha1;auth0promptcustomtextv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Auth0.Auth0promptcustomtext.V1alpha1\xca\x020Dev\\Planton\\Auth0\\Auth0promptcustomtext\\V1alpha1\xe2\x02<Dev\\Planton\\Auth0\\Auth0promptcustomtext\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Auth0::Auth0promptcustomtext::V1alpha1b\x06proto3"
 
 var (
@@ -221,17 +221,17 @@ func file_catalog_auth0_auth0promptcustomtext_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_auth0_auth0promptcustomtext_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0promptcustomtext_v1alpha1_api_proto_goTypes = []any{
-	(*Auth0PromptCustomText)(nil),             // 0: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomText
-	(*Auth0PromptCustomTextStatus)(nil),       // 1: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*Auth0PromptCustomTextSpec)(nil),         // 3: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextSpec
-	(*Auth0PromptCustomTextStackOutputs)(nil), // 4: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStackOutputs
+	(*Auth0PromptCustomText)(nil),        // 0: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomText
+	(*Auth0PromptCustomTextStatus)(nil),  // 1: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*Auth0PromptCustomTextSpec)(nil),    // 3: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextSpec
+	(*Auth0PromptCustomTextOutputs)(nil), // 4: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextOutputs
 }
 var file_catalog_auth0_auth0promptcustomtext_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomText.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomText.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomText.spec:type_name -> dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextSpec
 	1, // 2: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomText.status:type_name -> dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatus
-	4, // 3: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatus.outputs:type_name -> dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStackOutputs
+	4, // 3: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStatus.outputs:type_name -> dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

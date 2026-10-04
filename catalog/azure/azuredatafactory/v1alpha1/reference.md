@@ -6,7 +6,7 @@
 
 **apiVersion**: `azure.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **AzureDataFactorySpec** defines an Azure Data Factory -- the
 factory is the workspace every other Data Factory resource lives

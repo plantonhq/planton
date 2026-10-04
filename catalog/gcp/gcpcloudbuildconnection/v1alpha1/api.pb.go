@@ -31,7 +31,7 @@ type GcpCloudBuildConnection struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpCloudBuildConnectionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpCloudBuildConnection) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudBuildConnection) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudBuildConnection) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpCloudBuildConnection) GetStatus() *GcpCloudBuildConnectionStatus {
 // gcp-cloud-build-connection status
 type GcpCloudBuildConnectionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpCloudBuildConnectionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpCloudBuildConnectionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpCloudBuildConnectionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudBuildConnectionStatus) GetOutputs() *GcpCloudBuildConnectionStackOutputs {
+func (x *GcpCloudBuildConnectionStatus) GetOutputs() *GcpCloudBuildConnectionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17GcpCloudBuildConnectionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatusR\x06status\"\x90\x01\n" +
-	"\x1dGcpCloudBuildConnectionStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatusR\x06status\"\x8b\x01\n" +
+	"\x1dGcpCloudBuildConnectionStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.gcp.gcpcloudbuildconnection.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpcloudbuildconnection/v1alpha1;gcpcloudbuildconnectionv1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpcloudbuildconnection.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpcloudbuildconnection\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpcloudbuildconnection\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpcloudbuildconnection::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCloudBuildConnection)(nil),             // 0: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnection
-	(*GcpCloudBuildConnectionStatus)(nil),       // 1: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCloudBuildConnectionSpec)(nil),         // 3: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionSpec
-	(*GcpCloudBuildConnectionStackOutputs)(nil), // 4: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStackOutputs
+	(*GcpCloudBuildConnection)(nil),        // 0: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnection
+	(*GcpCloudBuildConnectionStatus)(nil),  // 1: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCloudBuildConnectionSpec)(nil),    // 3: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionSpec
+	(*GcpCloudBuildConnectionOutputs)(nil), // 4: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionOutputs
 }
 var file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnection.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnection.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnection.spec:type_name -> dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionSpec
 	1, // 2: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnection.status:type_name -> dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatus
-	4, // 3: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatus.outputs:type_name -> dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStatus.outputs:type_name -> dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustDevicePostureRuleStackOutputs captures the observable
+// CloudflareZeroTrustDevicePostureRuleOutputs captures the observable
 // outputs after creating the posture rule.
-type CloudflareZeroTrustDevicePostureRuleStackOutputs struct {
+type CloudflareZeroTrustDevicePostureRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned UUID of the rule (what Access and Gateway
 	// policies reference).
@@ -32,20 +32,20 @@ type CloudflareZeroTrustDevicePostureRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustDevicePostureRuleStackOutputs) Reset() {
-	*x = CloudflareZeroTrustDevicePostureRuleStackOutputs{}
+func (x *CloudflareZeroTrustDevicePostureRuleOutputs) Reset() {
+	*x = CloudflareZeroTrustDevicePostureRuleOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustDevicePostureRuleStackOutputs) String() string {
+func (x *CloudflareZeroTrustDevicePostureRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustDevicePostureRuleStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustDevicePostureRuleOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustDevicePostureRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustDevicePostureRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *CloudflareZeroTrustDevicePostureRuleStackOutputs) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustDevicePostureRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustDevicePostureRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustDevicePostureRuleOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustDevicePostureRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustDevicePostureRuleStackOutputs) GetRuleId() string {
+func (x *CloudflareZeroTrustDevicePostureRuleOutputs) GetRuleId() string {
 	if x != nil {
 		return x.RuleId
 	}
@@ -73,8 +73,8 @@ var File_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_output
 
 const file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/cloudflare/cloudflarezerotrustdeviceposturerule/v1alpha1/outputs.proto\x12Ddev.planton.cloudflare.cloudflarezerotrustdeviceposturerule.v1alpha1\"K\n" +
-	"0CloudflareZeroTrustDevicePostureRuleStackOutputs\x12\x17\n" +
+	"Ncatalog/cloudflare/cloudflarezerotrustdeviceposturerule/v1alpha1/outputs.proto\x12Ddev.planton.cloudflare.cloudflarezerotrustdeviceposturerule.v1alpha1\"F\n" +
+	"+CloudflareZeroTrustDevicePostureRuleOutputs\x12\x17\n" +
 	"\arule_id\x18\x01 \x01(\tR\x06ruleIdB\x9a\x04\n" +
 	"Hcom.dev.planton.cloudflare.cloudflarezerotrustdeviceposturerule.v1alpha1B\fOutputsProtoP\x01Z\x8a\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustdeviceposturerule/v1alpha1;cloudflarezerotrustdeviceposturerulev1alpha1\xa2\x02\x04DPCC\xaa\x02DDev.Planton.Cloudflare.Cloudflarezerotrustdeviceposturerule.V1alpha1\xca\x02DDev\\Planton\\Cloudflare\\Cloudflarezerotrustdeviceposturerule\\V1alpha1\xe2\x02PDev\\Planton\\Cloudflare\\Cloudflarezerotrustdeviceposturerule\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Cloudflare::Cloudflarezerotrustdeviceposturerule::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outpu
 
 var file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustDevicePostureRuleStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdeviceposturerule.v1alpha1.CloudflareZeroTrustDevicePostureRuleStackOutputs
+	(*CloudflareZeroTrustDevicePostureRuleOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdeviceposturerule.v1alpha1.CloudflareZeroTrustDevicePostureRuleOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustdeviceposturerule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

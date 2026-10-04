@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpCertManagerIssuanceConfigStackInput struct {
+type GcpCertManagerIssuanceConfigIacInput struct {
 	state          protoimpl.MessageState        `protogen:"open.v1"`
 	Target         *GcpCertManagerIssuanceConfig `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig        `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpCertManagerIssuanceConfigStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCertManagerIssuanceConfigStackInput) Reset() {
-	*x = GcpCertManagerIssuanceConfigStackInput{}
+func (x *GcpCertManagerIssuanceConfigIacInput) Reset() {
+	*x = GcpCertManagerIssuanceConfigIacInput{}
 	mi := &file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCertManagerIssuanceConfigStackInput) String() string {
+func (x *GcpCertManagerIssuanceConfigIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCertManagerIssuanceConfigStackInput) ProtoMessage() {}
+func (*GcpCertManagerIssuanceConfigIacInput) ProtoMessage() {}
 
-func (x *GcpCertManagerIssuanceConfigStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCertManagerIssuanceConfigIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpCertManagerIssuanceConfigStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCertManagerIssuanceConfigStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCertManagerIssuanceConfigStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCertManagerIssuanceConfigIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCertManagerIssuanceConfigIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCertManagerIssuanceConfigStackInput) GetTarget() *GcpCertManagerIssuanceConfig {
+func (x *GcpCertManagerIssuanceConfigIacInput) GetTarget() *GcpCertManagerIssuanceConfig {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCertManagerIssuanceConfigStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCertManagerIssuanceConfigIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto protorefl
 
 const file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1/input.proto\x125dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1\x1a;catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe2\x01\n" +
-	"&GcpCertManagerIssuanceConfigStackInput\x12k\n" +
+	"=catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1/input.proto\x125dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1\x1a;catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe0\x01\n" +
+	"$GcpCertManagerIssuanceConfigIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	"9com.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_rawDescG
 
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCertManagerIssuanceConfigStackInput)(nil), // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackInput
-	(*GcpCertManagerIssuanceConfig)(nil),           // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig
-	(*gcp.GcpProviderConfig)(nil),                  // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCertManagerIssuanceConfigIacInput)(nil), // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigIacInput
+	(*GcpCertManagerIssuanceConfig)(nil),         // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig
+	(*gcp.GcpProviderConfig)(nil),                // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackInput.target:type_name -> dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig
-	2, // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigIacInput.target:type_name -> dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig
+	2, // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -65,12 +65,12 @@ type StripeShippingRate struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripeShippingRate" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the option's name, amount and delivery window.
 	Spec *StripeShippingRateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the rate as created, populated after deployment.
@@ -123,7 +123,7 @@ func (x *StripeShippingRate) GetKind() string {
 	return ""
 }
 
-func (x *StripeShippingRate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripeShippingRate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -148,8 +148,8 @@ func (x *StripeShippingRate) GetStatus() *StripeShippingRateStatus {
 // Populated by the deployment system.
 type StripeShippingRateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the rate's id and whether it is active.
-	Outputs       *StripeShippingRateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the rate's id and whether it is active.
+	Outputs       *StripeShippingRateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -184,7 +184,7 @@ func (*StripeShippingRateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeshippingrate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripeShippingRateStatus) GetOutputs() *StripeShippingRateStackOutputs {
+func (x *StripeShippingRateStatus) GetOutputs() *StripeShippingRateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -202,11 +202,11 @@ const file_catalog_stripe_stripeshippingrate_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12StripeShippingRateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatusR\x06status\"\x84\x01\n" +
-	"\x18StripeShippingRateStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackOutputsR\aoutputsB\xff\x02\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatusR\x06status\"\x7f\n" +
+	"\x18StripeShippingRateStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateOutputsR\aoutputsB\xff\x02\n" +
 	"2com.dev.planton.stripe.stripeshippingrate.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/stripe/stripeshippingrate/v1alpha1;stripeshippingratev1alpha1\xa2\x02\x04DPSS\xaa\x02.Dev.Planton.Stripe.Stripeshippingrate.V1alpha1\xca\x02.Dev\\Planton\\Stripe\\Stripeshippingrate\\V1alpha1\xe2\x02:Dev\\Planton\\Stripe\\Stripeshippingrate\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Stripe::Stripeshippingrate::V1alpha1b\x06proto3"
 
 var (
@@ -223,17 +223,17 @@ func file_catalog_stripe_stripeshippingrate_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_stripe_stripeshippingrate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripeshippingrate_v1alpha1_api_proto_goTypes = []any{
-	(*StripeShippingRate)(nil),             // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate
-	(*StripeShippingRateStatus)(nil),       // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripeShippingRateSpec)(nil),         // 3: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateSpec
-	(*StripeShippingRateStackOutputs)(nil), // 4: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackOutputs
+	(*StripeShippingRate)(nil),           // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate
+	(*StripeShippingRateStatus)(nil),     // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripeShippingRateSpec)(nil),       // 3: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateSpec
+	(*StripeShippingRateOutputs)(nil),    // 4: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateOutputs
 }
 var file_catalog_stripe_stripeshippingrate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate.spec:type_name -> dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateSpec
 	1, // 2: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate.status:type_name -> dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatus
-	4, // 3: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatus.outputs:type_name -> dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackOutputs
+	4, // 3: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStatus.outputs:type_name -> dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

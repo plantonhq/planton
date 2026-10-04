@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCostCategoryStackOutputs captures the observable state of the
+// AwsCostCategoryOutputs captures the observable state of the
 // cost category after apply.
-type AwsCostCategoryStackOutputs struct {
+type AwsCostCategoryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The category's ARN (also the provider's import ID).
 	CategoryArn string `protobuf:"bytes,1,opt,name=category_arn,json=categoryArn,proto3" json:"category_arn,omitempty"`
@@ -40,20 +40,20 @@ type AwsCostCategoryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCostCategoryStackOutputs) Reset() {
-	*x = AwsCostCategoryStackOutputs{}
+func (x *AwsCostCategoryOutputs) Reset() {
+	*x = AwsCostCategoryOutputs{}
 	mi := &file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCostCategoryStackOutputs) String() string {
+func (x *AwsCostCategoryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCostCategoryStackOutputs) ProtoMessage() {}
+func (*AwsCostCategoryOutputs) ProtoMessage() {}
 
-func (x *AwsCostCategoryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCostCategoryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *AwsCostCategoryStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCostCategoryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCostCategoryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCostCategoryOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCostCategoryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCostCategoryStackOutputs) GetCategoryArn() string {
+func (x *AwsCostCategoryOutputs) GetCategoryArn() string {
 	if x != nil {
 		return x.CategoryArn
 	}
 	return ""
 }
 
-func (x *AwsCostCategoryStackOutputs) GetCategoryName() string {
+func (x *AwsCostCategoryOutputs) GetCategoryName() string {
 	if x != nil {
 		return x.CategoryName
 	}
 	return ""
 }
 
-func (x *AwsCostCategoryStackOutputs) GetEffectiveStart() string {
+func (x *AwsCostCategoryOutputs) GetEffectiveStart() string {
 	if x != nil {
 		return x.EffectiveStart
 	}
 	return ""
 }
 
-func (x *AwsCostCategoryStackOutputs) GetEffectiveEnd() string {
+func (x *AwsCostCategoryOutputs) GetEffectiveEnd() string {
 	if x != nil {
 		return x.EffectiveEnd
 	}
@@ -102,8 +102,8 @@ var File_catalog_aws_awscostcategory_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awscostcategory/v1alpha1/outputs.proto\x12(dev.planton.aws.awscostcategory.v1alpha1\"\xb3\x01\n" +
-	"\x1bAwsCostCategoryStackOutputs\x12!\n" +
+	"2catalog/aws/awscostcategory/v1alpha1/outputs.proto\x12(dev.planton.aws.awscostcategory.v1alpha1\"\xae\x01\n" +
+	"\x16AwsCostCategoryOutputs\x12!\n" +
 	"\fcategory_arn\x18\x01 \x01(\tR\vcategoryArn\x12#\n" +
 	"\rcategory_name\x18\x02 \x01(\tR\fcategoryName\x12'\n" +
 	"\x0feffective_start\x18\x03 \x01(\tR\x0eeffectiveStart\x12#\n" +
@@ -124,7 +124,7 @@ func file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCostCategoryStackOutputs)(nil), // 0: dev.planton.aws.awscostcategory.v1alpha1.AwsCostCategoryStackOutputs
+	(*AwsCostCategoryOutputs)(nil), // 0: dev.planton.aws.awscostcategory.v1alpha1.AwsCostCategoryOutputs
 }
 var file_catalog_aws_awscostcategory_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

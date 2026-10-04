@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiDatasetStackOutputs captures the identity Google assigned the
+// GcpVertexAiDatasetOutputs captures the identity Google assigned the
 // dataset -- what a training job, pipeline, or labeling task names it by.
-type GcpVertexAiDatasetStackOutputs struct {
+type GcpVertexAiDatasetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project_number}/locations/{location}/datasets/{dataset_id}.
@@ -36,20 +36,20 @@ type GcpVertexAiDatasetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiDatasetStackOutputs) Reset() {
-	*x = GcpVertexAiDatasetStackOutputs{}
+func (x *GcpVertexAiDatasetOutputs) Reset() {
+	*x = GcpVertexAiDatasetOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiDatasetStackOutputs) String() string {
+func (x *GcpVertexAiDatasetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiDatasetStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiDatasetOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiDatasetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiDatasetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpVertexAiDatasetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiDatasetStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiDatasetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiDatasetOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiDatasetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiDatasetStackOutputs) GetName() string {
+func (x *GcpVertexAiDatasetOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDatasetStackOutputs) GetDatasetId() string {
+func (x *GcpVertexAiDatasetOutputs) GetDatasetId() string {
 	if x != nil {
 		return x.DatasetId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDatasetStackOutputs) GetLocation() string {
+func (x *GcpVertexAiDatasetOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpvertexaidataset/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpvertexaidataset.v1alpha1\"o\n" +
-	"\x1eGcpVertexAiDatasetStackOutputs\x12\x12\n" +
+	"5catalog/gcp/gcpvertexaidataset/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpvertexaidataset.v1alpha1\"j\n" +
+	"\x19GcpVertexAiDatasetOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"dataset_id\x18\x02 \x01(\tR\tdatasetId\x12\x1a\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiDatasetStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStackOutputs
+	(*GcpVertexAiDatasetOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetOutputs
 }
 var file_catalog_gcp_gcpvertexaidataset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

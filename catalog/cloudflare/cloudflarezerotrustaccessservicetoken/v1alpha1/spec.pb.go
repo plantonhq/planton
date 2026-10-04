@@ -32,7 +32,7 @@ const (
 //
 // THE SECRET IS RETURNED ONLY AT CREATION AND AT ROTATION -- Cloudflare never
 // returns it again on reads, and an imported token cannot recover it. Capture
-// the `client_secret` stack output into a secret store at deploy time; a lost
+// the `client_secret` output into a secret store at deploy time; a lost
 // secret means rotating the token.
 //
 // Rotation is first-class: increment client_secret_version to mint a new secret,
@@ -56,7 +56,7 @@ type CloudflareZeroTrustAccessServiceTokenSpec struct {
 	Duration string `protobuf:"bytes,4,opt,name=duration,proto3" json:"duration,omitempty"`
 	// Version number of the current client secret. Incrementing it triggers a
 	// ROTATION: Cloudflare mints a new secret (returned once in the
-	// client_secret stack output) and keeps accepting the previous secret until
+	// client_secret output) and keeps accepting the previous secret until
 	// previous_client_secret_expires_at. Leave unset until the first rotation
 	// (Cloudflare treats the initial secret as version 1). Creating a token
 	// with a higher version directly also works (measured live 2026-08-26);
@@ -149,7 +149,7 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_spec_
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/spec.proto\x12Edev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe1\v\n" +
+	"Lcatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/spec.proto\x12Edev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdb\v\n" +
 	")CloudflareZeroTrustAccessServiceTokenSpec\x12\x96\x01\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tBw\xbaHt\xba\x01q\n" +
@@ -157,8 +157,8 @@ const file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_spe
 	"\azone_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xd86\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12\x1b\n" +
 	"\x04name\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12\xdd\x01\n" +
 	"\bduration\x18\x04 \x01(\tB\xc0\x01\xbaH\xbc\x01\xba\x01\xb8\x01\n" +
-	"\x0fduration.format\x12Eduration must be a Go-style duration (e.g. 8760h, 2h45m) or 'forever'\x1a^this == '' || this == 'forever' || this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$')R\bduration\x12\xa6\x01\n" +
-	"\x15client_secret_version\x18\x05 \x01(\x05Bm\xbaH\x04\x1a\x02(\x01\xaa\xa6\x1dba rotation counter, not credential material -- the secret itself is the client_secret stack outputH\x00R\x13clientSecretVersion\x88\x01\x01\x12\xa3\x03\n" +
+	"\x0fduration.format\x12Eduration must be a Go-style duration (e.g. 8760h, 2h45m) or 'forever'\x1a^this == '' || this == 'forever' || this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$')R\bduration\x12\xa0\x01\n" +
+	"\x15client_secret_version\x18\x05 \x01(\x05Bg\xbaH\x04\x1a\x02(\x01\xaa\xa6\x1d\\a rotation counter, not credential material -- the secret itself is the client_secret outputH\x00R\x13clientSecretVersion\x88\x01\x01\x12\xa3\x03\n" +
 	"!previous_client_secret_expires_at\x18\x06 \x01(\tB\xd8\x02\xbaH\x90\x02\xba\x01\x8c\x02\n" +
 	")previous_client_secret_expires_at.rfc3339\x12cprevious_client_secret_expires_at must be an RFC3339 timestamp (e.g. 2026-09-01T00:00:00Z) or empty\x1azthis == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$')\xaa\xa6\x1d@an RFC3339 expiry for the previous secret, not the secret itselfR\x1dpreviousClientSecretExpiresAt:\xc6\x02\xbaH\xc2\x02\x1ao\n" +
 	"\x15spec.account_xor_zone\x12(set exactly one of account_id or zone_id\x1a,(this.account_id != '') != has(this.zone_id)\x1a\xce\x01\n" +

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryTriggerStackOutputs** captures the outputs from
+// **AzureDataFactoryTriggerOutputs** captures the outputs from
 // provisioning an Azure Data Factory trigger.
-type AzureDataFactoryTriggerStackOutputs struct {
+type AzureDataFactoryTriggerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The trigger's Azure Resource Manager ID
 	// ({factory_id}/triggers/{name}) -- the same ID shape for all four
@@ -36,20 +36,20 @@ type AzureDataFactoryTriggerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryTriggerStackOutputs) Reset() {
-	*x = AzureDataFactoryTriggerStackOutputs{}
+func (x *AzureDataFactoryTriggerOutputs) Reset() {
+	*x = AzureDataFactoryTriggerOutputs{}
 	mi := &file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryTriggerStackOutputs) String() string {
+func (x *AzureDataFactoryTriggerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryTriggerStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryTriggerOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryTriggerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryTriggerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureDataFactoryTriggerStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryTriggerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryTriggerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryTriggerOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryTriggerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryTriggerStackOutputs) GetTriggerId() string {
+func (x *AzureDataFactoryTriggerOutputs) GetTriggerId() string {
 	if x != nil {
 		return x.TriggerId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryTriggerStackOutputs) GetTriggerName() string {
+func (x *AzureDataFactoryTriggerOutputs) GetTriggerName() string {
 	if x != nil {
 		return x.TriggerName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azuredatafactorytrigger/v1alpha1/outputs.proto\x122dev.planton.azure.azuredatafactorytrigger.v1alpha1\"g\n" +
-	"#AzureDataFactoryTriggerStackOutputs\x12\x1d\n" +
+	"<catalog/azure/azuredatafactorytrigger/v1alpha1/outputs.proto\x122dev.planton.azure.azuredatafactorytrigger.v1alpha1\"b\n" +
+	"\x1eAzureDataFactoryTriggerOutputs\x12\x1d\n" +
 	"\n" +
 	"trigger_id\x18\x01 \x01(\tR\ttriggerId\x12!\n" +
 	"\ftrigger_name\x18\x02 \x01(\tR\vtriggerNameB\xa0\x03\n" +
@@ -105,7 +105,7 @@ func file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryTriggerStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerStackOutputs
+	(*AzureDataFactoryTriggerOutputs)(nil), // 0: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerOutputs
 }
 var file_catalog_azure_azuredatafactorytrigger_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

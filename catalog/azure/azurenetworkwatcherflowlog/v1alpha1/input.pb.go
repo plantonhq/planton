@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureNetworkWatcherFlowLogStackInput is the input to the IaC modules
+// AzureNetworkWatcherFlowLogIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureNetworkWatcherFlowLogStackInput struct {
+type AzureNetworkWatcherFlowLogIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Network Watcher flow log resource to deploy.
 	Target *AzureNetworkWatcherFlowLog `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureNetworkWatcherFlowLogStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureNetworkWatcherFlowLogStackInput) Reset() {
-	*x = AzureNetworkWatcherFlowLogStackInput{}
+func (x *AzureNetworkWatcherFlowLogIacInput) Reset() {
+	*x = AzureNetworkWatcherFlowLogIacInput{}
 	mi := &file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureNetworkWatcherFlowLogStackInput) String() string {
+func (x *AzureNetworkWatcherFlowLogIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureNetworkWatcherFlowLogStackInput) ProtoMessage() {}
+func (*AzureNetworkWatcherFlowLogIacInput) ProtoMessage() {}
 
-func (x *AzureNetworkWatcherFlowLogStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureNetworkWatcherFlowLogIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureNetworkWatcherFlowLogStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureNetworkWatcherFlowLogStackInput.ProtoReflect.Descriptor instead.
-func (*AzureNetworkWatcherFlowLogStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureNetworkWatcherFlowLogIacInput.ProtoReflect.Descriptor instead.
+func (*AzureNetworkWatcherFlowLogIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureNetworkWatcherFlowLogStackInput) GetTarget() *AzureNetworkWatcherFlowLog {
+func (x *AzureNetworkWatcherFlowLogIacInput) GetTarget() *AzureNetworkWatcherFlowLog {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureNetworkWatcherFlowLogStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureNetworkWatcherFlowLogIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto protorefl
 
 const file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurenetworkwatcherflowlog/v1alpha1/input.proto\x125dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1\x1a;catalog/azure/azurenetworkwatcherflowlog/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe2\x01\n" +
-	"$AzureNetworkWatcherFlowLogStackInput\x12i\n" +
+	"=catalog/azure/azurenetworkwatcherflowlog/v1alpha1/input.proto\x125dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1\x1a;catalog/azure/azurenetworkwatcherflowlog/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe0\x01\n" +
+	"\"AzureNetworkWatcherFlowLogIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xb3\x03\n" +
 	"9com.dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_rawDescG
 
 var file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_goTypes = []any{
-	(*AzureNetworkWatcherFlowLogStackInput)(nil), // 0: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogStackInput
-	(*AzureNetworkWatcherFlowLog)(nil),           // 1: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLog
-	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureNetworkWatcherFlowLogIacInput)(nil), // 0: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogIacInput
+	(*AzureNetworkWatcherFlowLog)(nil),         // 1: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLog
+	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurenetworkwatcherflowlog_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogStackInput.target:type_name -> dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLog
-	2, // 1: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogIacInput.target:type_name -> dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLog
+	2, // 1: dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

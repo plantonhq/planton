@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsLambdaLayerSpec defines one Lambda layer version - a shared code
 archive (libraries, custom runtimes, config files) that many Lambda

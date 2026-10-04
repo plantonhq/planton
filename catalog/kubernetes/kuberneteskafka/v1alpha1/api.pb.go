@@ -31,7 +31,7 @@ type KubernetesKafka struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKafkaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesKafka) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKafka) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKafka) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesKafka) GetStatus() *KubernetesKafkaStatus {
 // kafka-kubernetes status
 type KubernetesKafkaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKafkaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKafkaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesKafkaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafka_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKafkaStatus) GetOutputs() *KubernetesKafkaStackOutputs {
+func (x *KubernetesKafkaStatus) GetOutputs() *KubernetesKafkaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kuberneteskafka_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fKubernetesKafkaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12^\n" +
-	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStatusR\x06status\"\x7f\n" +
-	"\x15KubernetesKafkaStatus\x12f\n" +
-	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStatusR\x06status\"z\n" +
+	"\x15KubernetesKafkaStatus\x12a\n" +
+	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaOutputsR\aoutputsB\x82\x03\n" +
 	"3com.dev.planton.kubernetes.kuberneteskafka.v1alpha1B\bApiProtoP\x01Z`github.com/plantonhq/planton/catalog/kubernetes/kuberneteskafka/v1alpha1;kuberneteskafkav1alpha1\xa2\x02\x04DPKK\xaa\x02/Dev.Planton.Kubernetes.Kuberneteskafka.V1alpha1\xca\x02/Dev\\Planton\\Kubernetes\\Kuberneteskafka\\V1alpha1\xe2\x02;Dev\\Planton\\Kubernetes\\Kuberneteskafka\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Kubernetes::Kuberneteskafka::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kuberneteskafka_v1alpha1_api_proto_msgTypes = make([
 var file_catalog_kubernetes_kuberneteskafka_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesKafka)(nil),              // 0: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafka
 	(*KubernetesKafkaStatus)(nil),        // 1: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesKafkaSpec)(nil),          // 3: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaSpec
-	(*KubernetesKafkaStackOutputs)(nil),  // 4: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStackOutputs
+	(*KubernetesKafkaOutputs)(nil),       // 4: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaOutputs
 }
 var file_catalog_kubernetes_kuberneteskafka_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafka.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafka.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafka.spec:type_name -> dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafka.status:type_name -> dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

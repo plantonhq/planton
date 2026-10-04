@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureEventHubNamespaceCustomerManagedKeyStackInput is the input to the
+// AzureEventHubNamespaceCustomerManagedKeyIacInput is the input to the
 // IaC module. It contains the target resource and provider configuration.
-type AzureEventHubNamespaceCustomerManagedKeyStackInput struct {
+type AzureEventHubNamespaceCustomerManagedKeyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *AzureEventHubNamespaceCustomerManagedKey `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureEventHubNamespaceCustomerManagedKeyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackInput) Reset() {
-	*x = AzureEventHubNamespaceCustomerManagedKeyStackInput{}
+func (x *AzureEventHubNamespaceCustomerManagedKeyIacInput) Reset() {
+	*x = AzureEventHubNamespaceCustomerManagedKeyIacInput{}
 	mi := &file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackInput) String() string {
+func (x *AzureEventHubNamespaceCustomerManagedKeyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubNamespaceCustomerManagedKeyStackInput) ProtoMessage() {}
+func (*AzureEventHubNamespaceCustomerManagedKeyIacInput) ProtoMessage() {}
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubNamespaceCustomerManagedKeyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureEventHubNamespaceCustomerManagedKeyStackInput) ProtoReflect() prot
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubNamespaceCustomerManagedKeyStackInput.ProtoReflect.Descriptor instead.
-func (*AzureEventHubNamespaceCustomerManagedKeyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubNamespaceCustomerManagedKeyIacInput.ProtoReflect.Descriptor instead.
+func (*AzureEventHubNamespaceCustomerManagedKeyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackInput) GetTarget() *AzureEventHubNamespaceCustomerManagedKey {
+func (x *AzureEventHubNamespaceCustomerManagedKeyIacInput) GetTarget() *AzureEventHubNamespaceCustomerManagedKey {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureEventHubNamespaceCustomerManagedKeyIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_p
 
 const file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Kcatalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1/input.proto\x12Cdev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1\x1aIcatalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8d\x02\n" +
-	"2AzureEventHubNamespaceCustomerManagedKeyStackInput\x12\x85\x01\n" +
+	"Kcatalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1/input.proto\x12Cdev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1\x1aIcatalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8b\x02\n" +
+	"0AzureEventHubNamespaceCustomerManagedKeyIacInput\x12\x85\x01\n" +
 	"\x06target\x18\x01 \x01(\v2m.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x96\x04\n" +
 	"Gcom.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_
 
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_goTypes = []any{
-	(*AzureEventHubNamespaceCustomerManagedKeyStackInput)(nil), // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackInput
-	(*AzureEventHubNamespaceCustomerManagedKey)(nil),           // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey
-	(*azure.AzureProviderConfig)(nil),                          // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureEventHubNamespaceCustomerManagedKeyIacInput)(nil), // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyIacInput
+	(*AzureEventHubNamespaceCustomerManagedKey)(nil),         // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey
+	(*azure.AzureProviderConfig)(nil),                        // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackInput.target:type_name -> dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey
-	2, // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyIacInput.target:type_name -> dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey
+	2, // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-certificate-pack stack-input
-type CloudflareCertificatePackStackInput struct {
+// cloudflare-certificate-pack iac-input
+type CloudflareCertificatePackIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareCertificatePack `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareCertificatePackStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareCertificatePackStackInput) Reset() {
-	*x = CloudflareCertificatePackStackInput{}
+func (x *CloudflareCertificatePackIacInput) Reset() {
+	*x = CloudflareCertificatePackIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCertificatePackStackInput) String() string {
+func (x *CloudflareCertificatePackIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCertificatePackStackInput) ProtoMessage() {}
+func (*CloudflareCertificatePackIacInput) ProtoMessage() {}
 
-func (x *CloudflareCertificatePackStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCertificatePackIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareCertificatePackStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCertificatePackStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareCertificatePackStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCertificatePackIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareCertificatePackIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCertificatePackStackInput) GetTarget() *CloudflareCertificatePack {
+func (x *CloudflareCertificatePackIacInput) GetTarget() *CloudflareCertificatePack {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareCertificatePackStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareCertificatePackIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto proto
 
 const file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/cloudflare/cloudflarecertificatepack/v1alpha1/input.proto\x129dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1\x1a?catalog/cloudflare/cloudflarecertificatepack/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xee\x01\n" +
-	"#CloudflareCertificatePackStackInput\x12l\n" +
+	"Acatalog/cloudflare/cloudflarecertificatepack/v1alpha1/input.proto\x129dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1\x1a?catalog/cloudflare/cloudflarecertificatepack/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xec\x01\n" +
+	"!CloudflareCertificatePackIacInput\x12l\n" +
 	"\x06target\x18\x01 \x01(\v2T.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xca\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_rawD
 
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareCertificatePackStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackInput
+	(*CloudflareCertificatePackIacInput)(nil),   // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackIacInput
 	(*CloudflareCertificatePack)(nil),           // 1: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackInput.target:type_name -> dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack
-	2, // 1: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackIacInput.target:type_name -> dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack
+	2, // 1: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

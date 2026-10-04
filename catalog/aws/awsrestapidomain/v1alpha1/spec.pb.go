@@ -38,7 +38,7 @@ const (
 // The component bundles the domain, its base-path mappings, and - for
 // PRIVATE domains - the VPC-endpoint access associations. DNS is not
 // modeled here: point an AwsRoute53DnsRecord alias at the domain's
-// regional or CloudFront target (both are stack outputs).
+// regional or CloudFront target (both are outputs).
 //
 // Rule-based routing (an API Gateway v2 surface that also attaches to
 // v1 domains) stays on the AwsHttpApiDomain component; this component

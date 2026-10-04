@@ -29,7 +29,7 @@ Notes:
 - A group only accepts users of its own engine and region.
 - Memcached has no RBAC: user groups apply to Redis and Valkey only.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

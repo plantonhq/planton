@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsHttpApiVpcLinkStackOutputs captures observable identifiers from a
+// AwsHttpApiVpcLinkOutputs captures observable identifiers from a
 // provisioned API Gateway v2 VPC link. Private integrations on HTTP APIs
 // reference the link by its ID.
-type AwsHttpApiVpcLinkStackOutputs struct {
+type AwsHttpApiVpcLinkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPC link ID (e.g. "abc123"). This is the identifier private
 	// integrations set as their connection_id.
@@ -36,20 +36,20 @@ type AwsHttpApiVpcLinkStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsHttpApiVpcLinkStackOutputs) Reset() {
-	*x = AwsHttpApiVpcLinkStackOutputs{}
+func (x *AwsHttpApiVpcLinkOutputs) Reset() {
+	*x = AwsHttpApiVpcLinkOutputs{}
 	mi := &file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsHttpApiVpcLinkStackOutputs) String() string {
+func (x *AwsHttpApiVpcLinkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsHttpApiVpcLinkStackOutputs) ProtoMessage() {}
+func (*AwsHttpApiVpcLinkOutputs) ProtoMessage() {}
 
-func (x *AwsHttpApiVpcLinkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsHttpApiVpcLinkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsHttpApiVpcLinkStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsHttpApiVpcLinkStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsHttpApiVpcLinkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsHttpApiVpcLinkOutputs.ProtoReflect.Descriptor instead.
+func (*AwsHttpApiVpcLinkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsHttpApiVpcLinkStackOutputs) GetVpcLinkId() string {
+func (x *AwsHttpApiVpcLinkOutputs) GetVpcLinkId() string {
 	if x != nil {
 		return x.VpcLinkId
 	}
 	return ""
 }
 
-func (x *AwsHttpApiVpcLinkStackOutputs) GetVpcLinkArn() string {
+func (x *AwsHttpApiVpcLinkOutputs) GetVpcLinkArn() string {
 	if x != nil {
 		return x.VpcLinkArn
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awshttpapivpclink/v1alpha1/outputs.proto\x12*dev.planton.aws.awshttpapivpclink.v1alpha1\"a\n" +
-	"\x1dAwsHttpApiVpcLinkStackOutputs\x12\x1e\n" +
+	"4catalog/aws/awshttpapivpclink/v1alpha1/outputs.proto\x12*dev.planton.aws.awshttpapivpclink.v1alpha1\"\\\n" +
+	"\x18AwsHttpApiVpcLinkOutputs\x12\x1e\n" +
 	"\vvpc_link_id\x18\x01 \x01(\tR\tvpcLinkId\x12 \n" +
 	"\fvpc_link_arn\x18\x02 \x01(\tR\n" +
 	"vpcLinkArnB\xea\x02\n" +
@@ -105,7 +105,7 @@ func file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsHttpApiVpcLinkStackOutputs)(nil), // 0: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkStackOutputs
+	(*AwsHttpApiVpcLinkOutputs)(nil), // 0: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkOutputs
 }
 var file_catalog_aws_awshttpapivpclink_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

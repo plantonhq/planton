@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpHierarchicalFirewallPolicySpec creates one hierarchical firewall
 policy: an ordered set of firewall rules that lives on the organization
@@ -56,7 +56,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcphierarchicalfirewallpolicy
+    e2e-catalog-kind: gcphierarchicalfirewallpolicy
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ClientStackInput is the input message for the Auth0 Client IaC modules.
+// Auth0ClientIacInput is the input message for the Auth0 Client IaC modules.
 // This message aggregates all information needed to deploy an Auth0 Application:
 // - The target Auth0Client resource specification
 // - The Auth0 provider configuration (credentials for API access)
 //
 // The IaC modules (Pulumi and Terraform) receive this as their input and use it
 // to create/update the Auth0 application via the Auth0 Management API.
-type Auth0ClientStackInput struct {
+type Auth0ClientIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0Client resource to deploy.
 	// Contains the complete specification of the desired application configuration.
@@ -43,20 +43,20 @@ type Auth0ClientStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0ClientStackInput) Reset() {
-	*x = Auth0ClientStackInput{}
+func (x *Auth0ClientIacInput) Reset() {
+	*x = Auth0ClientIacInput{}
 	mi := &file_catalog_auth0_auth0client_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ClientStackInput) String() string {
+func (x *Auth0ClientIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ClientStackInput) ProtoMessage() {}
+func (*Auth0ClientIacInput) ProtoMessage() {}
 
-func (x *Auth0ClientStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0ClientIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0client_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,19 +68,19 @@ func (x *Auth0ClientStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ClientStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0ClientStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ClientIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0ClientIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0client_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ClientStackInput) GetTarget() *Auth0Client {
+func (x *Auth0ClientIacInput) GetTarget() *Auth0Client {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0ClientStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0ClientIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -91,8 +91,8 @@ var File_catalog_auth0_auth0client_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_auth0_auth0client_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/auth0/auth0client/v1alpha1/input.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a,catalog/auth0/auth0client/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xb5\x01\n" +
-	"\x15Auth0ClientStackInput\x12K\n" +
+	".catalog/auth0/auth0client/v1alpha1/input.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a,catalog/auth0/auth0client/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xb3\x01\n" +
+	"\x13Auth0ClientIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.auth0.auth0client.v1alpha1.Auth0ClientR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xca\x02\n" +
 	"*com.dev.planton.auth0.auth0client.v1alpha1B\n" +
@@ -112,13 +112,13 @@ func file_catalog_auth0_auth0client_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_auth0_auth0client_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0client_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0ClientStackInput)(nil),     // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackInput
+	(*Auth0ClientIacInput)(nil),       // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientIacInput
 	(*Auth0Client)(nil),               // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0Client
 	(*auth0.Auth0ProviderConfig)(nil), // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0client_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackInput.target:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0Client
-	2, // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientIacInput.target:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0Client
+	2, // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

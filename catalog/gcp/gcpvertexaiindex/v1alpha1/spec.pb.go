@@ -311,7 +311,7 @@ type GcpVertexAiIndexSpec struct {
 	// one-field diff on the next plan.
 	//
 	// A plain string (not a reference) because the gs:// directory URI
-	// has no matching stack output shape on the GCS kinds; compose by
+	// has no matching output shape on the GCS kinds; compose by
 	// writing the bucket name into the URI.
 	ContentsDeltaUri string `protobuf:"bytes,6,opt,name=contents_delta_uri,json=contentsDeltaUri,proto3" json:"contents_delta_uri,omitempty"`
 	// If true, an update that carries contents_delta_uri REPLACES the

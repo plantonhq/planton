@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanVolumeStackOutputs captures the resulting volume info after provisioning.
-type DigitalOceanVolumeStackOutputs struct {
+// DigitalOceanVolumeOutputs captures the resulting volume info after provisioning.
+type DigitalOceanVolumeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (UUID) of the created DigitalOcean volume. The Droplet kind's
 	// volume_ids list consumes this output to attach the volume.
@@ -33,20 +33,20 @@ type DigitalOceanVolumeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanVolumeStackOutputs) Reset() {
-	*x = DigitalOceanVolumeStackOutputs{}
+func (x *DigitalOceanVolumeOutputs) Reset() {
+	*x = DigitalOceanVolumeOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanVolumeStackOutputs) String() string {
+func (x *DigitalOceanVolumeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanVolumeStackOutputs) ProtoMessage() {}
+func (*DigitalOceanVolumeOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanVolumeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanVolumeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanVolumeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanVolumeStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanVolumeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanVolumeOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanVolumeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanVolumeStackOutputs) GetVolumeId() string {
+func (x *DigitalOceanVolumeOutputs) GetVolumeId() string {
 	if x != nil {
 		return x.VolumeId
 	}
 	return ""
 }
 
-func (x *DigitalOceanVolumeStackOutputs) GetUrn() string {
+func (x *DigitalOceanVolumeOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto protoref
 
 const file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/digitalocean/digitaloceanvolume/v1alpha1/outputs.proto\x124dev.planton.digitalocean.digitaloceanvolume.v1alpha1\"O\n" +
-	"\x1eDigitalOceanVolumeStackOutputs\x12\x1b\n" +
+	">catalog/digitalocean/digitaloceanvolume/v1alpha1/outputs.proto\x124dev.planton.digitalocean.digitaloceanvolume.v1alpha1\"J\n" +
+	"\x19DigitalOceanVolumeOutputs\x12\x1b\n" +
 	"\tvolume_id\x18\x01 \x01(\tR\bvolumeId\x12\x10\n" +
 	"\x03urn\x18\x02 \x01(\tR\x03urnB\xa7\x03\n" +
 	"8com.dev.planton.digitalocean.digitaloceanvolume.v1alpha1B\fOutputsProtoP\x01Zhgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanvolume/v1alpha1;digitaloceanvolumev1alpha1\xa2\x02\x04DPDD\xaa\x024Dev.Planton.Digitalocean.Digitaloceanvolume.V1alpha1\xca\x024Dev\\Planton\\Digitalocean\\Digitaloceanvolume\\V1alpha1\xe2\x02@Dev\\Planton\\Digitalocean\\Digitaloceanvolume\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Digitalocean::Digitaloceanvolume::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanVolumeStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanvolume.v1alpha1.DigitalOceanVolumeStackOutputs
+	(*DigitalOceanVolumeOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanvolume.v1alpha1.DigitalOceanVolumeOutputs
 }
 var file_catalog_digitalocean_digitaloceanvolume_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

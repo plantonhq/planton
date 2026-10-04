@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZoneSettingsStackInput is the input to the IaC module.
+// CloudflareZoneSettingsIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareZoneSettingsStackInput struct {
+type CloudflareZoneSettingsIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *CloudflareZoneSettings `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareZoneSettingsStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareZoneSettingsStackInput) Reset() {
-	*x = CloudflareZoneSettingsStackInput{}
+func (x *CloudflareZoneSettingsIacInput) Reset() {
+	*x = CloudflareZoneSettingsIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZoneSettingsStackInput) String() string {
+func (x *CloudflareZoneSettingsIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZoneSettingsStackInput) ProtoMessage() {}
+func (*CloudflareZoneSettingsIacInput) ProtoMessage() {}
 
-func (x *CloudflareZoneSettingsStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZoneSettingsIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareZoneSettingsStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZoneSettingsStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareZoneSettingsStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZoneSettingsIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareZoneSettingsIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZoneSettingsStackInput) GetTarget() *CloudflareZoneSettings {
+func (x *CloudflareZoneSettingsIacInput) GetTarget() *CloudflareZoneSettings {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareZoneSettingsStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareZoneSettingsIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto protoref
 
 const file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/cloudflare/cloudflarezonesettings/v1alpha1/input.proto\x126dev.planton.cloudflare.cloudflarezonesettings.v1alpha1\x1a<catalog/cloudflare/cloudflarezonesettings/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe5\x01\n" +
-	" CloudflareZoneSettingsStackInput\x12f\n" +
+	">catalog/cloudflare/cloudflarezonesettings/v1alpha1/input.proto\x126dev.planton.cloudflare.cloudflarezonesettings.v1alpha1\x1a<catalog/cloudflare/cloudflarezonesettings/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe3\x01\n" +
+	"\x1eCloudflareZoneSettingsIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	":com.dev.planton.cloudflare.cloudflarezonesettings.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_rawDesc
 
 var file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareZoneSettingsStackInput)(nil),    // 0: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsStackInput
+	(*CloudflareZoneSettingsIacInput)(nil),      // 0: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsIacInput
 	(*CloudflareZoneSettings)(nil),              // 1: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettings
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsStackInput.target:type_name -> dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettings
-	2, // 1: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsIacInput.target:type_name -> dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettings
+	2, // 1: dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneSettingsIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureApplicationGatewayStackOutputs** captures the outputs of
+// **AzureApplicationGatewayOutputs** captures the outputs of
 // provisioning an Azure Application Gateway.
 //
 // The name-keyed maps are the composition seams: backend-pool membership
@@ -34,7 +34,7 @@ const (
 // A public frontend's ADDRESS is not exported here -- it lives on the
 // referenced AzurePublicIp resource (its ip_address output), which DNS
 // records point at.
-type AzureApplicationGatewayStackOutputs struct {
+type AzureApplicationGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Application Gateway.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/applicationGateways/{name}
@@ -60,20 +60,20 @@ type AzureApplicationGatewayStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureApplicationGatewayStackOutputs) Reset() {
-	*x = AzureApplicationGatewayStackOutputs{}
+func (x *AzureApplicationGatewayOutputs) Reset() {
+	*x = AzureApplicationGatewayOutputs{}
 	mi := &file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureApplicationGatewayStackOutputs) String() string {
+func (x *AzureApplicationGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureApplicationGatewayStackOutputs) ProtoMessage() {}
+func (*AzureApplicationGatewayOutputs) ProtoMessage() {}
 
-func (x *AzureApplicationGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureApplicationGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,47 +85,47 @@ func (x *AzureApplicationGatewayStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureApplicationGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureApplicationGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureApplicationGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzureApplicationGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureApplicationGatewayStackOutputs) GetApplicationGatewayId() string {
+func (x *AzureApplicationGatewayOutputs) GetApplicationGatewayId() string {
 	if x != nil {
 		return x.ApplicationGatewayId
 	}
 	return ""
 }
 
-func (x *AzureApplicationGatewayStackOutputs) GetApplicationGatewayName() string {
+func (x *AzureApplicationGatewayOutputs) GetApplicationGatewayName() string {
 	if x != nil {
 		return x.ApplicationGatewayName
 	}
 	return ""
 }
 
-func (x *AzureApplicationGatewayStackOutputs) GetBackendAddressPoolIds() map[string]string {
+func (x *AzureApplicationGatewayOutputs) GetBackendAddressPoolIds() map[string]string {
 	if x != nil {
 		return x.BackendAddressPoolIds
 	}
 	return nil
 }
 
-func (x *AzureApplicationGatewayStackOutputs) GetFrontendIpConfigurationIds() map[string]string {
+func (x *AzureApplicationGatewayOutputs) GetFrontendIpConfigurationIds() map[string]string {
 	if x != nil {
 		return x.FrontendIpConfigurationIds
 	}
 	return nil
 }
 
-func (x *AzureApplicationGatewayStackOutputs) GetPrivateIpAddress() string {
+func (x *AzureApplicationGatewayOutputs) GetPrivateIpAddress() string {
 	if x != nil {
 		return x.PrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzureApplicationGatewayStackOutputs) GetPrivateIpAddresses() []string {
+func (x *AzureApplicationGatewayOutputs) GetPrivateIpAddresses() []string {
 	if x != nil {
 		return x.PrivateIpAddresses
 	}
@@ -136,12 +136,12 @@ var File_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azureapplicationgateway/v1alpha1/outputs.proto\x122dev.planton.azure.azureapplicationgateway.v1alpha1\"\xf9\x05\n" +
-	"#AzureApplicationGatewayStackOutputs\x124\n" +
+	"<catalog/azure/azureapplicationgateway/v1alpha1/outputs.proto\x122dev.planton.azure.azureapplicationgateway.v1alpha1\"\xea\x05\n" +
+	"\x1eAzureApplicationGatewayOutputs\x124\n" +
 	"\x16application_gateway_id\x18\x01 \x01(\tR\x14applicationGatewayId\x128\n" +
-	"\x18application_gateway_name\x18\x02 \x01(\tR\x16applicationGatewayName\x12\xab\x01\n" +
-	"\x18backend_address_pool_ids\x18\x03 \x03(\v2r.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.BackendAddressPoolIdsEntryR\x15backendAddressPoolIds\x12\xba\x01\n" +
-	"\x1dfrontend_ip_configuration_ids\x18\x04 \x03(\v2w.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.FrontendIpConfigurationIdsEntryR\x1afrontendIpConfigurationIds\x12,\n" +
+	"\x18application_gateway_name\x18\x02 \x01(\tR\x16applicationGatewayName\x12\xa6\x01\n" +
+	"\x18backend_address_pool_ids\x18\x03 \x03(\v2m.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.BackendAddressPoolIdsEntryR\x15backendAddressPoolIds\x12\xb5\x01\n" +
+	"\x1dfrontend_ip_configuration_ids\x18\x04 \x03(\v2r.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.FrontendIpConfigurationIdsEntryR\x1afrontendIpConfigurationIds\x12,\n" +
 	"\x12private_ip_address\x18\x05 \x01(\tR\x10privateIpAddress\x120\n" +
 	"\x14private_ip_addresses\x18\x06 \x03(\tR\x12privateIpAddresses\x1aH\n" +
 	"\x1aBackendAddressPoolIdsEntry\x12\x10\n" +
@@ -166,13 +166,13 @@ func file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureApplicationGatewayStackOutputs)(nil), // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs
-	nil, // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.BackendAddressPoolIdsEntry
-	nil, // 2: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.FrontendIpConfigurationIdsEntry
+	(*AzureApplicationGatewayOutputs)(nil), // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs
+	nil,                                    // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.BackendAddressPoolIdsEntry
+	nil,                                    // 2: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.FrontendIpConfigurationIdsEntry
 }
 var file_catalog_azure_azureapplicationgateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.backend_address_pool_ids:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.BackendAddressPoolIdsEntry
-	2, // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.frontend_ip_configuration_ids:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs.FrontendIpConfigurationIdsEntry
+	1, // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.backend_address_pool_ids:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.BackendAddressPoolIdsEntry
+	2, // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.frontend_ip_configuration_ids:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs.FrontendIpConfigurationIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

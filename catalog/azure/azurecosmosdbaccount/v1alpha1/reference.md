@@ -763,7 +763,7 @@ account.
 Whether key- and connection-string-based (local) authentication works
 at all. Disable to force every data-plane caller through Entra ID and
 Cosmos DB's data-plane RBAC -- the keyless posture. The account keys
-in the stack outputs stop authenticating when this is false.
+in the outputs stop authenticating when this is false.
 
 - default: `true`
 

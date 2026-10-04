@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsbedrockagentcoretools
 spec:
@@ -29,7 +29,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each browser session bills $0.0895 per vCPU-hour of actual CPU plus $0.00945 per GB-hour of peak memory, per second across the whole session lifetime -- the pricing page's own example runs 100K ten-minute sessions to $1,226.67 monthly, all of it traffic-driven
-        - session recordings write to the referenced AwsS3Bucket, whose storage and request meters bill on that component and grow until its lifecycle rules prune them
+        - session recordings write to the referenced AwsS3Bucket, whose storage and request meters bill on that kind and grow until its lifecycle rules prune them
         - the docs_login profile stores nothing at create; once sessions save state, its artifacts (cookies, local storage) bill at Amazon S3 Standard rates (a meter AWS started April 15, 2026) monthly while they exist -- usage-created state, not manifest-committed spend
         - network data transfer bills at standard EC2 rates as sessions browse
         - no permanent free allotment exists for tool sessions -- the up-to-$200 AWS Free Tier credit for new customers is a one-time trial, not a tier

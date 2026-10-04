@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-bigquery-reservation-group stack-input
-type GcpBigQueryReservationGroupStackInput struct {
+// gcp-bigquery-reservation-group iac-input
+type GcpBigQueryReservationGroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpBigQueryReservationGroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpBigQueryReservationGroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryReservationGroupStackInput) Reset() {
-	*x = GcpBigQueryReservationGroupStackInput{}
+func (x *GcpBigQueryReservationGroupIacInput) Reset() {
+	*x = GcpBigQueryReservationGroupIacInput{}
 	mi := &file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryReservationGroupStackInput) String() string {
+func (x *GcpBigQueryReservationGroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryReservationGroupStackInput) ProtoMessage() {}
+func (*GcpBigQueryReservationGroupIacInput) ProtoMessage() {}
 
-func (x *GcpBigQueryReservationGroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryReservationGroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpBigQueryReservationGroupStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryReservationGroupStackInput.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryReservationGroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryReservationGroupIacInput.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryReservationGroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryReservationGroupStackInput) GetTarget() *GcpBigQueryReservationGroup {
+func (x *GcpBigQueryReservationGroupIacInput) GetTarget() *GcpBigQueryReservationGroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpBigQueryReservationGroupStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpBigQueryReservationGroupIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto protorefle
 
 const file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/input.proto\x124dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1\x1a:catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xdf\x01\n" +
-	"%GcpBigQueryReservationGroupStackInput\x12i\n" +
+	"<catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/input.proto\x124dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1\x1a:catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xdd\x01\n" +
+	"#GcpBigQueryReservationGroupIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"8com.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_goTypes = []any{
-	(*GcpBigQueryReservationGroupStackInput)(nil), // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStackInput
-	(*GcpBigQueryReservationGroup)(nil),           // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup
-	(*gcp.GcpProviderConfig)(nil),                 // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpBigQueryReservationGroupIacInput)(nil), // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupIacInput
+	(*GcpBigQueryReservationGroup)(nil),         // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup
+	(*gcp.GcpProviderConfig)(nil),               // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStackInput.target:type_name -> dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup
-	2, // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupIacInput.target:type_name -> dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup
+	2, // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

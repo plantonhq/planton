@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsWafRegexPatternSetStackOutputs captures observable identifiers from a
+// AwsWafRegexPatternSetOutputs captures observable identifiers from a
 // provisioned WAFv2 regex pattern set.
 //
 // The primary output is `regex_pattern_set_arn` — the value a web ACL's
 // regex_pattern_set_reference statement (AwsWafWebAcl) points at to match
 // request components against this set's expressions.
-type AwsWafRegexPatternSetStackOutputs struct {
+type AwsWafRegexPatternSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name of the regex pattern set
 	// (arn:aws:wafv2:<region>:<account>:<scope>/regexpatternset/<name>/<id>).
@@ -42,20 +42,20 @@ type AwsWafRegexPatternSetStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsWafRegexPatternSetStackOutputs) Reset() {
-	*x = AwsWafRegexPatternSetStackOutputs{}
+func (x *AwsWafRegexPatternSetOutputs) Reset() {
+	*x = AwsWafRegexPatternSetOutputs{}
 	mi := &file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsWafRegexPatternSetStackOutputs) String() string {
+func (x *AwsWafRegexPatternSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsWafRegexPatternSetStackOutputs) ProtoMessage() {}
+func (*AwsWafRegexPatternSetOutputs) ProtoMessage() {}
 
-func (x *AwsWafRegexPatternSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsWafRegexPatternSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AwsWafRegexPatternSetStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsWafRegexPatternSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsWafRegexPatternSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsWafRegexPatternSetOutputs.ProtoReflect.Descriptor instead.
+func (*AwsWafRegexPatternSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsWafRegexPatternSetStackOutputs) GetRegexPatternSetArn() string {
+func (x *AwsWafRegexPatternSetOutputs) GetRegexPatternSetArn() string {
 	if x != nil {
 		return x.RegexPatternSetArn
 	}
 	return ""
 }
 
-func (x *AwsWafRegexPatternSetStackOutputs) GetRegexPatternSetId() string {
+func (x *AwsWafRegexPatternSetOutputs) GetRegexPatternSetId() string {
 	if x != nil {
 		return x.RegexPatternSetId
 	}
 	return ""
 }
 
-func (x *AwsWafRegexPatternSetStackOutputs) GetRegexPatternSetName() string {
+func (x *AwsWafRegexPatternSetOutputs) GetRegexPatternSetName() string {
 	if x != nil {
 		return x.RegexPatternSetName
 	}
@@ -97,8 +97,8 @@ var File_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awswafregexpatternset/v1alpha1/outputs.proto\x12.dev.planton.aws.awswafregexpatternset.v1alpha1\"\xbc\x01\n" +
-	"!AwsWafRegexPatternSetStackOutputs\x121\n" +
+	"8catalog/aws/awswafregexpatternset/v1alpha1/outputs.proto\x12.dev.planton.aws.awswafregexpatternset.v1alpha1\"\xb7\x01\n" +
+	"\x1cAwsWafRegexPatternSetOutputs\x121\n" +
 	"\x15regex_pattern_set_arn\x18\x01 \x01(\tR\x12regexPatternSetArn\x12/\n" +
 	"\x14regex_pattern_set_id\x18\x02 \x01(\tR\x11regexPatternSetId\x123\n" +
 	"\x16regex_pattern_set_name\x18\x03 \x01(\tR\x13regexPatternSetNameB\x86\x03\n" +
@@ -118,7 +118,7 @@ func file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsWafRegexPatternSetStackOutputs)(nil), // 0: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetStackOutputs
+	(*AwsWafRegexPatternSetOutputs)(nil), // 0: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetOutputs
 }
 var file_catalog_aws_awswafregexpatternset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

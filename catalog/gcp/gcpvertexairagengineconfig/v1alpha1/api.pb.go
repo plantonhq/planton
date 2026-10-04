@@ -31,7 +31,7 @@ type GcpVertexAiRagEngineConfig struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiRagEngineConfigSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiRagEngineConfig) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiRagEngineConfig) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiRagEngineConfig) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiRagEngineConfig) GetStatus() *GcpVertexAiRagEngineConfigStat
 // gcp-vertex-ai-rag-engine-config status
 type GcpVertexAiRagEngineConfigStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiRagEngineConfigStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiRagEngineConfigOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiRagEngineConfigStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiRagEngineConfigStatus) GetOutputs() *GcpVertexAiRagEngineConfigStackOutputs {
+func (x *GcpVertexAiRagEngineConfigStatus) GetOutputs() *GcpVertexAiRagEngineConfigOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aGcpVertexAiRagEngineConfigR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatusR\x06status\"\x99\x01\n" +
-	" GcpVertexAiRagEngineConfigStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatusR\x06status\"\x94\x01\n" +
+	" GcpVertexAiRagEngineConfigStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/gcp/gcpvertexairagengineconfig/v1alpha1;gcpvertexairagengineconfigv1alpha1\xa2\x02\x04DPGG\xaa\x023Dev.Planton.Gcp.Gcpvertexairagengineconfig.V1alpha1\xca\x023Dev\\Planton\\Gcp\\Gcpvertexairagengineconfig\\V1alpha1\xe2\x02?Dev\\Planton\\Gcp\\Gcpvertexairagengineconfig\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Gcp::Gcpvertexairagengineconfig::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiRagEngineConfig)(nil),             // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig
-	(*GcpVertexAiRagEngineConfigStatus)(nil),       // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiRagEngineConfigSpec)(nil),         // 3: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigSpec
-	(*GcpVertexAiRagEngineConfigStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackOutputs
+	(*GcpVertexAiRagEngineConfig)(nil),        // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig
+	(*GcpVertexAiRagEngineConfigStatus)(nil),  // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiRagEngineConfigSpec)(nil),    // 3: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigSpec
+	(*GcpVertexAiRagEngineConfigOutputs)(nil), // 4: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigOutputs
 }
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig.spec:type_name -> dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigSpec
 	1, // 2: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig.status:type_name -> dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatus
-	4, // 3: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatus.outputs:type_name -> dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStatus.outputs:type_name -> dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

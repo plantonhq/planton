@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-colab-schedule stack-input
-type GcpColabScheduleStackInput struct {
+// gcp-colab-schedule iac-input
+type GcpColabScheduleIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpColabSchedule `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpColabScheduleStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpColabScheduleStackInput) Reset() {
-	*x = GcpColabScheduleStackInput{}
+func (x *GcpColabScheduleIacInput) Reset() {
+	*x = GcpColabScheduleIacInput{}
 	mi := &file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpColabScheduleStackInput) String() string {
+func (x *GcpColabScheduleIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpColabScheduleStackInput) ProtoMessage() {}
+func (*GcpColabScheduleIacInput) ProtoMessage() {}
 
-func (x *GcpColabScheduleStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpColabScheduleIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpColabScheduleStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpColabScheduleStackInput.ProtoReflect.Descriptor instead.
-func (*GcpColabScheduleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpColabScheduleIacInput.ProtoReflect.Descriptor instead.
+func (*GcpColabScheduleIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpColabScheduleStackInput) GetTarget() *GcpColabSchedule {
+func (x *GcpColabScheduleIacInput) GetTarget() *GcpColabSchedule {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpColabScheduleStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpColabScheduleIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpcolabschedule/v1alpha1/input.proto\x12)dev.planton.gcp.gcpcolabschedule.v1alpha1\x1a/catalog/gcp/gcpcolabschedule/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbe\x01\n" +
-	"\x1aGcpColabScheduleStackInput\x12S\n" +
+	"1catalog/gcp/gcpcolabschedule/v1alpha1/input.proto\x12)dev.planton.gcp.gcpcolabschedule.v1alpha1\x1a/catalog/gcp/gcpcolabschedule/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbc\x01\n" +
+	"\x18GcpColabScheduleIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xe1\x02\n" +
 	"-com.dev.planton.gcp.gcpcolabschedule.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_goTypes = []any{
-	(*GcpColabScheduleStackInput)(nil), // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackInput
-	(*GcpColabSchedule)(nil),           // 1: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule
-	(*gcp.GcpProviderConfig)(nil),      // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpColabScheduleIacInput)(nil), // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleIacInput
+	(*GcpColabSchedule)(nil),         // 1: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule
+	(*gcp.GcpProviderConfig)(nil),    // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackInput.target:type_name -> dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule
-	2, // 1: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleIacInput.target:type_name -> dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule
+	2, // 1: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

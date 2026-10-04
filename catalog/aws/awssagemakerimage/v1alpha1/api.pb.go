@@ -27,7 +27,7 @@ type AwsSagemakerImage struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsSagemakerImageSpec        `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsSagemakerImageStatus      `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsSagemakerImage) GetKind() string {
 	return ""
 }
 
-func (x *AwsSagemakerImage) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSagemakerImage) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsSagemakerImage) GetStatus() *AwsSagemakerImageStatus {
 }
 
 type AwsSagemakerImageStatus struct {
-	state         protoimpl.MessageState         `protogen:"open.v1"`
-	Outputs       *AwsSagemakerImageStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState    `protogen:"open.v1"`
+	Outputs       *AwsSagemakerImageOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsSagemakerImageStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerimage_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSagemakerImageStatus) GetOutputs() *AwsSagemakerImageStackOutputs {
+func (x *AwsSagemakerImageStatus) GetOutputs() *AwsSagemakerImageOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awssagemakerimage_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsSagemakerImageR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatusR\x06status\"~\n" +
-	"\x17AwsSagemakerImageStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatusR\x06status\"y\n" +
+	"\x17AwsSagemakerImageStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awssagemakerimage.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awssagemakerimage/v1alpha1;awssagemakerimagev1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awssagemakerimage.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awssagemakerimage\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awssagemakerimage\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awssagemakerimage::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awssagemakerimage_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awssagemakerimage_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssagemakerimage_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSagemakerImage)(nil),             // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage
-	(*AwsSagemakerImageStatus)(nil),       // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSagemakerImageSpec)(nil),         // 3: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageSpec
-	(*AwsSagemakerImageStackOutputs)(nil), // 4: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs
+	(*AwsSagemakerImage)(nil),            // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage
+	(*AwsSagemakerImageStatus)(nil),      // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSagemakerImageSpec)(nil),        // 3: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageSpec
+	(*AwsSagemakerImageOutputs)(nil),     // 4: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs
 }
 var file_catalog_aws_awssagemakerimage_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage.spec:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageSpec
 	1, // 2: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage.status:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatus
-	4, // 3: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatus.outputs:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs
+	4, // 3: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStatus.outputs:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

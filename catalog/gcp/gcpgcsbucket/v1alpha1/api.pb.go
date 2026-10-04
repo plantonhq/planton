@@ -31,7 +31,7 @@ type GcpGcsBucket struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpGcsBucketSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpGcsBucket) GetKind() string {
 	return ""
 }
 
-func (x *GcpGcsBucket) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpGcsBucket) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpGcsBucket) GetStatus() *GcpGcsBucketStatus {
 // gcp-gcs-bucket status
 type GcpGcsBucketStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpGcsBucketStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpGcsBucketOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpGcsBucketStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgcsbucket_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpGcsBucketStatus) GetOutputs() *GcpGcsBucketStackOutputs {
+func (x *GcpGcsBucketStatus) GetOutputs() *GcpGcsBucketOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpgcsbucket_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fGcpGcsBucketR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStatusR\x06status\"o\n" +
-	"\x12GcpGcsBucketStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackOutputsR\aoutputsB\xc3\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStatusR\x06status\"j\n" +
+	"\x12GcpGcsBucketStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketOutputsR\aoutputsB\xc3\x02\n" +
 	")com.dev.planton.gcp.gcpgcsbucket.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/gcp/gcpgcsbucket/v1alpha1;gcpgcsbucketv1alpha1\xa2\x02\x04DPGG\xaa\x02%Dev.Planton.Gcp.Gcpgcsbucket.V1alpha1\xca\x02%Dev\\Planton\\Gcp\\Gcpgcsbucket\\V1alpha1\xe2\x021Dev\\Planton\\Gcp\\Gcpgcsbucket\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Gcp::Gcpgcsbucket::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpgcsbucket_v1alpha1_api_proto_msgTypes = make([]protoimpl
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_api_proto_goTypes = []any{
 	(*GcpGcsBucket)(nil),                 // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket
 	(*GcpGcsBucketStatus)(nil),           // 1: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpGcsBucketSpec)(nil),             // 3: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketSpec
-	(*GcpGcsBucketStackOutputs)(nil),     // 4: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackOutputs
+	(*GcpGcsBucketOutputs)(nil),          // 4: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketOutputs
 }
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket.spec:type_name -> dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketSpec
 	1, // 2: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket.status:type_name -> dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStatus
-	4, // 3: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStatus.outputs:type_name -> dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackOutputs
+	4, // 3: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStatus.outputs:type_name -> dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

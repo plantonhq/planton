@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDnsZoneStackOutputs** captures the outputs of provisioning an
+// **AzureDnsZoneOutputs** captures the outputs of provisioning an
 // Azure public DNS zone.
 //
 // `zone_name` (with `resource_group_name`) is the join key AzureDnsRecord
@@ -31,7 +31,7 @@ const (
 // zone as a whole (Front Door custom-domain validation, AKS web-app
 // routing). `nameservers` is the delegation handoff: the four hosts to
 // configure at the domain registrar.
-type AzureDnsZoneStackOutputs struct {
+type AzureDnsZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the DNS zone.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{name}
@@ -56,20 +56,20 @@ type AzureDnsZoneStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AzureDnsZoneStackOutputs) Reset() {
-	*x = AzureDnsZoneStackOutputs{}
+func (x *AzureDnsZoneOutputs) Reset() {
+	*x = AzureDnsZoneOutputs{}
 	mi := &file_catalog_azure_azurednszone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDnsZoneStackOutputs) String() string {
+func (x *AzureDnsZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDnsZoneStackOutputs) ProtoMessage() {}
+func (*AzureDnsZoneOutputs) ProtoMessage() {}
 
-func (x *AzureDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDnsZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurednszone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,40 +81,40 @@ func (x *AzureDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDnsZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDnsZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDnsZoneOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDnsZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurednszone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDnsZoneStackOutputs) GetZoneId() string {
+func (x *AzureDnsZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AzureDnsZoneStackOutputs) GetZoneName() string {
+func (x *AzureDnsZoneOutputs) GetZoneName() string {
 	if x != nil {
 		return x.ZoneName
 	}
 	return ""
 }
 
-func (x *AzureDnsZoneStackOutputs) GetResourceGroupName() string {
+func (x *AzureDnsZoneOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
 	return ""
 }
 
-func (x *AzureDnsZoneStackOutputs) GetNameservers() []string {
+func (x *AzureDnsZoneOutputs) GetNameservers() []string {
 	if x != nil {
 		return x.Nameservers
 	}
 	return nil
 }
 
-func (x *AzureDnsZoneStackOutputs) GetMaxNumberOfRecordSets() int64 {
+func (x *AzureDnsZoneOutputs) GetMaxNumberOfRecordSets() int64 {
 	if x != nil {
 		return x.MaxNumberOfRecordSets
 	}
@@ -125,8 +125,8 @@ var File_catalog_azure_azurednszone_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_azure_azurednszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/azure/azurednszone/v1alpha1/outputs.proto\x12'dev.planton.azure.azurednszone.v1alpha1\"\xdc\x01\n" +
-	"\x18AzureDnsZoneStackOutputs\x12\x17\n" +
+	"1catalog/azure/azurednszone/v1alpha1/outputs.proto\x12'dev.planton.azure.azurednszone.v1alpha1\"\xd7\x01\n" +
+	"\x13AzureDnsZoneOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12\x1b\n" +
 	"\tzone_name\x18\x02 \x01(\tR\bzoneName\x12.\n" +
 	"\x13resource_group_name\x18\x03 \x01(\tR\x11resourceGroupName\x12 \n" +
@@ -148,7 +148,7 @@ func file_catalog_azure_azurednszone_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_azure_azurednszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurednszone_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDnsZoneStackOutputs)(nil), // 0: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStackOutputs
+	(*AzureDnsZoneOutputs)(nil), // 0: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneOutputs
 }
 var file_catalog_azure_azurednszone_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

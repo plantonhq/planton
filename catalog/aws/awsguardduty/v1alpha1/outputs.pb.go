@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsGuardDutyStackOutputs captures the observable state of the
+// AwsGuardDutyOutputs captures the observable state of the
 // region's GuardDuty posture after apply.
-type AwsGuardDutyStackOutputs struct {
+type AwsGuardDutyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The detector's AWS-assigned ID (also the provider's import ID and
 	// the key every satellite composes its import ID from).
@@ -45,20 +45,20 @@ type AwsGuardDutyStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AwsGuardDutyStackOutputs) Reset() {
-	*x = AwsGuardDutyStackOutputs{}
+func (x *AwsGuardDutyOutputs) Reset() {
+	*x = AwsGuardDutyOutputs{}
 	mi := &file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsGuardDutyStackOutputs) String() string {
+func (x *AwsGuardDutyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsGuardDutyStackOutputs) ProtoMessage() {}
+func (*AwsGuardDutyOutputs) ProtoMessage() {}
 
-func (x *AwsGuardDutyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsGuardDutyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,47 +70,47 @@ func (x *AwsGuardDutyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsGuardDutyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsGuardDutyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsGuardDutyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsGuardDutyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsGuardDutyStackOutputs) GetDetectorId() string {
+func (x *AwsGuardDutyOutputs) GetDetectorId() string {
 	if x != nil {
 		return x.DetectorId
 	}
 	return ""
 }
 
-func (x *AwsGuardDutyStackOutputs) GetDetectorArn() string {
+func (x *AwsGuardDutyOutputs) GetDetectorArn() string {
 	if x != nil {
 		return x.DetectorArn
 	}
 	return ""
 }
 
-func (x *AwsGuardDutyStackOutputs) GetAccountId() string {
+func (x *AwsGuardDutyOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *AwsGuardDutyStackOutputs) GetIpSetIds() map[string]string {
+func (x *AwsGuardDutyOutputs) GetIpSetIds() map[string]string {
 	if x != nil {
 		return x.IpSetIds
 	}
 	return nil
 }
 
-func (x *AwsGuardDutyStackOutputs) GetThreatIntelSetIds() map[string]string {
+func (x *AwsGuardDutyOutputs) GetThreatIntelSetIds() map[string]string {
 	if x != nil {
 		return x.ThreatIntelSetIds
 	}
 	return nil
 }
 
-func (x *AwsGuardDutyStackOutputs) GetPublishingDestinationId() string {
+func (x *AwsGuardDutyOutputs) GetPublishingDestinationId() string {
 	if x != nil {
 		return x.PublishingDestinationId
 	}
@@ -121,16 +121,16 @@ var File_catalog_aws_awsguardduty_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsguardduty/v1alpha1/outputs.proto\x12%dev.planton.aws.awsguardduty.v1alpha1\"\xb3\x04\n" +
-	"\x18AwsGuardDutyStackOutputs\x12\x1f\n" +
+	"/catalog/aws/awsguardduty/v1alpha1/outputs.proto\x12%dev.planton.aws.awsguardduty.v1alpha1\"\xa4\x04\n" +
+	"\x13AwsGuardDutyOutputs\x12\x1f\n" +
 	"\vdetector_id\x18\x01 \x01(\tR\n" +
 	"detectorId\x12!\n" +
 	"\fdetector_arn\x18\x02 \x01(\tR\vdetectorArn\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x03 \x01(\tR\taccountId\x12k\n" +
+	"account_id\x18\x03 \x01(\tR\taccountId\x12f\n" +
 	"\n" +
-	"ip_set_ids\x18\x04 \x03(\v2M.dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.IpSetIdsEntryR\bipSetIds\x12\x87\x01\n" +
-	"\x14threat_intel_set_ids\x18\x05 \x03(\v2V.dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.ThreatIntelSetIdsEntryR\x11threatIntelSetIds\x12:\n" +
+	"ip_set_ids\x18\x04 \x03(\v2H.dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.IpSetIdsEntryR\bipSetIds\x12\x82\x01\n" +
+	"\x14threat_intel_set_ids\x18\x05 \x03(\v2Q.dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.ThreatIntelSetIdsEntryR\x11threatIntelSetIds\x12:\n" +
 	"\x19publishing_destination_id\x18\x06 \x01(\tR\x17publishingDestinationId\x1a;\n" +
 	"\rIpSetIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -154,13 +154,13 @@ func file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsGuardDutyStackOutputs)(nil), // 0: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs
-	nil,                              // 1: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.IpSetIdsEntry
-	nil,                              // 2: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.ThreatIntelSetIdsEntry
+	(*AwsGuardDutyOutputs)(nil), // 0: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs
+	nil,                         // 1: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.IpSetIdsEntry
+	nil,                         // 2: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.ThreatIntelSetIdsEntry
 }
 var file_catalog_aws_awsguardduty_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.ip_set_ids:type_name -> dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.IpSetIdsEntry
-	2, // 1: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.threat_intel_set_ids:type_name -> dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyStackOutputs.ThreatIntelSetIdsEntry
+	1, // 0: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.ip_set_ids:type_name -> dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.IpSetIdsEntry
+	2, // 1: dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.threat_intel_set_ids:type_name -> dev.planton.aws.awsguardduty.v1alpha1.AwsGuardDutyOutputs.ThreatIntelSetIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

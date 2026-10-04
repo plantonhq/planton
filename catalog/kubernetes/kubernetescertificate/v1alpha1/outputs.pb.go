@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesCertificateStackOutputs captures observable outputs after
+// KubernetesCertificateOutputs captures observable outputs after
 // the Certificate is created.
-type KubernetesCertificateStackOutputs struct {
+type KubernetesCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace where the Certificate resource was created.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -36,20 +36,20 @@ type KubernetesCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesCertificateStackOutputs) Reset() {
-	*x = KubernetesCertificateStackOutputs{}
+func (x *KubernetesCertificateOutputs) Reset() {
+	*x = KubernetesCertificateOutputs{}
 	mi := &file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCertificateStackOutputs) String() string {
+func (x *KubernetesCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCertificateStackOutputs) ProtoMessage() {}
+func (*KubernetesCertificateOutputs) ProtoMessage() {}
 
-func (x *KubernetesCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *KubernetesCertificateStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCertificateStackOutputs) GetNamespace() string {
+func (x *KubernetesCertificateOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesCertificateStackOutputs) GetCertificateName() string {
+func (x *KubernetesCertificateOutputs) GetCertificateName() string {
 	if x != nil {
 		return x.CertificateName
 	}
 	return ""
 }
 
-func (x *KubernetesCertificateStackOutputs) GetSecretName() string {
+func (x *KubernetesCertificateOutputs) GetSecretName() string {
 	if x != nil {
 		return x.SecretName
 	}
@@ -91,8 +91,8 @@ var File_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto protore
 
 const file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetescertificate/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetescertificate.v1alpha1\"\x8d\x01\n" +
-	"!KubernetesCertificateStackOutputs\x12\x1c\n" +
+	"?catalog/kubernetes/kubernetescertificate/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetescertificate.v1alpha1\"\x88\x01\n" +
+	"\x1cKubernetesCertificateOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12)\n" +
 	"\x10certificate_name\x18\x02 \x01(\tR\x0fcertificateName\x12\x1f\n" +
 	"\vsecret_name\x18\x03 \x01(\tR\n" +
@@ -113,7 +113,7 @@ func file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesCertificateStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStackOutputs
+	(*KubernetesCertificateOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateOutputs
 }
 var file_catalog_kubernetes_kubernetescertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

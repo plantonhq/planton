@@ -2,12 +2,12 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcostestimatemodel/v1/spec.proto
+// source: finops/catalogkindcostestimatemodel/v1/spec.proto
 
-package componentcostestimatemodelv1
+package catalogkindcostestimatemodelv1
 
 import (
-	v1 "github.com/plantonhq/planton/finops/componentcostestimate/v1"
+	v1 "github.com/plantonhq/planton/finops/catalogkindcostestimate/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -22,36 +22,36 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentCostEstimateModelSpec holds one quantity model per catalog
+// CatalogKindCostEstimateModelSpec holds one quantity model per catalog
 // preset. Authoring contract: quantities are decimal STRINGS (never YAML
 // floats), every quantity line defends its derivation in quantity_basis
-// prose, every sku_meter must be declared by the component's cost.yaml,
+// prose, every sku_meter must be declared by the kind's cost.yaml,
 // and every price reference must resolve to a PriceBook entry in the
-// component's provider book -- the estimate generator enforces all of it.
-type ComponentCostEstimateModelSpec struct {
+// kind's provider book -- the estimate generator enforces all of it.
+type CatalogKindCostEstimateModelSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// One quantity model per preset shipped by the component, keyed by the
+	// One quantity model per preset shipped by the kind, keyed by the
 	// preset file stem. A preset without a model simply gets no estimate.
 	Presets       []*PresetEstimateModel `protobuf:"bytes,1,rep,name=presets,proto3" json:"presets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCostEstimateModelSpec) Reset() {
-	*x = ComponentCostEstimateModelSpec{}
-	mi := &file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostEstimateModelSpec) Reset() {
+	*x = CatalogKindCostEstimateModelSpec{}
+	mi := &file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCostEstimateModelSpec) String() string {
+func (x *CatalogKindCostEstimateModelSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCostEstimateModelSpec) ProtoMessage() {}
+func (*CatalogKindCostEstimateModelSpec) ProtoMessage() {}
 
-func (x *ComponentCostEstimateModelSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostEstimateModelSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,12 +62,12 @@ func (x *ComponentCostEstimateModelSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCostEstimateModelSpec.ProtoReflect.Descriptor instead.
-func (*ComponentCostEstimateModelSpec) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimatemodel_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCostEstimateModelSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindCostEstimateModelSpec) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCostEstimateModelSpec) GetPresets() []*PresetEstimateModel {
+func (x *CatalogKindCostEstimateModelSpec) GetPresets() []*PresetEstimateModel {
 	if x != nil {
 		return x.Presets
 	}
@@ -79,12 +79,12 @@ func (x *ComponentCostEstimateModelSpec) GetPresets() []*PresetEstimateModel {
 // the arithmetic.
 type PresetEstimateModel struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The preset's file stem under the component's presets/ directory, e.g.
+	// The preset's file stem under the kind's presets/ directory, e.g.
 	// "02-production-ha" for presets/02-production-ha.yaml.
 	Preset string `protobuf:"bytes,1,opt,name=preset,proto3" json:"preset,omitempty"`
 	// The region whose list prices this estimate uses, e.g. "us-east-1".
 	// Every referenced price-book entry must be priced for this region or
-	// priced globally. Empty only for cluster-capacity components, which
+	// priced globally. Empty only for cluster-capacity kinds, which
 	// price nothing regional.
 	RegionAssumption string `protobuf:"bytes,2,opt,name=region_assumption,json=regionAssumption,proto3" json:"region_assumption,omitempty"`
 	// ISO 4217 currency of the estimate ("USD"). Every referenced
@@ -96,12 +96,12 @@ type PresetEstimateModel struct {
 	// so every quantity is reproducible.
 	HoursPerMonth int32 `protobuf:"varint,4,opt,name=hours_per_month,json=hoursPerMonth,proto3" json:"hours_per_month,omitempty"`
 	// The metered consumptions, one per priced functionality. Empty for
-	// cluster-capacity components (which state a capacity_footprint
+	// cluster-capacity kinds (which state a capacity_footprint
 	// instead) and for presets with no committed always-on spend (their
 	// generated estimate totals to zero). Author in any order; the
 	// generated estimate orders lines largest cost first.
 	QuantityLines []*QuantityLine `protobuf:"bytes,5,rep,name=quantity_lines,json=quantityLines,proto3" json:"quantity_lines,omitempty"`
-	// For cluster-capacity components only: the cluster resources the
+	// For cluster-capacity kinds only: the cluster resources the
 	// preset reserves, stated as capacity rather than dollars. Copied
 	// verbatim into the generated estimate.
 	CapacityFootprint *v1.CapacityFootprint `protobuf:"bytes,6,opt,name=capacity_footprint,json=capacityFootprint,proto3" json:"capacity_footprint,omitempty"`
@@ -120,7 +120,7 @@ type PresetEstimateModel struct {
 
 func (x *PresetEstimateModel) Reset() {
 	*x = PresetEstimateModel{}
-	mi := &file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -132,7 +132,7 @@ func (x *PresetEstimateModel) String() string {
 func (*PresetEstimateModel) ProtoMessage() {}
 
 func (x *PresetEstimateModel) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -145,7 +145,7 @@ func (x *PresetEstimateModel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PresetEstimateModel.ProtoReflect.Descriptor instead.
 func (*PresetEstimateModel) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimatemodel_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PresetEstimateModel) GetPreset() string {
@@ -210,12 +210,12 @@ func (x *PresetEstimateModel) GetNotes() string {
 type QuantityLine struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The functionality being metered (FOCUS SkuMeter). Must match a
-	// baseline charge or cost driver sku_meter in the component's
+	// baseline charge or cost driver sku_meter in the kind's
 	// cost.yaml -- a model cannot price a meter the cost profile does not
 	// declare.
 	SkuMeter string `protobuf:"bytes,1,opt,name=sku_meter,json=skuMeter,proto3" json:"sku_meter,omitempty"`
 	// The slug name of the PriceBook entry that prices this line, resolved
-	// in the component's provider book (e.g. "alb-hours-us-east-1"). The
+	// in the kind's provider book (e.g. "alb-hours-us-east-1"). The
 	// entry supplies service_name, pricing_unit, the unit price, its
 	// source, and its retrieval date -- this model never restates them.
 	Price string `protobuf:"bytes,2,opt,name=price,proto3" json:"price,omitempty"`
@@ -232,7 +232,7 @@ type QuantityLine struct {
 
 func (x *QuantityLine) Reset() {
 	*x = QuantityLine{}
-	mi := &file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -244,7 +244,7 @@ func (x *QuantityLine) String() string {
 func (*QuantityLine) ProtoMessage() {}
 
 func (x *QuantityLine) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -257,7 +257,7 @@ func (x *QuantityLine) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuantityLine.ProtoReflect.Descriptor instead.
 func (*QuantityLine) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimatemodel_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *QuantityLine) GetSkuMeter() string {
@@ -288,20 +288,20 @@ func (x *QuantityLine) GetQuantityBasis() string {
 	return ""
 }
 
-var File_finops_componentcostestimatemodel_v1_spec_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcostestimatemodel_v1_spec_proto protoreflect.FileDescriptor
 
-const file_finops_componentcostestimatemodel_v1_spec_proto_rawDesc = "" +
+const file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/finops/componentcostestimatemodel/v1/spec.proto\x120dev.planton.finops.componentcostestimatemodel.v1\x1a*finops/componentcostestimate/v1/spec.proto\"\x81\x01\n" +
-	"\x1eComponentCostEstimateModelSpec\x12_\n" +
-	"\apresets\x18\x01 \x03(\v2E.dev.planton.finops.componentcostestimatemodel.v1.PresetEstimateModelR\apresets\"\xaa\x03\n" +
+	"1finops/catalogkindcostestimatemodel/v1/spec.proto\x122dev.planton.finops.catalogkindcostestimatemodel.v1\x1a,finops/catalogkindcostestimate/v1/spec.proto\"\x85\x01\n" +
+	" CatalogKindCostEstimateModelSpec\x12a\n" +
+	"\apresets\x18\x01 \x03(\v2G.dev.planton.finops.catalogkindcostestimatemodel.v1.PresetEstimateModelR\apresets\"\xae\x03\n" +
 	"\x13PresetEstimateModel\x12\x16\n" +
 	"\x06preset\x18\x01 \x01(\tR\x06preset\x12+\n" +
 	"\x11region_assumption\x18\x02 \x01(\tR\x10regionAssumption\x12\x1a\n" +
 	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12&\n" +
-	"\x0fhours_per_month\x18\x04 \x01(\x05R\rhoursPerMonth\x12e\n" +
-	"\x0equantity_lines\x18\x05 \x03(\v2>.dev.planton.finops.componentcostestimatemodel.v1.QuantityLineR\rquantityLines\x12m\n" +
-	"\x12capacity_footprint\x18\x06 \x01(\v2>.dev.planton.finops.componentcostestimate.v1.CapacityFootprintR\x11capacityFootprint\x12\x1e\n" +
+	"\x0fhours_per_month\x18\x04 \x01(\x05R\rhoursPerMonth\x12g\n" +
+	"\x0equantity_lines\x18\x05 \x03(\v2@.dev.planton.finops.catalogkindcostestimatemodel.v1.QuantityLineR\rquantityLines\x12o\n" +
+	"\x12capacity_footprint\x18\x06 \x01(\v2@.dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprintR\x11capacityFootprint\x12\x1e\n" +
 	"\n" +
 	"exclusions\x18\a \x03(\tR\n" +
 	"exclusions\x12\x14\n" +
@@ -310,32 +310,32 @@ const file_finops_componentcostestimatemodel_v1_spec_proto_rawDesc = "" +
 	"\tsku_meter\x18\x01 \x01(\tR\bskuMeter\x12\x14\n" +
 	"\x05price\x18\x02 \x01(\tR\x05price\x12)\n" +
 	"\x10pricing_quantity\x18\x03 \x01(\tR\x0fpricingQuantity\x12%\n" +
-	"\x0equantity_basis\x18\x04 \x01(\tR\rquantityBasisB\x86\x03\n" +
-	"4com.dev.planton.finops.componentcostestimatemodel.v1B\tSpecProtoP\x01Z^github.com/plantonhq/planton/finops/componentcostestimatemodel/v1;componentcostestimatemodelv1\xa2\x02\x04DPFC\xaa\x020Dev.Planton.Finops.Componentcostestimatemodel.V1\xca\x020Dev\\Planton\\Finops\\Componentcostestimatemodel\\V1\xe2\x02<Dev\\Planton\\Finops\\Componentcostestimatemodel\\V1\\GPBMetadata\xea\x024Dev::Planton::Finops::Componentcostestimatemodel::V1b\x06proto3"
+	"\x0equantity_basis\x18\x04 \x01(\tR\rquantityBasisB\x94\x03\n" +
+	"6com.dev.planton.finops.catalogkindcostestimatemodel.v1B\tSpecProtoP\x01Zbgithub.com/plantonhq/planton/finops/catalogkindcostestimatemodel/v1;catalogkindcostestimatemodelv1\xa2\x02\x04DPFC\xaa\x022Dev.Planton.Finops.Catalogkindcostestimatemodel.V1\xca\x022Dev\\Planton\\Finops\\Catalogkindcostestimatemodel\\V1\xe2\x02>Dev\\Planton\\Finops\\Catalogkindcostestimatemodel\\V1\\GPBMetadata\xea\x026Dev::Planton::Finops::Catalogkindcostestimatemodel::V1b\x06proto3"
 
 var (
-	file_finops_componentcostestimatemodel_v1_spec_proto_rawDescOnce sync.Once
-	file_finops_componentcostestimatemodel_v1_spec_proto_rawDescData []byte
+	file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescData []byte
 )
 
-func file_finops_componentcostestimatemodel_v1_spec_proto_rawDescGZIP() []byte {
-	file_finops_componentcostestimatemodel_v1_spec_proto_rawDescOnce.Do(func() {
-		file_finops_componentcostestimatemodel_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcostestimatemodel_v1_spec_proto_rawDesc), len(file_finops_componentcostestimatemodel_v1_spec_proto_rawDesc)))
+func file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDesc)))
 	})
-	return file_finops_componentcostestimatemodel_v1_spec_proto_rawDescData
+	return file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDescData
 }
 
-var file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_finops_componentcostestimatemodel_v1_spec_proto_goTypes = []any{
-	(*ComponentCostEstimateModelSpec)(nil), // 0: dev.planton.finops.componentcostestimatemodel.v1.ComponentCostEstimateModelSpec
-	(*PresetEstimateModel)(nil),            // 1: dev.planton.finops.componentcostestimatemodel.v1.PresetEstimateModel
-	(*QuantityLine)(nil),                   // 2: dev.planton.finops.componentcostestimatemodel.v1.QuantityLine
-	(*v1.CapacityFootprint)(nil),           // 3: dev.planton.finops.componentcostestimate.v1.CapacityFootprint
+var file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_finops_catalogkindcostestimatemodel_v1_spec_proto_goTypes = []any{
+	(*CatalogKindCostEstimateModelSpec)(nil), // 0: dev.planton.finops.catalogkindcostestimatemodel.v1.CatalogKindCostEstimateModelSpec
+	(*PresetEstimateModel)(nil),              // 1: dev.planton.finops.catalogkindcostestimatemodel.v1.PresetEstimateModel
+	(*QuantityLine)(nil),                     // 2: dev.planton.finops.catalogkindcostestimatemodel.v1.QuantityLine
+	(*v1.CapacityFootprint)(nil),             // 3: dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprint
 }
-var file_finops_componentcostestimatemodel_v1_spec_proto_depIdxs = []int32{
-	1, // 0: dev.planton.finops.componentcostestimatemodel.v1.ComponentCostEstimateModelSpec.presets:type_name -> dev.planton.finops.componentcostestimatemodel.v1.PresetEstimateModel
-	2, // 1: dev.planton.finops.componentcostestimatemodel.v1.PresetEstimateModel.quantity_lines:type_name -> dev.planton.finops.componentcostestimatemodel.v1.QuantityLine
-	3, // 2: dev.planton.finops.componentcostestimatemodel.v1.PresetEstimateModel.capacity_footprint:type_name -> dev.planton.finops.componentcostestimate.v1.CapacityFootprint
+var file_finops_catalogkindcostestimatemodel_v1_spec_proto_depIdxs = []int32{
+	1, // 0: dev.planton.finops.catalogkindcostestimatemodel.v1.CatalogKindCostEstimateModelSpec.presets:type_name -> dev.planton.finops.catalogkindcostestimatemodel.v1.PresetEstimateModel
+	2, // 1: dev.planton.finops.catalogkindcostestimatemodel.v1.PresetEstimateModel.quantity_lines:type_name -> dev.planton.finops.catalogkindcostestimatemodel.v1.QuantityLine
+	3, // 2: dev.planton.finops.catalogkindcostestimatemodel.v1.PresetEstimateModel.capacity_footprint:type_name -> dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprint
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -343,26 +343,26 @@ var file_finops_componentcostestimatemodel_v1_spec_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcostestimatemodel_v1_spec_proto_init() }
-func file_finops_componentcostestimatemodel_v1_spec_proto_init() {
-	if File_finops_componentcostestimatemodel_v1_spec_proto != nil {
+func init() { file_finops_catalogkindcostestimatemodel_v1_spec_proto_init() }
+func file_finops_catalogkindcostestimatemodel_v1_spec_proto_init() {
+	if File_finops_catalogkindcostestimatemodel_v1_spec_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcostestimatemodel_v1_spec_proto_rawDesc), len(file_finops_componentcostestimatemodel_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostestimatemodel_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcostestimatemodel_v1_spec_proto_goTypes,
-		DependencyIndexes: file_finops_componentcostestimatemodel_v1_spec_proto_depIdxs,
-		MessageInfos:      file_finops_componentcostestimatemodel_v1_spec_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcostestimatemodel_v1_spec_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcostestimatemodel_v1_spec_proto_depIdxs,
+		MessageInfos:      file_finops_catalogkindcostestimatemodel_v1_spec_proto_msgTypes,
 	}.Build()
-	File_finops_componentcostestimatemodel_v1_spec_proto = out.File
-	file_finops_componentcostestimatemodel_v1_spec_proto_goTypes = nil
-	file_finops_componentcostestimatemodel_v1_spec_proto_depIdxs = nil
+	File_finops_catalogkindcostestimatemodel_v1_spec_proto = out.File
+	file_finops_catalogkindcostestimatemodel_v1_spec_proto_goTypes = nil
+	file_finops_catalogkindcostestimatemodel_v1_spec_proto_depIdxs = nil
 }

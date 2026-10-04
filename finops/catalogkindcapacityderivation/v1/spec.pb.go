@@ -2,12 +2,12 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcapacityderivation/v1/spec.proto
+// source: finops/catalogkindcapacityderivation/v1/spec.proto
 
-package componentcapacityderivationv1
+package catalogkindcapacityderivationv1
 
 import (
-	v1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
+	v1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -22,27 +22,27 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentCapacityDerivationSpec holds one cluster-capacity component's
+// CatalogKindCapacityDerivationSpec holds one cluster-capacity kind's
 // machine-executable capacity rules: how ANY manifest's spec values become
 // the cluster resources the workload reserves (CPU/memory requests and
-// limits, persistent volume storage). Cluster-capacity components create
+// limits, persistent volume storage). Cluster-capacity kinds create
 // no cloud SKU -- their cost is the share of the target cluster they
 // reserve, so the honest manifest-time statement is a capacity footprint,
 // never a dollar figure. The estimate generator replays every catalog
-// preset through these rules to emit the component's committed
-// ComponentCostEstimate (capacity_footprint blocks, no priced lines), and
+// preset through these rules to emit the kind's committed
+// CatalogKindCostEstimate (capacity_footprint blocks, no priced lines), and
 // the same rules can compute a live manifest's footprint server-side.
 // Authoring contract: every field path must resolve against the
-// component's served spec contract, resources paths must name the shared
+// kind's served spec contract, resources paths must name the shared
 // ContainerResources message so requests/limits are read by type, and the
 // capacity-derivation conformance gate enforces all of it. Conditions and
 // conditional prose reuse the cost-derivation schema's vocabulary -- one
 // condition grammar across both derivation standards.
-type ComponentCapacityDerivationSpec struct {
+type CatalogKindCapacityDerivationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The workloads whose reservations sum into the footprint, one binding
 	// per scalable pod class (a database's instances, a coordinator, a
-	// worker pool). A component with several ContainerResources blocks
+	// worker pool). A kind with several ContainerResources blocks
 	// binds each to its own multiplier -- footprints never assume one
 	// replica count covers every workload.
 	Workloads []*WorkloadBinding `protobuf:"bytes,1,rep,name=workloads,proto3" json:"workloads,omitempty"`
@@ -60,21 +60,21 @@ type ComponentCapacityDerivationSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCapacityDerivationSpec) Reset() {
-	*x = ComponentCapacityDerivationSpec{}
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCapacityDerivationSpec) Reset() {
+	*x = CatalogKindCapacityDerivationSpec{}
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCapacityDerivationSpec) String() string {
+func (x *CatalogKindCapacityDerivationSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCapacityDerivationSpec) ProtoMessage() {}
+func (*CatalogKindCapacityDerivationSpec) ProtoMessage() {}
 
-func (x *ComponentCapacityDerivationSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCapacityDerivationSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -85,26 +85,26 @@ func (x *ComponentCapacityDerivationSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCapacityDerivationSpec.ProtoReflect.Descriptor instead.
-func (*ComponentCapacityDerivationSpec) Descriptor() ([]byte, []int) {
-	return file_finops_componentcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCapacityDerivationSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindCapacityDerivationSpec) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCapacityDerivationSpec) GetWorkloads() []*WorkloadBinding {
+func (x *CatalogKindCapacityDerivationSpec) GetWorkloads() []*WorkloadBinding {
 	if x != nil {
 		return x.Workloads
 	}
 	return nil
 }
 
-func (x *ComponentCapacityDerivationSpec) GetExclusions() []*v1.ConditionalText {
+func (x *CatalogKindCapacityDerivationSpec) GetExclusions() []*v1.ConditionalText {
 	if x != nil {
 		return x.Exclusions
 	}
 	return nil
 }
 
-func (x *ComponentCapacityDerivationSpec) GetNotes() []*v1.ConditionalText {
+func (x *CatalogKindCapacityDerivationSpec) GetNotes() []*v1.ConditionalText {
 	if x != nil {
 		return x.Notes
 	}
@@ -140,7 +140,7 @@ type WorkloadBinding struct {
 
 func (x *WorkloadBinding) Reset() {
 	*x = WorkloadBinding{}
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -152,7 +152,7 @@ func (x *WorkloadBinding) String() string {
 func (*WorkloadBinding) ProtoMessage() {}
 
 func (x *WorkloadBinding) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -165,7 +165,7 @@ func (x *WorkloadBinding) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WorkloadBinding.ProtoReflect.Descriptor instead.
 func (*WorkloadBinding) Descriptor() ([]byte, []int) {
-	return file_finops_componentcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *WorkloadBinding) GetLabel() string {
@@ -211,7 +211,7 @@ type InstanceCount struct {
 
 func (x *InstanceCount) Reset() {
 	*x = InstanceCount{}
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -223,7 +223,7 @@ func (x *InstanceCount) String() string {
 func (*InstanceCount) ProtoMessage() {}
 
 func (x *InstanceCount) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -236,7 +236,7 @@ func (x *InstanceCount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InstanceCount.ProtoReflect.Descriptor instead.
 func (*InstanceCount) Descriptor() ([]byte, []int) {
-	return file_finops_componentcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *InstanceCount) GetCount() isInstanceCount_Count {
@@ -270,7 +270,7 @@ type isInstanceCount_Count interface {
 
 type InstanceCount_Constant struct {
 	// A literal decimal string, for workloads whose multiplicity is
-	// fixed by the component itself (a singleton operator's "1").
+	// fixed by the kind itself (a singleton operator's "1").
 	Constant string `protobuf:"bytes,1,opt,name=constant,proto3,oneof"`
 }
 
@@ -310,7 +310,7 @@ type VolumeBinding struct {
 
 func (x *VolumeBinding) Reset() {
 	*x = VolumeBinding{}
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[3]
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -322,7 +322,7 @@ func (x *VolumeBinding) String() string {
 func (*VolumeBinding) ProtoMessage() {}
 
 func (x *VolumeBinding) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[3]
+	mi := &file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -335,7 +335,7 @@ func (x *VolumeBinding) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VolumeBinding.ProtoReflect.Descriptor instead.
 func (*VolumeBinding) Descriptor() ([]byte, []int) {
-	return file_finops_componentcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *VolumeBinding) GetLabel() string {
@@ -359,63 +359,63 @@ func (x *VolumeBinding) GetAppliesWhen() []*v1.Condition {
 	return nil
 }
 
-var File_finops_componentcapacityderivation_v1_spec_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcapacityderivation_v1_spec_proto protoreflect.FileDescriptor
 
-const file_finops_componentcapacityderivation_v1_spec_proto_rawDesc = "" +
+const file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0finops/componentcapacityderivation/v1/spec.proto\x121dev.planton.finops.componentcapacityderivation.v1\x1a,finops/componentcostderivation/v1/spec.proto\"\xb9\x02\n" +
-	"\x1fComponentCapacityDerivationSpec\x12`\n" +
-	"\tworkloads\x18\x01 \x03(\v2B.dev.planton.finops.componentcapacityderivation.v1.WorkloadBindingR\tworkloads\x12^\n" +
+	"2finops/catalogkindcapacityderivation/v1/spec.proto\x123dev.planton.finops.catalogkindcapacityderivation.v1\x1a.finops/catalogkindcostderivation/v1/spec.proto\"\xc1\x02\n" +
+	"!CatalogKindCapacityDerivationSpec\x12b\n" +
+	"\tworkloads\x18\x01 \x03(\v2D.dev.planton.finops.catalogkindcapacityderivation.v1.WorkloadBindingR\tworkloads\x12`\n" +
 	"\n" +
-	"exclusions\x18\x02 \x03(\v2>.dev.planton.finops.componentcostderivation.v1.ConditionalTextR\n" +
-	"exclusions\x12T\n" +
-	"\x05notes\x18\x03 \x03(\v2>.dev.planton.finops.componentcostderivation.v1.ConditionalTextR\x05notes\"\x8a\x02\n" +
+	"exclusions\x18\x02 \x03(\v2@.dev.planton.finops.catalogkindcostderivation.v1.ConditionalTextR\n" +
+	"exclusions\x12V\n" +
+	"\x05notes\x18\x03 \x03(\v2@.dev.planton.finops.catalogkindcostderivation.v1.ConditionalTextR\x05notes\"\x8e\x02\n" +
 	"\x0fWorkloadBinding\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\x12%\n" +
-	"\x0eresources_path\x18\x02 \x01(\tR\rresourcesPath\x12^\n" +
-	"\tinstances\x18\x03 \x01(\v2@.dev.planton.finops.componentcapacityderivation.v1.InstanceCountR\tinstances\x12Z\n" +
-	"\avolumes\x18\x04 \x03(\v2@.dev.planton.finops.componentcapacityderivation.v1.VolumeBindingR\avolumes\"\x94\x01\n" +
+	"\x0eresources_path\x18\x02 \x01(\tR\rresourcesPath\x12`\n" +
+	"\tinstances\x18\x03 \x01(\v2B.dev.planton.finops.catalogkindcapacityderivation.v1.InstanceCountR\tinstances\x12\\\n" +
+	"\avolumes\x18\x04 \x03(\v2B.dev.planton.finops.catalogkindcapacityderivation.v1.VolumeBindingR\avolumes\"\x96\x01\n" +
 	"\rInstanceCount\x12\x1c\n" +
-	"\bconstant\x18\x01 \x01(\tH\x00R\bconstant\x12\\\n" +
-	"\vfield_value\x18\x02 \x01(\v29.dev.planton.finops.componentcostderivation.v1.FieldValueH\x00R\n" +
+	"\bconstant\x18\x01 \x01(\tH\x00R\bconstant\x12^\n" +
+	"\vfield_value\x18\x02 \x01(\v2;.dev.planton.finops.catalogkindcostderivation.v1.FieldValueH\x00R\n" +
 	"fieldValueB\a\n" +
-	"\x05count\"\x9f\x01\n" +
+	"\x05count\"\xa1\x01\n" +
 	"\rVolumeBinding\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\x12\x1b\n" +
-	"\tsize_path\x18\x02 \x01(\tR\bsizePath\x12[\n" +
-	"\fapplies_when\x18\x03 \x03(\v28.dev.planton.finops.componentcostderivation.v1.ConditionR\vappliesWhenB\x8d\x03\n" +
-	"5com.dev.planton.finops.componentcapacityderivation.v1B\tSpecProtoP\x01Z`github.com/plantonhq/planton/finops/componentcapacityderivation/v1;componentcapacityderivationv1\xa2\x02\x04DPFC\xaa\x021Dev.Planton.Finops.Componentcapacityderivation.V1\xca\x021Dev\\Planton\\Finops\\Componentcapacityderivation\\V1\xe2\x02=Dev\\Planton\\Finops\\Componentcapacityderivation\\V1\\GPBMetadata\xea\x025Dev::Planton::Finops::Componentcapacityderivation::V1b\x06proto3"
+	"\tsize_path\x18\x02 \x01(\tR\bsizePath\x12]\n" +
+	"\fapplies_when\x18\x03 \x03(\v2:.dev.planton.finops.catalogkindcostderivation.v1.ConditionR\vappliesWhenB\x9b\x03\n" +
+	"7com.dev.planton.finops.catalogkindcapacityderivation.v1B\tSpecProtoP\x01Zdgithub.com/plantonhq/planton/finops/catalogkindcapacityderivation/v1;catalogkindcapacityderivationv1\xa2\x02\x04DPFC\xaa\x023Dev.Planton.Finops.Catalogkindcapacityderivation.V1\xca\x023Dev\\Planton\\Finops\\Catalogkindcapacityderivation\\V1\xe2\x02?Dev\\Planton\\Finops\\Catalogkindcapacityderivation\\V1\\GPBMetadata\xea\x027Dev::Planton::Finops::Catalogkindcapacityderivation::V1b\x06proto3"
 
 var (
-	file_finops_componentcapacityderivation_v1_spec_proto_rawDescOnce sync.Once
-	file_finops_componentcapacityderivation_v1_spec_proto_rawDescData []byte
+	file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescData []byte
 )
 
-func file_finops_componentcapacityderivation_v1_spec_proto_rawDescGZIP() []byte {
-	file_finops_componentcapacityderivation_v1_spec_proto_rawDescOnce.Do(func() {
-		file_finops_componentcapacityderivation_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcapacityderivation_v1_spec_proto_rawDesc), len(file_finops_componentcapacityderivation_v1_spec_proto_rawDesc)))
+func file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDesc), len(file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDesc)))
 	})
-	return file_finops_componentcapacityderivation_v1_spec_proto_rawDescData
+	return file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDescData
 }
 
-var file_finops_componentcapacityderivation_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_finops_componentcapacityderivation_v1_spec_proto_goTypes = []any{
-	(*ComponentCapacityDerivationSpec)(nil), // 0: dev.planton.finops.componentcapacityderivation.v1.ComponentCapacityDerivationSpec
-	(*WorkloadBinding)(nil),                 // 1: dev.planton.finops.componentcapacityderivation.v1.WorkloadBinding
-	(*InstanceCount)(nil),                   // 2: dev.planton.finops.componentcapacityderivation.v1.InstanceCount
-	(*VolumeBinding)(nil),                   // 3: dev.planton.finops.componentcapacityderivation.v1.VolumeBinding
-	(*v1.ConditionalText)(nil),              // 4: dev.planton.finops.componentcostderivation.v1.ConditionalText
-	(*v1.FieldValue)(nil),                   // 5: dev.planton.finops.componentcostderivation.v1.FieldValue
-	(*v1.Condition)(nil),                    // 6: dev.planton.finops.componentcostderivation.v1.Condition
+var file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_finops_catalogkindcapacityderivation_v1_spec_proto_goTypes = []any{
+	(*CatalogKindCapacityDerivationSpec)(nil), // 0: dev.planton.finops.catalogkindcapacityderivation.v1.CatalogKindCapacityDerivationSpec
+	(*WorkloadBinding)(nil),                   // 1: dev.planton.finops.catalogkindcapacityderivation.v1.WorkloadBinding
+	(*InstanceCount)(nil),                     // 2: dev.planton.finops.catalogkindcapacityderivation.v1.InstanceCount
+	(*VolumeBinding)(nil),                     // 3: dev.planton.finops.catalogkindcapacityderivation.v1.VolumeBinding
+	(*v1.ConditionalText)(nil),                // 4: dev.planton.finops.catalogkindcostderivation.v1.ConditionalText
+	(*v1.FieldValue)(nil),                     // 5: dev.planton.finops.catalogkindcostderivation.v1.FieldValue
+	(*v1.Condition)(nil),                      // 6: dev.planton.finops.catalogkindcostderivation.v1.Condition
 }
-var file_finops_componentcapacityderivation_v1_spec_proto_depIdxs = []int32{
-	1, // 0: dev.planton.finops.componentcapacityderivation.v1.ComponentCapacityDerivationSpec.workloads:type_name -> dev.planton.finops.componentcapacityderivation.v1.WorkloadBinding
-	4, // 1: dev.planton.finops.componentcapacityderivation.v1.ComponentCapacityDerivationSpec.exclusions:type_name -> dev.planton.finops.componentcostderivation.v1.ConditionalText
-	4, // 2: dev.planton.finops.componentcapacityderivation.v1.ComponentCapacityDerivationSpec.notes:type_name -> dev.planton.finops.componentcostderivation.v1.ConditionalText
-	2, // 3: dev.planton.finops.componentcapacityderivation.v1.WorkloadBinding.instances:type_name -> dev.planton.finops.componentcapacityderivation.v1.InstanceCount
-	3, // 4: dev.planton.finops.componentcapacityderivation.v1.WorkloadBinding.volumes:type_name -> dev.planton.finops.componentcapacityderivation.v1.VolumeBinding
-	5, // 5: dev.planton.finops.componentcapacityderivation.v1.InstanceCount.field_value:type_name -> dev.planton.finops.componentcostderivation.v1.FieldValue
-	6, // 6: dev.planton.finops.componentcapacityderivation.v1.VolumeBinding.applies_when:type_name -> dev.planton.finops.componentcostderivation.v1.Condition
+var file_finops_catalogkindcapacityderivation_v1_spec_proto_depIdxs = []int32{
+	1, // 0: dev.planton.finops.catalogkindcapacityderivation.v1.CatalogKindCapacityDerivationSpec.workloads:type_name -> dev.planton.finops.catalogkindcapacityderivation.v1.WorkloadBinding
+	4, // 1: dev.planton.finops.catalogkindcapacityderivation.v1.CatalogKindCapacityDerivationSpec.exclusions:type_name -> dev.planton.finops.catalogkindcostderivation.v1.ConditionalText
+	4, // 2: dev.planton.finops.catalogkindcapacityderivation.v1.CatalogKindCapacityDerivationSpec.notes:type_name -> dev.planton.finops.catalogkindcostderivation.v1.ConditionalText
+	2, // 3: dev.planton.finops.catalogkindcapacityderivation.v1.WorkloadBinding.instances:type_name -> dev.planton.finops.catalogkindcapacityderivation.v1.InstanceCount
+	3, // 4: dev.planton.finops.catalogkindcapacityderivation.v1.WorkloadBinding.volumes:type_name -> dev.planton.finops.catalogkindcapacityderivation.v1.VolumeBinding
+	5, // 5: dev.planton.finops.catalogkindcapacityderivation.v1.InstanceCount.field_value:type_name -> dev.planton.finops.catalogkindcostderivation.v1.FieldValue
+	6, // 6: dev.planton.finops.catalogkindcapacityderivation.v1.VolumeBinding.applies_when:type_name -> dev.planton.finops.catalogkindcostderivation.v1.Condition
 	7, // [7:7] is the sub-list for method output_type
 	7, // [7:7] is the sub-list for method input_type
 	7, // [7:7] is the sub-list for extension type_name
@@ -423,12 +423,12 @@ var file_finops_componentcapacityderivation_v1_spec_proto_depIdxs = []int32{
 	0, // [0:7] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcapacityderivation_v1_spec_proto_init() }
-func file_finops_componentcapacityderivation_v1_spec_proto_init() {
-	if File_finops_componentcapacityderivation_v1_spec_proto != nil {
+func init() { file_finops_catalogkindcapacityderivation_v1_spec_proto_init() }
+func file_finops_catalogkindcapacityderivation_v1_spec_proto_init() {
+	if File_finops_catalogkindcapacityderivation_v1_spec_proto != nil {
 		return
 	}
-	file_finops_componentcapacityderivation_v1_spec_proto_msgTypes[2].OneofWrappers = []any{
+	file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes[2].OneofWrappers = []any{
 		(*InstanceCount_Constant)(nil),
 		(*InstanceCount_FieldValue)(nil),
 	}
@@ -436,17 +436,17 @@ func file_finops_componentcapacityderivation_v1_spec_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcapacityderivation_v1_spec_proto_rawDesc), len(file_finops_componentcapacityderivation_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDesc), len(file_finops_catalogkindcapacityderivation_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcapacityderivation_v1_spec_proto_goTypes,
-		DependencyIndexes: file_finops_componentcapacityderivation_v1_spec_proto_depIdxs,
-		MessageInfos:      file_finops_componentcapacityderivation_v1_spec_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcapacityderivation_v1_spec_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcapacityderivation_v1_spec_proto_depIdxs,
+		MessageInfos:      file_finops_catalogkindcapacityderivation_v1_spec_proto_msgTypes,
 	}.Build()
-	File_finops_componentcapacityderivation_v1_spec_proto = out.File
-	file_finops_componentcapacityderivation_v1_spec_proto_goTypes = nil
-	file_finops_componentcapacityderivation_v1_spec_proto_depIdxs = nil
+	File_finops_catalogkindcapacityderivation_v1_spec_proto = out.File
+	file_finops_catalogkindcapacityderivation_v1_spec_proto_goTypes = nil
+	file_finops_catalogkindcapacityderivation_v1_spec_proto_depIdxs = nil
 }

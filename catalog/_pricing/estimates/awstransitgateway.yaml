@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awstransitgateway
 spec:
@@ -17,7 +17,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - each VPC that later attaches starts an hourly attachment meter billed to the attaching VPC's owner account, on the AwsTransitGatewayVpcAttachment component -- never on this hub
+        - each VPC that later attaches starts an hourly attachment meter billed to the attaching VPC's owner account, on the AwsTransitGatewayVpcAttachment kind -- never on this hub
         - data processing bills per GB each spoke sends INTO the gateway, charged to the sender's owner; standard inter-AZ and inter-region transfer applies on top
       notes: Zero committed cost -- the hub is free to exist and Transit Gateway has no free allotment to burn; the first attachment, not this manifest, starts the first meter.
     - preset: 02-segmented-hub
@@ -26,7 +26,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - disabling default route-table association and propagation is pure routing posture -- segmentation shapes reachability, not the bill, and attachment-hours still land on the spoke components when they arrive
+        - disabling default route-table association and propagation is pure routing posture -- segmentation shapes reachability, not the bill, and attachment-hours still land on the spoke kinds when they arrive
         - data processing per GB follows each sender's traffic into the gateway
       notes: Zero committed cost -- custom route tables carry no meter of their own; the segmented hub idles as free as the full-mesh one.
     - preset: 03-hybrid-connectivity-hub
@@ -35,6 +35,6 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - VPN and Direct Connect attachments, when created, bill their hourly meters to the HUB owner's account (unlike VPC attachments, which bill the spoke) -- on their own attachment components, plus Site-to-Site VPN connection pricing for VPN
+        - VPN and Direct Connect attachments, when created, bill their hourly meters to the HUB owner's account (unlike VPC attachments, which bill the spoke) -- on their own attachment kinds, plus Site-to-Site VPN connection pricing for VPN
         - the distinct ASN, ECMP support, and security-group referencing are free configuration; data processing bills per GB on sender traffic
-      notes: Zero committed cost -- hybrid readiness is all posture; the meters wait for the VPN or Direct Connect attachments this hub is shaped to receive, and those bill on their own components.
+      notes: Zero committed cost -- hybrid readiness is all posture; the meters wait for the VPN or Direct Connect attachments this hub is shaped to receive, and those bill on their own kinds.

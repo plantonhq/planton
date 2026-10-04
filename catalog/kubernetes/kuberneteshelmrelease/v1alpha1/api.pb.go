@@ -40,7 +40,7 @@ type KubernetesHelmRelease struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the Helm release resource. The resource name doubles as
 	// the Helm release name unless spec.release_name overrides it.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the chart to install: identity (repo/chart/version),
 	// values layers, repository auth, and release lifecycle behavior.
 	Spec *KubernetesHelmReleaseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -95,7 +95,7 @@ func (x *KubernetesHelmRelease) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesHelmRelease) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesHelmRelease) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -123,7 +123,7 @@ type KubernetesHelmReleaseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the Helm release installation.
 	// Contains the release identity and Helm-recorded state.
-	Outputs       *KubernetesHelmReleaseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesHelmReleaseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -158,7 +158,7 @@ func (*KubernetesHelmReleaseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesHelmReleaseStatus) GetOutputs() *KubernetesHelmReleaseStackOutputs {
+func (x *KubernetesHelmReleaseStatus) GetOutputs() *KubernetesHelmReleaseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -176,11 +176,11 @@ const file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15KubernetesHelmReleaseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatusR\x06status\"\x91\x01\n" +
-	"\x1bKubernetesHelmReleaseStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatusR\x06status\"\x8c\x01\n" +
+	"\x1bKubernetesHelmReleaseStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteshelmrelease/v1alpha1;kuberneteshelmreleasev1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kuberneteshelmrelease.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kuberneteshelmrelease\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kuberneteshelmrelease\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kuberneteshelmrelease::V1alpha1b\x06proto3"
 
 var (
@@ -197,17 +197,17 @@ func file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesHelmRelease)(nil),             // 0: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmRelease
-	(*KubernetesHelmReleaseStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesHelmReleaseSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseSpec
-	(*KubernetesHelmReleaseStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStackOutputs
+	(*KubernetesHelmRelease)(nil),        // 0: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmRelease
+	(*KubernetesHelmReleaseStatus)(nil),  // 1: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesHelmReleaseSpec)(nil),    // 3: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseSpec
+	(*KubernetesHelmReleaseOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseOutputs
 }
 var file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmRelease.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmRelease.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmRelease.spec:type_name -> dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseSpec
 	1, // 2: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmRelease.status:type_name -> dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatus
-	4, // 3: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

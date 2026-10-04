@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgeSchedulerStackInput is the input for the IaC modules
+// AwsEventBridgeSchedulerIacInput is the input for the IaC modules
 // that manage an EventBridge Scheduler schedule (and optionally its
 // group).
-type AwsEventBridgeSchedulerStackInput struct {
+type AwsEventBridgeSchedulerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsEventBridgeScheduler resource to deploy.
 	Target *AwsEventBridgeScheduler `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsEventBridgeSchedulerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgeSchedulerStackInput) Reset() {
-	*x = AwsEventBridgeSchedulerStackInput{}
+func (x *AwsEventBridgeSchedulerIacInput) Reset() {
+	*x = AwsEventBridgeSchedulerIacInput{}
 	mi := &file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgeSchedulerStackInput) String() string {
+func (x *AwsEventBridgeSchedulerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgeSchedulerStackInput) ProtoMessage() {}
+func (*AwsEventBridgeSchedulerIacInput) ProtoMessage() {}
 
-func (x *AwsEventBridgeSchedulerStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgeSchedulerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsEventBridgeSchedulerStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgeSchedulerStackInput.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgeSchedulerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgeSchedulerIacInput.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgeSchedulerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgeSchedulerStackInput) GetTarget() *AwsEventBridgeScheduler {
+func (x *AwsEventBridgeSchedulerIacInput) GetTarget() *AwsEventBridgeScheduler {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsEventBridgeSchedulerStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsEventBridgeSchedulerIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awseventbridgescheduler/v1alpha1/input.proto\x120dev.planton.aws.awseventbridgescheduler.v1alpha1\x1a6catalog/aws/awseventbridgescheduler/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd3\x01\n" +
-	"!AwsEventBridgeSchedulerStackInput\x12a\n" +
+	"8catalog/aws/awseventbridgescheduler/v1alpha1/input.proto\x120dev.planton.aws.awseventbridgescheduler.v1alpha1\x1a6catalog/aws/awseventbridgescheduler/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd1\x01\n" +
+	"\x1fAwsEventBridgeSchedulerIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.aws.awseventbridgescheduler.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_goTypes = []any{
-	(*AwsEventBridgeSchedulerStackInput)(nil), // 0: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerStackInput
-	(*AwsEventBridgeScheduler)(nil),           // 1: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeScheduler
-	(*aws.AwsProviderConfig)(nil),             // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsEventBridgeSchedulerIacInput)(nil), // 0: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerIacInput
+	(*AwsEventBridgeScheduler)(nil),         // 1: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeScheduler
+	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awseventbridgescheduler_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerStackInput.target:type_name -> dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeScheduler
-	2, // 1: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerIacInput.target:type_name -> dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeScheduler
+	2, // 1: dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeSchedulerIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

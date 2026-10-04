@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupSettingsStackOutputs captures the observable state of the
+// AwsBackupSettingsOutputs captures the observable state of the
 // Backup settings after apply.
-type AwsBackupSettingsStackOutputs struct {
+type AwsBackupSettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS account ID the global arm manages (the global settings
 	// resource's own identity at AWS).
@@ -35,20 +35,20 @@ type AwsBackupSettingsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBackupSettingsStackOutputs) Reset() {
-	*x = AwsBackupSettingsStackOutputs{}
+func (x *AwsBackupSettingsOutputs) Reset() {
+	*x = AwsBackupSettingsOutputs{}
 	mi := &file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupSettingsStackOutputs) String() string {
+func (x *AwsBackupSettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupSettingsStackOutputs) ProtoMessage() {}
+func (*AwsBackupSettingsOutputs) ProtoMessage() {}
 
-func (x *AwsBackupSettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupSettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsBackupSettingsStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupSettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBackupSettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupSettingsOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBackupSettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupSettingsStackOutputs) GetAccountId() string {
+func (x *AwsBackupSettingsOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *AwsBackupSettingsStackOutputs) GetRegion() string {
+func (x *AwsBackupSettingsOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsbackupsettings/v1alpha1/outputs.proto\x12*dev.planton.aws.awsbackupsettings.v1alpha1\"V\n" +
-	"\x1dAwsBackupSettingsStackOutputs\x12\x1d\n" +
+	"4catalog/aws/awsbackupsettings/v1alpha1/outputs.proto\x12*dev.planton.aws.awsbackupsettings.v1alpha1\"Q\n" +
+	"\x18AwsBackupSettingsOutputs\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tR\taccountId\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06regionB\xea\x02\n" +
@@ -104,7 +104,7 @@ func file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBackupSettingsStackOutputs)(nil), // 0: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStackOutputs
+	(*AwsBackupSettingsOutputs)(nil), // 0: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsOutputs
 }
 var file_catalog_aws_awsbackupsettings_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

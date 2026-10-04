@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEcsClusterStackOutputs captures the observable outputs of a
+// AwsEcsClusterOutputs captures the observable outputs of a
 // provisioned ECS cluster -- the identifiers services and operators
 // reference.
-type AwsEcsClusterStackOutputs struct {
+type AwsEcsClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster name (mirrors metadata.name). What the AWS CLI and the
 	// ECS agent's ECS_CLUSTER setting address.
@@ -43,20 +43,20 @@ type AwsEcsClusterStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsEcsClusterStackOutputs) Reset() {
-	*x = AwsEcsClusterStackOutputs{}
+func (x *AwsEcsClusterOutputs) Reset() {
+	*x = AwsEcsClusterOutputs{}
 	mi := &file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEcsClusterStackOutputs) String() string {
+func (x *AwsEcsClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEcsClusterStackOutputs) ProtoMessage() {}
+func (*AwsEcsClusterOutputs) ProtoMessage() {}
 
-func (x *AwsEcsClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEcsClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *AwsEcsClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEcsClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEcsClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEcsClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEcsClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEcsClusterStackOutputs) GetClusterName() string {
+func (x *AwsEcsClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *AwsEcsClusterStackOutputs) GetClusterArn() string {
+func (x *AwsEcsClusterOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsEcsClusterStackOutputs) GetCapacityProviderNames() []string {
+func (x *AwsEcsClusterOutputs) GetCapacityProviderNames() []string {
 	if x != nil {
 		return x.CapacityProviderNames
 	}
 	return nil
 }
 
-func (x *AwsEcsClusterStackOutputs) GetCapacityProviderArns() []string {
+func (x *AwsEcsClusterOutputs) GetCapacityProviderArns() []string {
 	if x != nil {
 		return x.CapacityProviderArns
 	}
@@ -105,8 +105,8 @@ var File_catalog_aws_awsecscluster_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsecscluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsecscluster.v1alpha1\"\xcd\x01\n" +
-	"\x19AwsEcsClusterStackOutputs\x12!\n" +
+	"0catalog/aws/awsecscluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsecscluster.v1alpha1\"\xc8\x01\n" +
+	"\x14AwsEcsClusterOutputs\x12!\n" +
 	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x1f\n" +
 	"\vcluster_arn\x18\x02 \x01(\tR\n" +
 	"clusterArn\x126\n" +
@@ -128,7 +128,7 @@ func file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEcsClusterStackOutputs)(nil), // 0: dev.planton.aws.awsecscluster.v1alpha1.AwsEcsClusterStackOutputs
+	(*AwsEcsClusterOutputs)(nil), // 0: dev.planton.aws.awsecscluster.v1alpha1.AwsEcsClusterOutputs
 }
 var file_catalog_aws_awsecscluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

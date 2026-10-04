@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: shared/cloudresourcekind/cloud_resource_provider.proto
+// source: shared/catalogkind/catalog_provider.proto
 
-package cloudresourcekind
+package catalogkind
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -22,30 +22,30 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloud resource provider
-type CloudResourceProvider int32
+// catalog provider
+type CatalogProvider int32
 
 const (
-	CloudResourceProvider_cloud_resource_provider_unspecified CloudResourceProvider = 0
-	CloudResourceProvider__test                               CloudResourceProvider = 1
-	CloudResourceProvider_aws                                 CloudResourceProvider = 12
-	CloudResourceProvider_azure                               CloudResourceProvider = 13
-	CloudResourceProvider_cloudflare                          CloudResourceProvider = 15
-	CloudResourceProvider_digital_ocean                       CloudResourceProvider = 17
-	CloudResourceProvider_gcp                                 CloudResourceProvider = 18
-	CloudResourceProvider_kubernetes                          CloudResourceProvider = 19
-	CloudResourceProvider_auth0                               CloudResourceProvider = 21
-	CloudResourceProvider_openfga                             CloudResourceProvider = 22
+	CatalogProvider_catalog_provider_unspecified CatalogProvider = 0
+	CatalogProvider__test                        CatalogProvider = 1
+	CatalogProvider_aws                          CatalogProvider = 12
+	CatalogProvider_azure                        CatalogProvider = 13
+	CatalogProvider_cloudflare                   CatalogProvider = 15
+	CatalogProvider_digital_ocean                CatalogProvider = 17
+	CatalogProvider_gcp                          CatalogProvider = 18
+	CatalogProvider_kubernetes                   CatalogProvider = 19
+	CatalogProvider_auth0                        CatalogProvider = 21
+	CatalogProvider_openfga                      CatalogProvider = 22
 	// Credential broker family: one provider serves both HashiCorp Vault and
 	// OpenBAO (the API-compatible fork) -- one wire protocol, one client.
-	CloudResourceProvider_vault  CloudResourceProvider = 28
-	CloudResourceProvider_stripe CloudResourceProvider = 29
+	CatalogProvider_vault  CatalogProvider = 28
+	CatalogProvider_stripe CatalogProvider = 29
 )
 
-// Enum value maps for CloudResourceProvider.
+// Enum value maps for CatalogProvider.
 var (
-	CloudResourceProvider_name = map[int32]string{
-		0:  "cloud_resource_provider_unspecified",
+	CatalogProvider_name = map[int32]string{
+		0:  "catalog_provider_unspecified",
 		1:  "_test",
 		12: "aws",
 		13: "azure",
@@ -58,75 +58,75 @@ var (
 		28: "vault",
 		29: "stripe",
 	}
-	CloudResourceProvider_value = map[string]int32{
-		"cloud_resource_provider_unspecified": 0,
-		"_test":                               1,
-		"aws":                                 12,
-		"azure":                               13,
-		"cloudflare":                          15,
-		"digital_ocean":                       17,
-		"gcp":                                 18,
-		"kubernetes":                          19,
-		"auth0":                               21,
-		"openfga":                             22,
-		"vault":                               28,
-		"stripe":                              29,
+	CatalogProvider_value = map[string]int32{
+		"catalog_provider_unspecified": 0,
+		"_test":                        1,
+		"aws":                          12,
+		"azure":                        13,
+		"cloudflare":                   15,
+		"digital_ocean":                17,
+		"gcp":                          18,
+		"kubernetes":                   19,
+		"auth0":                        21,
+		"openfga":                      22,
+		"vault":                        28,
+		"stripe":                       29,
 	}
 )
 
-func (x CloudResourceProvider) Enum() *CloudResourceProvider {
-	p := new(CloudResourceProvider)
+func (x CatalogProvider) Enum() *CatalogProvider {
+	p := new(CatalogProvider)
 	*p = x
 	return p
 }
 
-func (x CloudResourceProvider) String() string {
+func (x CatalogProvider) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (CloudResourceProvider) Descriptor() protoreflect.EnumDescriptor {
-	return file_shared_cloudresourcekind_cloud_resource_provider_proto_enumTypes[0].Descriptor()
+func (CatalogProvider) Descriptor() protoreflect.EnumDescriptor {
+	return file_shared_catalogkind_catalog_provider_proto_enumTypes[0].Descriptor()
 }
 
-func (CloudResourceProvider) Type() protoreflect.EnumType {
-	return &file_shared_cloudresourcekind_cloud_resource_provider_proto_enumTypes[0]
+func (CatalogProvider) Type() protoreflect.EnumType {
+	return &file_shared_catalogkind_catalog_provider_proto_enumTypes[0]
 }
 
-func (x CloudResourceProvider) Number() protoreflect.EnumNumber {
+func (x CatalogProvider) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use CloudResourceProvider.Descriptor instead.
-func (CloudResourceProvider) EnumDescriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogProvider.Descriptor instead.
+func (CatalogProvider) EnumDescriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_provider_proto_rawDescGZIP(), []int{0}
 }
 
-// metadata for cloud-resource-provider
-type CloudResourceProviderMeta struct {
+// metadata for catalog-provider
+type CatalogProviderMeta struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// name of the cloud-resource-provider group
+	// name of the catalog-provider group
 	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
-	// display name of the cloud-resource-provider group
+	// display name of the catalog-provider group
 	DisplayName   string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudResourceProviderMeta) Reset() {
-	*x = CloudResourceProviderMeta{}
-	mi := &file_shared_cloudresourcekind_cloud_resource_provider_proto_msgTypes[0]
+func (x *CatalogProviderMeta) Reset() {
+	*x = CatalogProviderMeta{}
+	mi := &file_shared_catalogkind_catalog_provider_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudResourceProviderMeta) String() string {
+func (x *CatalogProviderMeta) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudResourceProviderMeta) ProtoMessage() {}
+func (*CatalogProviderMeta) ProtoMessage() {}
 
-func (x *CloudResourceProviderMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_cloudresourcekind_cloud_resource_provider_proto_msgTypes[0]
+func (x *CatalogProviderMeta) ProtoReflect() protoreflect.Message {
+	mi := &file_shared_catalogkind_catalog_provider_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -137,54 +137,54 @@ func (x *CloudResourceProviderMeta) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudResourceProviderMeta.ProtoReflect.Descriptor instead.
-func (*CloudResourceProviderMeta) Descriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogProviderMeta.ProtoReflect.Descriptor instead.
+func (*CatalogProviderMeta) Descriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_provider_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudResourceProviderMeta) GetGroup() string {
+func (x *CatalogProviderMeta) GetGroup() string {
 	if x != nil {
 		return x.Group
 	}
 	return ""
 }
 
-func (x *CloudResourceProviderMeta) GetDisplayName() string {
+func (x *CatalogProviderMeta) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-var file_shared_cloudresourcekind_cloud_resource_provider_proto_extTypes = []protoimpl.ExtensionInfo{
+var file_shared_catalogkind_catalog_provider_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
-		ExtensionType: (*CloudResourceProviderMeta)(nil),
+		ExtensionType: (*CatalogProviderMeta)(nil),
 		Field:         81101,
-		Name:          "dev.planton.shared.cloudresourcekind.provider_meta",
+		Name:          "dev.planton.shared.catalogkind.provider_meta",
 		Tag:           "bytes,81101,opt,name=provider_meta",
-		Filename:      "shared/cloudresourcekind/cloud_resource_provider.proto",
+		Filename:      "shared/catalogkind/catalog_provider.proto",
 	},
 }
 
 // Extension fields to descriptorpb.EnumValueOptions.
 var (
-	// optional dev.planton.shared.cloudresourcekind.CloudResourceProviderMeta provider_meta = 81101;
-	E_ProviderMeta = &file_shared_cloudresourcekind_cloud_resource_provider_proto_extTypes[0]
+	// optional dev.planton.shared.catalogkind.CatalogProviderMeta provider_meta = 81101;
+	E_ProviderMeta = &file_shared_catalogkind_catalog_provider_proto_extTypes[0]
 )
 
-var File_shared_cloudresourcekind_cloud_resource_provider_proto protoreflect.FileDescriptor
+var File_shared_catalogkind_catalog_provider_proto protoreflect.FileDescriptor
 
-const file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc = "" +
+const file_shared_catalogkind_catalog_provider_proto_rawDesc = "" +
 	"\n" +
-	"6shared/cloudresourcekind/cloud_resource_provider.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\"T\n" +
-	"\x19CloudResourceProviderMeta\x12\x14\n" +
+	")shared/catalogkind/catalog_provider.proto\x12\x1edev.planton.shared.catalogkind\x1a google/protobuf/descriptor.proto\"N\n" +
+	"\x13CatalogProviderMeta\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xda\x04\n" +
-	"\x15CloudResourceProvider\x12'\n" +
-	"#cloud_resource_provider_unspecified\x10\x00\x128\n" +
-	"\x05_test\x10\x01\x1a-\xea\xcc')\n" +
-	"\x11_test.planton.dev\x12\x14Test Cloud Resources\x12#\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xcb\x04\n" +
+	"\x0fCatalogProvider\x12 \n" +
+	"\x1ccatalog_provider_unspecified\x10\x00\x126\n" +
+	"\x05_test\x10\x01\x1a+\xea\xcc''\n" +
+	"\x11_test.planton.dev\x12\x12Test Catalog Kinds\x12#\n" +
 	"\x03aws\x10\f\x1a\x1a\xea\xcc'\x16\n" +
 	"\x0faws.planton.dev\x12\x03AWS\x12)\n" +
 	"\x05azure\x10\r\x1a\x1e\xea\xcc'\x1a\n" +
@@ -208,32 +208,32 @@ const file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc = "" +
 	"\x05vault\x10\x1c\x1a\x1e\xea\xcc'\x1a\n" +
 	"\x11vault.planton.dev\x12\x05Vault\x12,\n" +
 	"\x06stripe\x10\x1d\x1a \xea\xcc'\x1c\n" +
-	"\x12stripe.planton.dev\x12\x06Stripe:\x89\x01\n" +
-	"\rprovider_meta\x12!.google.protobuf.EnumValueOptions\x18\xcd\xf9\x04 \x01(\v2?.dev.planton.shared.cloudresourcekind.CloudResourceProviderMetaR\fproviderMetaB\xb1\x02\n" +
-	"(com.dev.planton.shared.cloudresourcekindB\x1aCloudResourceProviderProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
+	"\x12stripe.planton.dev\x12\x06Stripe:}\n" +
+	"\rprovider_meta\x12!.google.protobuf.EnumValueOptions\x18\xcd\xf9\x04 \x01(\v23.dev.planton.shared.catalogkind.CatalogProviderMetaR\fproviderMetaB\x87\x02\n" +
+	"\"com.dev.planton.shared.catalogkindB\x14CatalogProviderProtoP\x01Z/github.com/plantonhq/planton/shared/catalogkind\xa2\x02\x04DPSC\xaa\x02\x1eDev.Planton.Shared.Catalogkind\xca\x02\x1eDev\\Planton\\Shared\\Catalogkind\xe2\x02*Dev\\Planton\\Shared\\Catalogkind\\GPBMetadata\xea\x02!Dev::Planton::Shared::Catalogkindb\x06proto3"
 
 var (
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescOnce sync.Once
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescData []byte
+	file_shared_catalogkind_catalog_provider_proto_rawDescOnce sync.Once
+	file_shared_catalogkind_catalog_provider_proto_rawDescData []byte
 )
 
-func file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescGZIP() []byte {
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescOnce.Do(func() {
-		file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc), len(file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc)))
+func file_shared_catalogkind_catalog_provider_proto_rawDescGZIP() []byte {
+	file_shared_catalogkind_catalog_provider_proto_rawDescOnce.Do(func() {
+		file_shared_catalogkind_catalog_provider_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_shared_catalogkind_catalog_provider_proto_rawDesc), len(file_shared_catalogkind_catalog_provider_proto_rawDesc)))
 	})
-	return file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDescData
+	return file_shared_catalogkind_catalog_provider_proto_rawDescData
 }
 
-var file_shared_cloudresourcekind_cloud_resource_provider_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_shared_cloudresourcekind_cloud_resource_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_shared_cloudresourcekind_cloud_resource_provider_proto_goTypes = []any{
-	(CloudResourceProvider)(0),            // 0: dev.planton.shared.cloudresourcekind.CloudResourceProvider
-	(*CloudResourceProviderMeta)(nil),     // 1: dev.planton.shared.cloudresourcekind.CloudResourceProviderMeta
+var file_shared_catalogkind_catalog_provider_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_shared_catalogkind_catalog_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_shared_catalogkind_catalog_provider_proto_goTypes = []any{
+	(CatalogProvider)(0),                  // 0: dev.planton.shared.catalogkind.CatalogProvider
+	(*CatalogProviderMeta)(nil),           // 1: dev.planton.shared.catalogkind.CatalogProviderMeta
 	(*descriptorpb.EnumValueOptions)(nil), // 2: google.protobuf.EnumValueOptions
 }
-var file_shared_cloudresourcekind_cloud_resource_provider_proto_depIdxs = []int32{
-	2, // 0: dev.planton.shared.cloudresourcekind.provider_meta:extendee -> google.protobuf.EnumValueOptions
-	1, // 1: dev.planton.shared.cloudresourcekind.provider_meta:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceProviderMeta
+var file_shared_catalogkind_catalog_provider_proto_depIdxs = []int32{
+	2, // 0: dev.planton.shared.catalogkind.provider_meta:extendee -> google.protobuf.EnumValueOptions
+	1, // 1: dev.planton.shared.catalogkind.provider_meta:type_name -> dev.planton.shared.catalogkind.CatalogProviderMeta
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	1, // [1:2] is the sub-list for extension type_name
@@ -241,28 +241,28 @@ var file_shared_cloudresourcekind_cloud_resource_provider_proto_depIdxs = []int3
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_shared_cloudresourcekind_cloud_resource_provider_proto_init() }
-func file_shared_cloudresourcekind_cloud_resource_provider_proto_init() {
-	if File_shared_cloudresourcekind_cloud_resource_provider_proto != nil {
+func init() { file_shared_catalogkind_catalog_provider_proto_init() }
+func file_shared_catalogkind_catalog_provider_proto_init() {
+	if File_shared_catalogkind_catalog_provider_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc), len(file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_catalogkind_catalog_provider_proto_rawDesc), len(file_shared_catalogkind_catalog_provider_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   1,
 			NumExtensions: 1,
 			NumServices:   0,
 		},
-		GoTypes:           file_shared_cloudresourcekind_cloud_resource_provider_proto_goTypes,
-		DependencyIndexes: file_shared_cloudresourcekind_cloud_resource_provider_proto_depIdxs,
-		EnumInfos:         file_shared_cloudresourcekind_cloud_resource_provider_proto_enumTypes,
-		MessageInfos:      file_shared_cloudresourcekind_cloud_resource_provider_proto_msgTypes,
-		ExtensionInfos:    file_shared_cloudresourcekind_cloud_resource_provider_proto_extTypes,
+		GoTypes:           file_shared_catalogkind_catalog_provider_proto_goTypes,
+		DependencyIndexes: file_shared_catalogkind_catalog_provider_proto_depIdxs,
+		EnumInfos:         file_shared_catalogkind_catalog_provider_proto_enumTypes,
+		MessageInfos:      file_shared_catalogkind_catalog_provider_proto_msgTypes,
+		ExtensionInfos:    file_shared_catalogkind_catalog_provider_proto_extTypes,
 	}.Build()
-	File_shared_cloudresourcekind_cloud_resource_provider_proto = out.File
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_goTypes = nil
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_depIdxs = nil
+	File_shared_catalogkind_catalog_provider_proto = out.File
+	file_shared_catalogkind_catalog_provider_proto_goTypes = nil
+	file_shared_catalogkind_catalog_provider_proto_depIdxs = nil
 }

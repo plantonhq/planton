@@ -6,7 +6,7 @@
 
 **apiVersion**: `azure.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **AzureVpnGatewaySpec** defines a Virtual WAN VPN gateway -- the
 managed site-to-site VPN terminator that lives INSIDE a virtual hub

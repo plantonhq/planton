@@ -28,7 +28,7 @@ type GcpFirestoreBackupSchedule struct {
 	state         protoimpl.MessageState            `protogen:"open.v1"`
 	ApiVersion    string                            `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                            `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpFirestoreBackupScheduleSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpFirestoreBackupScheduleStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpFirestoreBackupSchedule) GetKind() string {
 	return ""
 }
 
-func (x *GcpFirestoreBackupSchedule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpFirestoreBackupSchedule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpFirestoreBackupSchedule) GetStatus() *GcpFirestoreBackupScheduleStat
 }
 
 type GcpFirestoreBackupScheduleStatus struct {
-	state         protoimpl.MessageState                  `protogen:"open.v1"`
-	Outputs       *GcpFirestoreBackupScheduleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState             `protogen:"open.v1"`
+	Outputs       *GcpFirestoreBackupScheduleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpFirestoreBackupScheduleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpFirestoreBackupScheduleStatus) GetOutputs() *GcpFirestoreBackupScheduleStackOutputs {
+func (x *GcpFirestoreBackupScheduleStatus) GetOutputs() *GcpFirestoreBackupScheduleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aGcpFirestoreBackupScheduleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatusR\x06status\"\x99\x01\n" +
-	" GcpFirestoreBackupScheduleStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatusR\x06status\"\x94\x01\n" +
+	" GcpFirestoreBackupScheduleStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/gcp/gcpfirestorebackupschedule/v1alpha1;gcpfirestorebackupschedulev1alpha1\xa2\x02\x04DPGG\xaa\x023Dev.Planton.Gcp.Gcpfirestorebackupschedule.V1alpha1\xca\x023Dev\\Planton\\Gcp\\Gcpfirestorebackupschedule\\V1alpha1\xe2\x02?Dev\\Planton\\Gcp\\Gcpfirestorebackupschedule\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Gcp::Gcpfirestorebackupschedule::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_api_proto_goTypes = []any{
-	(*GcpFirestoreBackupSchedule)(nil),             // 0: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupSchedule
-	(*GcpFirestoreBackupScheduleStatus)(nil),       // 1: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpFirestoreBackupScheduleSpec)(nil),         // 3: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec
-	(*GcpFirestoreBackupScheduleStackOutputs)(nil), // 4: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStackOutputs
+	(*GcpFirestoreBackupSchedule)(nil),        // 0: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupSchedule
+	(*GcpFirestoreBackupScheduleStatus)(nil),  // 1: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpFirestoreBackupScheduleSpec)(nil),    // 3: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec
+	(*GcpFirestoreBackupScheduleOutputs)(nil), // 4: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleOutputs
 }
 var file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupSchedule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupSchedule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupSchedule.spec:type_name -> dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec
 	1, // 2: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupSchedule.status:type_name -> dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatus
-	4, // 3: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatus.outputs:type_name -> dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStackOutputs
+	4, // 3: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStatus.outputs:type_name -> dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

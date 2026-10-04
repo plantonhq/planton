@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureSubnetStackInput is the input to the IaC module.
+// AzureSubnetIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureSubnetStackInput struct {
+type AzureSubnetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *AzureSubnet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureSubnetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureSubnetStackInput) Reset() {
-	*x = AzureSubnetStackInput{}
+func (x *AzureSubnetIacInput) Reset() {
+	*x = AzureSubnetIacInput{}
 	mi := &file_catalog_azure_azuresubnet_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureSubnetStackInput) String() string {
+func (x *AzureSubnetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureSubnetStackInput) ProtoMessage() {}
+func (*AzureSubnetIacInput) ProtoMessage() {}
 
-func (x *AzureSubnetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureSubnetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuresubnet_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureSubnetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureSubnetStackInput.ProtoReflect.Descriptor instead.
-func (*AzureSubnetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureSubnetIacInput.ProtoReflect.Descriptor instead.
+func (*AzureSubnetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuresubnet_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureSubnetStackInput) GetTarget() *AzureSubnet {
+func (x *AzureSubnetIacInput) GetTarget() *AzureSubnet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureSubnetStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureSubnetIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuresubnet_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_azure_azuresubnet_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/azure/azuresubnet/v1alpha1/input.proto\x12&dev.planton.azure.azuresubnet.v1alpha1\x1a,catalog/azure/azuresubnet/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb5\x01\n" +
-	"\x15AzureSubnetStackInput\x12K\n" +
+	".catalog/azure/azuresubnet/v1alpha1/input.proto\x12&dev.planton.azure.azuresubnet.v1alpha1\x1a,catalog/azure/azuresubnet/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb3\x01\n" +
+	"\x13AzureSubnetIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xca\x02\n" +
 	"*com.dev.planton.azure.azuresubnet.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azuresubnet_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_azure_azuresubnet_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuresubnet_v1alpha1_input_proto_goTypes = []any{
-	(*AzureSubnetStackInput)(nil),     // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackInput
+	(*AzureSubnetIacInput)(nil),       // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetIacInput
 	(*AzureSubnet)(nil),               // 1: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet
 	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuresubnet_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackInput.target:type_name -> dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet
-	2, // 1: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetIacInput.target:type_name -> dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet
+	2, // 1: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

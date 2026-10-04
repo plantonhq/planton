@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-istio stack-input
-type KubernetesIstioStackInput struct {
+// kubernetes-istio iac-input
+type KubernetesIstioIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesIstio `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesIstioStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesIstioStackInput) Reset() {
-	*x = KubernetesIstioStackInput{}
+func (x *KubernetesIstioIacInput) Reset() {
+	*x = KubernetesIstioIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIstioStackInput) String() string {
+func (x *KubernetesIstioIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIstioStackInput) ProtoMessage() {}
+func (*KubernetesIstioIacInput) ProtoMessage() {}
 
-func (x *KubernetesIstioStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIstioIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesIstioStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIstioStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesIstioStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIstioIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesIstioIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIstioStackInput) GetTarget() *KubernetesIstio {
+func (x *KubernetesIstioIacInput) GetTarget() *KubernetesIstio {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesIstioStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesIstioIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/kubernetes/kubernetesistio/v1alpha1/input.proto\x12/dev.planton.kubernetes.kubernetesistio.v1alpha1\x1a5catalog/kubernetes/kubernetesistio/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd0\x01\n" +
-	"\x19KubernetesIstioStackInput\x12X\n" +
+	"7catalog/kubernetes/kubernetesistio/v1alpha1/input.proto\x12/dev.planton.kubernetes.kubernetesistio.v1alpha1\x1a5catalog/kubernetes/kubernetesistio/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xce\x01\n" +
+	"\x17KubernetesIstioIacInput\x12X\n" +
 	"\x06target\x18\x01 \x01(\v2@.dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"3com.dev.planton.kubernetes.kubernetesistio.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesIstioStackInput)(nil),           // 0: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioStackInput
+	(*KubernetesIstioIacInput)(nil),             // 0: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioIacInput
 	(*KubernetesIstio)(nil),                     // 1: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstio
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesistio_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioStackInput.target:type_name -> dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstio
-	2, // 1: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioIacInput.target:type_name -> dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstio
+	2, // 1: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

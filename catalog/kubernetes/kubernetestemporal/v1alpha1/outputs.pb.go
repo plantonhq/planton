@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesTemporalStackOutputs** — the composition handles a
+// **KubernetesTemporalOutputs** — the composition handles a
 // deployed Temporal cluster exports. Workers and clients join through
 // the frontend gRPC endpoint; humans reach the Web UI through its
 // service handle (compose exposure kinds over it).
-type KubernetesTemporalStackOutputs struct {
+type KubernetesTemporalOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -59,20 +59,20 @@ type KubernetesTemporalStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *KubernetesTemporalStackOutputs) Reset() {
-	*x = KubernetesTemporalStackOutputs{}
+func (x *KubernetesTemporalOutputs) Reset() {
+	*x = KubernetesTemporalOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTemporalStackOutputs) String() string {
+func (x *KubernetesTemporalOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTemporalStackOutputs) ProtoMessage() {}
+func (*KubernetesTemporalOutputs) ProtoMessage() {}
 
-func (x *KubernetesTemporalStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTemporalOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,61 +84,61 @@ func (x *KubernetesTemporalStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTemporalStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTemporalStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTemporalOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTemporalOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTemporalStackOutputs) GetNamespace() string {
+func (x *KubernetesTemporalOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetFrontendService() string {
+func (x *KubernetesTemporalOutputs) GetFrontendService() string {
 	if x != nil {
 		return x.FrontendService
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetFrontendEndpoint() string {
+func (x *KubernetesTemporalOutputs) GetFrontendEndpoint() string {
 	if x != nil {
 		return x.FrontendEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetFrontendHttpEndpoint() string {
+func (x *KubernetesTemporalOutputs) GetFrontendHttpEndpoint() string {
 	if x != nil {
 		return x.FrontendHttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetWebUiService() string {
+func (x *KubernetesTemporalOutputs) GetWebUiService() string {
 	if x != nil {
 		return x.WebUiService
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetWebUiEndpoint() string {
+func (x *KubernetesTemporalOutputs) GetWebUiEndpoint() string {
 	if x != nil {
 		return x.WebUiEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetPortForwardFrontendCommand() string {
+func (x *KubernetesTemporalOutputs) GetPortForwardFrontendCommand() string {
 	if x != nil {
 		return x.PortForwardFrontendCommand
 	}
 	return ""
 }
 
-func (x *KubernetesTemporalStackOutputs) GetPortForwardWebUiCommand() string {
+func (x *KubernetesTemporalOutputs) GetPortForwardWebUiCommand() string {
 	if x != nil {
 		return x.PortForwardWebUiCommand
 	}
@@ -149,8 +149,8 @@ var File_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetestemporal/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetestemporal.v1alpha1\"\x9b\x03\n" +
-	"\x1eKubernetesTemporalStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kubernetestemporal/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetestemporal.v1alpha1\"\x96\x03\n" +
+	"\x19KubernetesTemporalOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12)\n" +
 	"\x10frontend_service\x18\x02 \x01(\tR\x0ffrontendService\x12+\n" +
 	"\x11frontend_endpoint\x18\x03 \x01(\tR\x10frontendEndpoint\x124\n" +
@@ -175,7 +175,7 @@ func file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTemporalStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalStackOutputs
+	(*KubernetesTemporalOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalOutputs
 }
 var file_catalog_kubernetes_kubernetestemporal_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning an AlloyDB cluster with its primary instance.
-type GcpAlloydbClusterStackOutputs struct {
+type GcpAlloydbClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified cluster resource name.
 	// Format: projects/{project}/locations/{location}/clusters/{cluster}
@@ -49,20 +49,20 @@ type GcpAlloydbClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpAlloydbClusterStackOutputs) Reset() {
-	*x = GcpAlloydbClusterStackOutputs{}
+func (x *GcpAlloydbClusterOutputs) Reset() {
+	*x = GcpAlloydbClusterOutputs{}
 	mi := &file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpAlloydbClusterStackOutputs) String() string {
+func (x *GcpAlloydbClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpAlloydbClusterStackOutputs) ProtoMessage() {}
+func (*GcpAlloydbClusterOutputs) ProtoMessage() {}
 
-func (x *GcpAlloydbClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpAlloydbClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,47 +74,47 @@ func (x *GcpAlloydbClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpAlloydbClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpAlloydbClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpAlloydbClusterOutputs.ProtoReflect.Descriptor instead.
+func (*GcpAlloydbClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpAlloydbClusterStackOutputs) GetClusterId() string {
+func (x *GcpAlloydbClusterOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *GcpAlloydbClusterStackOutputs) GetClusterName() string {
+func (x *GcpAlloydbClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *GcpAlloydbClusterStackOutputs) GetPrimaryInstanceIp() string {
+func (x *GcpAlloydbClusterOutputs) GetPrimaryInstanceIp() string {
 	if x != nil {
 		return x.PrimaryInstanceIp
 	}
 	return ""
 }
 
-func (x *GcpAlloydbClusterStackOutputs) GetPrimaryInstanceName() string {
+func (x *GcpAlloydbClusterOutputs) GetPrimaryInstanceName() string {
 	if x != nil {
 		return x.PrimaryInstanceName
 	}
 	return ""
 }
 
-func (x *GcpAlloydbClusterStackOutputs) GetDatabaseVersion() string {
+func (x *GcpAlloydbClusterOutputs) GetDatabaseVersion() string {
 	if x != nil {
 		return x.DatabaseVersion
 	}
 	return ""
 }
 
-func (x *GcpAlloydbClusterStackOutputs) GetState() string {
+func (x *GcpAlloydbClusterOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -125,8 +125,8 @@ var File_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpalloydbcluster/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpalloydbcluster.v1alpha1\"\x86\x02\n" +
-	"\x1dGcpAlloydbClusterStackOutputs\x12\x1d\n" +
+	"4catalog/gcp/gcpalloydbcluster/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpalloydbcluster.v1alpha1\"\x81\x02\n" +
+	"\x18GcpAlloydbClusterOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12.\n" +
@@ -150,7 +150,7 @@ func file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpAlloydbClusterStackOutputs)(nil), // 0: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStackOutputs
+	(*GcpAlloydbClusterOutputs)(nil), // 0: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterOutputs
 }
 var file_catalog_gcp_gcpalloydbcluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

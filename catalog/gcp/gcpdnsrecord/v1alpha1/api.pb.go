@@ -38,7 +38,7 @@ type GcpDnsRecord struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpDnsRecordSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -91,7 +91,7 @@ func (x *GcpDnsRecord) GetKind() string {
 	return ""
 }
 
-func (x *GcpDnsRecord) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpDnsRecord) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,8 +115,8 @@ func (x *GcpDnsRecord) GetStatus() *GcpDnsRecordStatus {
 // GcpDnsRecordStatus represents the observed state of a GCP Cloud DNS record.
 type GcpDnsRecordStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *GcpDnsRecordStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *GcpDnsRecordOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*GcpDnsRecordStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdnsrecord_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpDnsRecordStatus) GetOutputs() *GcpDnsRecordStackOutputs {
+func (x *GcpDnsRecordStatus) GetOutputs() *GcpDnsRecordOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_gcp_gcpdnsrecord_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fGcpDnsRecordR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStatusR\x06status\"o\n" +
-	"\x12GcpDnsRecordStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStackOutputsR\aoutputsB\xc3\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStatusR\x06status\"j\n" +
+	"\x12GcpDnsRecordStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordOutputsR\aoutputsB\xc3\x02\n" +
 	")com.dev.planton.gcp.gcpdnsrecord.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/gcp/gcpdnsrecord/v1alpha1;gcpdnsrecordv1alpha1\xa2\x02\x04DPGG\xaa\x02%Dev.Planton.Gcp.Gcpdnsrecord.V1alpha1\xca\x02%Dev\\Planton\\Gcp\\Gcpdnsrecord\\V1alpha1\xe2\x021Dev\\Planton\\Gcp\\Gcpdnsrecord\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Gcp::Gcpdnsrecord::V1alpha1b\x06proto3"
 
 var (
@@ -192,15 +192,15 @@ var file_catalog_gcp_gcpdnsrecord_v1alpha1_api_proto_msgTypes = make([]protoimpl
 var file_catalog_gcp_gcpdnsrecord_v1alpha1_api_proto_goTypes = []any{
 	(*GcpDnsRecord)(nil),                 // 0: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecord
 	(*GcpDnsRecordStatus)(nil),           // 1: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpDnsRecordSpec)(nil),             // 3: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpec
-	(*GcpDnsRecordStackOutputs)(nil),     // 4: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStackOutputs
+	(*GcpDnsRecordOutputs)(nil),          // 4: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordOutputs
 }
 var file_catalog_gcp_gcpdnsrecord_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecord.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecord.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecord.spec:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpec
 	1, // 2: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecord.status:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStatus
-	4, // 3: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStatus.outputs:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStackOutputs
+	4, // 3: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStatus.outputs:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

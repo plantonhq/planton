@@ -23,7 +23,7 @@ const (
 )
 
 // ControlCatalog is the single central definition of every technical control
-// the catalog speaks about -- the controlled vocabulary. Per-component
+// the catalog speaks about -- the controlled vocabulary. Per-kind
 // control profiles reference these controls by id and MUST NOT invent their
 // own; framework crosswalks map external framework requirements onto these
 // same ids. One catalog, referenced everywhere, so a control's meaning is
@@ -44,13 +44,13 @@ const (
 //	  controls:
 //	    - id: enc-at-rest
 //	      name: Encryption at rest
-//	      statement: Data the component stores is encrypted at rest.
+//	      statement: Data the kind stores is encrypted at rest.
 //	      category: data_protection
 type ControlCatalog struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *ControlCatalogSpec           `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -100,7 +100,7 @@ func (x *ControlCatalog) GetKind() string {
 	return ""
 }
 
-func (x *ControlCatalog) GetMetadata() *shared.CloudResourceMetadata {
+func (x *ControlCatalog) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -123,7 +123,7 @@ const file_compliance_controlcatalog_v1_api_proto_rawDesc = "" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12P\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12P\n" +
 	"\x04spec\x18\x04 \x01(\v2<.dev.planton.compliance.controlcatalog.v1.ControlCatalogSpecR\x04specB\xc9\x02\n" +
 	",com.dev.planton.compliance.controlcatalog.v1B\bApiProtoP\x01ZJgithub.com/plantonhq/planton/compliance/controlcatalog/v1;controlcatalogv1\xa2\x02\x04DPCC\xaa\x02(Dev.Planton.Compliance.Controlcatalog.V1\xca\x02(Dev\\Planton\\Compliance\\Controlcatalog\\V1\xe2\x024Dev\\Planton\\Compliance\\Controlcatalog\\V1\\GPBMetadata\xea\x02,Dev::Planton::Compliance::Controlcatalog::V1b\x06proto3"
 
@@ -142,11 +142,11 @@ func file_compliance_controlcatalog_v1_api_proto_rawDescGZIP() []byte {
 var file_compliance_controlcatalog_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_compliance_controlcatalog_v1_api_proto_goTypes = []any{
 	(*ControlCatalog)(nil),               // 0: dev.planton.compliance.controlcatalog.v1.ControlCatalog
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
 	(*ControlCatalogSpec)(nil),           // 2: dev.planton.compliance.controlcatalog.v1.ControlCatalogSpec
 }
 var file_compliance_controlcatalog_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.compliance.controlcatalog.v1.ControlCatalog.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	1, // 0: dev.planton.compliance.controlcatalog.v1.ControlCatalog.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	2, // 1: dev.planton.compliance.controlcatalog.v1.ControlCatalog.spec:type_name -> dev.planton.compliance.controlcatalog.v1.ControlCatalogSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type

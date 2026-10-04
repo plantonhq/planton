@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpTpuVmStackOutputs carries the TPU's identity.
-type GcpTpuVmStackOutputs struct {
+// GcpTpuVmOutputs carries the TPU's identity.
+type GcpTpuVmOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{zone}/nodes/{node_id}.
@@ -36,20 +36,20 @@ type GcpTpuVmStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpTpuVmStackOutputs) Reset() {
-	*x = GcpTpuVmStackOutputs{}
+func (x *GcpTpuVmOutputs) Reset() {
+	*x = GcpTpuVmOutputs{}
 	mi := &file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTpuVmStackOutputs) String() string {
+func (x *GcpTpuVmOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTpuVmStackOutputs) ProtoMessage() {}
+func (*GcpTpuVmOutputs) ProtoMessage() {}
 
-func (x *GcpTpuVmStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpTpuVmOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpTpuVmStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTpuVmStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpTpuVmStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTpuVmOutputs.ProtoReflect.Descriptor instead.
+func (*GcpTpuVmOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTpuVmStackOutputs) GetName() string {
+func (x *GcpTpuVmOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpTpuVmStackOutputs) GetNodeId() string {
+func (x *GcpTpuVmOutputs) GetNodeId() string {
 	if x != nil {
 		return x.NodeId
 	}
 	return ""
 }
 
-func (x *GcpTpuVmStackOutputs) GetZone() string {
+func (x *GcpTpuVmOutputs) GetZone() string {
 	if x != nil {
 		return x.Zone
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcptpuvm/v1alpha1/outputs.proto\x12!dev.planton.gcp.gcptpuvm.v1alpha1\"W\n" +
-	"\x14GcpTpuVmStackOutputs\x12\x12\n" +
+	"+catalog/gcp/gcptpuvm/v1alpha1/outputs.proto\x12!dev.planton.gcp.gcptpuvm.v1alpha1\"R\n" +
+	"\x0fGcpTpuVmOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
 	"\anode_id\x18\x02 \x01(\tR\x06nodeId\x12\x12\n" +
 	"\x04zone\x18\x03 \x01(\tR\x04zoneB\xab\x02\n" +
@@ -112,7 +112,7 @@ func file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpTpuVmStackOutputs)(nil), // 0: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStackOutputs
+	(*GcpTpuVmOutputs)(nil), // 0: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmOutputs
 }
 var file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

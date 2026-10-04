@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesPlantonRunnerSpec** declares a standing Planton runner on a
 Kubernetes cluster — an always-on worker that receives deploy operations

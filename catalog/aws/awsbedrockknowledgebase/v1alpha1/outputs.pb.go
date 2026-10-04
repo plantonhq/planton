@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockKnowledgeBaseStackOutputs captures observable identifiers from
+// AwsBedrockKnowledgeBaseOutputs captures observable identifiers from
 // a provisioned Bedrock knowledge base. These outputs are used by
 // downstream resources (agents, flows) to wire dependencies via
 // StringValueOrRef.
-type AwsBedrockKnowledgeBaseStackOutputs struct {
+type AwsBedrockKnowledgeBaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique knowledge base identifier (e.g. "EMDPPAYPZI") - the join
 	// key agents and flows use.
@@ -40,20 +40,20 @@ type AwsBedrockKnowledgeBaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockKnowledgeBaseStackOutputs) Reset() {
-	*x = AwsBedrockKnowledgeBaseStackOutputs{}
+func (x *AwsBedrockKnowledgeBaseOutputs) Reset() {
+	*x = AwsBedrockKnowledgeBaseOutputs{}
 	mi := &file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockKnowledgeBaseStackOutputs) String() string {
+func (x *AwsBedrockKnowledgeBaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockKnowledgeBaseStackOutputs) ProtoMessage() {}
+func (*AwsBedrockKnowledgeBaseOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockKnowledgeBaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockKnowledgeBaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AwsBedrockKnowledgeBaseStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockKnowledgeBaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockKnowledgeBaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockKnowledgeBaseOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockKnowledgeBaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockKnowledgeBaseStackOutputs) GetKnowledgeBaseId() string {
+func (x *AwsBedrockKnowledgeBaseOutputs) GetKnowledgeBaseId() string {
 	if x != nil {
 		return x.KnowledgeBaseId
 	}
 	return ""
 }
 
-func (x *AwsBedrockKnowledgeBaseStackOutputs) GetKnowledgeBaseArn() string {
+func (x *AwsBedrockKnowledgeBaseOutputs) GetKnowledgeBaseArn() string {
 	if x != nil {
 		return x.KnowledgeBaseArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockKnowledgeBaseStackOutputs) GetDataSourceIds() map[string]string {
+func (x *AwsBedrockKnowledgeBaseOutputs) GetDataSourceIds() map[string]string {
 	if x != nil {
 		return x.DataSourceIds
 	}
@@ -95,11 +95,11 @@ var File_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awsbedrockknowledgebase/v1alpha1/outputs.proto\x120dev.planton.aws.awsbedrockknowledgebase.v1alpha1\"\xd4\x02\n" +
-	"#AwsBedrockKnowledgeBaseStackOutputs\x12*\n" +
+	":catalog/aws/awsbedrockknowledgebase/v1alpha1/outputs.proto\x120dev.planton.aws.awsbedrockknowledgebase.v1alpha1\"\xca\x02\n" +
+	"\x1eAwsBedrockKnowledgeBaseOutputs\x12*\n" +
 	"\x11knowledge_base_id\x18\x01 \x01(\tR\x0fknowledgeBaseId\x12,\n" +
-	"\x12knowledge_base_arn\x18\x02 \x01(\tR\x10knowledgeBaseArn\x12\x90\x01\n" +
-	"\x0fdata_source_ids\x18\x03 \x03(\v2h.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackOutputs.DataSourceIdsEntryR\rdataSourceIds\x1a@\n" +
+	"\x12knowledge_base_arn\x18\x02 \x01(\tR\x10knowledgeBaseArn\x12\x8b\x01\n" +
+	"\x0fdata_source_ids\x18\x03 \x03(\v2c.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOutputs.DataSourceIdsEntryR\rdataSourceIds\x1a@\n" +
 	"\x12DataSourceIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x94\x03\n" +
@@ -119,11 +119,11 @@ func file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockKnowledgeBaseStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackOutputs.DataSourceIdsEntry
+	(*AwsBedrockKnowledgeBaseOutputs)(nil), // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOutputs
+	nil,                                    // 1: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOutputs.DataSourceIdsEntry
 }
 var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackOutputs.data_source_ids:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackOutputs.DataSourceIdsEntry
+	1, // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOutputs.data_source_ids:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOutputs.DataSourceIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

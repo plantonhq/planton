@@ -31,7 +31,7 @@ the resource graph. The set_as_account_default designation is the one
 exception: it is a pointer AWS moves in place, not part of the revision.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

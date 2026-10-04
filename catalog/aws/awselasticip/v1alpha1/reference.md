@@ -35,7 +35,7 @@ EIP; the modules pin domain = "vpc". Outposts customer-owned IP pools
 (customer_owned_ipv4_pool) are excluded with the catalog's recorded Outposts
 exclusion class.
 
-Credentials, region, and deployment workflow live outside this spec in stack inputs.
+Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 
 ## Example
 

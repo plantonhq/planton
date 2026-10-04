@@ -34,7 +34,7 @@ Common use cases:
 Notes:
 - The consumer name (from metadata.name) is immutable after creation.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

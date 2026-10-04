@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesServiceMonitorStackOutputs captures observable outputs after the
+// KubernetesServiceMonitorOutputs captures observable outputs after the
 // ServiceMonitor is created on the target cluster. Which Prometheus instances
 // scrape through it is decided by their selectors, and which targets it yields
 // by the Services alive at discovery time, so only the resource identity is
 // exported.
-type KubernetesServiceMonitorStackOutputs struct {
+type KubernetesServiceMonitorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created ServiceMonitor (equals metadata.name).
 	ServiceMonitorName string `protobuf:"bytes,1,opt,name=service_monitor_name,json=serviceMonitorName,proto3" json:"service_monitor_name,omitempty"`
@@ -36,20 +36,20 @@ type KubernetesServiceMonitorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceMonitorStackOutputs) Reset() {
-	*x = KubernetesServiceMonitorStackOutputs{}
+func (x *KubernetesServiceMonitorOutputs) Reset() {
+	*x = KubernetesServiceMonitorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceMonitorStackOutputs) String() string {
+func (x *KubernetesServiceMonitorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceMonitorStackOutputs) ProtoMessage() {}
+func (*KubernetesServiceMonitorOutputs) ProtoMessage() {}
 
-func (x *KubernetesServiceMonitorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceMonitorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *KubernetesServiceMonitorStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceMonitorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceMonitorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceMonitorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceMonitorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceMonitorStackOutputs) GetServiceMonitorName() string {
+func (x *KubernetesServiceMonitorOutputs) GetServiceMonitorName() string {
 	if x != nil {
 		return x.ServiceMonitorName
 	}
 	return ""
 }
 
-func (x *KubernetesServiceMonitorStackOutputs) GetNamespace() string {
+func (x *KubernetesServiceMonitorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -84,8 +84,8 @@ var File_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesservicemonitor/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1\"v\n" +
-	"$KubernetesServiceMonitorStackOutputs\x120\n" +
+	"Bcatalog/kubernetes/kubernetesservicemonitor/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1\"q\n" +
+	"\x1fKubernetesServiceMonitorOutputs\x120\n" +
 	"\x14service_monitor_name\x18\x01 \x01(\tR\x12serviceMonitorName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xc5\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesservicemonitor/v1alpha1;kubernetesservicemonitorv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesservicemonitor.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesservicemonitor\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesservicemonitor\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesservicemonitor::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesServiceMonitorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorStackOutputs
+	(*KubernetesServiceMonitorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorOutputs
 }
 var file_catalog_kubernetes_kubernetesservicemonitor_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

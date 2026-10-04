@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Certificate Manager certificate.
-type GcpCertManagerCertStackOutputs struct {
+type GcpCertManagerCertOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully-qualified resource ID of the certificate
 	// (projects/{project}/locations/{location}/certificates/{name}).
@@ -44,20 +44,20 @@ type GcpCertManagerCertStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCertManagerCertStackOutputs) Reset() {
-	*x = GcpCertManagerCertStackOutputs{}
+func (x *GcpCertManagerCertOutputs) Reset() {
+	*x = GcpCertManagerCertOutputs{}
 	mi := &file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCertManagerCertStackOutputs) String() string {
+func (x *GcpCertManagerCertOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCertManagerCertStackOutputs) ProtoMessage() {}
+func (*GcpCertManagerCertOutputs) ProtoMessage() {}
 
-func (x *GcpCertManagerCertStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCertManagerCertOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *GcpCertManagerCertStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCertManagerCertStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCertManagerCertStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCertManagerCertOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCertManagerCertOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCertManagerCertStackOutputs) GetCertificateId() string {
+func (x *GcpCertManagerCertOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *GcpCertManagerCertStackOutputs) GetCertificateName() string {
+func (x *GcpCertManagerCertOutputs) GetCertificateName() string {
 	if x != nil {
 		return x.CertificateName
 	}
 	return ""
 }
 
-func (x *GcpCertManagerCertStackOutputs) GetSanDnsnames() []string {
+func (x *GcpCertManagerCertOutputs) GetSanDnsnames() []string {
 	if x != nil {
 		return x.SanDnsnames
 	}
 	return nil
 }
 
-func (x *GcpCertManagerCertStackOutputs) GetLocation() string {
+func (x *GcpCertManagerCertOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpCertManagerCertStackOutputs) GetManagedState() string {
+func (x *GcpCertManagerCertOutputs) GetManagedState() string {
 	if x != nil {
 		return x.ManagedState
 	}
@@ -113,8 +113,8 @@ var File_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpcertmanagercert/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpcertmanagercert.v1alpha1\"\xd6\x01\n" +
-	"\x1eGcpCertManagerCertStackOutputs\x12%\n" +
+	"5catalog/gcp/gcpcertmanagercert/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpcertmanagercert.v1alpha1\"\xd1\x01\n" +
+	"\x19GcpCertManagerCertOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12)\n" +
 	"\x10certificate_name\x18\x02 \x01(\tR\x0fcertificateName\x12!\n" +
 	"\fsan_dnsnames\x18\x03 \x03(\tR\vsanDnsnames\x12\x1a\n" +
@@ -136,7 +136,7 @@ func file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCertManagerCertStackOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertStackOutputs
+	(*GcpCertManagerCertOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertOutputs
 }
 var file_catalog_gcp_gcpcertmanagercert_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

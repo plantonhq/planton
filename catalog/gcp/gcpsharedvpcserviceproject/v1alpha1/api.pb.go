@@ -28,7 +28,7 @@ type GcpSharedVpcServiceProject struct {
 	state         protoimpl.MessageState            `protogen:"open.v1"`
 	ApiVersion    string                            `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                            `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpSharedVpcServiceProjectSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpSharedVpcServiceProjectStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpSharedVpcServiceProject) GetKind() string {
 	return ""
 }
 
-func (x *GcpSharedVpcServiceProject) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpSharedVpcServiceProject) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpSharedVpcServiceProject) GetStatus() *GcpSharedVpcServiceProjectStat
 }
 
 type GcpSharedVpcServiceProjectStatus struct {
-	state         protoimpl.MessageState                  `protogen:"open.v1"`
-	Outputs       *GcpSharedVpcServiceProjectStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState             `protogen:"open.v1"`
+	Outputs       *GcpSharedVpcServiceProjectOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpSharedVpcServiceProjectStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpSharedVpcServiceProjectStatus) GetOutputs() *GcpSharedVpcServiceProjectStackOutputs {
+func (x *GcpSharedVpcServiceProjectStatus) GetOutputs() *GcpSharedVpcServiceProjectOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aGcpSharedVpcServiceProjectR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatusR\x06status\"\x99\x01\n" +
-	" GcpSharedVpcServiceProjectStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatusR\x06status\"\x94\x01\n" +
+	" GcpSharedVpcServiceProjectStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/gcp/gcpsharedvpcserviceproject/v1alpha1;gcpsharedvpcserviceprojectv1alpha1\xa2\x02\x04DPGG\xaa\x023Dev.Planton.Gcp.Gcpsharedvpcserviceproject.V1alpha1\xca\x023Dev\\Planton\\Gcp\\Gcpsharedvpcserviceproject\\V1alpha1\xe2\x02?Dev\\Planton\\Gcp\\Gcpsharedvpcserviceproject\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Gcp::Gcpsharedvpcserviceproject::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_api_proto_goTypes = []any{
-	(*GcpSharedVpcServiceProject)(nil),             // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject
-	(*GcpSharedVpcServiceProjectStatus)(nil),       // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpSharedVpcServiceProjectSpec)(nil),         // 3: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectSpec
-	(*GcpSharedVpcServiceProjectStackOutputs)(nil), // 4: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackOutputs
+	(*GcpSharedVpcServiceProject)(nil),        // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject
+	(*GcpSharedVpcServiceProjectStatus)(nil),  // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpSharedVpcServiceProjectSpec)(nil),    // 3: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectSpec
+	(*GcpSharedVpcServiceProjectOutputs)(nil), // 4: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectOutputs
 }
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject.spec:type_name -> dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectSpec
 	1, // 2: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject.status:type_name -> dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatus
-	4, // 3: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatus.outputs:type_name -> dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackOutputs
+	4, // 3: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStatus.outputs:type_name -> dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -23,7 +23,7 @@ const (
 
 // Outputs of a DigitalOceanFunction. The provider has no standalone
 // Functions resource, so function_id is the App Platform app UUID.
-type DigitalOceanFunctionStackOutputs struct {
+type DigitalOceanFunctionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// App Platform app UUID that hosts the functions component. Used to
 	// import the digitalocean_app resource.
@@ -36,20 +36,20 @@ type DigitalOceanFunctionStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *DigitalOceanFunctionStackOutputs) Reset() {
-	*x = DigitalOceanFunctionStackOutputs{}
+func (x *DigitalOceanFunctionOutputs) Reset() {
+	*x = DigitalOceanFunctionOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanFunctionStackOutputs) String() string {
+func (x *DigitalOceanFunctionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanFunctionStackOutputs) ProtoMessage() {}
+func (*DigitalOceanFunctionOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanFunctionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanFunctionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *DigitalOceanFunctionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanFunctionStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanFunctionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanFunctionOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanFunctionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanFunctionStackOutputs) GetFunctionId() string {
+func (x *DigitalOceanFunctionOutputs) GetFunctionId() string {
 	if x != nil {
 		return x.FunctionId
 	}
 	return ""
 }
 
-func (x *DigitalOceanFunctionStackOutputs) GetHttpsEndpoint() string {
+func (x *DigitalOceanFunctionOutputs) GetHttpsEndpoint() string {
 	if x != nil {
 		return x.HttpsEndpoint
 	}
 	return ""
 }
 
-func (x *DigitalOceanFunctionStackOutputs) GetDefaultHostname() string {
+func (x *DigitalOceanFunctionOutputs) GetDefaultHostname() string {
 	if x != nil {
 		return x.DefaultHostname
 	}
@@ -91,8 +91,8 @@ var File_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto protor
 
 const file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/digitalocean/digitaloceanfunction/v1alpha1/outputs.proto\x126dev.planton.digitalocean.digitaloceanfunction.v1alpha1\"\x95\x01\n" +
-	" DigitalOceanFunctionStackOutputs\x12\x1f\n" +
+	"@catalog/digitalocean/digitaloceanfunction/v1alpha1/outputs.proto\x126dev.planton.digitalocean.digitaloceanfunction.v1alpha1\"\x90\x01\n" +
+	"\x1bDigitalOceanFunctionOutputs\x12\x1f\n" +
 	"\vfunction_id\x18\x01 \x01(\tR\n" +
 	"functionId\x12%\n" +
 	"\x0ehttps_endpoint\x18\x02 \x01(\tR\rhttpsEndpoint\x12)\n" +
@@ -113,7 +113,7 @@ func file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanFunctionStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionStackOutputs
+	(*DigitalOceanFunctionOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionOutputs
 }
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

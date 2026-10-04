@@ -23,7 +23,7 @@ const (
 )
 
 // Outputs produced after provisioning an Eventarc trigger.
-type GcpEventarcTriggerStackOutputs struct {
+type GcpEventarcTriggerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The trigger name as it exists in GCP.
 	TriggerName string `protobuf:"bytes,1,opt,name=trigger_name,json=triggerName,proto3" json:"trigger_name,omitempty"`
@@ -40,20 +40,20 @@ type GcpEventarcTriggerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpEventarcTriggerStackOutputs) Reset() {
-	*x = GcpEventarcTriggerStackOutputs{}
+func (x *GcpEventarcTriggerOutputs) Reset() {
+	*x = GcpEventarcTriggerOutputs{}
 	mi := &file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpEventarcTriggerStackOutputs) String() string {
+func (x *GcpEventarcTriggerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpEventarcTriggerStackOutputs) ProtoMessage() {}
+func (*GcpEventarcTriggerOutputs) ProtoMessage() {}
 
-func (x *GcpEventarcTriggerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpEventarcTriggerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *GcpEventarcTriggerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpEventarcTriggerStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpEventarcTriggerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpEventarcTriggerOutputs.ProtoReflect.Descriptor instead.
+func (*GcpEventarcTriggerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpEventarcTriggerStackOutputs) GetTriggerName() string {
+func (x *GcpEventarcTriggerOutputs) GetTriggerName() string {
 	if x != nil {
 		return x.TriggerName
 	}
 	return ""
 }
 
-func (x *GcpEventarcTriggerStackOutputs) GetPartnerChannelActivationToken() string {
+func (x *GcpEventarcTriggerOutputs) GetPartnerChannelActivationToken() string {
 	if x != nil {
 		return x.PartnerChannelActivationToken
 	}
 	return ""
 }
 
-func (x *GcpEventarcTriggerStackOutputs) GetTriggerId() string {
+func (x *GcpEventarcTriggerOutputs) GetTriggerId() string {
 	if x != nil {
 		return x.TriggerId
 	}
@@ -95,8 +95,8 @@ var File_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpeventarctrigger/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpeventarctrigger.v1alpha1\x1a\x1cshared/options/options.proto\"\xb1\x01\n" +
-	"\x1eGcpEventarcTriggerStackOutputs\x12!\n" +
+	"5catalog/gcp/gcpeventarctrigger/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpeventarctrigger.v1alpha1\x1a\x1cshared/options/options.proto\"\xac\x01\n" +
+	"\x19GcpEventarcTriggerOutputs\x12!\n" +
 	"\ftrigger_name\x18\x01 \x01(\tR\vtriggerName\x12M\n" +
 	" partner_channel_activation_token\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x1dpartnerChannelActivationToken\x12\x1d\n" +
 	"\n" +
@@ -117,7 +117,7 @@ func file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpEventarcTriggerStackOutputs)(nil), // 0: dev.planton.gcp.gcpeventarctrigger.v1alpha1.GcpEventarcTriggerStackOutputs
+	(*GcpEventarcTriggerOutputs)(nil), // 0: dev.planton.gcp.gcpeventarctrigger.v1alpha1.GcpEventarcTriggerOutputs
 }
 var file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

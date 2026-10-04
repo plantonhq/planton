@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubDisasterRecoveryConfigStackOutputs** captures the outputs
+// **AzureEventHubDisasterRecoveryConfigOutputs** captures the outputs
 // of provisioning an Event Hubs geo-DR pairing.
 //
 // Alias-addressed CREDENTIALS deliberately live elsewhere: Azure exposes
 // them through authorization rules, so DR-aware clients take the
 // `*_connection_string_alias` outputs from AzureEventHubNamespace (the
 // root rule) or AzureEventHubAuthorizationRule (scoped rules).
-type AzureEventHubDisasterRecoveryConfigStackOutputs struct {
+type AzureEventHubDisasterRecoveryConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the disaster-recovery config (under
 	// the primary namespace).
@@ -41,20 +41,20 @@ type AzureEventHubDisasterRecoveryConfigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureEventHubDisasterRecoveryConfigStackOutputs) Reset() {
-	*x = AzureEventHubDisasterRecoveryConfigStackOutputs{}
+func (x *AzureEventHubDisasterRecoveryConfigOutputs) Reset() {
+	*x = AzureEventHubDisasterRecoveryConfigOutputs{}
 	mi := &file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubDisasterRecoveryConfigStackOutputs) String() string {
+func (x *AzureEventHubDisasterRecoveryConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubDisasterRecoveryConfigStackOutputs) ProtoMessage() {}
+func (*AzureEventHubDisasterRecoveryConfigOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubDisasterRecoveryConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubDisasterRecoveryConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,19 +66,19 @@ func (x *AzureEventHubDisasterRecoveryConfigStackOutputs) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubDisasterRecoveryConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubDisasterRecoveryConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubDisasterRecoveryConfigOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubDisasterRecoveryConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubDisasterRecoveryConfigStackOutputs) GetDisasterRecoveryConfigId() string {
+func (x *AzureEventHubDisasterRecoveryConfigOutputs) GetDisasterRecoveryConfigId() string {
 	if x != nil {
 		return x.DisasterRecoveryConfigId
 	}
 	return ""
 }
 
-func (x *AzureEventHubDisasterRecoveryConfigStackOutputs) GetAliasName() string {
+func (x *AzureEventHubDisasterRecoveryConfigOutputs) GetAliasName() string {
 	if x != nil {
 		return x.AliasName
 	}
@@ -89,8 +89,8 @@ var File_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_prot
 
 const file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/azure/azureeventhubdisasterrecoveryconfig/v1alpha1/outputs.proto\x12>dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1\"\x8f\x01\n" +
-	"/AzureEventHubDisasterRecoveryConfigStackOutputs\x12=\n" +
+	"Hcatalog/azure/azureeventhubdisasterrecoveryconfig/v1alpha1/outputs.proto\x12>dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1\"\x8a\x01\n" +
+	"*AzureEventHubDisasterRecoveryConfigOutputs\x12=\n" +
 	"\x1bdisaster_recovery_config_id\x18\x01 \x01(\tR\x18disasterRecoveryConfigId\x12\x1d\n" +
 	"\n" +
 	"alias_name\x18\x02 \x01(\tR\taliasNameB\xf5\x03\n" +
@@ -110,7 +110,7 @@ func file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_pro
 
 var file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubDisasterRecoveryConfigStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1.AzureEventHubDisasterRecoveryConfigStackOutputs
+	(*AzureEventHubDisasterRecoveryConfigOutputs)(nil), // 0: dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1.AzureEventHubDisasterRecoveryConfigOutputs
 }
 var file_catalog_azure_azureeventhubdisasterrecoveryconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanVpcStackOutputs captures the resulting VPC info after provisioning.
-type DigitalOceanVpcStackOutputs struct {
+// DigitalOceanVpcOutputs captures the resulting VPC info after provisioning.
+type DigitalOceanVpcOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (UUID) of the created DigitalOcean VPC. Other kinds' `vpc`
 	// references resolve against this output.
@@ -36,20 +36,20 @@ type DigitalOceanVpcStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanVpcStackOutputs) Reset() {
-	*x = DigitalOceanVpcStackOutputs{}
+func (x *DigitalOceanVpcOutputs) Reset() {
+	*x = DigitalOceanVpcOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanVpcStackOutputs) String() string {
+func (x *DigitalOceanVpcOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanVpcStackOutputs) ProtoMessage() {}
+func (*DigitalOceanVpcOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanVpcStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanVpcOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *DigitalOceanVpcStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanVpcStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanVpcStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanVpcOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanVpcOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanVpcStackOutputs) GetVpcId() string {
+func (x *DigitalOceanVpcOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *DigitalOceanVpcStackOutputs) GetIpRange() string {
+func (x *DigitalOceanVpcOutputs) GetIpRange() string {
 	if x != nil {
 		return x.IpRange
 	}
 	return ""
 }
 
-func (x *DigitalOceanVpcStackOutputs) GetUrn() string {
+func (x *DigitalOceanVpcOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
@@ -91,8 +91,8 @@ var File_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/digitalocean/digitaloceanvpc/v1alpha1/outputs.proto\x121dev.planton.digitalocean.digitaloceanvpc.v1alpha1\"a\n" +
-	"\x1bDigitalOceanVpcStackOutputs\x12\x15\n" +
+	";catalog/digitalocean/digitaloceanvpc/v1alpha1/outputs.proto\x121dev.planton.digitalocean.digitaloceanvpc.v1alpha1\"\\\n" +
+	"\x16DigitalOceanVpcOutputs\x12\x15\n" +
 	"\x06vpc_id\x18\x01 \x01(\tR\x05vpcId\x12\x19\n" +
 	"\bip_range\x18\x02 \x01(\tR\aipRange\x12\x10\n" +
 	"\x03urn\x18\x03 \x01(\tR\x03urnB\x92\x03\n" +
@@ -112,7 +112,7 @@ func file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanVpcStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStackOutputs
+	(*DigitalOceanVpcOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcOutputs
 }
 var file_catalog_digitalocean_digitaloceanvpc_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

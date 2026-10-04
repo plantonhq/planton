@@ -28,7 +28,7 @@ type GcpPubSubTopic struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpPubSubTopicSpec           `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpPubSubTopicStatus         `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpPubSubTopic) GetKind() string {
 	return ""
 }
 
-func (x *GcpPubSubTopic) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpPubSubTopic) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpPubSubTopic) GetStatus() *GcpPubSubTopicStatus {
 }
 
 type GcpPubSubTopicStatus struct {
-	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Outputs       *GcpPubSubTopicStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *GcpPubSubTopicOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpPubSubTopicStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubtopic_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpPubSubTopicStatus) GetOutputs() *GcpPubSubTopicStackOutputs {
+func (x *GcpPubSubTopicStatus) GetOutputs() *GcpPubSubTopicOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcppubsubtopic_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eGcpPubSubTopicR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStatusR\x06status\"u\n" +
-	"\x14GcpPubSubTopicStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStatusR\x06status\"p\n" +
+	"\x14GcpPubSubTopicStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.gcp.gcppubsubtopic.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/gcp/gcppubsubtopic/v1alpha1;gcppubsubtopicv1alpha1\xa2\x02\x04DPGG\xaa\x02'Dev.Planton.Gcp.Gcppubsubtopic.V1alpha1\xca\x02'Dev\\Planton\\Gcp\\Gcppubsubtopic\\V1alpha1\xe2\x023Dev\\Planton\\Gcp\\Gcppubsubtopic\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Gcp::Gcppubsubtopic::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcppubsubtopic_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_gcp_gcppubsubtopic_v1alpha1_api_proto_goTypes = []any{
 	(*GcpPubSubTopic)(nil),               // 0: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopic
 	(*GcpPubSubTopicStatus)(nil),         // 1: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpPubSubTopicSpec)(nil),           // 3: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicSpec
-	(*GcpPubSubTopicStackOutputs)(nil),   // 4: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStackOutputs
+	(*GcpPubSubTopicOutputs)(nil),        // 4: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicOutputs
 }
 var file_catalog_gcp_gcppubsubtopic_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopic.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopic.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopic.spec:type_name -> dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicSpec
 	1, // 2: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopic.status:type_name -> dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStatus
-	4, // 3: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStatus.outputs:type_name -> dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStackOutputs
+	4, // 3: dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicStatus.outputs:type_name -> dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

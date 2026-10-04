@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePostgresqlFlexibleServerStackOutputs** captures the outputs of
+// **AzurePostgresqlFlexibleServerOutputs** captures the outputs of
 // provisioning an Azure Database for PostgreSQL Flexible Server.
 //
 // `fqdn` + `administrator_login` are what applications need to construct
@@ -31,7 +31,7 @@ const (
 // AzurePostgresqlFlexibleServer's source_server_id when composing read
 // replicas or restores. `identity_principal_id` is the grant seam for the
 // server's system-assigned identity.
-type AzurePostgresqlFlexibleServerStackOutputs struct {
+type AzurePostgresqlFlexibleServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the server.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DBforPostgreSQL/flexibleServers/{name}
@@ -63,20 +63,20 @@ type AzurePostgresqlFlexibleServerStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) Reset() {
-	*x = AzurePostgresqlFlexibleServerStackOutputs{}
+func (x *AzurePostgresqlFlexibleServerOutputs) Reset() {
+	*x = AzurePostgresqlFlexibleServerOutputs{}
 	mi := &file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) String() string {
+func (x *AzurePostgresqlFlexibleServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePostgresqlFlexibleServerStackOutputs) ProtoMessage() {}
+func (*AzurePostgresqlFlexibleServerOutputs) ProtoMessage() {}
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePostgresqlFlexibleServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,47 +88,47 @@ func (x *AzurePostgresqlFlexibleServerStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePostgresqlFlexibleServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePostgresqlFlexibleServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePostgresqlFlexibleServerOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePostgresqlFlexibleServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) GetServerId() string {
+func (x *AzurePostgresqlFlexibleServerOutputs) GetServerId() string {
 	if x != nil {
 		return x.ServerId
 	}
 	return ""
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) GetServerName() string {
+func (x *AzurePostgresqlFlexibleServerOutputs) GetServerName() string {
 	if x != nil {
 		return x.ServerName
 	}
 	return ""
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) GetFqdn() string {
+func (x *AzurePostgresqlFlexibleServerOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) GetAdministratorLogin() string {
+func (x *AzurePostgresqlFlexibleServerOutputs) GetAdministratorLogin() string {
 	if x != nil {
 		return x.AdministratorLogin
 	}
 	return ""
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) GetDatabaseIds() map[string]string {
+func (x *AzurePostgresqlFlexibleServerOutputs) GetDatabaseIds() map[string]string {
 	if x != nil {
 		return x.DatabaseIds
 	}
 	return nil
 }
 
-func (x *AzurePostgresqlFlexibleServerStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzurePostgresqlFlexibleServerOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -139,14 +139,14 @@ var File_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azurepostgresqlflexibleserver/v1alpha1/outputs.proto\x128dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1\"\xbc\x03\n" +
-	")AzurePostgresqlFlexibleServerStackOutputs\x12\x1b\n" +
+	"Bcatalog/azure/azurepostgresqlflexibleserver/v1alpha1/outputs.proto\x128dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1\"\xb2\x03\n" +
+	"$AzurePostgresqlFlexibleServerOutputs\x12\x1b\n" +
 	"\tserver_id\x18\x01 \x01(\tR\bserverId\x12\x1f\n" +
 	"\vserver_name\x18\x02 \x01(\tR\n" +
 	"serverName\x12\x12\n" +
 	"\x04fqdn\x18\x03 \x01(\tR\x04fqdn\x12/\n" +
-	"\x13administrator_login\x18\x04 \x01(\tR\x12administratorLogin\x12\x97\x01\n" +
-	"\fdatabase_ids\x18\x05 \x03(\v2t.dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerStackOutputs.DatabaseIdsEntryR\vdatabaseIds\x122\n" +
+	"\x13administrator_login\x18\x04 \x01(\tR\x12administratorLogin\x12\x92\x01\n" +
+	"\fdatabase_ids\x18\x05 \x03(\v2o.dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerOutputs.DatabaseIdsEntryR\vdatabaseIds\x122\n" +
 	"\x15identity_principal_id\x18\x06 \x01(\tR\x13identityPrincipalId\x1a>\n" +
 	"\x10DatabaseIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -167,11 +167,11 @@ func file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePostgresqlFlexibleServerStackOutputs)(nil), // 0: dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerStackOutputs
-	nil, // 1: dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerStackOutputs.DatabaseIdsEntry
+	(*AzurePostgresqlFlexibleServerOutputs)(nil), // 0: dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerOutputs
+	nil, // 1: dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerOutputs.DatabaseIdsEntry
 }
 var file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerStackOutputs.database_ids:type_name -> dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerStackOutputs.DatabaseIdsEntry
+	1, // 0: dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerOutputs.database_ids:type_name -> dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerOutputs.DatabaseIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

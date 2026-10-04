@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurecognitiveaccount
 spec:
@@ -17,9 +17,9 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - every model call bills per-token usage meters through the model DEPLOYMENTS hosted on this account -- the AzureCognitiveDeployment component, where any provisioned-throughput (PTU) spend would also live
+        - every model call bills per-token usage meters through the model DEPLOYMENTS hosted on this account -- the AzureCognitiveDeployment kind, where any provisioned-throughput (PTU) spend would also live
         - commitment tiers are commitment-plan purchases outside this spec -- nothing a manifest of this kind creates can commit spend
-        - a private-endpoint path to the account bills hourly on the private endpoint's own component
+        - a private-endpoint path to the account bills hourly on the private endpoint's own kind
       notes: Zero committed cost -- the OpenAI account is the billing container and endpoint holder; S0 has no floor, and an account with no deployments and no calls bills exactly nothing.
     - preset: 02-ai-foundry-account
       region_assumption: eastus
@@ -27,7 +27,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the multi-service account's calls bill each service's own usage meters (per-1K transactions, per-token, per-audio-hour by kind and feature), and model deployments bill through the AzureCognitiveDeployment component
+        - the multi-service account's calls bill each service's own usage meters (per-1K transactions, per-token, per-audio-hour by kind and feature), and model deployments bill through the AzureCognitiveDeployment kind
         - AI Foundry projects created on the account are free routing/organization objects, but the agents and models they exercise bill usage on this account's meters and the deployments' meters
         - commitment tiers are commitment-plan purchases outside this spec
       notes: Zero committed cost -- project management and the managed identity are free posture; the AIServices account idles at zero until something calls it.
@@ -39,5 +39,5 @@ spec:
       exclusions:
         - the network perimeter (Deny default, IP and VNet rules, trusted-services bypass) and the keys-off posture are free configuration -- hardening moves WHO can call, not what a call costs
         - calls that do get through bill the kind's usage meters exactly as on an open account
-        - the outbound FQDN allowlist is free data-loss-prevention posture; a private-endpoint ingress path would bill on its own component
+        - the outbound FQDN allowlist is free data-loss-prevention posture; a private-endpoint ingress path would bill on its own kind
       notes: Zero committed cost -- the locked-down account bills identically to the open one, which is the point; security posture on this kind is free.

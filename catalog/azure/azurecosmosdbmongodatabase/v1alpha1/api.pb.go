@@ -35,7 +35,7 @@ type AzureCosmosdbMongoDatabase struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureCosmosdbMongoDatabaseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureCosmosdbMongoDatabase) GetKind() string {
 	return ""
 }
 
-func (x *AzureCosmosdbMongoDatabase) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureCosmosdbMongoDatabase) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureCosmosdbMongoDatabase) GetStatus() *AzureCosmosdbMongoDatabaseStat
 // AzureCosmosdbMongoDatabaseStatus holds the deployment status and outputs.
 type AzureCosmosdbMongoDatabaseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureCosmosdbMongoDatabaseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureCosmosdbMongoDatabaseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureCosmosdbMongoDatabaseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbmongodatabase_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureCosmosdbMongoDatabaseStatus) GetOutputs() *AzureCosmosdbMongoDatabaseStackOutputs {
+func (x *AzureCosmosdbMongoDatabaseStatus) GetOutputs() *AzureCosmosdbMongoDatabaseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurecosmosdbmongodatabase_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureCosmosdbMongoDatabaseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatusR\x06status\"\x9b\x01\n" +
-	" AzureCosmosdbMongoDatabaseStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatusR\x06status\"\x96\x01\n" +
+	" AzureCosmosdbMongoDatabaseStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azurecosmosdbmongodatabase/v1alpha1;azurecosmosdbmongodatabasev1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azurecosmosdbmongodatabase.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azurecosmosdbmongodatabase\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azurecosmosdbmongodatabase\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azurecosmosdbmongodatabase::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurecosmosdbmongodatabase_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azurecosmosdbmongodatabase_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecosmosdbmongodatabase_v1alpha1_api_proto_goTypes = []any{
-	(*AzureCosmosdbMongoDatabase)(nil),             // 0: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabase
-	(*AzureCosmosdbMongoDatabaseStatus)(nil),       // 1: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureCosmosdbMongoDatabaseSpec)(nil),         // 3: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseSpec
-	(*AzureCosmosdbMongoDatabaseStackOutputs)(nil), // 4: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStackOutputs
+	(*AzureCosmosdbMongoDatabase)(nil),        // 0: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabase
+	(*AzureCosmosdbMongoDatabaseStatus)(nil),  // 1: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureCosmosdbMongoDatabaseSpec)(nil),    // 3: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseSpec
+	(*AzureCosmosdbMongoDatabaseOutputs)(nil), // 4: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseOutputs
 }
 var file_catalog_azure_azurecosmosdbmongodatabase_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabase.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabase.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabase.spec:type_name -> dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseSpec
 	1, // 2: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabase.status:type_name -> dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatus
-	4, // 3: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatus.outputs:type_name -> dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStackOutputs
+	4, // 3: dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseStatus.outputs:type_name -> dev.planton.azure.azurecosmosdbmongodatabase.v1alpha1.AzureCosmosdbMongoDatabaseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

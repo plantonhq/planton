@@ -31,7 +31,7 @@ type GcpPrivateCaCertificateTemplate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpPrivateCaCertificateTemplateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpPrivateCaCertificateTemplate) GetKind() string {
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateTemplate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpPrivateCaCertificateTemplate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpPrivateCaCertificateTemplate) GetStatus() *GcpPrivateCaCertificateTe
 // GcpPrivateCaCertificateTemplate status
 type GcpPrivateCaCertificateTemplateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpPrivateCaCertificateTemplateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpPrivateCaCertificateTemplateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpPrivateCaCertificateTemplateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpPrivateCaCertificateTemplateStatus) GetOutputs() *GcpPrivateCaCertificateTemplateStackOutputs {
+func (x *GcpPrivateCaCertificateTemplateStatus) GetOutputs() *GcpPrivateCaCertificateTemplateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_api_proto_rawDes
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fGcpPrivateCaCertificateTemplateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatusR\x06status\"\xa8\x01\n" +
-	"%GcpPrivateCaCertificateTemplateStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatusR\x06status\"\xa3\x01\n" +
+	"%GcpPrivateCaCertificateTemplateStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateOutputsR\aoutputsB\xc8\x03\n" +
 	"<com.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1;gcpprivatecacertificatetemplatev1alpha1\xa2\x02\x04DPGG\xaa\x028Dev.Planton.Gcp.Gcpprivatecacertificatetemplate.V1alpha1\xca\x028Dev\\Planton\\Gcp\\Gcpprivatecacertificatetemplate\\V1alpha1\xe2\x02DDev\\Planton\\Gcp\\Gcpprivatecacertificatetemplate\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Gcp::Gcpprivatecacertificatetemplate::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_api_proto_rawDesc
 
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_api_proto_goTypes = []any{
-	(*GcpPrivateCaCertificateTemplate)(nil),             // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate
-	(*GcpPrivateCaCertificateTemplateStatus)(nil),       // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpPrivateCaCertificateTemplateSpec)(nil),         // 3: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateSpec
-	(*GcpPrivateCaCertificateTemplateStackOutputs)(nil), // 4: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackOutputs
+	(*GcpPrivateCaCertificateTemplate)(nil),        // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate
+	(*GcpPrivateCaCertificateTemplateStatus)(nil),  // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpPrivateCaCertificateTemplateSpec)(nil),    // 3: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateSpec
+	(*GcpPrivateCaCertificateTemplateOutputs)(nil), // 4: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateOutputs
 }
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate.spec:type_name -> dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateSpec
 	1, // 2: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplate.status:type_name -> dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatus
-	4, // 3: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatus.outputs:type_name -> dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackOutputs
+	4, // 3: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStatus.outputs:type_name -> dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

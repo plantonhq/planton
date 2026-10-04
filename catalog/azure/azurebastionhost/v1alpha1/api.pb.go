@@ -33,10 +33,10 @@ type AzureBastionHost struct {
 	// Resource kind. Must be "AzureBastionHost".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Bastion host specification.
 	Spec *AzureBastionHostSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureBastionHostStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -86,7 +86,7 @@ func (x *AzureBastionHost) GetKind() string {
 	return ""
 }
 
-func (x *AzureBastionHost) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureBastionHost) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzureBastionHost) GetStatus() *AzureBastionHostStatus {
 // AzureBastionHostStatus holds the deployment outputs.
 type AzureBastionHostStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureBastionHostStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureBastionHostOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureBastionHostStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebastionhost_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureBastionHostStatus) GetOutputs() *AzureBastionHostStackOutputs {
+func (x *AzureBastionHostStatus) GetOutputs() *AzureBastionHostOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurebastionhost_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10AzureBastionHostR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStatusR\x06status\"}\n" +
-	"\x16AzureBastionHostStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackOutputsR\aoutputsB\xeb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStatusR\x06status\"x\n" +
+	"\x16AzureBastionHostStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostOutputsR\aoutputsB\xeb\x02\n" +
 	"/com.dev.planton.azure.azurebastionhost.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/azure/azurebastionhost/v1alpha1;azurebastionhostv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Azure.Azurebastionhost.V1alpha1\xca\x02+Dev\\Planton\\Azure\\Azurebastionhost\\V1alpha1\xe2\x027Dev\\Planton\\Azure\\Azurebastionhost\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Azure::Azurebastionhost::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azurebastionhost_v1alpha1_api_proto_msgTypes = make([]pro
 var file_catalog_azure_azurebastionhost_v1alpha1_api_proto_goTypes = []any{
 	(*AzureBastionHost)(nil),             // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost
 	(*AzureBastionHostStatus)(nil),       // 1: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureBastionHostSpec)(nil),         // 3: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostSpec
-	(*AzureBastionHostStackOutputs)(nil), // 4: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackOutputs
+	(*AzureBastionHostOutputs)(nil),      // 4: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostOutputs
 }
 var file_catalog_azure_azurebastionhost_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost.spec:type_name -> dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostSpec
 	1, // 2: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost.status:type_name -> dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStatus
-	4, // 3: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStatus.outputs:type_name -> dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackOutputs
+	4, // 3: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStatus.outputs:type_name -> dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

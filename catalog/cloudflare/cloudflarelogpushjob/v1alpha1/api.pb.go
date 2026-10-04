@@ -33,7 +33,7 @@ type CloudflareLogpushJob struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareLogpushJobSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareLogpushJob) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareLogpushJob) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareLogpushJob) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareLogpushJob) GetStatus() *CloudflareLogpushJobStatus {
 // CloudflareLogpushJobStatus represents the observed state of the job.
 type CloudflareLogpushJobStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareLogpushJobStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareLogpushJobOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareLogpushJobStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareLogpushJobStatus) GetOutputs() *CloudflareLogpushJobStackOutputs {
+func (x *CloudflareLogpushJobStatus) GetOutputs() *CloudflareLogpushJobOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14CloudflareLogpushJobR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatusR\x06status\"\x8e\x01\n" +
-	"\x1aCloudflareLogpushJobStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatusR\x06status\"\x89\x01\n" +
+	"\x1aCloudflareLogpushJobStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarelogpushjob/v1alpha1;cloudflarelogpushjobv1alpha1\xa2\x02\x04DPCC\xaa\x024Dev.Planton.Cloudflare.Cloudflarelogpushjob.V1alpha1\xca\x024Dev\\Planton\\Cloudflare\\Cloudflarelogpushjob\\V1alpha1\xe2\x02@Dev\\Planton\\Cloudflare\\Cloudflarelogpushjob\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Cloudflare::Cloudflarelogpushjob::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareLogpushJob)(nil),             // 0: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJob
-	(*CloudflareLogpushJobStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareLogpushJobSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobSpec
-	(*CloudflareLogpushJobStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStackOutputs
+	(*CloudflareLogpushJob)(nil),         // 0: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJob
+	(*CloudflareLogpushJobStatus)(nil),   // 1: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareLogpushJobSpec)(nil),     // 3: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobSpec
+	(*CloudflareLogpushJobOutputs)(nil),  // 4: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobOutputs
 }
 var file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJob.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJob.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJob.spec:type_name -> dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobSpec
 	1, // 2: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJob.status:type_name -> dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatus
-	4, // 3: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

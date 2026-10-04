@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Vertex AI Workbench instance.
-type GcpVertexAiNotebookStackOutputs struct {
+type GcpVertexAiNotebookOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified instance ID.
 	// Format: projects/{project}/locations/{location}/instances/{instance_id}
@@ -52,20 +52,20 @@ type GcpVertexAiNotebookStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) Reset() {
-	*x = GcpVertexAiNotebookStackOutputs{}
+func (x *GcpVertexAiNotebookOutputs) Reset() {
+	*x = GcpVertexAiNotebookOutputs{}
 	mi := &file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) String() string {
+func (x *GcpVertexAiNotebookOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiNotebookStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiNotebookOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiNotebookStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiNotebookOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,61 +77,61 @@ func (x *GcpVertexAiNotebookStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiNotebookStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiNotebookStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiNotebookOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiNotebookOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetInstanceId() string {
+func (x *GcpVertexAiNotebookOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetInstanceName() string {
+func (x *GcpVertexAiNotebookOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetProxyUri() string {
+func (x *GcpVertexAiNotebookOutputs) GetProxyUri() string {
 	if x != nil {
 		return x.ProxyUri
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetState() string {
+func (x *GcpVertexAiNotebookOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetCreator() string {
+func (x *GcpVertexAiNotebookOutputs) GetCreator() string {
 	if x != nil {
 		return x.Creator
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetCreateTime() string {
+func (x *GcpVertexAiNotebookOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetHealthState() string {
+func (x *GcpVertexAiNotebookOutputs) GetHealthState() string {
 	if x != nil {
 		return x.HealthState
 	}
 	return ""
 }
 
-func (x *GcpVertexAiNotebookStackOutputs) GetUpdateTime() string {
+func (x *GcpVertexAiNotebookOutputs) GetUpdateTime() string {
 	if x != nil {
 		return x.UpdateTime
 	}
@@ -142,8 +142,8 @@ var File_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpvertexainotebook/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpvertexainotebook.v1alpha1\"\x99\x02\n" +
-	"\x1fGcpVertexAiNotebookStackOutputs\x12\x1f\n" +
+	"6catalog/gcp/gcpvertexainotebook/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpvertexainotebook.v1alpha1\"\x94\x02\n" +
+	"\x1aGcpVertexAiNotebookOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12#\n" +
 	"\rinstance_name\x18\x02 \x01(\tR\finstanceName\x12\x1b\n" +
@@ -171,7 +171,7 @@ func file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiNotebookStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookStackOutputs
+	(*GcpVertexAiNotebookOutputs)(nil), // 0: dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookOutputs
 }
 var file_catalog_gcp_gcpvertexainotebook_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesVeleroStackOutputs captures observable outputs after Velero is
+// KubernetesVeleroOutputs captures observable outputs after Velero is
 // installed on the target cluster.
-type KubernetesVeleroStackOutputs struct {
+type KubernetesVeleroOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Velero was installed into (the resolved spec.namespace).
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -41,20 +41,20 @@ type KubernetesVeleroStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *KubernetesVeleroStackOutputs) Reset() {
-	*x = KubernetesVeleroStackOutputs{}
+func (x *KubernetesVeleroOutputs) Reset() {
+	*x = KubernetesVeleroOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesVeleroStackOutputs) String() string {
+func (x *KubernetesVeleroOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesVeleroStackOutputs) ProtoMessage() {}
+func (*KubernetesVeleroOutputs) ProtoMessage() {}
 
-func (x *KubernetesVeleroStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesVeleroOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *KubernetesVeleroStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesVeleroStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesVeleroStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesVeleroOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesVeleroOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesVeleroStackOutputs) GetNamespace() string {
+func (x *KubernetesVeleroOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesVeleroStackOutputs) GetReleaseName() string {
+func (x *KubernetesVeleroOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesVeleroStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesVeleroOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
 	return ""
 }
 
-func (x *KubernetesVeleroStackOutputs) GetBackupStorageLocationName() string {
+func (x *KubernetesVeleroOutputs) GetBackupStorageLocationName() string {
 	if x != nil {
 		return x.BackupStorageLocationName
 	}
@@ -103,8 +103,8 @@ var File_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesvelero/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesvelero.v1alpha1\"\xd2\x01\n" +
-	"\x1cKubernetesVeleroStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesvelero/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesvelero.v1alpha1\"\xcd\x01\n" +
+	"\x17KubernetesVeleroOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x120\n" +
 	"\x14service_account_name\x18\x03 \x01(\tR\x12serviceAccountName\x12?\n" +
@@ -125,7 +125,7 @@ func file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesVeleroStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesvelero.v1alpha1.KubernetesVeleroStackOutputs
+	(*KubernetesVeleroOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesvelero.v1alpha1.KubernetesVeleroOutputs
 }
 var file_catalog_kubernetes_kubernetesvelero_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

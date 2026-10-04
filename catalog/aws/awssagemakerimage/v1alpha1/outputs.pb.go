@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerImageStackOutputs captures observable identifiers from a
+// AwsSagemakerImageOutputs captures observable identifiers from a
 // provisioned SageMaker image and its versions.
-type AwsSagemakerImageStackOutputs struct {
+type AwsSagemakerImageOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The image name (the AWS identity Studio configurations reference).
 	ImageName string `protobuf:"bytes,1,opt,name=image_name,json=imageName,proto3" json:"image_name,omitempty"`
@@ -36,20 +36,20 @@ type AwsSagemakerImageStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerImageStackOutputs) Reset() {
-	*x = AwsSagemakerImageStackOutputs{}
+func (x *AwsSagemakerImageOutputs) Reset() {
+	*x = AwsSagemakerImageOutputs{}
 	mi := &file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerImageStackOutputs) String() string {
+func (x *AwsSagemakerImageOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerImageStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerImageOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerImageStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerImageOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *AwsSagemakerImageStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerImageStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerImageStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerImageOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerImageOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerImageStackOutputs) GetImageName() string {
+func (x *AwsSagemakerImageOutputs) GetImageName() string {
 	if x != nil {
 		return x.ImageName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerImageStackOutputs) GetImageArn() string {
+func (x *AwsSagemakerImageOutputs) GetImageArn() string {
 	if x != nil {
 		return x.ImageArn
 	}
 	return ""
 }
 
-func (x *AwsSagemakerImageStackOutputs) GetVersionNumbers() map[string]string {
+func (x *AwsSagemakerImageOutputs) GetVersionNumbers() map[string]string {
 	if x != nil {
 		return x.VersionNumbers
 	}
@@ -91,12 +91,12 @@ var File_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awssagemakerimage/v1alpha1/outputs.proto\x12*dev.planton.aws.awssagemakerimage.v1alpha1\"\xa7\x02\n" +
-	"\x1dAwsSagemakerImageStackOutputs\x12\x1d\n" +
+	"4catalog/aws/awssagemakerimage/v1alpha1/outputs.proto\x12*dev.planton.aws.awssagemakerimage.v1alpha1\"\x9d\x02\n" +
+	"\x18AwsSagemakerImageOutputs\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x01 \x01(\tR\timageName\x12\x1b\n" +
-	"\timage_arn\x18\x02 \x01(\tR\bimageArn\x12\x86\x01\n" +
-	"\x0fversion_numbers\x18\x03 \x03(\v2].dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs.VersionNumbersEntryR\x0eversionNumbers\x1aA\n" +
+	"\timage_arn\x18\x02 \x01(\tR\bimageArn\x12\x81\x01\n" +
+	"\x0fversion_numbers\x18\x03 \x03(\v2X.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs.VersionNumbersEntryR\x0eversionNumbers\x1aA\n" +
 	"\x13VersionNumbersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xea\x02\n" +
@@ -116,11 +116,11 @@ func file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerImageStackOutputs)(nil), // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs
-	nil,                                   // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs.VersionNumbersEntry
+	(*AwsSagemakerImageOutputs)(nil), // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs
+	nil,                              // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs.VersionNumbersEntry
 }
 var file_catalog_aws_awssagemakerimage_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs.version_numbers:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackOutputs.VersionNumbersEntry
+	1, // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs.version_numbers:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageOutputs.VersionNumbersEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

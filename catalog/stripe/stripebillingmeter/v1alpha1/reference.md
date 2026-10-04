@@ -6,7 +6,7 @@
 
 **apiVersion**: `stripe.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 StripeBillingMeterSpec declares a usage meter: the event name the application sends to Stripe
 for each unit of use (an API request, a GB stored), how those events add up per customer, and

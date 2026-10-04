@@ -31,7 +31,7 @@ type KubernetesRayCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesRayClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesRayCluster) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesRayCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesRayCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesRayCluster) GetStatus() *KubernetesRayClusterStatus {
 // ray-cluster-kubernetes status.
 type KubernetesRayClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesRayClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesRayClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesRayClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesraycluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesRayClusterStatus) GetOutputs() *KubernetesRayClusterStackOutputs {
+func (x *KubernetesRayClusterStatus) GetOutputs() *KubernetesRayClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesraycluster_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14KubernetesRayClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatusR\x06status\"\x8e\x01\n" +
-	"\x1aKubernetesRayClusterStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatusR\x06status\"\x89\x01\n" +
+	"\x1aKubernetesRayClusterStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetesraycluster.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesraycluster/v1alpha1;kubernetesrayclusterv1alpha1\xa2\x02\x04DPKK\xaa\x024Dev.Planton.Kubernetes.Kubernetesraycluster.V1alpha1\xca\x024Dev\\Planton\\Kubernetes\\Kubernetesraycluster\\V1alpha1\xe2\x02@Dev\\Planton\\Kubernetes\\Kubernetesraycluster\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Kubernetes::Kubernetesraycluster::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesraycluster_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesRayCluster)(nil),             // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster
-	(*KubernetesRayClusterStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesRayClusterSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterSpec
-	(*KubernetesRayClusterStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackOutputs
+	(*KubernetesRayCluster)(nil),         // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster
+	(*KubernetesRayClusterStatus)(nil),   // 1: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesRayClusterSpec)(nil),     // 3: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterSpec
+	(*KubernetesRayClusterOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterOutputs
 }
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster.spec:type_name -> dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterSpec
 	1, // 2: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster.status:type_name -> dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatus
-	4, // 3: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

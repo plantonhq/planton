@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDnsRecordStackOutputs captures the outputs after provisioning a GCP Cloud DNS record.
+// GcpDnsRecordOutputs captures the outputs after provisioning a GCP Cloud DNS record.
 // It includes identifiers and metadata about the created record.
-type GcpDnsRecordStackOutputs struct {
+type GcpDnsRecordOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified domain name of the created DNS record.
 	// Example: "www.example.com." or "api.example.com."
@@ -41,20 +41,20 @@ type GcpDnsRecordStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDnsRecordStackOutputs) Reset() {
-	*x = GcpDnsRecordStackOutputs{}
+func (x *GcpDnsRecordOutputs) Reset() {
+	*x = GcpDnsRecordOutputs{}
 	mi := &file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDnsRecordStackOutputs) String() string {
+func (x *GcpDnsRecordOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDnsRecordStackOutputs) ProtoMessage() {}
+func (*GcpDnsRecordOutputs) ProtoMessage() {}
 
-func (x *GcpDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDnsRecordOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,40 +66,40 @@ func (x *GcpDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDnsRecordStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDnsRecordStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDnsRecordOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDnsRecordOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDnsRecordStackOutputs) GetFqdn() string {
+func (x *GcpDnsRecordOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *GcpDnsRecordStackOutputs) GetRecordType() string {
+func (x *GcpDnsRecordOutputs) GetRecordType() string {
 	if x != nil {
 		return x.RecordType
 	}
 	return ""
 }
 
-func (x *GcpDnsRecordStackOutputs) GetManagedZone() string {
+func (x *GcpDnsRecordOutputs) GetManagedZone() string {
 	if x != nil {
 		return x.ManagedZone
 	}
 	return ""
 }
 
-func (x *GcpDnsRecordStackOutputs) GetProjectId() string {
+func (x *GcpDnsRecordOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *GcpDnsRecordStackOutputs) GetTtlSeconds() int32 {
+func (x *GcpDnsRecordOutputs) GetTtlSeconds() int32 {
 	if x != nil {
 		return x.TtlSeconds
 	}
@@ -110,8 +110,8 @@ var File_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpdnsrecord/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcpdnsrecord.v1alpha1\"\xb2\x01\n" +
-	"\x18GcpDnsRecordStackOutputs\x12\x12\n" +
+	"/catalog/gcp/gcpdnsrecord/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcpdnsrecord.v1alpha1\"\xad\x01\n" +
+	"\x13GcpDnsRecordOutputs\x12\x12\n" +
 	"\x04fqdn\x18\x01 \x01(\tR\x04fqdn\x12\x1f\n" +
 	"\vrecord_type\x18\x02 \x01(\tR\n" +
 	"recordType\x12!\n" +
@@ -136,7 +136,7 @@ func file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDnsRecordStackOutputs)(nil), // 0: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordStackOutputs
+	(*GcpDnsRecordOutputs)(nil), // 0: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordOutputs
 }
 var file_catalog_gcp_gcpdnsrecord_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

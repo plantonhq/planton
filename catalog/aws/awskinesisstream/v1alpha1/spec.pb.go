@@ -44,7 +44,7 @@ const (
 //     set, the IaC modules automatically enable KMS encryption; when absent, encryption is
 //     disabled (NONE). You can also use the Kinesis-owned key by passing "alias/aws/kinesis".
 //   - Enhanced shard-level CloudWatch metrics are available for production observability.
-//   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+//   - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsKinesisStreamSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

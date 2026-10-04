@@ -33,10 +33,10 @@ type AzurePrivateDnsResolverVirtualNetworkLink struct {
 	// Resource kind. Must be "AzurePrivateDnsResolverVirtualNetworkLink".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Virtual network link specification.
 	Spec *AzurePrivateDnsResolverVirtualNetworkLinkSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzurePrivateDnsResolverVirtualNetworkLinkStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -86,7 +86,7 @@ func (x *AzurePrivateDnsResolverVirtualNetworkLink) GetKind() string {
 	return ""
 }
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLink) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePrivateDnsResolverVirtualNetworkLink) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzurePrivateDnsResolverVirtualNetworkLink) GetStatus() *AzurePrivateDns
 // outputs.
 type AzurePrivateDnsResolverVirtualNetworkLinkStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzurePrivateDnsResolverVirtualNetworkLinkOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzurePrivateDnsResolverVirtualNetworkLinkStatus) Descriptor() ([]byte, []
 	return file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLinkStatus) GetOutputs() *AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs {
+func (x *AzurePrivateDnsResolverVirtualNetworkLinkStatus) GetOutputs() *AzurePrivateDnsResolverVirtualNetworkLinkOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_api_
 	"apiVersion\x12D\n" +
 	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\n" +
 	")AzurePrivateDnsResolverVirtualNetworkLinkR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8f\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8f\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2s.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8d\x01\n" +
-	"\x06status\x18\x05 \x01(\v2u.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatusR\x06status\"\xc9\x01\n" +
-	"/AzurePrivateDnsResolverVirtualNetworkLinkStatus\x12\x95\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2{.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackOutputsR\aoutputsB\x9b\x04\n" +
+	"\x06status\x18\x05 \x01(\v2u.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatusR\x06status\"\xc4\x01\n" +
+	"/AzurePrivateDnsResolverVirtualNetworkLinkStatus\x12\x90\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2v.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkOutputsR\aoutputsB\x9b\x04\n" +
 	"Hcom.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1B\bApiProtoP\x01Z\x8f\x01github.com/plantonhq/planton/catalog/azure/azureprivatednsresolvervirtualnetworklink/v1alpha1;azureprivatednsresolvervirtualnetworklinkv1alpha1\xa2\x02\x04DPAA\xaa\x02DDev.Planton.Azure.Azureprivatednsresolvervirtualnetworklink.V1alpha1\xca\x02DDev\\Planton\\Azure\\Azureprivatednsresolvervirtualnetworklink\\V1alpha1\xe2\x02PDev\\Planton\\Azure\\Azureprivatednsresolvervirtualnetworklink\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Azure::Azureprivatednsresolvervirtualnetworklink::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_api_p
 
 var file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePrivateDnsResolverVirtualNetworkLink)(nil),             // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
-	(*AzurePrivateDnsResolverVirtualNetworkLinkStatus)(nil),       // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatus
-	(*shared.CloudResourceMetadata)(nil),                          // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePrivateDnsResolverVirtualNetworkLinkSpec)(nil),         // 3: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkSpec
-	(*AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs)(nil), // 4: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs
+	(*AzurePrivateDnsResolverVirtualNetworkLink)(nil),        // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
+	(*AzurePrivateDnsResolverVirtualNetworkLinkStatus)(nil),  // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatus
+	(*shared.CatalogObjectMetadata)(nil),                     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePrivateDnsResolverVirtualNetworkLinkSpec)(nil),    // 3: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkSpec
+	(*AzurePrivateDnsResolverVirtualNetworkLinkOutputs)(nil), // 4: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkOutputs
 }
 var file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink.spec:type_name -> dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkSpec
 	1, // 2: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink.status:type_name -> dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatus
-	4, // 3: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatus.outputs:type_name -> dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs
+	4, // 3: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStatus.outputs:type_name -> dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

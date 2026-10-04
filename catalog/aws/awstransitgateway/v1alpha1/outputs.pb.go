@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsTransitGatewayStackOutputs captures observable identifiers from a
+// AwsTransitGatewayOutputs captures observable identifiers from a
 // provisioned Transit Gateway.
 //
 // These outputs are the primary interface for downstream resources:
@@ -30,7 +30,7 @@ const (
 // gateway, and by VPN connections and Direct Connect gateways. The default
 // route table IDs let route-table-aware tooling address the built-in tables
 // without introspecting the gateway.
-type AwsTransitGatewayStackOutputs struct {
+type AwsTransitGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Transit Gateway ID (e.g., "tgw-0123456789abcdef0"). This is the
 	// primary identifier used by VPC attachments, route tables, subnet routes,
@@ -55,20 +55,20 @@ type AwsTransitGatewayStackOutputs struct {
 	sizeCache                      protoimpl.SizeCache
 }
 
-func (x *AwsTransitGatewayStackOutputs) Reset() {
-	*x = AwsTransitGatewayStackOutputs{}
+func (x *AwsTransitGatewayOutputs) Reset() {
+	*x = AwsTransitGatewayOutputs{}
 	mi := &file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsTransitGatewayStackOutputs) String() string {
+func (x *AwsTransitGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsTransitGatewayStackOutputs) ProtoMessage() {}
+func (*AwsTransitGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsTransitGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsTransitGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,40 +80,40 @@ func (x *AwsTransitGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsTransitGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsTransitGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsTransitGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsTransitGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsTransitGatewayStackOutputs) GetTransitGatewayId() string {
+func (x *AwsTransitGatewayOutputs) GetTransitGatewayId() string {
 	if x != nil {
 		return x.TransitGatewayId
 	}
 	return ""
 }
 
-func (x *AwsTransitGatewayStackOutputs) GetTransitGatewayArn() string {
+func (x *AwsTransitGatewayOutputs) GetTransitGatewayArn() string {
 	if x != nil {
 		return x.TransitGatewayArn
 	}
 	return ""
 }
 
-func (x *AwsTransitGatewayStackOutputs) GetOwnerId() string {
+func (x *AwsTransitGatewayOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsTransitGatewayStackOutputs) GetAssociationDefaultRouteTableId() string {
+func (x *AwsTransitGatewayOutputs) GetAssociationDefaultRouteTableId() string {
 	if x != nil {
 		return x.AssociationDefaultRouteTableId
 	}
 	return ""
 }
 
-func (x *AwsTransitGatewayStackOutputs) GetPropagationDefaultRouteTableId() string {
+func (x *AwsTransitGatewayOutputs) GetPropagationDefaultRouteTableId() string {
 	if x != nil {
 		return x.PropagationDefaultRouteTableId
 	}
@@ -124,8 +124,8 @@ var File_catalog_aws_awstransitgateway_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awstransitgateway/v1alpha1/outputs.proto\x12*dev.planton.aws.awstransitgateway.v1alpha1\"\xb0\x02\n" +
-	"\x1dAwsTransitGatewayStackOutputs\x12,\n" +
+	"4catalog/aws/awstransitgateway/v1alpha1/outputs.proto\x12*dev.planton.aws.awstransitgateway.v1alpha1\"\xab\x02\n" +
+	"\x18AwsTransitGatewayOutputs\x12,\n" +
 	"\x12transit_gateway_id\x18\x01 \x01(\tR\x10transitGatewayId\x12.\n" +
 	"\x13transit_gateway_arn\x18\x02 \x01(\tR\x11transitGatewayArn\x12\x19\n" +
 	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12J\n" +
@@ -147,7 +147,7 @@ func file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsTransitGatewayStackOutputs)(nil), // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackOutputs
+	(*AwsTransitGatewayOutputs)(nil), // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayOutputs
 }
 var file_catalog_aws_awstransitgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

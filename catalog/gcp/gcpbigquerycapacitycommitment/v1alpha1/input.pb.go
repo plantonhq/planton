@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-bigquery-capacity-commitment stack-input
-type GcpBigQueryCapacityCommitmentStackInput struct {
+// gcp-bigquery-capacity-commitment iac-input
+type GcpBigQueryCapacityCommitmentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpBigQueryCapacityCommitment `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpBigQueryCapacityCommitmentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackInput) Reset() {
-	*x = GcpBigQueryCapacityCommitmentStackInput{}
+func (x *GcpBigQueryCapacityCommitmentIacInput) Reset() {
+	*x = GcpBigQueryCapacityCommitmentIacInput{}
 	mi := &file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackInput) String() string {
+func (x *GcpBigQueryCapacityCommitmentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryCapacityCommitmentStackInput) ProtoMessage() {}
+func (*GcpBigQueryCapacityCommitmentIacInput) ProtoMessage() {}
 
-func (x *GcpBigQueryCapacityCommitmentStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryCapacityCommitmentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpBigQueryCapacityCommitmentStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryCapacityCommitmentStackInput.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryCapacityCommitmentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryCapacityCommitmentIacInput.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryCapacityCommitmentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackInput) GetTarget() *GcpBigQueryCapacityCommitment {
+func (x *GcpBigQueryCapacityCommitmentIacInput) GetTarget() *GcpBigQueryCapacityCommitment {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpBigQueryCapacityCommitmentIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto protoref
 
 const file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/input.proto\x126dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1\x1a<catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe5\x01\n" +
-	"'GcpBigQueryCapacityCommitmentStackInput\x12m\n" +
+	">catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/input.proto\x126dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1\x1a<catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe3\x01\n" +
+	"%GcpBigQueryCapacityCommitmentIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	":com.dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_rawDesc
 
 var file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_goTypes = []any{
-	(*GcpBigQueryCapacityCommitmentStackInput)(nil), // 0: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentStackInput
-	(*GcpBigQueryCapacityCommitment)(nil),           // 1: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitment
-	(*gcp.GcpProviderConfig)(nil),                   // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpBigQueryCapacityCommitmentIacInput)(nil), // 0: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentIacInput
+	(*GcpBigQueryCapacityCommitment)(nil),         // 1: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitment
+	(*gcp.GcpProviderConfig)(nil),                 // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentStackInput.target:type_name -> dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitment
-	2, // 1: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentIacInput.target:type_name -> dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitment
+	2, // 1: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

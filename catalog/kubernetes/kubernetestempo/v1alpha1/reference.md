@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesTempoSpec** deploys Grafana Tempo — the distributed-tracing
 backend that stores whole traces in object storage and retrieves them

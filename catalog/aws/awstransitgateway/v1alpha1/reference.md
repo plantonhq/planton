@@ -28,7 +28,7 @@ one or both to build segmented topologies (prod/non-prod isolation,
 inspection VPC hair-pinning) with custom route tables.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

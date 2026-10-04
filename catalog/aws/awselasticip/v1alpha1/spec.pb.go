@@ -52,7 +52,7 @@ const (
 // (customer_owned_ipv4_pool) are excluded with the catalog's recorded Outposts
 // exclusion class.
 //
-// Credentials, region, and deployment workflow live outside this spec in stack inputs.
+// Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsElasticIpSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

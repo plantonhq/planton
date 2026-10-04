@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareLogpushJobStackOutputs captures the observable outputs after
+// CloudflareLogpushJobOutputs captures the observable outputs after
 // creating the Logpush job.
-type CloudflareLogpushJobStackOutputs struct {
+type CloudflareLogpushJobOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned numeric job ID, in string form.
 	JobId string `protobuf:"bytes,1,opt,name=job_id,json=jobId,proto3" json:"job_id,omitempty"`
@@ -44,20 +44,20 @@ type CloudflareLogpushJobStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *CloudflareLogpushJobStackOutputs) Reset() {
-	*x = CloudflareLogpushJobStackOutputs{}
+func (x *CloudflareLogpushJobOutputs) Reset() {
+	*x = CloudflareLogpushJobOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareLogpushJobStackOutputs) String() string {
+func (x *CloudflareLogpushJobOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareLogpushJobStackOutputs) ProtoMessage() {}
+func (*CloudflareLogpushJobOutputs) ProtoMessage() {}
 
-func (x *CloudflareLogpushJobStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareLogpushJobOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,47 +69,47 @@ func (x *CloudflareLogpushJobStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareLogpushJobStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareLogpushJobStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareLogpushJobOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareLogpushJobOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareLogpushJobStackOutputs) GetJobId() string {
+func (x *CloudflareLogpushJobOutputs) GetJobId() string {
 	if x != nil {
 		return x.JobId
 	}
 	return ""
 }
 
-func (x *CloudflareLogpushJobStackOutputs) GetAccountId() string {
+func (x *CloudflareLogpushJobOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *CloudflareLogpushJobStackOutputs) GetZoneId() string {
+func (x *CloudflareLogpushJobOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareLogpushJobStackOutputs) GetOwnershipChallengeFilename() string {
+func (x *CloudflareLogpushJobOutputs) GetOwnershipChallengeFilename() string {
 	if x != nil {
 		return x.OwnershipChallengeFilename
 	}
 	return ""
 }
 
-func (x *CloudflareLogpushJobStackOutputs) GetOwnershipChallengeMessage() string {
+func (x *CloudflareLogpushJobOutputs) GetOwnershipChallengeMessage() string {
 	if x != nil {
 		return x.OwnershipChallengeMessage
 	}
 	return ""
 }
 
-func (x *CloudflareLogpushJobStackOutputs) GetOwnershipChallengeValid() bool {
+func (x *CloudflareLogpushJobOutputs) GetOwnershipChallengeValid() bool {
 	if x != nil {
 		return x.OwnershipChallengeValid
 	}
@@ -120,8 +120,8 @@ var File_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto protoref
 
 const file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/cloudflare/cloudflarelogpushjob/v1alpha1/outputs.proto\x124dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1\"\xaf\x02\n" +
-	" CloudflareLogpushJobStackOutputs\x12\x15\n" +
+	">catalog/cloudflare/cloudflarelogpushjob/v1alpha1/outputs.proto\x124dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1\"\xaa\x02\n" +
+	"\x1bCloudflareLogpushJobOutputs\x12\x15\n" +
 	"\x06job_id\x18\x01 \x01(\tR\x05jobId\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12\x17\n" +
@@ -145,7 +145,7 @@ func file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareLogpushJobStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobStackOutputs
+	(*CloudflareLogpushJobOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1.CloudflareLogpushJobOutputs
 }
 var file_catalog_cloudflare_cloudflarelogpushjob_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

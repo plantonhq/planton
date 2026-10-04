@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-kafka-topic stack-input
-type KubernetesKafkaTopicStackInput struct {
+// kubernetes-kafka-topic iac-input
+type KubernetesKafkaTopicIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesKafkaTopic `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesKafkaTopicStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaTopicStackInput) Reset() {
-	*x = KubernetesKafkaTopicStackInput{}
+func (x *KubernetesKafkaTopicIacInput) Reset() {
+	*x = KubernetesKafkaTopicIacInput{}
 	mi := &file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaTopicStackInput) String() string {
+func (x *KubernetesKafkaTopicIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaTopicStackInput) ProtoMessage() {}
+func (*KubernetesKafkaTopicIacInput) ProtoMessage() {}
 
-func (x *KubernetesKafkaTopicStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaTopicIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesKafkaTopicStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaTopicStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaTopicStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaTopicIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaTopicIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaTopicStackInput) GetTarget() *KubernetesKafkaTopic {
+func (x *KubernetesKafkaTopicIacInput) GetTarget() *KubernetesKafkaTopic {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesKafkaTopicStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesKafkaTopicIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto protorefle
 
 const file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kuberneteskafkatopic/v1alpha1/input.proto\x124dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1\x1a:catalog/kubernetes/kuberneteskafkatopic/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdf\x01\n" +
-	"\x1eKubernetesKafkaTopicStackInput\x12b\n" +
+	"<catalog/kubernetes/kuberneteskafkatopic/v1alpha1/input.proto\x124dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1\x1a:catalog/kubernetes/kuberneteskafkatopic/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdd\x01\n" +
+	"\x1cKubernetesKafkaTopicIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"8com.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesKafkaTopicStackInput)(nil),      // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackInput
+	(*KubernetesKafkaTopicIacInput)(nil),        // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicIacInput
 	(*KubernetesKafkaTopic)(nil),                // 1: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackInput.target:type_name -> dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic
-	2, // 1: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicIacInput.target:type_name -> dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic
+	2, // 1: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

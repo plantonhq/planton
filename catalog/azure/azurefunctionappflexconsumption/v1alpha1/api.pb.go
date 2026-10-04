@@ -40,7 +40,7 @@ type AzureFunctionAppFlexConsumption struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFunctionAppFlexConsumptionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -93,7 +93,7 @@ func (x *AzureFunctionAppFlexConsumption) GetKind() string {
 	return ""
 }
 
-func (x *AzureFunctionAppFlexConsumption) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFunctionAppFlexConsumption) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -118,8 +118,8 @@ func (x *AzureFunctionAppFlexConsumption) GetStatus() *AzureFunctionAppFlexConsu
 // outputs.
 type AzureFunctionAppFlexConsumptionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureFunctionAppFlexConsumptionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureFunctionAppFlexConsumptionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -154,7 +154,7 @@ func (*AzureFunctionAppFlexConsumptionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFunctionAppFlexConsumptionStatus) GetOutputs() *AzureFunctionAppFlexConsumptionStackOutputs {
+func (x *AzureFunctionAppFlexConsumptionStatus) GetOutputs() *AzureFunctionAppFlexConsumptionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -172,11 +172,11 @@ const file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_api_proto_rawD
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAzureFunctionAppFlexConsumptionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatusR\x06status\"\xab\x01\n" +
-	"%AzureFunctionAppFlexConsumptionStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStackOutputsR\aoutputsB\xd4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatusR\x06status\"\xa5\x01\n" +
+	"%AzureFunctionAppFlexConsumptionStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionOutputsR\aoutputsB\xd4\x03\n" +
 	">com.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azurefunctionappflexconsumption/v1alpha1;azurefunctionappflexconsumptionv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azurefunctionappflexconsumption.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azurefunctionappflexconsumption\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azurefunctionappflexconsumption\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azurefunctionappflexconsumption::V1alpha1b\x06proto3"
 
 var (
@@ -193,17 +193,17 @@ func file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_api_proto_rawDe
 
 var file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFunctionAppFlexConsumption)(nil),             // 0: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumption
-	(*AzureFunctionAppFlexConsumptionStatus)(nil),       // 1: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFunctionAppFlexConsumptionSpec)(nil),         // 3: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionSpec
-	(*AzureFunctionAppFlexConsumptionStackOutputs)(nil), // 4: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStackOutputs
+	(*AzureFunctionAppFlexConsumption)(nil),        // 0: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumption
+	(*AzureFunctionAppFlexConsumptionStatus)(nil),  // 1: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFunctionAppFlexConsumptionSpec)(nil),    // 3: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionSpec
+	(*AzureFunctionAppFlexConsumptionOutputs)(nil), // 4: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionOutputs
 }
 var file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumption.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumption.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumption.spec:type_name -> dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionSpec
 	1, // 2: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumption.status:type_name -> dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatus
-	4, // 3: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatus.outputs:type_name -> dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStackOutputs
+	4, // 3: dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionStatus.outputs:type_name -> dev.planton.azure.azurefunctionappflexconsumption.v1alpha1.AzureFunctionAppFlexConsumptionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

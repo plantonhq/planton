@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcostderivation/v1/api.proto
+// source: finops/catalogkindcostderivation/v1/api.proto
 
-package componentcostderivationv1
+package catalogkindcostderivationv1
 
 import (
 	shared "github.com/plantonhq/planton/shared"
@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentCostDerivation is the machine-executable half of a component's
+// CatalogKindCostDerivation is the machine-executable half of a kind's
 // cost knowledge: the rules that turn ANY manifest's spec values into
 // metered quantities and price choices. Where the cost profile
 // (cost.yaml) names the meters and the fields that move them in prose,
@@ -32,25 +32,25 @@ const (
 // cannot know the number. It deliberately carries NO prices and NO
 // computed figures -- prices live in the provider's PriceBook (selected
 // by slug or by value-keyed attributes), and every catalog preset is
-// replayed through these rules to generate the component's committed
-// ComponentCostEstimate, so the rules are held to the hand-verified
-// numbers by CI. One file per derived component, at
-// catalog/_pricing/derivations/<component>.yaml (filename = metadata.name
-// = the component directory name). Follows the KRM pattern (apiVersion +
+// replayed through these rules to generate the kind's committed
+// CatalogKindCostEstimate, so the rules are held to the hand-verified
+// numbers by CI. One file per derived kind, at
+// catalog/_pricing/derivations/<kind>.yaml (filename = metadata.name
+// = the kind directory name). Follows the KRM pattern (apiVersion +
 // kind + metadata + spec).
 //
 // Ownership split, so every fact has exactly one home: this derivation
 // owns the value-to-quantity rules, price selection logic, exclusions,
 // and notes; the PriceBook owns unit prices, sources, and dates; the
-// component's cost.yaml owns the meter vocabulary (every sku_meter used
+// kind's cost.yaml owns the meter vocabulary (every sku_meter used
 // here must be declared there); the generated estimate owns nothing --
-// it is arithmetic. A component carries either this document or a
-// hand-authored ComponentCostEstimateModel, never both.
+// it is arithmetic. A kind carries either this document or a
+// hand-authored CatalogKindCostEstimateModel, never both.
 //
 // Example:
 //
 //	apiVersion: finops.planton.dev/v1
-//	kind: ComponentCostDerivation
+//	kind: CatalogKindCostDerivation
 //	metadata:
 //	  name: awsalb
 //	spec:
@@ -80,31 +80,31 @@ const (
 //	  exclusions:
 //	    - text: LCU usage (new connections, active connections, processed
 //	        bytes, rule evaluations) is traffic-dependent
-type ComponentCostDerivation struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
-	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Spec          *ComponentCostDerivationSpec  `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+type CatalogKindCostDerivation struct {
+	state         protoimpl.MessageState         `protogen:"open.v1"`
+	ApiVersion    string                         `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
+	Kind          string                         `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata  `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Spec          *CatalogKindCostDerivationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCostDerivation) Reset() {
-	*x = ComponentCostDerivation{}
-	mi := &file_finops_componentcostderivation_v1_api_proto_msgTypes[0]
+func (x *CatalogKindCostDerivation) Reset() {
+	*x = CatalogKindCostDerivation{}
+	mi := &file_finops_catalogkindcostderivation_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCostDerivation) String() string {
+func (x *CatalogKindCostDerivation) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCostDerivation) ProtoMessage() {}
+func (*CatalogKindCostDerivation) ProtoMessage() {}
 
-func (x *ComponentCostDerivation) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostderivation_v1_api_proto_msgTypes[0]
+func (x *CatalogKindCostDerivation) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcostderivation_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -115,73 +115,73 @@ func (x *ComponentCostDerivation) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCostDerivation.ProtoReflect.Descriptor instead.
-func (*ComponentCostDerivation) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostderivation_v1_api_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCostDerivation.ProtoReflect.Descriptor instead.
+func (*CatalogKindCostDerivation) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcostderivation_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCostDerivation) GetApiVersion() string {
+func (x *CatalogKindCostDerivation) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *ComponentCostDerivation) GetKind() string {
+func (x *CatalogKindCostDerivation) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *ComponentCostDerivation) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CatalogKindCostDerivation) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *ComponentCostDerivation) GetSpec() *ComponentCostDerivationSpec {
+func (x *CatalogKindCostDerivation) GetSpec() *CatalogKindCostDerivationSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-var File_finops_componentcostderivation_v1_api_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcostderivation_v1_api_proto protoreflect.FileDescriptor
 
-const file_finops_componentcostderivation_v1_api_proto_rawDesc = "" +
+const file_finops_catalogkindcostderivation_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"+finops/componentcostderivation/v1/api.proto\x12-dev.planton.finops.componentcostderivation.v1\x1a,finops/componentcostderivation/v1/spec.proto\x1a\x15shared/metadata.proto\"\xf5\x01\n" +
-	"\x17ComponentCostDerivation\x12\x1f\n" +
+	"-finops/catalogkindcostderivation/v1/api.proto\x12/dev.planton.finops.catalogkindcostderivation.v1\x1a.finops/catalogkindcostderivation/v1/spec.proto\x1a\x15shared/metadata.proto\"\xfb\x01\n" +
+	"\x19CatalogKindCostDerivation\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12^\n" +
-	"\x04spec\x18\x04 \x01(\v2J.dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpecR\x04specB\xf0\x02\n" +
-	"1com.dev.planton.finops.componentcostderivation.v1B\bApiProtoP\x01ZXgithub.com/plantonhq/planton/finops/componentcostderivation/v1;componentcostderivationv1\xa2\x02\x04DPFC\xaa\x02-Dev.Planton.Finops.Componentcostderivation.V1\xca\x02-Dev\\Planton\\Finops\\Componentcostderivation\\V1\xe2\x029Dev\\Planton\\Finops\\Componentcostderivation\\V1\\GPBMetadata\xea\x021Dev::Planton::Finops::Componentcostderivation::V1b\x06proto3"
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12b\n" +
+	"\x04spec\x18\x04 \x01(\v2N.dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpecR\x04specB\xfe\x02\n" +
+	"3com.dev.planton.finops.catalogkindcostderivation.v1B\bApiProtoP\x01Z\\github.com/plantonhq/planton/finops/catalogkindcostderivation/v1;catalogkindcostderivationv1\xa2\x02\x04DPFC\xaa\x02/Dev.Planton.Finops.Catalogkindcostderivation.V1\xca\x02/Dev\\Planton\\Finops\\Catalogkindcostderivation\\V1\xe2\x02;Dev\\Planton\\Finops\\Catalogkindcostderivation\\V1\\GPBMetadata\xea\x023Dev::Planton::Finops::Catalogkindcostderivation::V1b\x06proto3"
 
 var (
-	file_finops_componentcostderivation_v1_api_proto_rawDescOnce sync.Once
-	file_finops_componentcostderivation_v1_api_proto_rawDescData []byte
+	file_finops_catalogkindcostderivation_v1_api_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcostderivation_v1_api_proto_rawDescData []byte
 )
 
-func file_finops_componentcostderivation_v1_api_proto_rawDescGZIP() []byte {
-	file_finops_componentcostderivation_v1_api_proto_rawDescOnce.Do(func() {
-		file_finops_componentcostderivation_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcostderivation_v1_api_proto_rawDesc), len(file_finops_componentcostderivation_v1_api_proto_rawDesc)))
+func file_finops_catalogkindcostderivation_v1_api_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcostderivation_v1_api_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcostderivation_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostderivation_v1_api_proto_rawDesc), len(file_finops_catalogkindcostderivation_v1_api_proto_rawDesc)))
 	})
-	return file_finops_componentcostderivation_v1_api_proto_rawDescData
+	return file_finops_catalogkindcostderivation_v1_api_proto_rawDescData
 }
 
-var file_finops_componentcostderivation_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_finops_componentcostderivation_v1_api_proto_goTypes = []any{
-	(*ComponentCostDerivation)(nil),      // 0: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivation
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
-	(*ComponentCostDerivationSpec)(nil),  // 2: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec
+var file_finops_catalogkindcostderivation_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_finops_catalogkindcostderivation_v1_api_proto_goTypes = []any{
+	(*CatalogKindCostDerivation)(nil),     // 0: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivation
+	(*shared.CatalogObjectMetadata)(nil),  // 1: dev.planton.shared.CatalogObjectMetadata
+	(*CatalogKindCostDerivationSpec)(nil), // 2: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec
 }
-var file_finops_componentcostderivation_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivation.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
-	2, // 1: dev.planton.finops.componentcostderivation.v1.ComponentCostDerivation.spec:type_name -> dev.planton.finops.componentcostderivation.v1.ComponentCostDerivationSpec
+var file_finops_catalogkindcostderivation_v1_api_proto_depIdxs = []int32{
+	1, // 0: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivation.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
+	2, // 1: dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivation.spec:type_name -> dev.planton.finops.catalogkindcostderivation.v1.CatalogKindCostDerivationSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -189,27 +189,27 @@ var file_finops_componentcostderivation_v1_api_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcostderivation_v1_api_proto_init() }
-func file_finops_componentcostderivation_v1_api_proto_init() {
-	if File_finops_componentcostderivation_v1_api_proto != nil {
+func init() { file_finops_catalogkindcostderivation_v1_api_proto_init() }
+func file_finops_catalogkindcostderivation_v1_api_proto_init() {
+	if File_finops_catalogkindcostderivation_v1_api_proto != nil {
 		return
 	}
-	file_finops_componentcostderivation_v1_spec_proto_init()
+	file_finops_catalogkindcostderivation_v1_spec_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcostderivation_v1_api_proto_rawDesc), len(file_finops_componentcostderivation_v1_api_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostderivation_v1_api_proto_rawDesc), len(file_finops_catalogkindcostderivation_v1_api_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcostderivation_v1_api_proto_goTypes,
-		DependencyIndexes: file_finops_componentcostderivation_v1_api_proto_depIdxs,
-		MessageInfos:      file_finops_componentcostderivation_v1_api_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcostderivation_v1_api_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcostderivation_v1_api_proto_depIdxs,
+		MessageInfos:      file_finops_catalogkindcostderivation_v1_api_proto_msgTypes,
 	}.Build()
-	File_finops_componentcostderivation_v1_api_proto = out.File
-	file_finops_componentcostderivation_v1_api_proto_goTypes = nil
-	file_finops_componentcostderivation_v1_api_proto_depIdxs = nil
+	File_finops_catalogkindcostderivation_v1_api_proto = out.File
+	file_finops_catalogkindcostderivation_v1_api_proto_goTypes = nil
+	file_finops_catalogkindcostderivation_v1_api_proto_depIdxs = nil
 }

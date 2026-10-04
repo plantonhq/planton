@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventgridNamespaceTopicStackOutputs** captures the outputs
+// **AzureEventgridNamespaceTopicOutputs** captures the outputs
 // from provisioning an Azure Event Grid namespace topic.
-type AzureEventgridNamespaceTopicStackOutputs struct {
+type AzureEventgridNamespaceTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace topic's Azure Resource Manager ID
 	// ({namespace_id}/topics/{name}).
@@ -34,20 +34,20 @@ type AzureEventgridNamespaceTopicStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureEventgridNamespaceTopicStackOutputs) Reset() {
-	*x = AzureEventgridNamespaceTopicStackOutputs{}
+func (x *AzureEventgridNamespaceTopicOutputs) Reset() {
+	*x = AzureEventgridNamespaceTopicOutputs{}
 	mi := &file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridNamespaceTopicStackOutputs) String() string {
+func (x *AzureEventgridNamespaceTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridNamespaceTopicStackOutputs) ProtoMessage() {}
+func (*AzureEventgridNamespaceTopicOutputs) ProtoMessage() {}
 
-func (x *AzureEventgridNamespaceTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridNamespaceTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureEventgridNamespaceTopicStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridNamespaceTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventgridNamespaceTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridNamespaceTopicOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventgridNamespaceTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridNamespaceTopicStackOutputs) GetNamespaceTopicId() string {
+func (x *AzureEventgridNamespaceTopicOutputs) GetNamespaceTopicId() string {
 	if x != nil {
 		return x.NamespaceTopicId
 	}
 	return ""
 }
 
-func (x *AzureEventgridNamespaceTopicStackOutputs) GetNamespaceTopicName() string {
+func (x *AzureEventgridNamespaceTopicOutputs) GetNamespaceTopicName() string {
 	if x != nil {
 		return x.NamespaceTopicName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azureeventgridnamespacetopic/v1alpha1/outputs.proto\x127dev.planton.azure.azureeventgridnamespacetopic.v1alpha1\"\x8a\x01\n" +
-	"(AzureEventgridNamespaceTopicStackOutputs\x12,\n" +
+	"Acatalog/azure/azureeventgridnamespacetopic/v1alpha1/outputs.proto\x127dev.planton.azure.azureeventgridnamespacetopic.v1alpha1\"\x85\x01\n" +
+	"#AzureEventgridNamespaceTopicOutputs\x12,\n" +
 	"\x12namespace_topic_id\x18\x01 \x01(\tR\x10namespaceTopicId\x120\n" +
 	"\x14namespace_topic_name\x18\x02 \x01(\tR\x12namespaceTopicNameB\xc3\x03\n" +
 	";com.dev.planton.azure.azureeventgridnamespacetopic.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azureeventgridnamespacetopic/v1alpha1;azureeventgridnamespacetopicv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azureeventgridnamespacetopic.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azureeventgridnamespacetopic\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azureeventgridnamespacetopic\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azureeventgridnamespacetopic::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventgridNamespaceTopicStackOutputs)(nil), // 0: dev.planton.azure.azureeventgridnamespacetopic.v1alpha1.AzureEventgridNamespaceTopicStackOutputs
+	(*AzureEventgridNamespaceTopicOutputs)(nil), // 0: dev.planton.azure.azureeventgridnamespacetopic.v1alpha1.AzureEventgridNamespaceTopicOutputs
 }
 var file_catalog_azure_azureeventgridnamespacetopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

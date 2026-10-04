@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsPrivateCaStackOutputs captures the observable state of the
+// AwsPrivateCaOutputs captures the observable state of the
 // private CA after apply.
-type AwsPrivateCaStackOutputs struct {
+type AwsPrivateCaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The CA's ARN - the join key every consumer uses (MSK's TLS
 	// client-auth CA list, AwsCertManagerCert's issuing CA, a
@@ -51,20 +51,20 @@ type AwsPrivateCaStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *AwsPrivateCaStackOutputs) Reset() {
-	*x = AwsPrivateCaStackOutputs{}
+func (x *AwsPrivateCaOutputs) Reset() {
+	*x = AwsPrivateCaOutputs{}
 	mi := &file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsPrivateCaStackOutputs) String() string {
+func (x *AwsPrivateCaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsPrivateCaStackOutputs) ProtoMessage() {}
+func (*AwsPrivateCaOutputs) ProtoMessage() {}
 
-func (x *AwsPrivateCaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsPrivateCaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,54 +76,54 @@ func (x *AwsPrivateCaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsPrivateCaStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsPrivateCaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsPrivateCaOutputs.ProtoReflect.Descriptor instead.
+func (*AwsPrivateCaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsPrivateCaStackOutputs) GetCertificateAuthorityArn() string {
+func (x *AwsPrivateCaOutputs) GetCertificateAuthorityArn() string {
 	if x != nil {
 		return x.CertificateAuthorityArn
 	}
 	return ""
 }
 
-func (x *AwsPrivateCaStackOutputs) GetCertificateAuthorityId() string {
+func (x *AwsPrivateCaOutputs) GetCertificateAuthorityId() string {
 	if x != nil {
 		return x.CertificateAuthorityId
 	}
 	return ""
 }
 
-func (x *AwsPrivateCaStackOutputs) GetCaCertificate() string {
+func (x *AwsPrivateCaOutputs) GetCaCertificate() string {
 	if x != nil {
 		return x.CaCertificate
 	}
 	return ""
 }
 
-func (x *AwsPrivateCaStackOutputs) GetCaCertificateChain() string {
+func (x *AwsPrivateCaOutputs) GetCaCertificateChain() string {
 	if x != nil {
 		return x.CaCertificateChain
 	}
 	return ""
 }
 
-func (x *AwsPrivateCaStackOutputs) GetCaCsr() string {
+func (x *AwsPrivateCaOutputs) GetCaCsr() string {
 	if x != nil {
 		return x.CaCsr
 	}
 	return ""
 }
 
-func (x *AwsPrivateCaStackOutputs) GetIssuedCertificateArns() map[string]string {
+func (x *AwsPrivateCaOutputs) GetIssuedCertificateArns() map[string]string {
 	if x != nil {
 		return x.IssuedCertificateArns
 	}
 	return nil
 }
 
-func (x *AwsPrivateCaStackOutputs) GetActivationCertificateArn() string {
+func (x *AwsPrivateCaOutputs) GetActivationCertificateArn() string {
 	if x != nil {
 		return x.ActivationCertificateArn
 	}
@@ -134,14 +134,14 @@ var File_catalog_aws_awsprivateca_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsprivateca/v1alpha1/outputs.proto\x12%dev.planton.aws.awsprivateca.v1alpha1\"\x9d\x04\n" +
-	"\x18AwsPrivateCaStackOutputs\x12:\n" +
+	"/catalog/aws/awsprivateca/v1alpha1/outputs.proto\x12%dev.planton.aws.awsprivateca.v1alpha1\"\x93\x04\n" +
+	"\x13AwsPrivateCaOutputs\x12:\n" +
 	"\x19certificate_authority_arn\x18\x01 \x01(\tR\x17certificateAuthorityArn\x128\n" +
 	"\x18certificate_authority_id\x18\x02 \x01(\tR\x16certificateAuthorityId\x12%\n" +
 	"\x0eca_certificate\x18\x03 \x01(\tR\rcaCertificate\x120\n" +
 	"\x14ca_certificate_chain\x18\x04 \x01(\tR\x12caCertificateChain\x12\x15\n" +
-	"\x06ca_csr\x18\x05 \x01(\tR\x05caCsr\x12\x92\x01\n" +
-	"\x17issued_certificate_arns\x18\x06 \x03(\v2Z.dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaStackOutputs.IssuedCertificateArnsEntryR\x15issuedCertificateArns\x12<\n" +
+	"\x06ca_csr\x18\x05 \x01(\tR\x05caCsr\x12\x8d\x01\n" +
+	"\x17issued_certificate_arns\x18\x06 \x03(\v2U.dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaOutputs.IssuedCertificateArnsEntryR\x15issuedCertificateArns\x12<\n" +
 	"\x1aactivation_certificate_arn\x18\a \x01(\tR\x18activationCertificateArn\x1aH\n" +
 	"\x1aIssuedCertificateArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -162,11 +162,11 @@ func file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsPrivateCaStackOutputs)(nil), // 0: dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaStackOutputs
-	nil,                              // 1: dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaStackOutputs.IssuedCertificateArnsEntry
+	(*AwsPrivateCaOutputs)(nil), // 0: dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaOutputs
+	nil,                         // 1: dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaOutputs.IssuedCertificateArnsEntry
 }
 var file_catalog_aws_awsprivateca_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaStackOutputs.issued_certificate_arns:type_name -> dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaStackOutputs.IssuedCertificateArnsEntry
+	1, // 0: dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaOutputs.issued_certificate_arns:type_name -> dev.planton.aws.awsprivateca.v1alpha1.AwsPrivateCaOutputs.IssuedCertificateArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

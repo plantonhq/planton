@@ -31,7 +31,7 @@ type DigitalOceanDatabaseCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanDatabaseClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanDatabaseCluster) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanDatabaseCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanDatabaseCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanDatabaseCluster) GetStatus() *DigitalOceanDatabaseClusterSt
 // digital-ocean-database-cluster status
 type DigitalOceanDatabaseClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-database-cluster stack-outputs
-	Outputs       *DigitalOceanDatabaseClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-database-cluster outputs
+	Outputs       *DigitalOceanDatabaseClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanDatabaseClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanDatabaseClusterStatus) GetOutputs() *DigitalOceanDatabaseClusterStackOutputs {
+func (x *DigitalOceanDatabaseClusterStatus) GetOutputs() *DigitalOceanDatabaseClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_api_proto_r
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bDigitalOceanDatabaseClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
 	"\x04spec\x18\x04 \x01(\v2^.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12x\n" +
-	"\x06status\x18\x05 \x01(\v2`.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatusR\x06status\"\xa6\x01\n" +
-	"!DigitalOceanDatabaseClusterStatus\x12\x80\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2f.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStackOutputsR\aoutputsB\xe2\x03\n" +
+	"\x06status\x18\x05 \x01(\v2`.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatusR\x06status\"\xa0\x01\n" +
+	"!DigitalOceanDatabaseClusterStatus\x12{\n" +
+	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterOutputsR\aoutputsB\xe2\x03\n" +
 	"Acom.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1B\bApiProtoP\x01Zzgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasecluster/v1alpha1;digitaloceandatabaseclusterv1alpha1\xa2\x02\x04DPDD\xaa\x02=Dev.Planton.Digitalocean.Digitaloceandatabasecluster.V1alpha1\xca\x02=Dev\\Planton\\Digitalocean\\Digitaloceandatabasecluster\\V1alpha1\xe2\x02IDev\\Planton\\Digitalocean\\Digitaloceandatabasecluster\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Digitalocean::Digitaloceandatabasecluster::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_api_proto_ra
 
 var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanDatabaseCluster)(nil),             // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster
-	(*DigitalOceanDatabaseClusterStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanDatabaseClusterSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec
-	(*DigitalOceanDatabaseClusterStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStackOutputs
+	(*DigitalOceanDatabaseCluster)(nil),        // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster
+	(*DigitalOceanDatabaseClusterStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanDatabaseClusterSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec
+	(*DigitalOceanDatabaseClusterOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster.spec:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec
 	1, // 2: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster.status:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatus
-	4, // 3: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

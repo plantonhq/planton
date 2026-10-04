@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxLustreFileSystemStackOutputs captures observable identifiers and endpoints
+// AwsFsxLustreFileSystemOutputs captures observable identifiers and endpoints
 // from a provisioned FSx for Lustre file system. These outputs are used by
 // downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -33,7 +33,7 @@ const (
 // - Data repository associations: needs `file_system_id` and `file_system_arn`
 //
 // Mount command: mount -t lustre <dns_name>@tcp:/<mount_name> /mnt/fsx
-type AwsFsxLustreFileSystemStackOutputs struct {
+type AwsFsxLustreFileSystemOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the file system (e.g., "fs-0123456789abcdef0"). This is the
 	// primary identifier used by EKS PersistentVolumes, ECS task definitions,
@@ -68,20 +68,20 @@ type AwsFsxLustreFileSystemStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) Reset() {
-	*x = AwsFsxLustreFileSystemStackOutputs{}
+func (x *AwsFsxLustreFileSystemOutputs) Reset() {
+	*x = AwsFsxLustreFileSystemOutputs{}
 	mi := &file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) String() string {
+func (x *AwsFsxLustreFileSystemOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxLustreFileSystemStackOutputs) ProtoMessage() {}
+func (*AwsFsxLustreFileSystemOutputs) ProtoMessage() {}
 
-func (x *AwsFsxLustreFileSystemStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxLustreFileSystemOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,61 +93,61 @@ func (x *AwsFsxLustreFileSystemStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxLustreFileSystemStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxLustreFileSystemStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxLustreFileSystemOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxLustreFileSystemOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetFileSystemId() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetFileSystemArn() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetFileSystemArn() string {
 	if x != nil {
 		return x.FileSystemArn
 	}
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetDnsName() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetMountName() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetMountName() string {
 	if x != nil {
 		return x.MountName
 	}
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetNetworkInterfaceIds() []string {
+func (x *AwsFsxLustreFileSystemOutputs) GetNetworkInterfaceIds() []string {
 	if x != nil {
 		return x.NetworkInterfaceIds
 	}
 	return nil
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetVpcId() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetFileSystemTypeVersion() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetFileSystemTypeVersion() string {
 	if x != nil {
 		return x.FileSystemTypeVersion
 	}
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystemStackOutputs) GetOwnerId() string {
+func (x *AwsFsxLustreFileSystemOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
@@ -158,8 +158,8 @@ var File_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awsfsxlustrefilesystem/v1alpha1/outputs.proto\x12/dev.planton.aws.awsfsxlustrefilesystem.v1alpha1\"\xcb\x02\n" +
-	"\"AwsFsxLustreFileSystemStackOutputs\x12$\n" +
+	"9catalog/aws/awsfsxlustrefilesystem/v1alpha1/outputs.proto\x12/dev.planton.aws.awsfsxlustrefilesystem.v1alpha1\"\xc6\x02\n" +
+	"\x1dAwsFsxLustreFileSystemOutputs\x12$\n" +
 	"\x0efile_system_id\x18\x01 \x01(\tR\ffileSystemId\x12&\n" +
 	"\x0ffile_system_arn\x18\x02 \x01(\tR\rfileSystemArn\x12\x19\n" +
 	"\bdns_name\x18\x03 \x01(\tR\adnsName\x12\x1d\n" +
@@ -185,7 +185,7 @@ func file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxLustreFileSystemStackOutputs)(nil), // 0: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStackOutputs
+	(*AwsFsxLustreFileSystemOutputs)(nil), // 0: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemOutputs
 }
 var file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

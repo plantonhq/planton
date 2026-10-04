@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCostAnomalyMonitorStackOutputs captures the observable state of
+// AwsCostAnomalyMonitorOutputs captures the observable state of
 // the anomaly monitor after apply.
-type AwsCostAnomalyMonitorStackOutputs struct {
+type AwsCostAnomalyMonitorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The monitor's ARN (also the provider's import ID).
 	MonitorArn string `protobuf:"bytes,1,opt,name=monitor_arn,json=monitorArn,proto3" json:"monitor_arn,omitempty"`
@@ -34,20 +34,20 @@ type AwsCostAnomalyMonitorStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AwsCostAnomalyMonitorStackOutputs) Reset() {
-	*x = AwsCostAnomalyMonitorStackOutputs{}
+func (x *AwsCostAnomalyMonitorOutputs) Reset() {
+	*x = AwsCostAnomalyMonitorOutputs{}
 	mi := &file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCostAnomalyMonitorStackOutputs) String() string {
+func (x *AwsCostAnomalyMonitorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCostAnomalyMonitorStackOutputs) ProtoMessage() {}
+func (*AwsCostAnomalyMonitorOutputs) ProtoMessage() {}
 
-func (x *AwsCostAnomalyMonitorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCostAnomalyMonitorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCostAnomalyMonitorStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCostAnomalyMonitorStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCostAnomalyMonitorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCostAnomalyMonitorOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCostAnomalyMonitorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCostAnomalyMonitorStackOutputs) GetMonitorArn() string {
+func (x *AwsCostAnomalyMonitorOutputs) GetMonitorArn() string {
 	if x != nil {
 		return x.MonitorArn
 	}
 	return ""
 }
 
-func (x *AwsCostAnomalyMonitorStackOutputs) GetSubscriptionArns() map[string]string {
+func (x *AwsCostAnomalyMonitorOutputs) GetSubscriptionArns() map[string]string {
 	if x != nil {
 		return x.SubscriptionArns
 	}
@@ -82,11 +82,11 @@ var File_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awscostanomalymonitor/v1alpha1/outputs.proto\x12.dev.planton.aws.awscostanomalymonitor.v1alpha1\"\xa0\x02\n" +
-	"!AwsCostAnomalyMonitorStackOutputs\x12\x1f\n" +
+	"8catalog/aws/awscostanomalymonitor/v1alpha1/outputs.proto\x12.dev.planton.aws.awscostanomalymonitor.v1alpha1\"\x96\x02\n" +
+	"\x1cAwsCostAnomalyMonitorOutputs\x12\x1f\n" +
 	"\vmonitor_arn\x18\x01 \x01(\tR\n" +
-	"monitorArn\x12\x94\x01\n" +
-	"\x11subscription_arns\x18\x02 \x03(\v2g.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs.SubscriptionArnsEntryR\x10subscriptionArns\x1aC\n" +
+	"monitorArn\x12\x8f\x01\n" +
+	"\x11subscription_arns\x18\x02 \x03(\v2b.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs.SubscriptionArnsEntryR\x10subscriptionArns\x1aC\n" +
 	"\x15SubscriptionArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x86\x03\n" +
@@ -106,11 +106,11 @@ func file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCostAnomalyMonitorStackOutputs)(nil), // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs
-	nil, // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs.SubscriptionArnsEntry
+	(*AwsCostAnomalyMonitorOutputs)(nil), // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs
+	nil,                                  // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs.SubscriptionArnsEntry
 }
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs.subscription_arns:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs.SubscriptionArnsEntry
+	1, // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs.subscription_arns:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs.SubscriptionArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

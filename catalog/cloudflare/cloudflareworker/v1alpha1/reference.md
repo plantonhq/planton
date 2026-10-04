@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareWorkerSpec deploys a Cloudflare Worker script and everything that
 hangs off it: its resource bindings, routing (workers.dev, custom domains,

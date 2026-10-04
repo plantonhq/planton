@@ -28,7 +28,7 @@ type GcpCertManagerTrustConfig struct {
 	state         protoimpl.MessageState           `protogen:"open.v1"`
 	ApiVersion    string                           `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                           `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata    `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata    `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpCertManagerTrustConfigSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpCertManagerTrustConfigStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpCertManagerTrustConfig) GetKind() string {
 	return ""
 }
 
-func (x *GcpCertManagerTrustConfig) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCertManagerTrustConfig) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpCertManagerTrustConfig) GetStatus() *GcpCertManagerTrustConfigStatus
 }
 
 type GcpCertManagerTrustConfigStatus struct {
-	state         protoimpl.MessageState                 `protogen:"open.v1"`
-	Outputs       *GcpCertManagerTrustConfigStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState            `protogen:"open.v1"`
+	Outputs       *GcpCertManagerTrustConfigOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpCertManagerTrustConfigStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCertManagerTrustConfigStatus) GetOutputs() *GcpCertManagerTrustConfigStackOutputs {
+func (x *GcpCertManagerTrustConfigStatus) GetOutputs() *GcpCertManagerTrustConfigOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19GcpCertManagerTrustConfigR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatusR\x06status\"\x96\x01\n" +
-	"\x1fGcpCertManagerTrustConfigStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatusR\x06status\"\x91\x01\n" +
+	"\x1fGcpCertManagerTrustConfigStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigOutputsR\aoutputsB\x9e\x03\n" +
 	"6com.dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/gcp/gcpcertmanagertrustconfig/v1alpha1;gcpcertmanagertrustconfigv1alpha1\xa2\x02\x04DPGG\xaa\x022Dev.Planton.Gcp.Gcpcertmanagertrustconfig.V1alpha1\xca\x022Dev\\Planton\\Gcp\\Gcpcertmanagertrustconfig\\V1alpha1\xe2\x02>Dev\\Planton\\Gcp\\Gcpcertmanagertrustconfig\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Gcp::Gcpcertmanagertrustconfig::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCertManagerTrustConfig)(nil),             // 0: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfig
-	(*GcpCertManagerTrustConfigStatus)(nil),       // 1: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCertManagerTrustConfigSpec)(nil),         // 3: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigSpec
-	(*GcpCertManagerTrustConfigStackOutputs)(nil), // 4: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStackOutputs
+	(*GcpCertManagerTrustConfig)(nil),        // 0: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfig
+	(*GcpCertManagerTrustConfigStatus)(nil),  // 1: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCertManagerTrustConfigSpec)(nil),    // 3: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigSpec
+	(*GcpCertManagerTrustConfigOutputs)(nil), // 4: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigOutputs
 }
 var file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfig.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfig.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfig.spec:type_name -> dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigSpec
 	1, // 2: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfig.status:type_name -> dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatus
-	4, // 3: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatus.outputs:type_name -> dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStackOutputs
+	4, // 3: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStatus.outputs:type_name -> dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

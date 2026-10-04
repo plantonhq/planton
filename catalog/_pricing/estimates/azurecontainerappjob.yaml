@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurecontainerappjob
 spec:
@@ -19,7 +19,7 @@ spec:
       exclusions:
         - each nightly cron fire bills active vCPU-seconds ($0.000024/vCPU-second eastus) and memory GiB-seconds ($0.000003/GiB-second) for the execution's actual duration -- at the preset's 1 vCPU / 2 Gi allocation that is up to the 3600-second timeout per attempt, but the real duration is the workload's, not the manifest's
         - a replica that fails and retries (replica_retry_limit 1) bills its rerun at the same active rates
-        - Key Vault secret reads bill per-transaction on the vault's component; ACR image pulls on the registry's component
+        - Key Vault secret reads bill per-transaction on the vault's kind; ACR image pulls on the registry's kind
         - execution logs ingest into the parent environment's declared Log Analytics destination, billed per GB on that workspace
       notes: Zero committed cost -- between cron fires there is no replica and no meter; the subscription's monthly free grant (180,000 vCPU-seconds, 360,000 GiB-seconds) absorbs the first slice of execution spend.
     - preset: 02-queue-worker
@@ -30,7 +30,7 @@ spec:
       exclusions:
         - queue pressure fans out to at most max_executions 10 concurrent executions, each billing its 0.5 vCPU / 1 Gi replica at the active rates ($0.000024/vCPU-second, $0.000003/GiB-second eastus) for up to the 600-second timeout per attempt -- total spend is a pure function of message volume no manifest predicts
         - failed replicas retry up to replica_retry_limit 2, billing each rerun
-        - the scaled storage queue's own transactions and capacity bill on the storage account's component; ACR image pulls on the registry's component
+        - the scaled storage queue's own transactions and capacity bill on the storage account's kind; ACR image pulls on the registry's kind
         - execution logs ingest into the parent environment's declared Log Analytics destination, billed per GB on that workspace
       notes: Zero committed cost -- min_executions stays at its default 0, so an empty queue holds the job at literally zero replicas; KEDA's polling itself carries no Container Apps meter.
     - preset: 03-on-demand
@@ -40,6 +40,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each manual start bills one execution's active vCPU-seconds and GiB-seconds (0.5 vCPU / 1 Gi allocation, up to the 1800-second timeout per attempt) at $0.000024/vCPU-second and $0.000003/GiB-second eastus -- migration cadence is a human decision no manifest predicts
-        - Key Vault secret reads bill per-transaction on the vault's component; ACR image pulls on the registry's component
+        - Key Vault secret reads bill per-transaction on the vault's kind; ACR image pulls on the registry's kind
         - execution logs ingest into the parent environment's declared Log Analytics destination, billed per GB on that workspace
       notes: Zero committed cost -- an on-demand job that nobody starts bills nothing, forever; the job object itself has no meter.

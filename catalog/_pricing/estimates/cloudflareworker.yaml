@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: cloudflareworker
 spec:
@@ -19,7 +19,7 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million requests and $0.02/million CPU-ms; Workers Free 100,000 requests/day) follows traffic on the custom domain -- volume and per-request CPU are unknowable from the manifest
         - the Workers Logs meter starts with observability enabled at full sampling (head_sampling_rate 1) -- one-plus events per invocation against the Paid plan's 20 million/month included, then $0.60/million; zero invocations log zero events
-        - KV and D1 usage through the CONFIG and DB bindings meters on the bound CloudflareKvNamespace and CloudflareD1Database components
+        - KV and D1 usage through the CONFIG and DB bindings meters on the bound CloudflareKvNamespace and CloudflareD1Database kinds
         - the Workers Trace Events Logpush meter never starts -- this preset leaves logpush off
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: Zero committed cost -- the bundle deploys from R2, bindings are capability grants, and every meter (requests, CPU, log events, bound-service usage) waits for the first request.
@@ -31,7 +31,7 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Free 100,000 requests/day with 10 ms CPU per invocation; Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million and $0.02/million) follows workers.dev traffic
         - the Workers Logs and Workers Trace Events Logpush meters never start -- this preset configures neither observability nor logpush
-        - no bindings exist, so no downstream component metering starts
+        - no bindings exist, so no downstream kind metering starts
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: Zero committed cost -- a hello-world script on workers.dev rides the Free plan's daily allotment until real traffic outgrows it.
     - preset: 03-static-site
@@ -42,7 +42,7 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter cannot start on asset routes -- Cloudflare states requests to static assets are free and unlimited, and this preset has no script source, so every route is an asset route
         - the Workers Logs and Workers Trace Events Logpush meters never start -- neither observability nor logpush is configured
-        - no bindings exist, so no downstream component metering starts
+        - no bindings exist, so no downstream kind metering starts
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: "Zero committed cost -- and uniquely in this lane, near-zero USAGE cost too: a pure static site bills no request meter at any traffic level."
     - preset: 04-full-stack-app
@@ -52,7 +52,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million and $0.02/million; Workers Free 100,000/day) bills only the /api/* routes the script handles -- all other routes serve as static assets, free and unlimited
-        - KV usage through the SESSIONS binding meters on the bound CloudflareKvNamespace component
+        - KV usage through the SESSIONS binding meters on the bound CloudflareKvNamespace kind
         - the Workers Logs and Workers Trace Events Logpush meters never start -- neither observability nor logpush is configured
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: Zero committed cost -- the run-worker-first rule confines billable invocations to API paths; everything else rides the free static-asset lane.

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-altinity-operator stack-input
-type KubernetesAltinityOperatorStackInput struct {
+// kubernetes-altinity-operator iac-input
+type KubernetesAltinityOperatorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesAltinityOperator `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesAltinityOperatorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesAltinityOperatorStackInput) Reset() {
-	*x = KubernetesAltinityOperatorStackInput{}
+func (x *KubernetesAltinityOperatorIacInput) Reset() {
+	*x = KubernetesAltinityOperatorIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesAltinityOperatorStackInput) String() string {
+func (x *KubernetesAltinityOperatorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesAltinityOperatorStackInput) ProtoMessage() {}
+func (*KubernetesAltinityOperatorIacInput) ProtoMessage() {}
 
-func (x *KubernetesAltinityOperatorStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesAltinityOperatorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesAltinityOperatorStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesAltinityOperatorStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesAltinityOperatorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesAltinityOperatorIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesAltinityOperatorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesAltinityOperatorStackInput) GetTarget() *KubernetesAltinityOperator {
+func (x *KubernetesAltinityOperatorIacInput) GetTarget() *KubernetesAltinityOperator {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesAltinityOperatorStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesAltinityOperatorIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto prot
 
 const file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesaltinityoperator/v1alpha1/input.proto\x12:dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1\x1a@catalog/kubernetes/kubernetesaltinityoperator/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf1\x01\n" +
-	"$KubernetesAltinityOperatorStackInput\x12n\n" +
+	"Bcatalog/kubernetes/kubernetesaltinityoperator/v1alpha1/input.proto\x12:dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1\x1a@catalog/kubernetes/kubernetesaltinityoperator/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xef\x01\n" +
+	"\"KubernetesAltinityOperatorIacInput\x12n\n" +
 	"\x06target\x18\x01 \x01(\v2V.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xd1\x03\n" +
 	">com.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_raw
 
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesAltinityOperatorStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackInput
-	(*KubernetesAltinityOperator)(nil),           // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator
-	(*kubernetes.KubernetesProviderConfig)(nil),  // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesAltinityOperatorIacInput)(nil),  // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorIacInput
+	(*KubernetesAltinityOperator)(nil),          // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator
+	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackInput.target:type_name -> dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator
-	2, // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorIacInput.target:type_name -> dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator
+	2, // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

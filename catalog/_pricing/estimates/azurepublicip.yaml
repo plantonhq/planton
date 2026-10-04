@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurepublicip
 spec:
@@ -55,5 +55,5 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the address is drawn from a reserved prefix that already bills every address in its block per IP-hour from the moment the prefix exists -- that spend lives on the referenced AzurePublicIpPrefix component, and Microsoft publishes no separate meter for the act of drawing an address from it
+        - the address is drawn from a reserved prefix that already bills every address in its block per IP-hour from the moment the prefix exists -- that spend lives on the referenced AzurePublicIpPrefix kind, and Microsoft publishes no separate meter for the act of drawing an address from it
         - data transfer to and from the address bills per GB as bandwidth and follows traffic; a "RoutingPreference":"Internet" ip_tag moves egress to internet-transit bandwidth rates

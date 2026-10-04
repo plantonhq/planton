@@ -25,7 +25,7 @@ const (
 )
 
 // GcpFolderSpec creates one Resource Manager folder: a node in the Google
-// Cloud resource hierarchy that groups projects (and other folders) so
+// Infra component hierarchy that groups projects (and other folders) so
 // that IAM policy, organization policies, and billing views can be applied
 // to the whole group at once. A folder lives directly under the
 // organization or inside another folder, up to ten levels deep; a project

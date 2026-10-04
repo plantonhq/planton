@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareAuthenticatedOriginPullsStackOutputs captures the observable
+// CloudflareAuthenticatedOriginPullsOutputs captures the observable
 // outputs after managing a zone's Authenticated Origin Pulls surface.
-type CloudflareAuthenticatedOriginPullsStackOutputs struct {
+type CloudflareAuthenticatedOriginPullsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The zone whose Authenticated Origin Pulls surface is managed. The surface
 	// is zone-singleton shaped -- the zone id IS its identity.
@@ -32,20 +32,20 @@ type CloudflareAuthenticatedOriginPullsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareAuthenticatedOriginPullsStackOutputs) Reset() {
-	*x = CloudflareAuthenticatedOriginPullsStackOutputs{}
+func (x *CloudflareAuthenticatedOriginPullsOutputs) Reset() {
+	*x = CloudflareAuthenticatedOriginPullsOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareAuthenticatedOriginPullsStackOutputs) String() string {
+func (x *CloudflareAuthenticatedOriginPullsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareAuthenticatedOriginPullsStackOutputs) ProtoMessage() {}
+func (*CloudflareAuthenticatedOriginPullsOutputs) ProtoMessage() {}
 
-func (x *CloudflareAuthenticatedOriginPullsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareAuthenticatedOriginPullsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *CloudflareAuthenticatedOriginPullsStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareAuthenticatedOriginPullsStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareAuthenticatedOriginPullsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareAuthenticatedOriginPullsOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareAuthenticatedOriginPullsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareAuthenticatedOriginPullsStackOutputs) GetZoneId() string {
+func (x *CloudflareAuthenticatedOriginPullsOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -73,8 +73,8 @@ var File_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_
 
 const file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/cloudflare/cloudflareauthenticatedoriginpulls/v1alpha1/outputs.proto\x12Bdev.planton.cloudflare.cloudflareauthenticatedoriginpulls.v1alpha1\"I\n" +
-	".CloudflareAuthenticatedOriginPullsStackOutputs\x12\x17\n" +
+	"Lcatalog/cloudflare/cloudflareauthenticatedoriginpulls/v1alpha1/outputs.proto\x12Bdev.planton.cloudflare.cloudflareauthenticatedoriginpulls.v1alpha1\"D\n" +
+	")CloudflareAuthenticatedOriginPullsOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneIdB\x8c\x04\n" +
 	"Fcom.dev.planton.cloudflare.cloudflareauthenticatedoriginpulls.v1alpha1B\fOutputsProtoP\x01Z\x86\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflareauthenticatedoriginpulls/v1alpha1;cloudflareauthenticatedoriginpullsv1alpha1\xa2\x02\x04DPCC\xaa\x02BDev.Planton.Cloudflare.Cloudflareauthenticatedoriginpulls.V1alpha1\xca\x02BDev\\Planton\\Cloudflare\\Cloudflareauthenticatedoriginpulls\\V1alpha1\xe2\x02NDev\\Planton\\Cloudflare\\Cloudflareauthenticatedoriginpulls\\V1alpha1\\GPBMetadata\xea\x02FDev::Planton::Cloudflare::Cloudflareauthenticatedoriginpulls::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs
 
 var file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareAuthenticatedOriginPullsStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareauthenticatedoriginpulls.v1alpha1.CloudflareAuthenticatedOriginPullsStackOutputs
+	(*CloudflareAuthenticatedOriginPullsOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareauthenticatedoriginpulls.v1alpha1.CloudflareAuthenticatedOriginPullsOutputs
 }
 var file_catalog_cloudflare_cloudflareauthenticatedoriginpulls_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

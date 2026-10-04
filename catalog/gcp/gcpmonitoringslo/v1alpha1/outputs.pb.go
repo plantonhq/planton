@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Monitoring SLO.
-type GcpMonitoringSloStackOutputs struct {
+type GcpMonitoringSloOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-assigned resource name of the SLO.
 	// Format: projects/{project}/services/{service_id}/serviceLevelObjectives/{slo_id}
@@ -37,20 +37,20 @@ type GcpMonitoringSloStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpMonitoringSloStackOutputs) Reset() {
-	*x = GcpMonitoringSloStackOutputs{}
+func (x *GcpMonitoringSloOutputs) Reset() {
+	*x = GcpMonitoringSloOutputs{}
 	mi := &file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMonitoringSloStackOutputs) String() string {
+func (x *GcpMonitoringSloOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMonitoringSloStackOutputs) ProtoMessage() {}
+func (*GcpMonitoringSloOutputs) ProtoMessage() {}
 
-func (x *GcpMonitoringSloStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpMonitoringSloOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *GcpMonitoringSloStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMonitoringSloStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpMonitoringSloStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMonitoringSloOutputs.ProtoReflect.Descriptor instead.
+func (*GcpMonitoringSloOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMonitoringSloStackOutputs) GetSloName() string {
+func (x *GcpMonitoringSloOutputs) GetSloName() string {
 	if x != nil {
 		return x.SloName
 	}
 	return ""
 }
 
-func (x *GcpMonitoringSloStackOutputs) GetServiceName() string {
+func (x *GcpMonitoringSloOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
@@ -85,8 +85,8 @@ var File_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpmonitoringslo/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpmonitoringslo.v1alpha1\"\\\n" +
-	"\x1cGcpMonitoringSloStackOutputs\x12\x19\n" +
+	"3catalog/gcp/gcpmonitoringslo/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpmonitoringslo.v1alpha1\"W\n" +
+	"\x17GcpMonitoringSloOutputs\x12\x19\n" +
 	"\bslo_name\x18\x01 \x01(\tR\asloName\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceNameB\xe3\x02\n" +
 	"-com.dev.planton.gcp.gcpmonitoringslo.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpmonitoringslo/v1alpha1;gcpmonitoringslov1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpmonitoringslo.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpmonitoringslo\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpmonitoringslo\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpmonitoringslo::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpMonitoringSloStackOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringslo.v1alpha1.GcpMonitoringSloStackOutputs
+	(*GcpMonitoringSloOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringslo.v1alpha1.GcpMonitoringSloOutputs
 }
 var file_catalog_gcp_gcpmonitoringslo_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerDomainStackOutputs captures observable identifiers and endpoints from a deployed
+// AwsSagemakerDomainOutputs captures observable identifiers and endpoints from a deployed
 // Amazon SageMaker Domain. These outputs enable downstream resources (user profiles, spaces,
 // apps, IAM policies) to connect to and operate within the domain, and provide essential
 // information for monitoring, security auditing, and infra chart composition.
-type AwsSagemakerDomainStackOutputs struct {
+type AwsSagemakerDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// domain_id is the unique identifier of the SageMaker Domain.
 	// Used in API calls and as a reference when creating user profiles, spaces, and apps.
@@ -64,20 +64,20 @@ type AwsSagemakerDomainStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerDomainStackOutputs) Reset() {
-	*x = AwsSagemakerDomainStackOutputs{}
+func (x *AwsSagemakerDomainOutputs) Reset() {
+	*x = AwsSagemakerDomainOutputs{}
 	mi := &file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerDomainStackOutputs) String() string {
+func (x *AwsSagemakerDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerDomainStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerDomainOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -89,75 +89,75 @@ func (x *AwsSagemakerDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetDomainId() string {
+func (x *AwsSagemakerDomainOutputs) GetDomainId() string {
 	if x != nil {
 		return x.DomainId
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetDomainArn() string {
+func (x *AwsSagemakerDomainOutputs) GetDomainArn() string {
 	if x != nil {
 		return x.DomainArn
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetDomainUrl() string {
+func (x *AwsSagemakerDomainOutputs) GetDomainUrl() string {
 	if x != nil {
 		return x.DomainUrl
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetHomeEfsFileSystemId() string {
+func (x *AwsSagemakerDomainOutputs) GetHomeEfsFileSystemId() string {
 	if x != nil {
 		return x.HomeEfsFileSystemId
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetSecurityGroupIdForDomainBoundary() string {
+func (x *AwsSagemakerDomainOutputs) GetSecurityGroupIdForDomainBoundary() string {
 	if x != nil {
 		return x.SecurityGroupIdForDomainBoundary
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetSingleSignOnApplicationArn() string {
+func (x *AwsSagemakerDomainOutputs) GetSingleSignOnApplicationArn() string {
 	if x != nil {
 		return x.SingleSignOnApplicationArn
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetSingleSignOnManagedApplicationInstanceId() string {
+func (x *AwsSagemakerDomainOutputs) GetSingleSignOnManagedApplicationInstanceId() string {
 	if x != nil {
 		return x.SingleSignOnManagedApplicationInstanceId
 	}
 	return ""
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetUserProfileArns() map[string]string {
+func (x *AwsSagemakerDomainOutputs) GetUserProfileArns() map[string]string {
 	if x != nil {
 		return x.UserProfileArns
 	}
 	return nil
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetSpaceArns() map[string]string {
+func (x *AwsSagemakerDomainOutputs) GetSpaceArns() map[string]string {
 	if x != nil {
 		return x.SpaceArns
 	}
 	return nil
 }
 
-func (x *AwsSagemakerDomainStackOutputs) GetSpaceUrls() map[string]string {
+func (x *AwsSagemakerDomainOutputs) GetSpaceUrls() map[string]string {
 	if x != nil {
 		return x.SpaceUrls
 	}
@@ -168,8 +168,8 @@ var File_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awssagemakerdomain/v1alpha1/outputs.proto\x12+dev.planton.aws.awssagemakerdomain.v1alpha1\"\xed\a\n" +
-	"\x1eAwsSagemakerDomainStackOutputs\x12\x1b\n" +
+	"5catalog/aws/awssagemakerdomain/v1alpha1/outputs.proto\x12+dev.planton.aws.awssagemakerdomain.v1alpha1\"\xd9\a\n" +
+	"\x19AwsSagemakerDomainOutputs\x12\x1b\n" +
 	"\tdomain_id\x18\x01 \x01(\tR\bdomainId\x12\x1d\n" +
 	"\n" +
 	"domain_arn\x18\x02 \x01(\tR\tdomainArn\x12\x1d\n" +
@@ -178,13 +178,13 @@ const file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x17home_efs_file_system_id\x18\x04 \x01(\tR\x13homeEfsFileSystemId\x12O\n" +
 	"%security_group_id_for_domain_boundary\x18\x05 \x01(\tR securityGroupIdForDomainBoundary\x12B\n" +
 	"\x1esingle_sign_on_application_arn\x18\x06 \x01(\tR\x1asingleSignOnApplicationArn\x12`\n" +
-	".single_sign_on_managed_application_instance_id\x18\a \x01(\tR(singleSignOnManagedApplicationInstanceId\x12\x8c\x01\n" +
-	"\x11user_profile_arns\x18\b \x03(\v2`.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.UserProfileArnsEntryR\x0fuserProfileArns\x12y\n" +
+	".single_sign_on_managed_application_instance_id\x18\a \x01(\tR(singleSignOnManagedApplicationInstanceId\x12\x87\x01\n" +
+	"\x11user_profile_arns\x18\b \x03(\v2[.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.UserProfileArnsEntryR\x0fuserProfileArns\x12t\n" +
 	"\n" +
-	"space_arns\x18\t \x03(\v2Z.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.SpaceArnsEntryR\tspaceArns\x12y\n" +
+	"space_arns\x18\t \x03(\v2U.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.SpaceArnsEntryR\tspaceArns\x12t\n" +
 	"\n" +
 	"space_urls\x18\n" +
-	" \x03(\v2Z.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.SpaceUrlsEntryR\tspaceUrls\x1aB\n" +
+	" \x03(\v2U.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.SpaceUrlsEntryR\tspaceUrls\x1aB\n" +
 	"\x14UserProfileArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a<\n" +
@@ -210,15 +210,15 @@ func file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerDomainStackOutputs)(nil), // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs
-	nil,                                    // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.UserProfileArnsEntry
-	nil,                                    // 2: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.SpaceArnsEntry
-	nil,                                    // 3: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.SpaceUrlsEntry
+	(*AwsSagemakerDomainOutputs)(nil), // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs
+	nil,                               // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.UserProfileArnsEntry
+	nil,                               // 2: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.SpaceArnsEntry
+	nil,                               // 3: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.SpaceUrlsEntry
 }
 var file_catalog_aws_awssagemakerdomain_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.user_profile_arns:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.UserProfileArnsEntry
-	2, // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.space_arns:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.SpaceArnsEntry
-	3, // 2: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.space_urls:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs.SpaceUrlsEntry
+	1, // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.user_profile_arns:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.UserProfileArnsEntry
+	2, // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.space_arns:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.SpaceArnsEntry
+	3, // 2: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.space_urls:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs.SpaceUrlsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogGroupStackInput provides the inputs required by Pulumi/Terraform
+// AwsCloudwatchLogGroupIacInput provides the inputs required by Pulumi/Terraform
 // modules to provision a CloudWatch Logs log group.
-type AwsCloudwatchLogGroupStackInput struct {
+type AwsCloudwatchLogGroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsCloudwatchLogGroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudwatchLogGroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogGroupStackInput) Reset() {
-	*x = AwsCloudwatchLogGroupStackInput{}
+func (x *AwsCloudwatchLogGroupIacInput) Reset() {
+	*x = AwsCloudwatchLogGroupIacInput{}
 	mi := &file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogGroupStackInput) String() string {
+func (x *AwsCloudwatchLogGroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogGroupStackInput) ProtoMessage() {}
+func (*AwsCloudwatchLogGroupIacInput) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogGroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogGroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudwatchLogGroupStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogGroupStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogGroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogGroupIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogGroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogGroupStackInput) GetTarget() *AwsCloudwatchLogGroup {
+func (x *AwsCloudwatchLogGroupIacInput) GetTarget() *AwsCloudwatchLogGroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchLogGroupStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudwatchLogGroupIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awscloudwatchloggroup/v1alpha1/input.proto\x12.dev.planton.aws.awscloudwatchloggroup.v1alpha1\x1a4catalog/aws/awscloudwatchloggroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsCloudwatchLogGroupStackInput\x12]\n" +
+	"6catalog/aws/awscloudwatchloggroup/v1alpha1/input.proto\x12.dev.planton.aws.awscloudwatchloggroup.v1alpha1\x1a4catalog/aws/awscloudwatchloggroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsCloudwatchLogGroupIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awscloudwatchloggroup.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudwatchLogGroupStackInput)(nil), // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackInput
-	(*AwsCloudwatchLogGroup)(nil),           // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudwatchLogGroupIacInput)(nil), // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupIacInput
+	(*AwsCloudwatchLogGroup)(nil),         // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackInput.target:type_name -> dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup
-	2, // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupIacInput.target:type_name -> dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup
+	2, // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

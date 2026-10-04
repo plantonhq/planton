@@ -36,10 +36,10 @@ type AzurePublicIpPrefix struct {
 	// Resource kind. Must be "AzurePublicIpPrefix".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Public IP prefix specification.
 	Spec *AzurePublicIpPrefixSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzurePublicIpPrefixStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzurePublicIpPrefix) GetKind() string {
 	return ""
 }
 
-func (x *AzurePublicIpPrefix) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePublicIpPrefix) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzurePublicIpPrefix) GetStatus() *AzurePublicIpPrefixStatus {
 // AzurePublicIpPrefixStatus holds the deployment outputs.
 type AzurePublicIpPrefixStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzurePublicIpPrefixStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzurePublicIpPrefixOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzurePublicIpPrefixStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepublicipprefix_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePublicIpPrefixStatus) GetOutputs() *AzurePublicIpPrefixStackOutputs {
+func (x *AzurePublicIpPrefixStatus) GetOutputs() *AzurePublicIpPrefixOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azurepublicipprefix_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzurePublicIpPrefixR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatusR\x06status\"\x86\x01\n" +
-	"\x19AzurePublicIpPrefixStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatusR\x06status\"\x81\x01\n" +
+	"\x19AzurePublicIpPrefixStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azurepublicipprefix.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurepublicipprefix/v1alpha1;azurepublicipprefixv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurepublicipprefix.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurepublicipprefix\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurepublicipprefix\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurepublicipprefix::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azurepublicipprefix_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurepublicipprefix_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurepublicipprefix_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePublicIpPrefix)(nil),             // 0: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefix
-	(*AzurePublicIpPrefixStatus)(nil),       // 1: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePublicIpPrefixSpec)(nil),         // 3: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixSpec
-	(*AzurePublicIpPrefixStackOutputs)(nil), // 4: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStackOutputs
+	(*AzurePublicIpPrefix)(nil),          // 0: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefix
+	(*AzurePublicIpPrefixStatus)(nil),    // 1: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePublicIpPrefixSpec)(nil),      // 3: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixSpec
+	(*AzurePublicIpPrefixOutputs)(nil),   // 4: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixOutputs
 }
 var file_catalog_azure_azurepublicipprefix_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefix.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefix.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefix.spec:type_name -> dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixSpec
 	1, // 2: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefix.status:type_name -> dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatus
-	4, // 3: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatus.outputs:type_name -> dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStackOutputs
+	4, // 3: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStatus.outputs:type_name -> dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awss3vectorbucket
 spec:
@@ -29,6 +29,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the same storage, upload, and query meter family across BOTH indexes, each empty at creation -- and per-vector cost diverges by design, with docs-titan carrying 4 KB of vector data per embedding (1024 dimensions) against code-small's 1 KB (256 dimensions), a 4x slope difference on storage and query-processed bytes alike
-        - the aws:kms encryption choice routes KMS request and key charges to the referenced key, billed on its own AwsKmsKey component
+        - the aws:kms encryption choice routes KMS request and key charges to the referenced key, billed on its own AwsKmsKey kind
         - read and list request meters are not yet published on the pricing page -- excluded as absence, not as $0
-      notes: Zero committed cost -- KMS encryption is posture, not a meter, on this component; an idle encrypted store meters nothing here, and the first query or upload starts the same usage meters as the unencrypted preset.
+      notes: Zero committed cost -- KMS encryption is posture, not a meter, on this kind; an idle encrypted store meters nothing here, and the first query or upload starts the same usage meters as the unencrypted preset.

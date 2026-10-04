@@ -6,7 +6,7 @@
 
 **apiVersion**: `azure.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **AzureVirtualWanSpec** defines a Virtual WAN -- the top-level umbrella
 of Azure's managed hub-and-spoke networking. The WAN object itself is

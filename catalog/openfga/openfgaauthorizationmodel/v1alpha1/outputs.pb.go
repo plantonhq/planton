@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaAuthorizationModelStackOutputs contains the outputs from an OpenFGA Authorization Model deployment.
+// OpenFgaAuthorizationModelOutputs contains the outputs from an OpenFGA Authorization Model deployment.
 //
 // These outputs provide the model identifier for referencing in subsequent operations
 // (e.g., setting as the active model for a store, querying the model).
 //
 // Reference:
 // - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/authorization_model#attributes-reference
-type OpenFgaAuthorizationModelStackOutputs struct {
+type OpenFgaAuthorizationModelOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the authorization model.
 	// This is a version-specific identifier - each new model gets a new ID.
@@ -44,20 +44,20 @@ type OpenFgaAuthorizationModelStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenFgaAuthorizationModelStackOutputs) Reset() {
-	*x = OpenFgaAuthorizationModelStackOutputs{}
+func (x *OpenFgaAuthorizationModelOutputs) Reset() {
+	*x = OpenFgaAuthorizationModelOutputs{}
 	mi := &file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenFgaAuthorizationModelStackOutputs) String() string {
+func (x *OpenFgaAuthorizationModelOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenFgaAuthorizationModelStackOutputs) ProtoMessage() {}
+func (*OpenFgaAuthorizationModelOutputs) ProtoMessage() {}
 
-func (x *OpenFgaAuthorizationModelStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *OpenFgaAuthorizationModelOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,12 +69,12 @@ func (x *OpenFgaAuthorizationModelStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenFgaAuthorizationModelStackOutputs.ProtoReflect.Descriptor instead.
-func (*OpenFgaAuthorizationModelStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenFgaAuthorizationModelOutputs.ProtoReflect.Descriptor instead.
+func (*OpenFgaAuthorizationModelOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *OpenFgaAuthorizationModelStackOutputs) GetId() string {
+func (x *OpenFgaAuthorizationModelOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -85,8 +85,8 @@ var File_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto protor
 
 const file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/openfga/openfgaauthorizationmodel/v1alpha1/outputs.proto\x126dev.planton.openfga.openfgaauthorizationmodel.v1alpha1\"7\n" +
-	"%OpenFgaAuthorizationModelStackOutputs\x12\x0e\n" +
+	"@catalog/openfga/openfgaauthorizationmodel/v1alpha1/outputs.proto\x126dev.planton.openfga.openfgaauthorizationmodel.v1alpha1\"2\n" +
+	" OpenFgaAuthorizationModelOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02idB\xba\x03\n" +
 	":com.dev.planton.openfga.openfgaauthorizationmodel.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/openfga/openfgaauthorizationmodel/v1alpha1;openfgaauthorizationmodelv1alpha1\xa2\x02\x04DPOO\xaa\x026Dev.Planton.Openfga.Openfgaauthorizationmodel.V1alpha1\xca\x026Dev\\Planton\\Openfga\\Openfgaauthorizationmodel\\V1alpha1\xe2\x02BDev\\Planton\\Openfga\\Openfgaauthorizationmodel\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Openfga::Openfgaauthorizationmodel::V1alpha1b\x06proto3"
 
@@ -104,7 +104,7 @@ func file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_goTypes = []any{
-	(*OpenFgaAuthorizationModelStackOutputs)(nil), // 0: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStackOutputs
+	(*OpenFgaAuthorizationModelOutputs)(nil), // 0: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelOutputs
 }
 var file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

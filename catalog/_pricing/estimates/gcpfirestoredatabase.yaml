@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: gcpfirestoredatabase
 spec:
@@ -37,6 +37,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - ENTERPRISE bills by data-sized units -- read units per 4 KiB, write units per 1 KiB -- and stores data at the higher enterprise rate per GiB-month at nam5, with PITR adding its own storage meter
-        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey component
+        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey kind
         - real-time updates and change-stream events bill their own per-million-unit meters if the application enables those ENTERPRISE surfaces
       notes: Zero committed at creation -- the enterprise meter family is pricier per byte processed, but every meter still starts at the first document.

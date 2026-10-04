@@ -31,7 +31,7 @@ const (
 // immediately, with no web ACL redeploy.
 //
 // A web ACL references the set through an ip_set_reference statement using
-// the set's ARN (exported as the ip_set_arn stack output). The action —
+// the set's ARN (exported as the ip_set_arn output). The action —
 // allow, block, count, CAPTCHA — lives on the referencing RULE, not on the
 // set, so the same set can back an allow rule in one web ACL and a block
 // rule in another.

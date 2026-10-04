@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGrpcRouteStackOutputs captures observable outputs after the
+// KubernetesGrpcRouteOutputs captures observable outputs after the
 // GRPCRoute is created on the target cluster. Controller-managed status (the
 // per-parent Accepted/ResolvedRefs conditions) is reconciled asynchronously by
 // the Gateway implementation and read via kubectl, so it is intentionally not
 // stored here.
-type KubernetesGrpcRouteStackOutputs struct {
+type KubernetesGrpcRouteOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created GRPCRoute (equals metadata.name). In InfraCharts this
 	// orders the route after the Gateway and backends it references.
@@ -39,20 +39,20 @@ type KubernetesGrpcRouteStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesGrpcRouteStackOutputs) Reset() {
-	*x = KubernetesGrpcRouteStackOutputs{}
+func (x *KubernetesGrpcRouteOutputs) Reset() {
+	*x = KubernetesGrpcRouteOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGrpcRouteStackOutputs) String() string {
+func (x *KubernetesGrpcRouteOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGrpcRouteStackOutputs) ProtoMessage() {}
+func (*KubernetesGrpcRouteOutputs) ProtoMessage() {}
 
-func (x *KubernetesGrpcRouteStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGrpcRouteOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *KubernetesGrpcRouteStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGrpcRouteStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGrpcRouteStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGrpcRouteOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGrpcRouteOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGrpcRouteStackOutputs) GetRouteName() string {
+func (x *KubernetesGrpcRouteOutputs) GetRouteName() string {
 	if x != nil {
 		return x.RouteName
 	}
 	return ""
 }
 
-func (x *KubernetesGrpcRouteStackOutputs) GetNamespace() string {
+func (x *KubernetesGrpcRouteOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -87,8 +87,8 @@ var File_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetesgrpcroute/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1\"^\n" +
-	"\x1fKubernetesGrpcRouteStackOutputs\x12\x1d\n" +
+	"=catalog/kubernetes/kubernetesgrpcroute/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1\"Y\n" +
+	"\x1aKubernetesGrpcRouteOutputs\x12\x1d\n" +
 	"\n" +
 	"route_name\x18\x01 \x01(\tR\trouteName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xa2\x03\n" +
@@ -108,7 +108,7 @@ func file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGrpcRouteStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteStackOutputs
+	(*KubernetesGrpcRouteOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteOutputs
 }
 var file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

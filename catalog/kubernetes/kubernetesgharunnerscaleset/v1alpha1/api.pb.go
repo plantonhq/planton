@@ -47,7 +47,7 @@ type KubernetesGhaRunnerScaleSet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesGhaRunnerScaleSetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -100,7 +100,7 @@ func (x *KubernetesGhaRunnerScaleSet) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesGhaRunnerScaleSet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesGhaRunnerScaleSet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -124,8 +124,8 @@ func (x *KubernetesGhaRunnerScaleSet) GetStatus() *KubernetesGhaRunnerScaleSetSt
 // KubernetesGhaRunnerScaleSetStatus describes the observed state of the runner scale set.
 type KubernetesGhaRunnerScaleSetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesGhaRunnerScaleSetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesGhaRunnerScaleSetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -160,7 +160,7 @@ func (*KubernetesGhaRunnerScaleSetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesGhaRunnerScaleSetStatus) GetOutputs() *KubernetesGhaRunnerScaleSetStackOutputs {
+func (x *KubernetesGhaRunnerScaleSetStatus) GetOutputs() *KubernetesGhaRunnerScaleSetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -178,11 +178,11 @@ const file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_api_proto_raw
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bKubernetesGhaRunnerScaleSetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
 	"\x04spec\x18\x04 \x01(\v2\\.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12v\n" +
-	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatusR\x06status\"\xa3\x01\n" +
-	"!KubernetesGhaRunnerScaleSetStatus\x12~\n" +
-	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackOutputsR\aoutputsB\xd6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatusR\x06status\"\x9e\x01\n" +
+	"!KubernetesGhaRunnerScaleSetStatus\x12y\n" +
+	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetOutputsR\aoutputsB\xd6\x03\n" +
 	"?com.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1B\bApiProtoP\x01Zxgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1;kubernetesgharunnerscalesetv1alpha1\xa2\x02\x04DPKK\xaa\x02;Dev.Planton.Kubernetes.Kubernetesgharunnerscaleset.V1alpha1\xca\x02;Dev\\Planton\\Kubernetes\\Kubernetesgharunnerscaleset\\V1alpha1\xe2\x02GDev\\Planton\\Kubernetes\\Kubernetesgharunnerscaleset\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Kubernetes::Kubernetesgharunnerscaleset::V1alpha1b\x06proto3"
 
 var (
@@ -199,17 +199,17 @@ func file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_api_proto_rawD
 
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesGhaRunnerScaleSet)(nil),             // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet
-	(*KubernetesGhaRunnerScaleSetStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesGhaRunnerScaleSetSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetSpec
-	(*KubernetesGhaRunnerScaleSetStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackOutputs
+	(*KubernetesGhaRunnerScaleSet)(nil),        // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet
+	(*KubernetesGhaRunnerScaleSetStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesGhaRunnerScaleSetSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetSpec
+	(*KubernetesGhaRunnerScaleSetOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetOutputs
 }
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet.spec:type_name -> dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetSpec
 	1, // 2: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSet.status:type_name -> dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatus
-	4, // 3: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

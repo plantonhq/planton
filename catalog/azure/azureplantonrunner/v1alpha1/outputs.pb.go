@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePlantonRunnerStackOutputs captures the observable identifiers of a
+// AzurePlantonRunnerOutputs captures the observable identifiers of a
 // deployed runner appliance -- the handles for day-2 operations: finding
 // the app in Azure tooling and the name the runner registered itself
 // under with the control plane.
-type AzurePlantonRunnerStackOutputs struct {
+type AzurePlantonRunnerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure resource ID of the Container App keeping the runner
 	// running. The primary handle for inspecting the appliance with Azure
@@ -47,20 +47,20 @@ type AzurePlantonRunnerStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzurePlantonRunnerStackOutputs) Reset() {
-	*x = AzurePlantonRunnerStackOutputs{}
+func (x *AzurePlantonRunnerOutputs) Reset() {
+	*x = AzurePlantonRunnerOutputs{}
 	mi := &file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePlantonRunnerStackOutputs) String() string {
+func (x *AzurePlantonRunnerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePlantonRunnerStackOutputs) ProtoMessage() {}
+func (*AzurePlantonRunnerOutputs) ProtoMessage() {}
 
-func (x *AzurePlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePlantonRunnerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,40 +72,40 @@ func (x *AzurePlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePlantonRunnerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePlantonRunnerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePlantonRunnerOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePlantonRunnerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePlantonRunnerStackOutputs) GetContainerAppId() string {
+func (x *AzurePlantonRunnerOutputs) GetContainerAppId() string {
 	if x != nil {
 		return x.ContainerAppId
 	}
 	return ""
 }
 
-func (x *AzurePlantonRunnerStackOutputs) GetContainerAppName() string {
+func (x *AzurePlantonRunnerOutputs) GetContainerAppName() string {
 	if x != nil {
 		return x.ContainerAppName
 	}
 	return ""
 }
 
-func (x *AzurePlantonRunnerStackOutputs) GetTokenSecretName() string {
+func (x *AzurePlantonRunnerOutputs) GetTokenSecretName() string {
 	if x != nil {
 		return x.TokenSecretName
 	}
 	return ""
 }
 
-func (x *AzurePlantonRunnerStackOutputs) GetRunnerName() string {
+func (x *AzurePlantonRunnerOutputs) GetRunnerName() string {
 	if x != nil {
 		return x.RunnerName
 	}
 	return ""
 }
 
-func (x *AzurePlantonRunnerStackOutputs) GetResourceGroupName() string {
+func (x *AzurePlantonRunnerOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
@@ -116,8 +116,8 @@ var File_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azureplantonrunner/v1alpha1/outputs.proto\x12-dev.planton.azure.azureplantonrunner.v1alpha1\"\xf5\x01\n" +
-	"\x1eAzurePlantonRunnerStackOutputs\x12(\n" +
+	"7catalog/azure/azureplantonrunner/v1alpha1/outputs.proto\x12-dev.planton.azure.azureplantonrunner.v1alpha1\"\xf0\x01\n" +
+	"\x19AzurePlantonRunnerOutputs\x12(\n" +
 	"\x10container_app_id\x18\x01 \x01(\tR\x0econtainerAppId\x12,\n" +
 	"\x12container_app_name\x18\x02 \x01(\tR\x10containerAppName\x12*\n" +
 	"\x11token_secret_name\x18\x03 \x01(\tR\x0ftokenSecretName\x12\x1f\n" +
@@ -140,7 +140,7 @@ func file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePlantonRunnerStackOutputs)(nil), // 0: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStackOutputs
+	(*AzurePlantonRunnerOutputs)(nil), // 0: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerOutputs
 }
 var file_catalog_azure_azureplantonrunner_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

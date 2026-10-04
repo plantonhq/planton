@@ -42,7 +42,7 @@ do not require data persistence, replication, or authentication.
 Notes:
 - `port` is ForceNew. Default: 11211.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

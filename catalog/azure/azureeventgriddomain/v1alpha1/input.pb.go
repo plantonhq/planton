@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureEventgridDomainStackInput is the input to the IaC modules
+// AzureEventgridDomainIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureEventgridDomainStackInput struct {
+type AzureEventgridDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Event Grid domain resource to deploy.
 	Target *AzureEventgridDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureEventgridDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureEventgridDomainStackInput) Reset() {
-	*x = AzureEventgridDomainStackInput{}
+func (x *AzureEventgridDomainIacInput) Reset() {
+	*x = AzureEventgridDomainIacInput{}
 	mi := &file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridDomainStackInput) String() string {
+func (x *AzureEventgridDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridDomainStackInput) ProtoMessage() {}
+func (*AzureEventgridDomainIacInput) ProtoMessage() {}
 
-func (x *AzureEventgridDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureEventgridDomainStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridDomainStackInput.ProtoReflect.Descriptor instead.
-func (*AzureEventgridDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridDomainIacInput.ProtoReflect.Descriptor instead.
+func (*AzureEventgridDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridDomainStackInput) GetTarget() *AzureEventgridDomain {
+func (x *AzureEventgridDomainIacInput) GetTarget() *AzureEventgridDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureEventgridDomainStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureEventgridDomainIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureeventgriddomain_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azureeventgriddomain/v1alpha1/input.proto\x12/dev.planton.azure.azureeventgriddomain.v1alpha1\x1a5catalog/azure/azureeventgriddomain/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd0\x01\n" +
-	"\x1eAzureEventgridDomainStackInput\x12]\n" +
+	"7catalog/azure/azureeventgriddomain/v1alpha1/input.proto\x12/dev.planton.azure.azureeventgriddomain.v1alpha1\x1a5catalog/azure/azureeventgriddomain/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xce\x01\n" +
+	"\x1cAzureEventgridDomainIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x89\x03\n" +
 	"3com.dev.planton.azure.azureeventgriddomain.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_goTypes = []any{
-	(*AzureEventgridDomainStackInput)(nil), // 0: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainStackInput
-	(*AzureEventgridDomain)(nil),           // 1: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomain
-	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureEventgridDomainIacInput)(nil), // 0: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainIacInput
+	(*AzureEventgridDomain)(nil),         // 1: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomain
+	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureeventgriddomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainStackInput.target:type_name -> dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomain
-	2, // 1: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainIacInput.target:type_name -> dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomain
+	2, // 1: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

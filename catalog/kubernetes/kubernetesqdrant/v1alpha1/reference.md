@@ -312,7 +312,7 @@ Generate a random key. The chart generates it once at first
 install (stable across upgrades) and keeps it in its own
 `<name>-apikey` Secret — key `api-key` (read-write) /
 `read-only-api-key`. The key never appears in rendered Helm
-values; the Secret name lands in the stack outputs.
+values; the Secret name lands in the outputs.
 
 ### spec.apiKey.existingSecret
 
@@ -354,7 +354,7 @@ Generate a random key. The chart generates it once at first
 install (stable across upgrades) and keeps it in its own
 `<name>-apikey` Secret — key `api-key` (read-write) /
 `read-only-api-key`. The key never appears in rendered Helm
-values; the Secret name lands in the stack outputs.
+values; the Secret name lands in the outputs.
 
 ### spec.readOnlyApiKey.existingSecret
 

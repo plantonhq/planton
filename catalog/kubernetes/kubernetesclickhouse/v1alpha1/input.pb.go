@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// click-house-kubernetes stack-input
-type KubernetesClickHouseStackInput struct {
+// click-house-kubernetes iac-input
+type KubernetesClickHouseIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesClickHouse `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesClickHouseStackInput struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *KubernetesClickHouseStackInput) Reset() {
-	*x = KubernetesClickHouseStackInput{}
+func (x *KubernetesClickHouseIacInput) Reset() {
+	*x = KubernetesClickHouseIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesClickHouseStackInput) String() string {
+func (x *KubernetesClickHouseIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesClickHouseStackInput) ProtoMessage() {}
+func (*KubernetesClickHouseIacInput) ProtoMessage() {}
 
-func (x *KubernetesClickHouseStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesClickHouseIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *KubernetesClickHouseStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesClickHouseStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesClickHouseStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesClickHouseIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesClickHouseIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesClickHouseStackInput) GetTarget() *KubernetesClickHouse {
+func (x *KubernetesClickHouseIacInput) GetTarget() *KubernetesClickHouse {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesClickHouseStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesClickHouseIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
 	return nil
 }
 
-func (x *KubernetesClickHouseStackInput) GetKubernetesNamespace() string {
+func (x *KubernetesClickHouseIacInput) GetKubernetesNamespace() string {
 	if x != nil {
 		return x.KubernetesNamespace
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto protorefle
 
 const file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesclickhouse/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesclickhouse.v1alpha1\x1a:catalog/kubernetes/kubernetesclickhouse/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x92\x02\n" +
-	"\x1eKubernetesClickHouseStackInput\x12b\n" +
+	"<catalog/kubernetes/kubernetesclickhouse/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesclickhouse.v1alpha1\x1a:catalog/kubernetes/kubernetesclickhouse/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x90\x02\n" +
+	"\x1cKubernetesClickHouseIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfig\x121\n" +
 	"\x14kubernetes_namespace\x18\x03 \x01(\tR\x13kubernetesNamespaceB\xa7\x03\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesClickHouseStackInput)(nil),      // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackInput
+	(*KubernetesClickHouseIacInput)(nil),        // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseIacInput
 	(*KubernetesClickHouse)(nil),                // 1: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackInput.target:type_name -> dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse
-	2, // 1: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseIacInput.target:type_name -> dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse
+	2, // 1: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

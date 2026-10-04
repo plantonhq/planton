@@ -28,7 +28,7 @@ type GcpCloudArmorPolicy struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpCloudArmorPolicySpec      `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpCloudArmorPolicyStatus    `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpCloudArmorPolicy) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudArmorPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudArmorPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpCloudArmorPolicy) GetStatus() *GcpCloudArmorPolicyStatus {
 }
 
 type GcpCloudArmorPolicyStatus struct {
-	state         protoimpl.MessageState           `protogen:"open.v1"`
-	Outputs       *GcpCloudArmorPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Outputs       *GcpCloudArmorPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpCloudArmorPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudArmorPolicyStatus) GetOutputs() *GcpCloudArmorPolicyStackOutputs {
+func (x *GcpCloudArmorPolicyStatus) GetOutputs() *GcpCloudArmorPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13GcpCloudArmorPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatusR\x06status\"\x84\x01\n" +
-	"\x19GcpCloudArmorPolicyStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatusR\x06status\"\x7f\n" +
+	"\x19GcpCloudArmorPolicyStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1;gcpcloudarmorpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpcloudarmorpolicy.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpcloudarmorpolicy\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpcloudarmorpolicy\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpcloudarmorpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCloudArmorPolicy)(nil),             // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy
-	(*GcpCloudArmorPolicyStatus)(nil),       // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCloudArmorPolicySpec)(nil),         // 3: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec
-	(*GcpCloudArmorPolicyStackOutputs)(nil), // 4: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackOutputs
+	(*GcpCloudArmorPolicy)(nil),          // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy
+	(*GcpCloudArmorPolicyStatus)(nil),    // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCloudArmorPolicySpec)(nil),      // 3: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec
+	(*GcpCloudArmorPolicyOutputs)(nil),   // 4: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyOutputs
 }
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy.spec:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec
 	1, // 2: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy.status:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatus
-	4, // 3: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatus.outputs:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStatus.outputs:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

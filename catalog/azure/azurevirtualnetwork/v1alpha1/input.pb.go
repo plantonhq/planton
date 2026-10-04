@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureVirtualNetworkStackInput is the input to the IaC modules (Pulumi/Terraform).
+// AzureVirtualNetworkIacInput is the input to the IaC modules (Pulumi/Terraform).
 // It contains the target resource definition and Azure provider credentials.
-type AzureVirtualNetworkStackInput struct {
+type AzureVirtualNetworkIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The virtual network resource to deploy.
 	Target *AzureVirtualNetwork `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AzureVirtualNetworkStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVirtualNetworkStackInput) Reset() {
-	*x = AzureVirtualNetworkStackInput{}
+func (x *AzureVirtualNetworkIacInput) Reset() {
+	*x = AzureVirtualNetworkIacInput{}
 	mi := &file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualNetworkStackInput) String() string {
+func (x *AzureVirtualNetworkIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualNetworkStackInput) ProtoMessage() {}
+func (*AzureVirtualNetworkIacInput) ProtoMessage() {}
 
-func (x *AzureVirtualNetworkStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualNetworkIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureVirtualNetworkStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualNetworkStackInput.ProtoReflect.Descriptor instead.
-func (*AzureVirtualNetworkStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualNetworkIacInput.ProtoReflect.Descriptor instead.
+func (*AzureVirtualNetworkIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualNetworkStackInput) GetTarget() *AzureVirtualNetwork {
+func (x *AzureVirtualNetworkIacInput) GetTarget() *AzureVirtualNetwork {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureVirtualNetworkStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureVirtualNetworkIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurevirtualnetwork/v1alpha1/input.proto\x12.dev.planton.azure.azurevirtualnetwork.v1alpha1\x1a4catalog/azure/azurevirtualnetwork/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcd\x01\n" +
-	"\x1dAzureVirtualNetworkStackInput\x12[\n" +
+	"6catalog/azure/azurevirtualnetwork/v1alpha1/input.proto\x12.dev.planton.azure.azurevirtualnetwork.v1alpha1\x1a4catalog/azure/azurevirtualnetwork/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcb\x01\n" +
+	"\x1bAzureVirtualNetworkIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x82\x03\n" +
 	"2com.dev.planton.azure.azurevirtualnetwork.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_goTypes = []any{
-	(*AzureVirtualNetworkStackInput)(nil), // 0: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkStackInput
-	(*AzureVirtualNetwork)(nil),           // 1: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetwork
-	(*azure.AzureProviderConfig)(nil),     // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureVirtualNetworkIacInput)(nil), // 0: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkIacInput
+	(*AzureVirtualNetwork)(nil),         // 1: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetwork
+	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurevirtualnetwork_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkStackInput.target:type_name -> dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetwork
-	2, // 1: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkIacInput.target:type_name -> dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetwork
+	2, // 1: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

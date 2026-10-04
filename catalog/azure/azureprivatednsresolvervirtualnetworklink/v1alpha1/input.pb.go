@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePrivateDnsResolverVirtualNetworkLinkStackInput is the input to
+// AzurePrivateDnsResolverVirtualNetworkLinkIacInput is the input to
 // the IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzurePrivateDnsResolverVirtualNetworkLinkStackInput struct {
+type AzurePrivateDnsResolverVirtualNetworkLinkIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The virtual network link resource to deploy.
 	Target *AzurePrivateDnsResolverVirtualNetworkLink `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzurePrivateDnsResolverVirtualNetworkLinkStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLinkStackInput) Reset() {
-	*x = AzurePrivateDnsResolverVirtualNetworkLinkStackInput{}
+func (x *AzurePrivateDnsResolverVirtualNetworkLinkIacInput) Reset() {
+	*x = AzurePrivateDnsResolverVirtualNetworkLinkIacInput{}
 	mi := &file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLinkStackInput) String() string {
+func (x *AzurePrivateDnsResolverVirtualNetworkLinkIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateDnsResolverVirtualNetworkLinkStackInput) ProtoMessage() {}
+func (*AzurePrivateDnsResolverVirtualNetworkLinkIacInput) ProtoMessage() {}
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLinkStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateDnsResolverVirtualNetworkLinkIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzurePrivateDnsResolverVirtualNetworkLinkStackInput) ProtoReflect() pro
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateDnsResolverVirtualNetworkLinkStackInput.ProtoReflect.Descriptor instead.
-func (*AzurePrivateDnsResolverVirtualNetworkLinkStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateDnsResolverVirtualNetworkLinkIacInput.ProtoReflect.Descriptor instead.
+func (*AzurePrivateDnsResolverVirtualNetworkLinkIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLinkStackInput) GetTarget() *AzurePrivateDnsResolverVirtualNetworkLink {
+func (x *AzurePrivateDnsResolverVirtualNetworkLinkIacInput) GetTarget() *AzurePrivateDnsResolverVirtualNetworkLink {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzurePrivateDnsResolverVirtualNetworkLinkStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzurePrivateDnsResolverVirtualNetworkLinkIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_
 
 const file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/azure/azureprivatednsresolvervirtualnetworklink/v1alpha1/input.proto\x12Ddev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1\x1aJcatalog/azure/azureprivatednsresolvervirtualnetworklink/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x90\x02\n" +
-	"3AzurePrivateDnsResolverVirtualNetworkLinkStackInput\x12\x87\x01\n" +
+	"Lcatalog/azure/azureprivatednsresolvervirtualnetworklink/v1alpha1/input.proto\x12Ddev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1\x1aJcatalog/azure/azureprivatednsresolvervirtualnetworklink/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8e\x02\n" +
+	"1AzurePrivateDnsResolverVirtualNetworkLinkIacInput\x12\x87\x01\n" +
 	"\x06target\x18\x01 \x01(\v2o.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x9d\x04\n" +
 	"Hcom.dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input
 
 var file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_goTypes = []any{
-	(*AzurePrivateDnsResolverVirtualNetworkLinkStackInput)(nil), // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackInput
-	(*AzurePrivateDnsResolverVirtualNetworkLink)(nil),           // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
-	(*azure.AzureProviderConfig)(nil),                           // 2: dev.planton.azure.AzureProviderConfig
+	(*AzurePrivateDnsResolverVirtualNetworkLinkIacInput)(nil), // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkIacInput
+	(*AzurePrivateDnsResolverVirtualNetworkLink)(nil),         // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
+	(*azure.AzureProviderConfig)(nil),                         // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureprivatednsresolvervirtualnetworklink_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackInput.target:type_name -> dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
-	2, // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkIacInput.target:type_name -> dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
+	2, // 1: dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

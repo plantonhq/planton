@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurekeyvault
 spec:
@@ -19,8 +19,8 @@ spec:
       exclusions:
         - operations against keys, secrets, and certificates bill 0.03 USD per 10,000 transactions (every successfully authenticated REST call is one operation) -- and Key Vault publishes no free grant, so the very first call bills
         - operations on advanced key types (RSA 3,072/4,096-bit, elliptic-curve) bill 0.15 USD per 10,000 transactions
-        - certificate renewal requests bill 3.00 USD per renewal on the AzureKeyVaultCertificate components inside the vault
-        - automated key rotation bills 1.00 USD per scheduled rotation on the AzureKeyVaultKey components inside the vault
+        - certificate renewal requests bill 3.00 USD per renewal on the AzureKeyVaultCertificate kinds inside the vault
+        - automated key rotation bills 1.00 USD per scheduled rotation on the AzureKeyVaultKey kinds inside the vault
         - Premium HSM-protected key-month charges cannot occur here -- the STANDARD tier refuses HSM key types outright
         - managed storage account key rotation (Secret Renewal meter) is free in preview, 1.00 USD per renewal at general availability
       notes: Zero committed cost -- a Standard vault has no meter for existing; RBAC mode, soft delete, and the 90-day retention default are all free posture, and the bill starts with the first data-plane transaction.
@@ -32,12 +32,12 @@ spec:
       exclusions:
         - operations against keys, secrets, and certificates bill 0.03 USD per 10,000 transactions -- the PREMIUM base rate is identical to STANDARD's
         - operations on advanced key types (RSA 3,072/4,096-bit, elliptic-curve) bill 0.15 USD per 10,000 transactions
-        - HSM-protected keys, the capability PREMIUM unlocks, bill per key per month on the AzureKeyVaultKey components placed in this vault (1.00 USD per actively-used RSA 2,048-bit key; advanced types tier from 5.00 USD for the first 250 down to 0.40 USD beyond 4,000, each stored version counted separately) -- the empty Premium vault itself carries none of it
-        - certificate renewal requests bill 3.00 USD per renewal on the AzureKeyVaultCertificate components inside the vault
-        - automated key rotation bills 1.00 USD per scheduled rotation on the AzureKeyVaultKey components inside the vault
+        - HSM-protected keys, the capability PREMIUM unlocks, bill per key per month on the AzureKeyVaultKey kinds placed in this vault (1.00 USD per actively-used RSA 2,048-bit key; advanced types tier from 5.00 USD for the first 250 down to 0.40 USD beyond 4,000, each stored version counted separately) -- the empty Premium vault itself carries none of it
+        - certificate renewal requests bill 3.00 USD per renewal on the AzureKeyVaultCertificate kinds inside the vault
+        - automated key rotation bills 1.00 USD per scheduled rotation on the AzureKeyVaultKey kinds inside the vault
         - managed storage account key rotation (Secret Renewal meter) is free in preview, 1.00 USD per renewal at general availability
         - the network firewall (DENY default, IP and subnet allowlists) and purge protection are free posture -- restricting reach moves no meter
-      notes: "Zero committed cost -- PREMIUM is a capability choice, not a commitment: Microsoft bills the tier nothing until an HSM-backed key exists and is used, and those key-month charges land on the AzureKeyVaultKey components, not this vault."
+      notes: "Zero committed cost -- PREMIUM is a capability choice, not a commitment: Microsoft bills the tier nothing until an HSM-backed key exists and is used, and those key-month charges land on the AzureKeyVaultKey kinds, not this vault."
     - preset: 03-legacy-access-policy
       region_assumption: eastus
       currency: USD
@@ -46,8 +46,8 @@ spec:
       exclusions:
         - operations against keys, secrets, and certificates bill 0.03 USD per 10,000 transactions regardless of authorization mode -- access policies and RBAC meter identically, which is to say not at all
         - operations on advanced key types (RSA 3,072/4,096-bit, elliptic-curve) bill 0.15 USD per 10,000 transactions
-        - certificate renewal requests bill 3.00 USD per renewal on the AzureKeyVaultCertificate components inside the vault
-        - automated key rotation bills 1.00 USD per scheduled rotation on the AzureKeyVaultKey components inside the vault
+        - certificate renewal requests bill 3.00 USD per renewal on the AzureKeyVaultCertificate kinds inside the vault
+        - automated key rotation bills 1.00 USD per scheduled rotation on the AzureKeyVaultKey kinds inside the vault
         - Premium HSM-protected key-month charges cannot occur here -- this preset rides the STANDARD tier, which refuses HSM key types
         - managed storage account key rotation (Secret Renewal meter) is free in preview, 1.00 USD per renewal at general availability
       notes: Zero committed cost -- the legacy authorization mode changes who may call, never what a call costs; an idle vault bills nothing in either mode.

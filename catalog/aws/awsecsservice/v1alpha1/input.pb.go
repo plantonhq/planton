@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-ecs-service stack-input
-type AwsEcsServiceStackInput struct {
+// aws-ecs-service iac-input
+type AwsEcsServiceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsEcsService `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsEcsServiceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsEcsServiceStackInput) Reset() {
-	*x = AwsEcsServiceStackInput{}
+func (x *AwsEcsServiceIacInput) Reset() {
+	*x = AwsEcsServiceIacInput{}
 	mi := &file_catalog_aws_awsecsservice_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEcsServiceStackInput) String() string {
+func (x *AwsEcsServiceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEcsServiceStackInput) ProtoMessage() {}
+func (*AwsEcsServiceIacInput) ProtoMessage() {}
 
-func (x *AwsEcsServiceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsEcsServiceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsecsservice_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsEcsServiceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEcsServiceStackInput.ProtoReflect.Descriptor instead.
-func (*AwsEcsServiceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEcsServiceIacInput.ProtoReflect.Descriptor instead.
+func (*AwsEcsServiceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecsservice_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEcsServiceStackInput) GetTarget() *AwsEcsService {
+func (x *AwsEcsServiceIacInput) GetTarget() *AwsEcsService {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsEcsServiceStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsEcsServiceIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsecsservice_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsecsservice_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsecsservice/v1alpha1/input.proto\x12&dev.planton.aws.awsecsservice.v1alpha1\x1a,catalog/aws/awsecsservice/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb5\x01\n" +
-	"\x17AwsEcsServiceStackInput\x12M\n" +
+	".catalog/aws/awsecsservice/v1alpha1/input.proto\x12&dev.planton.aws.awsecsservice.v1alpha1\x1a,catalog/aws/awsecsservice/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb3\x01\n" +
+	"\x15AwsEcsServiceIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.aws.awsecsservice.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsecsservice_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsecsservice_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsecsservice_v1alpha1_input_proto_goTypes = []any{
-	(*AwsEcsServiceStackInput)(nil), // 0: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceStackInput
-	(*AwsEcsService)(nil),           // 1: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsService
-	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsEcsServiceIacInput)(nil), // 0: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceIacInput
+	(*AwsEcsService)(nil),         // 1: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsService
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsecsservice_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceStackInput.target:type_name -> dev.planton.aws.awsecsservice.v1alpha1.AwsEcsService
-	2, // 1: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceIacInput.target:type_name -> dev.planton.aws.awsecsservice.v1alpha1.AwsEcsService
+	2, // 1: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

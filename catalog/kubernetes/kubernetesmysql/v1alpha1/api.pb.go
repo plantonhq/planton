@@ -36,7 +36,7 @@ type KubernetesMysql struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesMysqlSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *KubernetesMysql) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesMysql) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesMysql) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *KubernetesMysql) GetStatus() *KubernetesMysqlStatus {
 // KubernetesMysql status.
 type KubernetesMysqlStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesMysqlStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesMysqlOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*KubernetesMysqlStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmysql_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesMysqlStatus) GetOutputs() *KubernetesMysqlStackOutputs {
+func (x *KubernetesMysqlStatus) GetOutputs() *KubernetesMysqlOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_kubernetes_kubernetesmysql_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fKubernetesMysqlR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12^\n" +
-	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStatusR\x06status\"\x7f\n" +
-	"\x15KubernetesMysqlStatus\x12f\n" +
-	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStatusR\x06status\"z\n" +
+	"\x15KubernetesMysqlStatus\x12a\n" +
+	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlOutputsR\aoutputsB\x82\x03\n" +
 	"3com.dev.planton.kubernetes.kubernetesmysql.v1alpha1B\bApiProtoP\x01Z`github.com/plantonhq/planton/catalog/kubernetes/kubernetesmysql/v1alpha1;kubernetesmysqlv1alpha1\xa2\x02\x04DPKK\xaa\x02/Dev.Planton.Kubernetes.Kubernetesmysql.V1alpha1\xca\x02/Dev\\Planton\\Kubernetes\\Kubernetesmysql\\V1alpha1\xe2\x02;Dev\\Planton\\Kubernetes\\Kubernetesmysql\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Kubernetes::Kubernetesmysql::V1alpha1b\x06proto3"
 
 var (
@@ -190,15 +190,15 @@ var file_catalog_kubernetes_kubernetesmysql_v1alpha1_api_proto_msgTypes = make([
 var file_catalog_kubernetes_kubernetesmysql_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesMysql)(nil),              // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysql
 	(*KubernetesMysqlStatus)(nil),        // 1: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesMysqlSpec)(nil),          // 3: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlSpec
-	(*KubernetesMysqlStackOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStackOutputs
+	(*KubernetesMysqlOutputs)(nil),       // 4: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlOutputs
 }
 var file_catalog_kubernetes_kubernetesmysql_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysql.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysql.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysql.spec:type_name -> dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlSpec
 	1, // 2: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysql.status:type_name -> dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStatus
-	4, // 3: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

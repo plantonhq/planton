@@ -32,7 +32,7 @@ type AwsInternetGateway struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsInternetGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *AwsInternetGateway) GetKind() string {
 	return ""
 }
 
-func (x *AwsInternetGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsInternetGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AwsInternetGateway) GetStatus() *AwsInternetGatewayStatus {
 // AwsInternetGateway.
 type AwsInternetGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsInternetGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsInternetGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AwsInternetGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsinternetgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsInternetGatewayStatus) GetOutputs() *AwsInternetGatewayStackOutputs {
+func (x *AwsInternetGatewayStatus) GetOutputs() *AwsInternetGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_aws_awsinternetgateway_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsInternetGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsInternetGatewayStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatusR\x06status\"|\n" +
+	"\x18AwsInternetGatewayStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awsinternetgateway.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsinternetgateway/v1alpha1;awsinternetgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsinternetgateway.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsinternetgateway\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsinternetgateway\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsinternetgateway::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_aws_awsinternetgateway_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsinternetgateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsinternetgateway_v1alpha1_api_proto_goTypes = []any{
-	(*AwsInternetGateway)(nil),             // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway
-	(*AwsInternetGatewayStatus)(nil),       // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsInternetGatewaySpec)(nil),         // 3: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewaySpec
-	(*AwsInternetGatewayStackOutputs)(nil), // 4: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackOutputs
+	(*AwsInternetGateway)(nil),           // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway
+	(*AwsInternetGatewayStatus)(nil),     // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsInternetGatewaySpec)(nil),       // 3: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewaySpec
+	(*AwsInternetGatewayOutputs)(nil),    // 4: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayOutputs
 }
 var file_catalog_aws_awsinternetgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway.spec:type_name -> dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewaySpec
 	1, // 2: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway.status:type_name -> dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatus
-	4, // 3: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatus.outputs:type_name -> dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackOutputs
+	4, // 3: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStatus.outputs:type_name -> dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

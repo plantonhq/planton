@@ -23,7 +23,7 @@ const (
 )
 
 // Outputs produced after provisioning a workforce OAuth client.
-type GcpIamOauthClientStackOutputs struct {
+type GcpIamOauthClientOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The system-generated OAuth client ID applications present in OAuth
 	// flows (distinct from the user-chosen resource ID).
@@ -47,20 +47,20 @@ type GcpIamOauthClientStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpIamOauthClientStackOutputs) Reset() {
-	*x = GcpIamOauthClientStackOutputs{}
+func (x *GcpIamOauthClientOutputs) Reset() {
+	*x = GcpIamOauthClientOutputs{}
 	mi := &file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIamOauthClientStackOutputs) String() string {
+func (x *GcpIamOauthClientOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIamOauthClientStackOutputs) ProtoMessage() {}
+func (*GcpIamOauthClientOutputs) ProtoMessage() {}
 
-func (x *GcpIamOauthClientStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpIamOauthClientOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,33 +72,33 @@ func (x *GcpIamOauthClientStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIamOauthClientStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpIamOauthClientStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIamOauthClientOutputs.ProtoReflect.Descriptor instead.
+func (*GcpIamOauthClientOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIamOauthClientStackOutputs) GetClientId() string {
+func (x *GcpIamOauthClientOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *GcpIamOauthClientStackOutputs) GetClientName() string {
+func (x *GcpIamOauthClientOutputs) GetClientName() string {
 	if x != nil {
 		return x.ClientName
 	}
 	return ""
 }
 
-func (x *GcpIamOauthClientStackOutputs) GetState() string {
+func (x *GcpIamOauthClientOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpIamOauthClientStackOutputs) GetClientSecret() string {
+func (x *GcpIamOauthClientOutputs) GetClientSecret() string {
 	if x != nil {
 		return x.ClientSecret
 	}
@@ -109,8 +109,8 @@ var File_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpiamoauthclient/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpiamoauthclient.v1alpha1\x1a\x1cshared/options/options.proto\"\x9e\x01\n" +
-	"\x1dGcpIamOauthClientStackOutputs\x12\x1b\n" +
+	"4catalog/gcp/gcpiamoauthclient/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpiamoauthclient.v1alpha1\x1a\x1cshared/options/options.proto\"\x99\x01\n" +
+	"\x18GcpIamOauthClientOutputs\x12\x1b\n" +
 	"\tclient_id\x18\x01 \x01(\tR\bclientId\x12\x1f\n" +
 	"\vclient_name\x18\x02 \x01(\tR\n" +
 	"clientName\x12\x14\n" +
@@ -132,7 +132,7 @@ func file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpIamOauthClientStackOutputs)(nil), // 0: dev.planton.gcp.gcpiamoauthclient.v1alpha1.GcpIamOauthClientStackOutputs
+	(*GcpIamOauthClientOutputs)(nil), // 0: dev.planton.gcp.gcpiamoauthclient.v1alpha1.GcpIamOauthClientOutputs
 }
 var file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpKmsKeyHandleStackOutputs carries the handle and the key Autokey
+// GcpKmsKeyHandleOutputs carries the handle and the key Autokey
 // returned for it.
-type GcpKmsKeyHandleStackOutputs struct {
+type GcpKmsKeyHandleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/keyHandles/{key_handle_name}.
@@ -36,20 +36,20 @@ type GcpKmsKeyHandleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpKmsKeyHandleStackOutputs) Reset() {
-	*x = GcpKmsKeyHandleStackOutputs{}
+func (x *GcpKmsKeyHandleOutputs) Reset() {
+	*x = GcpKmsKeyHandleOutputs{}
 	mi := &file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpKmsKeyHandleStackOutputs) String() string {
+func (x *GcpKmsKeyHandleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpKmsKeyHandleStackOutputs) ProtoMessage() {}
+func (*GcpKmsKeyHandleOutputs) ProtoMessage() {}
 
-func (x *GcpKmsKeyHandleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpKmsKeyHandleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *GcpKmsKeyHandleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpKmsKeyHandleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpKmsKeyHandleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpKmsKeyHandleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpKmsKeyHandleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpKmsKeyHandleStackOutputs) GetName() string {
+func (x *GcpKmsKeyHandleOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyHandleStackOutputs) GetKmsKey() string {
+func (x *GcpKmsKeyHandleOutputs) GetKmsKey() string {
 	if x != nil {
 		return x.KmsKey
 	}
@@ -84,8 +84,8 @@ var File_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpkmskeyhandle/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpkmskeyhandle.v1alpha1\"J\n" +
-	"\x1bGcpKmsKeyHandleStackOutputs\x12\x12\n" +
+	"2catalog/gcp/gcpkmskeyhandle/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpkmskeyhandle.v1alpha1\"E\n" +
+	"\x16GcpKmsKeyHandleOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
 	"\akms_key\x18\x02 \x01(\tR\x06kmsKeyB\xdc\x02\n" +
 	",com.dev.planton.gcp.gcpkmskeyhandle.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcpkmskeyhandle/v1alpha1;gcpkmskeyhandlev1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcpkmskeyhandle.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcpkmskeyhandle\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcpkmskeyhandle\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcpkmskeyhandle::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpKmsKeyHandleStackOutputs)(nil), // 0: dev.planton.gcp.gcpkmskeyhandle.v1alpha1.GcpKmsKeyHandleStackOutputs
+	(*GcpKmsKeyHandleOutputs)(nil), // 0: dev.planton.gcp.gcpkmskeyhandle.v1alpha1.GcpKmsKeyHandleOutputs
 }
 var file_catalog_gcp_gcpkmskeyhandle_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

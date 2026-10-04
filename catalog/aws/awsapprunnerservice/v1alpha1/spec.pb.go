@@ -684,7 +684,7 @@ func (x *AwsAppRunnerServiceHealthCheck) GetUnhealthyThreshold() int32 {
 // AwsAppRunnerServiceCustomDomain associates one custom domain (or
 // subdomain) with the service. App Runner manages the TLS certificate;
 // ownership is proven through the certificate-validation CNAME records
-// exported per domain in stack outputs. Keyed by domain_name -- adding or
+// exported per domain in outputs. Keyed by domain_name -- adding or
 // removing entries updates in place.
 type AwsAppRunnerServiceCustomDomain struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

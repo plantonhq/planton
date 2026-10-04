@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRdsProxyStackOutputs captures the observable state of the proxy
+// AwsRdsProxyOutputs captures the observable state of the proxy
 // after apply.
-type AwsRdsProxyStackOutputs struct {
+type AwsRdsProxyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The proxy's name (wired from metadata.name) - the provider's
 	// import ID and the join key for AWS CLI/API lookups.
@@ -52,20 +52,20 @@ type AwsRdsProxyStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsRdsProxyStackOutputs) Reset() {
-	*x = AwsRdsProxyStackOutputs{}
+func (x *AwsRdsProxyOutputs) Reset() {
+	*x = AwsRdsProxyOutputs{}
 	mi := &file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRdsProxyStackOutputs) String() string {
+func (x *AwsRdsProxyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRdsProxyStackOutputs) ProtoMessage() {}
+func (*AwsRdsProxyOutputs) ProtoMessage() {}
 
-func (x *AwsRdsProxyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRdsProxyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,68 +77,68 @@ func (x *AwsRdsProxyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRdsProxyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRdsProxyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRdsProxyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRdsProxyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRdsProxyStackOutputs) GetProxyName() string {
+func (x *AwsRdsProxyOutputs) GetProxyName() string {
 	if x != nil {
 		return x.ProxyName
 	}
 	return ""
 }
 
-func (x *AwsRdsProxyStackOutputs) GetProxyArn() string {
+func (x *AwsRdsProxyOutputs) GetProxyArn() string {
 	if x != nil {
 		return x.ProxyArn
 	}
 	return ""
 }
 
-func (x *AwsRdsProxyStackOutputs) GetEndpoint() string {
+func (x *AwsRdsProxyOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsRdsProxyStackOutputs) GetDefaultTargetGroupArn() string {
+func (x *AwsRdsProxyOutputs) GetDefaultTargetGroupArn() string {
 	if x != nil {
 		return x.DefaultTargetGroupArn
 	}
 	return ""
 }
 
-func (x *AwsRdsProxyStackOutputs) GetDefaultTargetGroupName() string {
+func (x *AwsRdsProxyOutputs) GetDefaultTargetGroupName() string {
 	if x != nil {
 		return x.DefaultTargetGroupName
 	}
 	return ""
 }
 
-func (x *AwsRdsProxyStackOutputs) GetEndpointAddresses() map[string]string {
+func (x *AwsRdsProxyOutputs) GetEndpointAddresses() map[string]string {
 	if x != nil {
 		return x.EndpointAddresses
 	}
 	return nil
 }
 
-func (x *AwsRdsProxyStackOutputs) GetEndpointArns() map[string]string {
+func (x *AwsRdsProxyOutputs) GetEndpointArns() map[string]string {
 	if x != nil {
 		return x.EndpointArns
 	}
 	return nil
 }
 
-func (x *AwsRdsProxyStackOutputs) GetTargetType() string {
+func (x *AwsRdsProxyOutputs) GetTargetType() string {
 	if x != nil {
 		return x.TargetType
 	}
 	return ""
 }
 
-func (x *AwsRdsProxyStackOutputs) GetTargetRdsResourceId() string {
+func (x *AwsRdsProxyOutputs) GetTargetRdsResourceId() string {
 	if x != nil {
 		return x.TargetRdsResourceId
 	}
@@ -149,16 +149,16 @@ var File_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsrdsproxy/v1alpha1/outputs.proto\x12$dev.planton.aws.awsrdsproxy.v1alpha1\"\xbe\x05\n" +
-	"\x17AwsRdsProxyStackOutputs\x12\x1d\n" +
+	".catalog/aws/awsrdsproxy/v1alpha1/outputs.proto\x12$dev.planton.aws.awsrdsproxy.v1alpha1\"\xae\x05\n" +
+	"\x12AwsRdsProxyOutputs\x12\x1d\n" +
 	"\n" +
 	"proxy_name\x18\x01 \x01(\tR\tproxyName\x12\x1b\n" +
 	"\tproxy_arn\x18\x02 \x01(\tR\bproxyArn\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x127\n" +
 	"\x18default_target_group_arn\x18\x04 \x01(\tR\x15defaultTargetGroupArn\x129\n" +
-	"\x19default_target_group_name\x18\x05 \x01(\tR\x16defaultTargetGroupName\x12\x83\x01\n" +
-	"\x12endpoint_addresses\x18\x06 \x03(\v2T.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.EndpointAddressesEntryR\x11endpointAddresses\x12t\n" +
-	"\rendpoint_arns\x18\a \x03(\v2O.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.EndpointArnsEntryR\fendpointArns\x12\x1f\n" +
+	"\x19default_target_group_name\x18\x05 \x01(\tR\x16defaultTargetGroupName\x12~\n" +
+	"\x12endpoint_addresses\x18\x06 \x03(\v2O.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.EndpointAddressesEntryR\x11endpointAddresses\x12o\n" +
+	"\rendpoint_arns\x18\a \x03(\v2J.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.EndpointArnsEntryR\fendpointArns\x12\x1f\n" +
 	"\vtarget_type\x18\b \x01(\tR\n" +
 	"targetType\x123\n" +
 	"\x16target_rds_resource_id\x18\t \x01(\tR\x13targetRdsResourceId\x1aD\n" +
@@ -184,13 +184,13 @@ func file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRdsProxyStackOutputs)(nil), // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs
-	nil,                             // 1: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.EndpointAddressesEntry
-	nil,                             // 2: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.EndpointArnsEntry
+	(*AwsRdsProxyOutputs)(nil), // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs
+	nil,                        // 1: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.EndpointAddressesEntry
+	nil,                        // 2: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.EndpointArnsEntry
 }
 var file_catalog_aws_awsrdsproxy_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.endpoint_addresses:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.EndpointAddressesEntry
-	2, // 1: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.endpoint_arns:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs.EndpointArnsEntry
+	1, // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.endpoint_addresses:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.EndpointAddressesEntry
+	2, // 1: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.endpoint_arns:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs.EndpointArnsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

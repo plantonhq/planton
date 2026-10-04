@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsClientVpnStackOutputs captures the output values obtained after
+// AwsClientVpnOutputs captures the output values obtained after
 // provisioning the AWS Client VPN endpoint. These outputs include the
 // identifiers needed for connecting to or managing the VPN, and can be
 // referenced by other resources via StringValueOrRef.
-type AwsClientVpnStackOutputs struct {
+type AwsClientVpnOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS-assigned identifier for the Client VPN endpoint
 	// (e.g. "cvpn-endpoint-012345abcdeEXAMPLE"). Used for AWS CLI/API
@@ -56,20 +56,20 @@ type AwsClientVpnStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *AwsClientVpnStackOutputs) Reset() {
-	*x = AwsClientVpnStackOutputs{}
+func (x *AwsClientVpnOutputs) Reset() {
+	*x = AwsClientVpnOutputs{}
 	mi := &file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsClientVpnStackOutputs) String() string {
+func (x *AwsClientVpnOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsClientVpnStackOutputs) ProtoMessage() {}
+func (*AwsClientVpnOutputs) ProtoMessage() {}
 
-func (x *AwsClientVpnStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsClientVpnOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *AwsClientVpnStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsClientVpnStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsClientVpnStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsClientVpnOutputs.ProtoReflect.Descriptor instead.
+func (*AwsClientVpnOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsClientVpnStackOutputs) GetClientVpnEndpointId() string {
+func (x *AwsClientVpnOutputs) GetClientVpnEndpointId() string {
 	if x != nil {
 		return x.ClientVpnEndpointId
 	}
 	return ""
 }
 
-func (x *AwsClientVpnStackOutputs) GetClientVpnEndpointArn() string {
+func (x *AwsClientVpnOutputs) GetClientVpnEndpointArn() string {
 	if x != nil {
 		return x.ClientVpnEndpointArn
 	}
 	return ""
 }
 
-func (x *AwsClientVpnStackOutputs) GetEndpointDnsName() string {
+func (x *AwsClientVpnOutputs) GetEndpointDnsName() string {
 	if x != nil {
 		return x.EndpointDnsName
 	}
 	return ""
 }
 
-func (x *AwsClientVpnStackOutputs) GetSelfServicePortalUrl() string {
+func (x *AwsClientVpnOutputs) GetSelfServicePortalUrl() string {
 	if x != nil {
 		return x.SelfServicePortalUrl
 	}
 	return ""
 }
 
-func (x *AwsClientVpnStackOutputs) GetSubnetAssociationIds() map[string]string {
+func (x *AwsClientVpnOutputs) GetSubnetAssociationIds() map[string]string {
 	if x != nil {
 		return x.SubnetAssociationIds
 	}
 	return nil
 }
 
-func (x *AwsClientVpnStackOutputs) GetTransitGatewayAttachmentId() string {
+func (x *AwsClientVpnOutputs) GetTransitGatewayAttachmentId() string {
 	if x != nil {
 		return x.TransitGatewayAttachmentId
 	}
@@ -132,13 +132,13 @@ var File_catalog_aws_awsclientvpn_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsclientvpn/v1alpha1/outputs.proto\x12%dev.planton.aws.awsclientvpn.v1alpha1\"\x87\x04\n" +
-	"\x18AwsClientVpnStackOutputs\x123\n" +
+	"/catalog/aws/awsclientvpn/v1alpha1/outputs.proto\x12%dev.planton.aws.awsclientvpn.v1alpha1\"\xfd\x03\n" +
+	"\x13AwsClientVpnOutputs\x123\n" +
 	"\x16client_vpn_endpoint_id\x18\x01 \x01(\tR\x13clientVpnEndpointId\x125\n" +
 	"\x17client_vpn_endpoint_arn\x18\x02 \x01(\tR\x14clientVpnEndpointArn\x12*\n" +
 	"\x11endpoint_dns_name\x18\x03 \x01(\tR\x0fendpointDnsName\x125\n" +
-	"\x17self_service_portal_url\x18\x04 \x01(\tR\x14selfServicePortalUrl\x12\x8f\x01\n" +
-	"\x16subnet_association_ids\x18\x05 \x03(\v2Y.dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackOutputs.SubnetAssociationIdsEntryR\x14subnetAssociationIds\x12A\n" +
+	"\x17self_service_portal_url\x18\x04 \x01(\tR\x14selfServicePortalUrl\x12\x8a\x01\n" +
+	"\x16subnet_association_ids\x18\x05 \x03(\v2T.dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnOutputs.SubnetAssociationIdsEntryR\x14subnetAssociationIds\x12A\n" +
 	"\x1dtransit_gateway_attachment_id\x18\x06 \x01(\tR\x1atransitGatewayAttachmentId\x1aG\n" +
 	"\x19SubnetAssociationIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -159,11 +159,11 @@ func file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsClientVpnStackOutputs)(nil), // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackOutputs
-	nil,                              // 1: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackOutputs.SubnetAssociationIdsEntry
+	(*AwsClientVpnOutputs)(nil), // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnOutputs
+	nil,                         // 1: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnOutputs.SubnetAssociationIdsEntry
 }
 var file_catalog_aws_awsclientvpn_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackOutputs.subnet_association_ids:type_name -> dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackOutputs.SubnetAssociationIdsEntry
+	1, // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnOutputs.subnet_association_ids:type_name -> dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnOutputs.SubnetAssociationIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

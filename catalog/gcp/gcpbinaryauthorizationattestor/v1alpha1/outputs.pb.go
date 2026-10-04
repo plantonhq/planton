@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpBinaryAuthorizationAttestorStackOutputs carries the attestor's
+// GcpBinaryAuthorizationAttestorOutputs carries the attestor's
 // identity, its note, and the identity it reads attestations with.
-type GcpBinaryAuthorizationAttestorStackOutputs struct {
+type GcpBinaryAuthorizationAttestorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name: projects/{project}/attestors/{attestor_name}. The
 	// form a GcpBinaryAuthorizationPolicy rule's require_attestations_by
@@ -42,20 +42,20 @@ type GcpBinaryAuthorizationAttestorStackOutputs struct {
 	sizeCache                     protoimpl.SizeCache
 }
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) Reset() {
-	*x = GcpBinaryAuthorizationAttestorStackOutputs{}
+func (x *GcpBinaryAuthorizationAttestorOutputs) Reset() {
+	*x = GcpBinaryAuthorizationAttestorOutputs{}
 	mi := &file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) String() string {
+func (x *GcpBinaryAuthorizationAttestorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBinaryAuthorizationAttestorStackOutputs) ProtoMessage() {}
+func (*GcpBinaryAuthorizationAttestorOutputs) ProtoMessage() {}
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBinaryAuthorizationAttestorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *GcpBinaryAuthorizationAttestorStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBinaryAuthorizationAttestorStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBinaryAuthorizationAttestorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBinaryAuthorizationAttestorOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBinaryAuthorizationAttestorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) GetAttestorId() string {
+func (x *GcpBinaryAuthorizationAttestorOutputs) GetAttestorId() string {
 	if x != nil {
 		return x.AttestorId
 	}
 	return ""
 }
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) GetAttestorName() string {
+func (x *GcpBinaryAuthorizationAttestorOutputs) GetAttestorName() string {
 	if x != nil {
 		return x.AttestorName
 	}
 	return ""
 }
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) GetNoteReference() string {
+func (x *GcpBinaryAuthorizationAttestorOutputs) GetNoteReference() string {
 	if x != nil {
 		return x.NoteReference
 	}
 	return ""
 }
 
-func (x *GcpBinaryAuthorizationAttestorStackOutputs) GetDelegationServiceAccountEmail() string {
+func (x *GcpBinaryAuthorizationAttestorOutputs) GetDelegationServiceAccountEmail() string {
 	if x != nil {
 		return x.DelegationServiceAccountEmail
 	}
@@ -104,8 +104,8 @@ var File_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto proto
 
 const file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/gcp/gcpbinaryauthorizationattestor/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1\"\xe2\x01\n" +
-	"*GcpBinaryAuthorizationAttestorStackOutputs\x12\x1f\n" +
+	"Acatalog/gcp/gcpbinaryauthorizationattestor/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1\"\xdd\x01\n" +
+	"%GcpBinaryAuthorizationAttestorOutputs\x12\x1f\n" +
 	"\vattestor_id\x18\x01 \x01(\tR\n" +
 	"attestorId\x12#\n" +
 	"\rattestor_name\x18\x02 \x01(\tR\fattestorName\x12%\n" +
@@ -127,7 +127,7 @@ func file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_rawD
 
 var file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBinaryAuthorizationAttestorStackOutputs)(nil), // 0: dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1.GcpBinaryAuthorizationAttestorStackOutputs
+	(*GcpBinaryAuthorizationAttestorOutputs)(nil), // 0: dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1.GcpBinaryAuthorizationAttestorOutputs
 }
 var file_catalog_gcp_gcpbinaryauthorizationattestor_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

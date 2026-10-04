@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpManagedKafkaConnectClusterStackOutputs captures the Connect cluster's
+// GcpManagedKafkaConnectClusterOutputs captures the Connect cluster's
 // identity.
-type GcpManagedKafkaConnectClusterStackOutputs struct {
+type GcpManagedKafkaConnectClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/connectClusters/{connect_cluster_id}.
@@ -37,20 +37,20 @@ type GcpManagedKafkaConnectClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpManagedKafkaConnectClusterStackOutputs) Reset() {
-	*x = GcpManagedKafkaConnectClusterStackOutputs{}
+func (x *GcpManagedKafkaConnectClusterOutputs) Reset() {
+	*x = GcpManagedKafkaConnectClusterOutputs{}
 	mi := &file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpManagedKafkaConnectClusterStackOutputs) String() string {
+func (x *GcpManagedKafkaConnectClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpManagedKafkaConnectClusterStackOutputs) ProtoMessage() {}
+func (*GcpManagedKafkaConnectClusterOutputs) ProtoMessage() {}
 
-func (x *GcpManagedKafkaConnectClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpManagedKafkaConnectClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *GcpManagedKafkaConnectClusterStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpManagedKafkaConnectClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpManagedKafkaConnectClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpManagedKafkaConnectClusterOutputs.ProtoReflect.Descriptor instead.
+func (*GcpManagedKafkaConnectClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpManagedKafkaConnectClusterStackOutputs) GetName() string {
+func (x *GcpManagedKafkaConnectClusterOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpManagedKafkaConnectClusterStackOutputs) GetConnectClusterId() string {
+func (x *GcpManagedKafkaConnectClusterOutputs) GetConnectClusterId() string {
 	if x != nil {
 		return x.ConnectClusterId
 	}
 	return ""
 }
 
-func (x *GcpManagedKafkaConnectClusterStackOutputs) GetLocation() string {
+func (x *GcpManagedKafkaConnectClusterOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -92,8 +92,8 @@ var File_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1\"\x89\x01\n" +
-	")GcpManagedKafkaConnectClusterStackOutputs\x12\x12\n" +
+	"@catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1\"\x84\x01\n" +
+	"$GcpManagedKafkaConnectClusterOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12,\n" +
 	"\x12connect_cluster_id\x18\x02 \x01(\tR\x10connectClusterId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\xbe\x03\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpManagedKafkaConnectClusterStackOutputs)(nil), // 0: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterStackOutputs
+	(*GcpManagedKafkaConnectClusterOutputs)(nil), // 0: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterOutputs
 }
 var file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

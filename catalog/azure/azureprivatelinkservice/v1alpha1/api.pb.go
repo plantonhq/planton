@@ -36,10 +36,10 @@ type AzurePrivateLinkService struct {
 	// Resource kind. Must be "AzurePrivateLinkService".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Private Link Service specification.
 	Spec *AzurePrivateLinkServiceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzurePrivateLinkServiceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzurePrivateLinkService) GetKind() string {
 	return ""
 }
 
-func (x *AzurePrivateLinkService) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePrivateLinkService) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzurePrivateLinkService) GetStatus() *AzurePrivateLinkServiceStatus {
 // AzurePrivateLinkServiceStatus holds the deployment outputs.
 type AzurePrivateLinkServiceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzurePrivateLinkServiceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzurePrivateLinkServiceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzurePrivateLinkServiceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatelinkservice_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePrivateLinkServiceStatus) GetOutputs() *AzurePrivateLinkServiceStackOutputs {
+func (x *AzurePrivateLinkServiceStatus) GetOutputs() *AzurePrivateLinkServiceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azureprivatelinkservice_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzurePrivateLinkServiceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzurePrivateLinkServiceStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzurePrivateLinkServiceStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azureprivatelinkservice.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azureprivatelinkservice/v1alpha1;azureprivatelinkservicev1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azureprivatelinkservice.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azureprivatelinkservice\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azureprivatelinkservice\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azureprivatelinkservice::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azureprivatelinkservice_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePrivateLinkService)(nil),             // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService
-	(*AzurePrivateLinkServiceStatus)(nil),       // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePrivateLinkServiceSpec)(nil),         // 3: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceSpec
-	(*AzurePrivateLinkServiceStackOutputs)(nil), // 4: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackOutputs
+	(*AzurePrivateLinkService)(nil),        // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService
+	(*AzurePrivateLinkServiceStatus)(nil),  // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePrivateLinkServiceSpec)(nil),    // 3: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceSpec
+	(*AzurePrivateLinkServiceOutputs)(nil), // 4: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceOutputs
 }
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService.spec:type_name -> dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceSpec
 	1, // 2: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService.status:type_name -> dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatus
-	4, // 3: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatus.outputs:type_name -> dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackOutputs
+	4, // 3: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStatus.outputs:type_name -> dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

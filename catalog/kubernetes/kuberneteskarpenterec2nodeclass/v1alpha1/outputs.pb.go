@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesKarpenterEc2NodeClassStackOutputs captures observable outputs
+// KubernetesKarpenterEc2NodeClassOutputs captures observable outputs
 // after the EC2NodeClass is applied to the target cluster.
-type KubernetesKarpenterEc2NodeClassStackOutputs struct {
+type KubernetesKarpenterEc2NodeClassOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the EC2NodeClass object (cluster-scoped; equals
 	// metadata.name) — the value NodePools reference through their
@@ -33,20 +33,20 @@ type KubernetesKarpenterEc2NodeClassStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKarpenterEc2NodeClassStackOutputs) Reset() {
-	*x = KubernetesKarpenterEc2NodeClassStackOutputs{}
+func (x *KubernetesKarpenterEc2NodeClassOutputs) Reset() {
+	*x = KubernetesKarpenterEc2NodeClassOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKarpenterEc2NodeClassStackOutputs) String() string {
+func (x *KubernetesKarpenterEc2NodeClassOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKarpenterEc2NodeClassStackOutputs) ProtoMessage() {}
+func (*KubernetesKarpenterEc2NodeClassOutputs) ProtoMessage() {}
 
-func (x *KubernetesKarpenterEc2NodeClassStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKarpenterEc2NodeClassOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *KubernetesKarpenterEc2NodeClassStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKarpenterEc2NodeClassStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKarpenterEc2NodeClassStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKarpenterEc2NodeClassOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKarpenterEc2NodeClassOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKarpenterEc2NodeClassStackOutputs) GetNodeClassName() string {
+func (x *KubernetesKarpenterEc2NodeClassOutputs) GetNodeClassName() string {
 	if x != nil {
 		return x.NodeClassName
 	}
@@ -74,8 +74,8 @@ var File_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_pro
 
 const file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/kubernetes/kuberneteskarpenterec2nodeclass/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kuberneteskarpenterec2nodeclass.v1alpha1\"U\n" +
-	"+KubernetesKarpenterEc2NodeClassStackOutputs\x12&\n" +
+	"Icatalog/kubernetes/kuberneteskarpenterec2nodeclass/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kuberneteskarpenterec2nodeclass.v1alpha1\"P\n" +
+	"&KubernetesKarpenterEc2NodeClassOutputs\x12&\n" +
 	"\x0fnode_class_name\x18\x01 \x01(\tR\rnodeClassNameB\xf7\x03\n" +
 	"Ccom.dev.planton.kubernetes.kuberneteskarpenterec2nodeclass.v1alpha1B\fOutputsProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/kubernetes/kuberneteskarpenterec2nodeclass/v1alpha1;kuberneteskarpenterec2nodeclassv1alpha1\xa2\x02\x04DPKK\xaa\x02?Dev.Planton.Kubernetes.Kuberneteskarpenterec2nodeclass.V1alpha1\xca\x02?Dev\\Planton\\Kubernetes\\Kuberneteskarpenterec2nodeclass\\V1alpha1\xe2\x02KDev\\Planton\\Kubernetes\\Kuberneteskarpenterec2nodeclass\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Kubernetes::Kuberneteskarpenterec2nodeclass::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_pr
 
 var file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKarpenterEc2NodeClassStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenterec2nodeclass.v1alpha1.KubernetesKarpenterEc2NodeClassStackOutputs
+	(*KubernetesKarpenterEc2NodeClassOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenterec2nodeclass.v1alpha1.KubernetesKarpenterEc2NodeClassOutputs
 }
 var file_catalog_kubernetes_kuberneteskarpenterec2nodeclass_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

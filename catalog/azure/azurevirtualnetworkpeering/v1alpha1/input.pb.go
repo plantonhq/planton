@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureVirtualNetworkPeeringStackInput is the input to the IaC modules
+// AzureVirtualNetworkPeeringIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-type AzureVirtualNetworkPeeringStackInput struct {
+type AzureVirtualNetworkPeeringIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The virtual network peering resource to deploy.
 	Target *AzureVirtualNetworkPeering `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureVirtualNetworkPeeringStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVirtualNetworkPeeringStackInput) Reset() {
-	*x = AzureVirtualNetworkPeeringStackInput{}
+func (x *AzureVirtualNetworkPeeringIacInput) Reset() {
+	*x = AzureVirtualNetworkPeeringIacInput{}
 	mi := &file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualNetworkPeeringStackInput) String() string {
+func (x *AzureVirtualNetworkPeeringIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualNetworkPeeringStackInput) ProtoMessage() {}
+func (*AzureVirtualNetworkPeeringIacInput) ProtoMessage() {}
 
-func (x *AzureVirtualNetworkPeeringStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualNetworkPeeringIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureVirtualNetworkPeeringStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualNetworkPeeringStackInput.ProtoReflect.Descriptor instead.
-func (*AzureVirtualNetworkPeeringStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualNetworkPeeringIacInput.ProtoReflect.Descriptor instead.
+func (*AzureVirtualNetworkPeeringIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualNetworkPeeringStackInput) GetTarget() *AzureVirtualNetworkPeering {
+func (x *AzureVirtualNetworkPeeringIacInput) GetTarget() *AzureVirtualNetworkPeering {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureVirtualNetworkPeeringStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureVirtualNetworkPeeringIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto protorefl
 
 const file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurevirtualnetworkpeering/v1alpha1/input.proto\x125dev.planton.azure.azurevirtualnetworkpeering.v1alpha1\x1a;catalog/azure/azurevirtualnetworkpeering/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe2\x01\n" +
-	"$AzureVirtualNetworkPeeringStackInput\x12i\n" +
+	"=catalog/azure/azurevirtualnetworkpeering/v1alpha1/input.proto\x125dev.planton.azure.azurevirtualnetworkpeering.v1alpha1\x1a;catalog/azure/azurevirtualnetworkpeering/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe0\x01\n" +
+	"\"AzureVirtualNetworkPeeringIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xb3\x03\n" +
 	"9com.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_rawDescG
 
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_goTypes = []any{
-	(*AzureVirtualNetworkPeeringStackInput)(nil), // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackInput
-	(*AzureVirtualNetworkPeering)(nil),           // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering
-	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureVirtualNetworkPeeringIacInput)(nil), // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringIacInput
+	(*AzureVirtualNetworkPeering)(nil),         // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering
+	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackInput.target:type_name -> dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering
-	2, // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringIacInput.target:type_name -> dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering
+	2, // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

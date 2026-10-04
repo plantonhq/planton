@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureEventgridDomainTopicStackInput is the input to the IaC modules
+// AzureEventgridDomainTopicIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureEventgridDomainTopicStackInput struct {
+type AzureEventgridDomainTopicIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Event Grid domain topic resource to deploy.
 	Target *AzureEventgridDomainTopic `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureEventgridDomainTopicStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureEventgridDomainTopicStackInput) Reset() {
-	*x = AzureEventgridDomainTopicStackInput{}
+func (x *AzureEventgridDomainTopicIacInput) Reset() {
+	*x = AzureEventgridDomainTopicIacInput{}
 	mi := &file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridDomainTopicStackInput) String() string {
+func (x *AzureEventgridDomainTopicIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridDomainTopicStackInput) ProtoMessage() {}
+func (*AzureEventgridDomainTopicIacInput) ProtoMessage() {}
 
-func (x *AzureEventgridDomainTopicStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridDomainTopicIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureEventgridDomainTopicStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridDomainTopicStackInput.ProtoReflect.Descriptor instead.
-func (*AzureEventgridDomainTopicStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridDomainTopicIacInput.ProtoReflect.Descriptor instead.
+func (*AzureEventgridDomainTopicIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridDomainTopicStackInput) GetTarget() *AzureEventgridDomainTopic {
+func (x *AzureEventgridDomainTopicIacInput) GetTarget() *AzureEventgridDomainTopic {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureEventgridDomainTopicStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureEventgridDomainTopicIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto protorefle
 
 const file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azureeventgriddomaintopic/v1alpha1/input.proto\x124dev.planton.azure.azureeventgriddomaintopic.v1alpha1\x1a:catalog/azure/azureeventgriddomaintopic/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdf\x01\n" +
-	"#AzureEventgridDomainTopicStackInput\x12g\n" +
+	"<catalog/azure/azureeventgriddomaintopic/v1alpha1/input.proto\x124dev.planton.azure.azureeventgriddomaintopic.v1alpha1\x1a:catalog/azure/azureeventgriddomaintopic/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdd\x01\n" +
+	"!AzureEventgridDomainTopicIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xac\x03\n" +
 	"8com.dev.planton.azure.azureeventgriddomaintopic.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_goTypes = []any{
-	(*AzureEventgridDomainTopicStackInput)(nil), // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackInput
-	(*AzureEventgridDomainTopic)(nil),           // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic
-	(*azure.AzureProviderConfig)(nil),           // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureEventgridDomainTopicIacInput)(nil), // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicIacInput
+	(*AzureEventgridDomainTopic)(nil),         // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic
+	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackInput.target:type_name -> dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic
-	2, // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicIacInput.target:type_name -> dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic
+	2, // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

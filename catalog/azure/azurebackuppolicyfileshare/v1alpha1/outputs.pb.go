@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureBackupPolicyFileShareStackOutputs** captures the outputs of
+// **AzureBackupPolicyFileShareOutputs** captures the outputs of
 // provisioning a file-share backup policy.
-type AzureBackupPolicyFileShareStackOutputs struct {
+type AzureBackupPolicyFileShareOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the backup policy.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupPolicies/{name}
@@ -34,20 +34,20 @@ type AzureBackupPolicyFileShareStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureBackupPolicyFileShareStackOutputs) Reset() {
-	*x = AzureBackupPolicyFileShareStackOutputs{}
+func (x *AzureBackupPolicyFileShareOutputs) Reset() {
+	*x = AzureBackupPolicyFileShareOutputs{}
 	mi := &file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupPolicyFileShareStackOutputs) String() string {
+func (x *AzureBackupPolicyFileShareOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupPolicyFileShareStackOutputs) ProtoMessage() {}
+func (*AzureBackupPolicyFileShareOutputs) ProtoMessage() {}
 
-func (x *AzureBackupPolicyFileShareStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupPolicyFileShareOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureBackupPolicyFileShareStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupPolicyFileShareStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureBackupPolicyFileShareStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupPolicyFileShareOutputs.ProtoReflect.Descriptor instead.
+func (*AzureBackupPolicyFileShareOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupPolicyFileShareStackOutputs) GetBackupPolicyId() string {
+func (x *AzureBackupPolicyFileShareOutputs) GetBackupPolicyId() string {
 	if x != nil {
 		return x.BackupPolicyId
 	}
 	return ""
 }
 
-func (x *AzureBackupPolicyFileShareStackOutputs) GetBackupPolicyName() string {
+func (x *AzureBackupPolicyFileShareOutputs) GetBackupPolicyName() string {
 	if x != nil {
 		return x.BackupPolicyName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurebackuppolicyfileshare/v1alpha1/outputs.proto\x125dev.planton.azure.azurebackuppolicyfileshare.v1alpha1\"\x80\x01\n" +
-	"&AzureBackupPolicyFileShareStackOutputs\x12(\n" +
+	"?catalog/azure/azurebackuppolicyfileshare/v1alpha1/outputs.proto\x125dev.planton.azure.azurebackuppolicyfileshare.v1alpha1\"{\n" +
+	"!AzureBackupPolicyFileShareOutputs\x12(\n" +
 	"\x10backup_policy_id\x18\x01 \x01(\tR\x0ebackupPolicyId\x12,\n" +
 	"\x12backup_policy_name\x18\x02 \x01(\tR\x10backupPolicyNameB\xb5\x03\n" +
 	"9com.dev.planton.azure.azurebackuppolicyfileshare.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azurebackuppolicyfileshare/v1alpha1;azurebackuppolicyfilesharev1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azurebackuppolicyfileshare.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azurebackuppolicyfileshare\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azurebackuppolicyfileshare\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azurebackuppolicyfileshare::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureBackupPolicyFileShareStackOutputs)(nil), // 0: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStackOutputs
+	(*AzureBackupPolicyFileShareOutputs)(nil), // 0: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareOutputs
 }
 var file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

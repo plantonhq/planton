@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRdsClusterStackOutputs captures the observable identifiers and
+// AwsRdsClusterOutputs captures the observable identifiers and
 // connection endpoints of the RDS cluster after deployment.
-type AwsRdsClusterStackOutputs struct {
+type AwsRdsClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster identifier (e.g. "orders-db").
 	ClusterIdentifier string `protobuf:"bytes,1,opt,name=cluster_identifier,json=clusterIdentifier,proto3" json:"cluster_identifier,omitempty"`
@@ -71,20 +71,20 @@ type AwsRdsClusterStackOutputs struct {
 	sizeCache                       protoimpl.SizeCache
 }
 
-func (x *AwsRdsClusterStackOutputs) Reset() {
-	*x = AwsRdsClusterStackOutputs{}
+func (x *AwsRdsClusterOutputs) Reset() {
+	*x = AwsRdsClusterOutputs{}
 	mi := &file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRdsClusterStackOutputs) String() string {
+func (x *AwsRdsClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRdsClusterStackOutputs) ProtoMessage() {}
+func (*AwsRdsClusterOutputs) ProtoMessage() {}
 
-func (x *AwsRdsClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRdsClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,103 +96,103 @@ func (x *AwsRdsClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRdsClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRdsClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRdsClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRdsClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRdsClusterStackOutputs) GetClusterIdentifier() string {
+func (x *AwsRdsClusterOutputs) GetClusterIdentifier() string {
 	if x != nil {
 		return x.ClusterIdentifier
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetArn() string {
+func (x *AwsRdsClusterOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetClusterResourceId() string {
+func (x *AwsRdsClusterOutputs) GetClusterResourceId() string {
 	if x != nil {
 		return x.ClusterResourceId
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetEndpoint() string {
+func (x *AwsRdsClusterOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetReaderEndpoint() string {
+func (x *AwsRdsClusterOutputs) GetReaderEndpoint() string {
 	if x != nil {
 		return x.ReaderEndpoint
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetPort() int32 {
+func (x *AwsRdsClusterOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsRdsClusterStackOutputs) GetHostedZoneId() string {
+func (x *AwsRdsClusterOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetEngineVersionActual() string {
+func (x *AwsRdsClusterOutputs) GetEngineVersionActual() string {
 	if x != nil {
 		return x.EngineVersionActual
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetMasterUserSecretArn() string {
+func (x *AwsRdsClusterOutputs) GetMasterUserSecretArn() string {
 	if x != nil {
 		return x.MasterUserSecretArn
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetDbSubnetGroupName() string {
+func (x *AwsRdsClusterOutputs) GetDbSubnetGroupName() string {
 	if x != nil {
 		return x.DbSubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetDbClusterParameterGroupName() string {
+func (x *AwsRdsClusterOutputs) GetDbClusterParameterGroupName() string {
 	if x != nil {
 		return x.DbClusterParameterGroupName
 	}
 	return ""
 }
 
-func (x *AwsRdsClusterStackOutputs) GetInstanceEndpoints() []string {
+func (x *AwsRdsClusterOutputs) GetInstanceEndpoints() []string {
 	if x != nil {
 		return x.InstanceEndpoints
 	}
 	return nil
 }
 
-func (x *AwsRdsClusterStackOutputs) GetCustomEndpoints() []*AwsRdsClusterCustomEndpointOutput {
+func (x *AwsRdsClusterOutputs) GetCustomEndpoints() []*AwsRdsClusterCustomEndpointOutput {
 	if x != nil {
 		return x.CustomEndpoints
 	}
 	return nil
 }
 
-func (x *AwsRdsClusterStackOutputs) GetActivityStreamKinesisStreamName() string {
+func (x *AwsRdsClusterOutputs) GetActivityStreamKinesisStreamName() string {
 	if x != nil {
 		return x.ActivityStreamKinesisStreamName
 	}
@@ -260,8 +260,8 @@ var File_catalog_aws_awsrdscluster_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsrdscluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsrdscluster.v1alpha1\"\xde\x05\n" +
-	"\x19AwsRdsClusterStackOutputs\x12-\n" +
+	"0catalog/aws/awsrdscluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsrdscluster.v1alpha1\"\xd9\x05\n" +
+	"\x14AwsRdsClusterOutputs\x12-\n" +
 	"\x12cluster_identifier\x18\x01 \x01(\tR\x11clusterIdentifier\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12.\n" +
 	"\x13cluster_resource_id\x18\x03 \x01(\tR\x11clusterResourceId\x12\x1a\n" +
@@ -296,11 +296,11 @@ func file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRdsClusterStackOutputs)(nil),         // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStackOutputs
+	(*AwsRdsClusterOutputs)(nil),              // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterOutputs
 	(*AwsRdsClusterCustomEndpointOutput)(nil), // 1: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterCustomEndpointOutput
 }
 var file_catalog_aws_awsrdscluster_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStackOutputs.custom_endpoints:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterCustomEndpointOutput
+	1, // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterOutputs.custom_endpoints:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterCustomEndpointOutput
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

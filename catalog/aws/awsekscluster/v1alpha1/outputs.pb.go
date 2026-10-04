@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEksClusterStackOutputs describes the values returned after provisioning an AWS EKS cluster.
-type AwsEksClusterStackOutputs struct {
+// AwsEksClusterOutputs describes the values returned after provisioning an AWS EKS cluster.
+type AwsEksClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// endpoint is the URL of the Kubernetes API server for the EKS cluster.
 	Endpoint string `protobuf:"bytes,1,opt,name=endpoint,proto3" json:"endpoint,omitempty"`
@@ -44,20 +44,20 @@ type AwsEksClusterStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsEksClusterStackOutputs) Reset() {
-	*x = AwsEksClusterStackOutputs{}
+func (x *AwsEksClusterOutputs) Reset() {
+	*x = AwsEksClusterOutputs{}
 	mi := &file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEksClusterStackOutputs) String() string {
+func (x *AwsEksClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEksClusterStackOutputs) ProtoMessage() {}
+func (*AwsEksClusterOutputs) ProtoMessage() {}
 
-func (x *AwsEksClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEksClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,54 +69,54 @@ func (x *AwsEksClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEksClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEksClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEksClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEksClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEksClusterStackOutputs) GetEndpoint() string {
+func (x *AwsEksClusterOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsEksClusterStackOutputs) GetClusterCaCertificate() string {
+func (x *AwsEksClusterOutputs) GetClusterCaCertificate() string {
 	if x != nil {
 		return x.ClusterCaCertificate
 	}
 	return ""
 }
 
-func (x *AwsEksClusterStackOutputs) GetClusterSecurityGroupId() string {
+func (x *AwsEksClusterOutputs) GetClusterSecurityGroupId() string {
 	if x != nil {
 		return x.ClusterSecurityGroupId
 	}
 	return ""
 }
 
-func (x *AwsEksClusterStackOutputs) GetOidcIssuerUrl() string {
+func (x *AwsEksClusterOutputs) GetOidcIssuerUrl() string {
 	if x != nil {
 		return x.OidcIssuerUrl
 	}
 	return ""
 }
 
-func (x *AwsEksClusterStackOutputs) GetClusterArn() string {
+func (x *AwsEksClusterOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsEksClusterStackOutputs) GetName() string {
+func (x *AwsEksClusterOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AwsEksClusterStackOutputs) GetPlatformVersion() string {
+func (x *AwsEksClusterOutputs) GetPlatformVersion() string {
 	if x != nil {
 		return x.PlatformVersion
 	}
@@ -127,8 +127,8 @@ var File_catalog_aws_awsekscluster_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsekscluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsekscluster.v1alpha1\"\xb0\x02\n" +
-	"\x19AwsEksClusterStackOutputs\x12\x1a\n" +
+	"0catalog/aws/awsekscluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsekscluster.v1alpha1\"\xab\x02\n" +
+	"\x14AwsEksClusterOutputs\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x124\n" +
 	"\x16cluster_ca_certificate\x18\x02 \x01(\tR\x14clusterCaCertificate\x129\n" +
 	"\x19cluster_security_group_id\x18\x03 \x01(\tR\x16clusterSecurityGroupId\x12&\n" +
@@ -153,7 +153,7 @@ func file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEksClusterStackOutputs)(nil), // 0: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStackOutputs
+	(*AwsEksClusterOutputs)(nil), // 0: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterOutputs
 }
 var file_catalog_aws_awsekscluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

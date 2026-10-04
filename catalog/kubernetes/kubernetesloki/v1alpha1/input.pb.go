@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// loki-kubernetes stack-input
-type KubernetesLokiStackInput struct {
+// loki-kubernetes iac-input
+type KubernetesLokiIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesLoki `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesLokiStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesLokiStackInput) Reset() {
-	*x = KubernetesLokiStackInput{}
+func (x *KubernetesLokiIacInput) Reset() {
+	*x = KubernetesLokiIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesLokiStackInput) String() string {
+func (x *KubernetesLokiIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesLokiStackInput) ProtoMessage() {}
+func (*KubernetesLokiIacInput) ProtoMessage() {}
 
-func (x *KubernetesLokiStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesLokiIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesLokiStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesLokiStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesLokiStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesLokiIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesLokiIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesLokiStackInput) GetTarget() *KubernetesLoki {
+func (x *KubernetesLokiIacInput) GetTarget() *KubernetesLoki {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesLokiStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesLokiIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/kubernetes/kubernetesloki/v1alpha1/input.proto\x12.dev.planton.kubernetes.kubernetesloki.v1alpha1\x1a4catalog/kubernetes/kubernetesloki/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xcd\x01\n" +
-	"\x18KubernetesLokiStackInput\x12V\n" +
+	"6catalog/kubernetes/kubernetesloki/v1alpha1/input.proto\x12.dev.planton.kubernetes.kubernetesloki.v1alpha1\x1a4catalog/kubernetes/kubernetesloki/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xcb\x01\n" +
+	"\x16KubernetesLokiIacInput\x12V\n" +
 	"\x06target\x18\x01 \x01(\v2>.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"2com.dev.planton.kubernetes.kubernetesloki.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesLokiStackInput)(nil),            // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackInput
+	(*KubernetesLokiIacInput)(nil),              // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiIacInput
 	(*KubernetesLoki)(nil),                      // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackInput.target:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki
-	2, // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiIacInput.target:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki
+	2, // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

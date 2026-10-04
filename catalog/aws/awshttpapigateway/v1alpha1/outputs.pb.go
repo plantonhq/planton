@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsHttpApiGatewayStackOutputs captures observable identifiers from a provisioned
+// AwsHttpApiGatewayOutputs captures observable identifiers from a provisioned
 // AWS API Gateway HTTP API. These outputs are used by downstream resources
 // (e.g., CloudFront distributions, CloudWatch alarms, Lambda permissions) to wire
 // dependencies via StringValueOrRef.
-type AwsHttpApiGatewayStackOutputs struct {
+type AwsHttpApiGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The API Gateway API identifier. Used for constructing resource ARNs
 	// and referencing the API in other AWS services.
@@ -53,20 +53,20 @@ type AwsHttpApiGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) Reset() {
-	*x = AwsHttpApiGatewayStackOutputs{}
+func (x *AwsHttpApiGatewayOutputs) Reset() {
+	*x = AwsHttpApiGatewayOutputs{}
 	mi := &file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) String() string {
+func (x *AwsHttpApiGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsHttpApiGatewayStackOutputs) ProtoMessage() {}
+func (*AwsHttpApiGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsHttpApiGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsHttpApiGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,47 +78,47 @@ func (x *AwsHttpApiGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsHttpApiGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsHttpApiGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsHttpApiGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsHttpApiGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) GetApiId() string {
+func (x *AwsHttpApiGatewayOutputs) GetApiId() string {
 	if x != nil {
 		return x.ApiId
 	}
 	return ""
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) GetApiEndpoint() string {
+func (x *AwsHttpApiGatewayOutputs) GetApiEndpoint() string {
 	if x != nil {
 		return x.ApiEndpoint
 	}
 	return ""
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) GetApiArn() string {
+func (x *AwsHttpApiGatewayOutputs) GetApiArn() string {
 	if x != nil {
 		return x.ApiArn
 	}
 	return ""
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) GetExecutionArn() string {
+func (x *AwsHttpApiGatewayOutputs) GetExecutionArn() string {
 	if x != nil {
 		return x.ExecutionArn
 	}
 	return ""
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) GetStageInvokeUrl() string {
+func (x *AwsHttpApiGatewayOutputs) GetStageInvokeUrl() string {
 	if x != nil {
 		return x.StageInvokeUrl
 	}
 	return ""
 }
 
-func (x *AwsHttpApiGatewayStackOutputs) GetStageName() string {
+func (x *AwsHttpApiGatewayOutputs) GetStageName() string {
 	if x != nil {
 		return x.StageName
 	}
@@ -129,8 +129,8 @@ var File_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awshttpapigateway/v1alpha1/outputs.proto\x12*dev.planton.aws.awshttpapigateway.v1alpha1\"\xe0\x01\n" +
-	"\x1dAwsHttpApiGatewayStackOutputs\x12\x15\n" +
+	"4catalog/aws/awshttpapigateway/v1alpha1/outputs.proto\x12*dev.planton.aws.awshttpapigateway.v1alpha1\"\xdb\x01\n" +
+	"\x18AwsHttpApiGatewayOutputs\x12\x15\n" +
 	"\x06api_id\x18\x01 \x01(\tR\x05apiId\x12!\n" +
 	"\fapi_endpoint\x18\x02 \x01(\tR\vapiEndpoint\x12\x17\n" +
 	"\aapi_arn\x18\x03 \x01(\tR\x06apiArn\x12#\n" +
@@ -154,7 +154,7 @@ func file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsHttpApiGatewayStackOutputs)(nil), // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackOutputs
+	(*AwsHttpApiGatewayOutputs)(nil), // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayOutputs
 }
 var file_catalog_aws_awshttpapigateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

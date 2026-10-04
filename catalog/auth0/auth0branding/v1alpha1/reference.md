@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0BrandingSpec manages how the Universal Login of the Auth0 tenant the
 provider connection's credential belongs to looks, in two layers:
@@ -50,7 +50,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/brandi
 
 ```yaml
 # Auth0 Branding Test Manifest
-# This file is used for testing the Auth0Branding component.
+# This file is used for testing the Auth0Branding kind.
 #
 # Applying it REWRITES the look of every login page of the tenant the
 # credential belongs to: run it only against a test tenant nobody signs in to.

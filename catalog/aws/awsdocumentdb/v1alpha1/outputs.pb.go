@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsDocumentDbStackOutputs captures the observable identifiers and
+// AwsDocumentDbOutputs captures the observable identifiers and
 // connection endpoints of the DocumentDB cluster after deployment.
-type AwsDocumentDbStackOutputs struct {
+type AwsDocumentDbOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster identifier (e.g. "orders-docdb").
 	ClusterIdentifier string `protobuf:"bytes,1,opt,name=cluster_identifier,json=clusterIdentifier,proto3" json:"cluster_identifier,omitempty"`
@@ -63,20 +63,20 @@ type AwsDocumentDbStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsDocumentDbStackOutputs) Reset() {
-	*x = AwsDocumentDbStackOutputs{}
+func (x *AwsDocumentDbOutputs) Reset() {
+	*x = AwsDocumentDbOutputs{}
 	mi := &file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsDocumentDbStackOutputs) String() string {
+func (x *AwsDocumentDbOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsDocumentDbStackOutputs) ProtoMessage() {}
+func (*AwsDocumentDbOutputs) ProtoMessage() {}
 
-func (x *AwsDocumentDbStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsDocumentDbOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,89 +88,89 @@ func (x *AwsDocumentDbStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsDocumentDbStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsDocumentDbStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsDocumentDbOutputs.ProtoReflect.Descriptor instead.
+func (*AwsDocumentDbOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsDocumentDbStackOutputs) GetClusterIdentifier() string {
+func (x *AwsDocumentDbOutputs) GetClusterIdentifier() string {
 	if x != nil {
 		return x.ClusterIdentifier
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetArn() string {
+func (x *AwsDocumentDbOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetClusterResourceId() string {
+func (x *AwsDocumentDbOutputs) GetClusterResourceId() string {
 	if x != nil {
 		return x.ClusterResourceId
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetEndpoint() string {
+func (x *AwsDocumentDbOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetReaderEndpoint() string {
+func (x *AwsDocumentDbOutputs) GetReaderEndpoint() string {
 	if x != nil {
 		return x.ReaderEndpoint
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetPort() int32 {
+func (x *AwsDocumentDbOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsDocumentDbStackOutputs) GetHostedZoneId() string {
+func (x *AwsDocumentDbOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetEngineVersionActual() string {
+func (x *AwsDocumentDbOutputs) GetEngineVersionActual() string {
 	if x != nil {
 		return x.EngineVersionActual
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetMasterUserSecretArn() string {
+func (x *AwsDocumentDbOutputs) GetMasterUserSecretArn() string {
 	if x != nil {
 		return x.MasterUserSecretArn
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetDbSubnetGroupName() string {
+func (x *AwsDocumentDbOutputs) GetDbSubnetGroupName() string {
 	if x != nil {
 		return x.DbSubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetDbClusterParameterGroupName() string {
+func (x *AwsDocumentDbOutputs) GetDbClusterParameterGroupName() string {
 	if x != nil {
 		return x.DbClusterParameterGroupName
 	}
 	return ""
 }
 
-func (x *AwsDocumentDbStackOutputs) GetInstanceEndpoints() []string {
+func (x *AwsDocumentDbOutputs) GetInstanceEndpoints() []string {
 	if x != nil {
 		return x.InstanceEndpoints
 	}
@@ -181,8 +181,8 @@ var File_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsdocumentdb/v1alpha1/outputs.proto\x12&dev.planton.aws.awsdocumentdb.v1alpha1\"\x9a\x04\n" +
-	"\x19AwsDocumentDbStackOutputs\x12-\n" +
+	"0catalog/aws/awsdocumentdb/v1alpha1/outputs.proto\x12&dev.planton.aws.awsdocumentdb.v1alpha1\"\x95\x04\n" +
+	"\x14AwsDocumentDbOutputs\x12-\n" +
 	"\x12cluster_identifier\x18\x01 \x01(\tR\x11clusterIdentifier\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12.\n" +
 	"\x13cluster_resource_id\x18\x03 \x01(\tR\x11clusterResourceId\x12\x1a\n" +
@@ -212,7 +212,7 @@ func file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsDocumentDbStackOutputs)(nil), // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbStackOutputs
+	(*AwsDocumentDbOutputs)(nil), // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbOutputs
 }
 var file_catalog_aws_awsdocumentdb_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

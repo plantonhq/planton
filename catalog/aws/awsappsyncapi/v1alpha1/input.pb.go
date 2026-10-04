@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppSyncApiStackInput is the input for the IaC modules that
+// AwsAppSyncApiIacInput is the input for the IaC modules that
 // manage an AppSync API with its data sources, resolvers, functions,
 // types, caching, API keys, channel namespaces, and custom domain.
-type AwsAppSyncApiStackInput struct {
+type AwsAppSyncApiIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsAppSyncApi resource to deploy.
 	Target *AwsAppSyncApi `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsAppSyncApiStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsAppSyncApiStackInput) Reset() {
-	*x = AwsAppSyncApiStackInput{}
+func (x *AwsAppSyncApiIacInput) Reset() {
+	*x = AwsAppSyncApiIacInput{}
 	mi := &file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppSyncApiStackInput) String() string {
+func (x *AwsAppSyncApiIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppSyncApiStackInput) ProtoMessage() {}
+func (*AwsAppSyncApiIacInput) ProtoMessage() {}
 
-func (x *AwsAppSyncApiStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsAppSyncApiIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsAppSyncApiStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppSyncApiStackInput.ProtoReflect.Descriptor instead.
-func (*AwsAppSyncApiStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppSyncApiIacInput.ProtoReflect.Descriptor instead.
+func (*AwsAppSyncApiIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppSyncApiStackInput) GetTarget() *AwsAppSyncApi {
+func (x *AwsAppSyncApiIacInput) GetTarget() *AwsAppSyncApi {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsAppSyncApiStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsAppSyncApiIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsappsyncapi_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsappsyncapi/v1alpha1/input.proto\x12&dev.planton.aws.awsappsyncapi.v1alpha1\x1a,catalog/aws/awsappsyncapi/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb5\x01\n" +
-	"\x17AwsAppSyncApiStackInput\x12M\n" +
+	".catalog/aws/awsappsyncapi/v1alpha1/input.proto\x12&dev.planton.aws.awsappsyncapi.v1alpha1\x1a,catalog/aws/awsappsyncapi/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb3\x01\n" +
+	"\x15AwsAppSyncApiIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.aws.awsappsyncapi.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_goTypes = []any{
-	(*AwsAppSyncApiStackInput)(nil), // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackInput
-	(*AwsAppSyncApi)(nil),           // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApi
-	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsAppSyncApiIacInput)(nil), // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiIacInput
+	(*AwsAppSyncApi)(nil),         // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApi
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsappsyncapi_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackInput.target:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApi
-	2, // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiIacInput.target:type_name -> dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApi
+	2, // 1: dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncApiIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

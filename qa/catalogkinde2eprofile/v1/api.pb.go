@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: qa/componente2eprofile/v1/api.proto
+// source: qa/catalogkinde2eprofile/v1/api.proto
 
-package componente2eprofilev1
+package catalogkinde2eprofilev1
 
 import (
 	shared "github.com/plantonhq/planton/shared"
@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentE2EProfile declares a single component's E2E testing readiness and configuration.
+// CatalogKindE2EProfile declares a single kind's E2E testing readiness and configuration.
 // Follows the KRM pattern (apiVersion + kind + metadata + spec).
-// Lives at {component}/v1/e2e/profile.yaml.
+// Lives at {kind}/v1/e2e/profile.yaml.
 //
 // Example:
 //
 //	apiVersion: qa.planton.dev/v1
-//	kind: ComponentE2EProfile
+//	kind: CatalogKindE2EProfile
 //	metadata:
 //	  name: kubernetesvalkey
 //	spec:
@@ -37,31 +37,31 @@ const (
 //	  status: green
 //	  validated_provisioners: [pulumi, terraform]
 //	  timeout_minutes: 15
-type ComponentE2EProfile struct {
+type CatalogKindE2EProfile struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Spec          *ComponentE2EProfileSpec      `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Spec          *CatalogKindE2EProfileSpec    `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentE2EProfile) Reset() {
-	*x = ComponentE2EProfile{}
-	mi := &file_qa_componente2eprofile_v1_api_proto_msgTypes[0]
+func (x *CatalogKindE2EProfile) Reset() {
+	*x = CatalogKindE2EProfile{}
+	mi := &file_qa_catalogkinde2eprofile_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentE2EProfile) String() string {
+func (x *CatalogKindE2EProfile) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentE2EProfile) ProtoMessage() {}
+func (*CatalogKindE2EProfile) ProtoMessage() {}
 
-func (x *ComponentE2EProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_qa_componente2eprofile_v1_api_proto_msgTypes[0]
+func (x *CatalogKindE2EProfile) ProtoReflect() protoreflect.Message {
+	mi := &file_qa_catalogkinde2eprofile_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -72,73 +72,73 @@ func (x *ComponentE2EProfile) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentE2EProfile.ProtoReflect.Descriptor instead.
-func (*ComponentE2EProfile) Descriptor() ([]byte, []int) {
-	return file_qa_componente2eprofile_v1_api_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindE2EProfile.ProtoReflect.Descriptor instead.
+func (*CatalogKindE2EProfile) Descriptor() ([]byte, []int) {
+	return file_qa_catalogkinde2eprofile_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentE2EProfile) GetApiVersion() string {
+func (x *CatalogKindE2EProfile) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *ComponentE2EProfile) GetKind() string {
+func (x *CatalogKindE2EProfile) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *ComponentE2EProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CatalogKindE2EProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *ComponentE2EProfile) GetSpec() *ComponentE2EProfileSpec {
+func (x *CatalogKindE2EProfile) GetSpec() *CatalogKindE2EProfileSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-var File_qa_componente2eprofile_v1_api_proto protoreflect.FileDescriptor
+var File_qa_catalogkinde2eprofile_v1_api_proto protoreflect.FileDescriptor
 
-const file_qa_componente2eprofile_v1_api_proto_rawDesc = "" +
+const file_qa_catalogkinde2eprofile_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"#qa/componente2eprofile/v1/api.proto\x12%dev.planton.qa.componente2eprofile.v1\x1a$qa/componente2eprofile/v1/spec.proto\x1a\x15shared/metadata.proto\"\xe5\x01\n" +
-	"\x13ComponentE2EProfile\x12\x1f\n" +
+	"%qa/catalogkinde2eprofile/v1/api.proto\x12'dev.planton.qa.catalogkinde2eprofile.v1\x1a&qa/catalogkinde2eprofile/v1/spec.proto\x1a\x15shared/metadata.proto\"\xeb\x01\n" +
+	"\x15CatalogKindE2EProfile\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12R\n" +
-	"\x04spec\x18\x04 \x01(\v2>.dev.planton.qa.componente2eprofile.v1.ComponentE2EProfileSpecR\x04specB\xbc\x02\n" +
-	")com.dev.planton.qa.componente2eprofile.v1B\bApiProtoP\x01ZLgithub.com/plantonhq/planton/qa/componente2eprofile/v1;componente2eprofilev1\xa2\x02\x04DPQC\xaa\x02%Dev.Planton.Qa.Componente2eprofile.V1\xca\x02%Dev\\Planton\\Qa\\Componente2eprofile\\V1\xe2\x021Dev\\Planton\\Qa\\Componente2eprofile\\V1\\GPBMetadata\xea\x02)Dev::Planton::Qa::Componente2eprofile::V1b\x06proto3"
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12V\n" +
+	"\x04spec\x18\x04 \x01(\v2B.dev.planton.qa.catalogkinde2eprofile.v1.CatalogKindE2EProfileSpecR\x04specB\xca\x02\n" +
+	"+com.dev.planton.qa.catalogkinde2eprofile.v1B\bApiProtoP\x01ZPgithub.com/plantonhq/planton/qa/catalogkinde2eprofile/v1;catalogkinde2eprofilev1\xa2\x02\x04DPQC\xaa\x02'Dev.Planton.Qa.Catalogkinde2eprofile.V1\xca\x02'Dev\\Planton\\Qa\\Catalogkinde2eprofile\\V1\xe2\x023Dev\\Planton\\Qa\\Catalogkinde2eprofile\\V1\\GPBMetadata\xea\x02+Dev::Planton::Qa::Catalogkinde2eprofile::V1b\x06proto3"
 
 var (
-	file_qa_componente2eprofile_v1_api_proto_rawDescOnce sync.Once
-	file_qa_componente2eprofile_v1_api_proto_rawDescData []byte
+	file_qa_catalogkinde2eprofile_v1_api_proto_rawDescOnce sync.Once
+	file_qa_catalogkinde2eprofile_v1_api_proto_rawDescData []byte
 )
 
-func file_qa_componente2eprofile_v1_api_proto_rawDescGZIP() []byte {
-	file_qa_componente2eprofile_v1_api_proto_rawDescOnce.Do(func() {
-		file_qa_componente2eprofile_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_qa_componente2eprofile_v1_api_proto_rawDesc), len(file_qa_componente2eprofile_v1_api_proto_rawDesc)))
+func file_qa_catalogkinde2eprofile_v1_api_proto_rawDescGZIP() []byte {
+	file_qa_catalogkinde2eprofile_v1_api_proto_rawDescOnce.Do(func() {
+		file_qa_catalogkinde2eprofile_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_qa_catalogkinde2eprofile_v1_api_proto_rawDesc), len(file_qa_catalogkinde2eprofile_v1_api_proto_rawDesc)))
 	})
-	return file_qa_componente2eprofile_v1_api_proto_rawDescData
+	return file_qa_catalogkinde2eprofile_v1_api_proto_rawDescData
 }
 
-var file_qa_componente2eprofile_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_qa_componente2eprofile_v1_api_proto_goTypes = []any{
-	(*ComponentE2EProfile)(nil),          // 0: dev.planton.qa.componente2eprofile.v1.ComponentE2EProfile
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
-	(*ComponentE2EProfileSpec)(nil),      // 2: dev.planton.qa.componente2eprofile.v1.ComponentE2EProfileSpec
+var file_qa_catalogkinde2eprofile_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_qa_catalogkinde2eprofile_v1_api_proto_goTypes = []any{
+	(*CatalogKindE2EProfile)(nil),        // 0: dev.planton.qa.catalogkinde2eprofile.v1.CatalogKindE2EProfile
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
+	(*CatalogKindE2EProfileSpec)(nil),    // 2: dev.planton.qa.catalogkinde2eprofile.v1.CatalogKindE2EProfileSpec
 }
-var file_qa_componente2eprofile_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.qa.componente2eprofile.v1.ComponentE2EProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
-	2, // 1: dev.planton.qa.componente2eprofile.v1.ComponentE2EProfile.spec:type_name -> dev.planton.qa.componente2eprofile.v1.ComponentE2EProfileSpec
+var file_qa_catalogkinde2eprofile_v1_api_proto_depIdxs = []int32{
+	1, // 0: dev.planton.qa.catalogkinde2eprofile.v1.CatalogKindE2EProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
+	2, // 1: dev.planton.qa.catalogkinde2eprofile.v1.CatalogKindE2EProfile.spec:type_name -> dev.planton.qa.catalogkinde2eprofile.v1.CatalogKindE2EProfileSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -146,27 +146,27 @@ var file_qa_componente2eprofile_v1_api_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_qa_componente2eprofile_v1_api_proto_init() }
-func file_qa_componente2eprofile_v1_api_proto_init() {
-	if File_qa_componente2eprofile_v1_api_proto != nil {
+func init() { file_qa_catalogkinde2eprofile_v1_api_proto_init() }
+func file_qa_catalogkinde2eprofile_v1_api_proto_init() {
+	if File_qa_catalogkinde2eprofile_v1_api_proto != nil {
 		return
 	}
-	file_qa_componente2eprofile_v1_spec_proto_init()
+	file_qa_catalogkinde2eprofile_v1_spec_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_qa_componente2eprofile_v1_api_proto_rawDesc), len(file_qa_componente2eprofile_v1_api_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_qa_catalogkinde2eprofile_v1_api_proto_rawDesc), len(file_qa_catalogkinde2eprofile_v1_api_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_qa_componente2eprofile_v1_api_proto_goTypes,
-		DependencyIndexes: file_qa_componente2eprofile_v1_api_proto_depIdxs,
-		MessageInfos:      file_qa_componente2eprofile_v1_api_proto_msgTypes,
+		GoTypes:           file_qa_catalogkinde2eprofile_v1_api_proto_goTypes,
+		DependencyIndexes: file_qa_catalogkinde2eprofile_v1_api_proto_depIdxs,
+		MessageInfos:      file_qa_catalogkinde2eprofile_v1_api_proto_msgTypes,
 	}.Build()
-	File_qa_componente2eprofile_v1_api_proto = out.File
-	file_qa_componente2eprofile_v1_api_proto_goTypes = nil
-	file_qa_componente2eprofile_v1_api_proto_depIdxs = nil
+	File_qa_catalogkinde2eprofile_v1_api_proto = out.File
+	file_qa_catalogkinde2eprofile_v1_api_proto_goTypes = nil
+	file_qa_catalogkinde2eprofile_v1_api_proto_depIdxs = nil
 }

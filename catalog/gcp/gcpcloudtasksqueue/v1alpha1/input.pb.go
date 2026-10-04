@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpCloudTasksQueueStackInput struct {
+type GcpCloudTasksQueueIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpCloudTasksQueue    `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpCloudTasksQueueStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudTasksQueueStackInput) Reset() {
-	*x = GcpCloudTasksQueueStackInput{}
+func (x *GcpCloudTasksQueueIacInput) Reset() {
+	*x = GcpCloudTasksQueueIacInput{}
 	mi := &file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudTasksQueueStackInput) String() string {
+func (x *GcpCloudTasksQueueIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudTasksQueueStackInput) ProtoMessage() {}
+func (*GcpCloudTasksQueueIacInput) ProtoMessage() {}
 
-func (x *GcpCloudTasksQueueStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudTasksQueueIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpCloudTasksQueueStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudTasksQueueStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudTasksQueueStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudTasksQueueIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudTasksQueueIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudTasksQueueStackInput) GetTarget() *GcpCloudTasksQueue {
+func (x *GcpCloudTasksQueueIacInput) GetTarget() *GcpCloudTasksQueue {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudTasksQueueStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudTasksQueueIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpcloudtasksqueue/v1alpha1/input.proto\x12+dev.planton.gcp.gcpcloudtasksqueue.v1alpha1\x1a1catalog/gcp/gcpcloudtasksqueue/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc4\x01\n" +
-	"\x1cGcpCloudTasksQueueStackInput\x12W\n" +
+	"3catalog/gcp/gcpcloudtasksqueue/v1alpha1/input.proto\x12+dev.planton.gcp.gcpcloudtasksqueue.v1alpha1\x1a1catalog/gcp/gcpcloudtasksqueue/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc2\x01\n" +
+	"\x1aGcpCloudTasksQueueIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.gcp.gcpcloudtasksqueue.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudTasksQueueStackInput)(nil), // 0: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueStackInput
-	(*GcpCloudTasksQueue)(nil),           // 1: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueue
-	(*gcp.GcpProviderConfig)(nil),        // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCloudTasksQueueIacInput)(nil), // 0: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueIacInput
+	(*GcpCloudTasksQueue)(nil),         // 1: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueue
+	(*gcp.GcpProviderConfig)(nil),      // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudtasksqueue_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueStackInput.target:type_name -> dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueue
-	2, // 1: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueIacInput.target:type_name -> dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueue
+	2, // 1: dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

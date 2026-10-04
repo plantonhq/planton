@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorCustomDomainStackOutputs** captures the outputs of
+// **AzureFrontDoorCustomDomainOutputs** captures the outputs of
 // provisioning an Azure Front Door custom domain.
-type AzureFrontDoorCustomDomainStackOutputs struct {
+type AzureFrontDoorCustomDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the custom domain -- what
 	// AzureFrontDoorRoute's custom_domain_ids references to serve this
@@ -47,20 +47,20 @@ type AzureFrontDoorCustomDomainStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) Reset() {
-	*x = AzureFrontDoorCustomDomainStackOutputs{}
+func (x *AzureFrontDoorCustomDomainOutputs) Reset() {
+	*x = AzureFrontDoorCustomDomainOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) String() string {
+func (x *AzureFrontDoorCustomDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorCustomDomainStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorCustomDomainOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorCustomDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,33 +72,33 @@ func (x *AzureFrontDoorCustomDomainStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorCustomDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorCustomDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorCustomDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorCustomDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) GetCustomDomainId() string {
+func (x *AzureFrontDoorCustomDomainOutputs) GetCustomDomainId() string {
 	if x != nil {
 		return x.CustomDomainId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) GetHostName() string {
+func (x *AzureFrontDoorCustomDomainOutputs) GetHostName() string {
 	if x != nil {
 		return x.HostName
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) GetValidationToken() string {
+func (x *AzureFrontDoorCustomDomainOutputs) GetValidationToken() string {
 	if x != nil {
 		return x.ValidationToken
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorCustomDomainStackOutputs) GetExpirationDate() string {
+func (x *AzureFrontDoorCustomDomainOutputs) GetExpirationDate() string {
 	if x != nil {
 		return x.ExpirationDate
 	}
@@ -109,8 +109,8 @@ var File_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurefrontdoorcustomdomain/v1alpha1/outputs.proto\x125dev.planton.azure.azurefrontdoorcustomdomain.v1alpha1\"\xc3\x01\n" +
-	"&AzureFrontDoorCustomDomainStackOutputs\x12(\n" +
+	"?catalog/azure/azurefrontdoorcustomdomain/v1alpha1/outputs.proto\x125dev.planton.azure.azurefrontdoorcustomdomain.v1alpha1\"\xbe\x01\n" +
+	"!AzureFrontDoorCustomDomainOutputs\x12(\n" +
 	"\x10custom_domain_id\x18\x01 \x01(\tR\x0ecustomDomainId\x12\x1b\n" +
 	"\thost_name\x18\x02 \x01(\tR\bhostName\x12)\n" +
 	"\x10validation_token\x18\x03 \x01(\tR\x0fvalidationToken\x12'\n" +
@@ -131,7 +131,7 @@ func file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorCustomDomainStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorcustomdomain.v1alpha1.AzureFrontDoorCustomDomainStackOutputs
+	(*AzureFrontDoorCustomDomainOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorcustomdomain.v1alpha1.AzureFrontDoorCustomDomainOutputs
 }
 var file_catalog_azure_azurefrontdoorcustomdomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

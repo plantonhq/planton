@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeTaxRegistrationStackOutputs identifies the tax registration and says whether it is
+// StripeTaxRegistrationOutputs identifies the tax registration and says whether it is
 // collecting.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_registration
-type StripeTaxRegistrationStackOutputs struct {
+type StripeTaxRegistrationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the registration's Stripe id (taxreg_...). It changes when the registration is replaced.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -36,20 +36,20 @@ type StripeTaxRegistrationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeTaxRegistrationStackOutputs) Reset() {
-	*x = StripeTaxRegistrationStackOutputs{}
+func (x *StripeTaxRegistrationOutputs) Reset() {
+	*x = StripeTaxRegistrationOutputs{}
 	mi := &file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeTaxRegistrationStackOutputs) String() string {
+func (x *StripeTaxRegistrationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeTaxRegistrationStackOutputs) ProtoMessage() {}
+func (*StripeTaxRegistrationOutputs) ProtoMessage() {}
 
-func (x *StripeTaxRegistrationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeTaxRegistrationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *StripeTaxRegistrationStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeTaxRegistrationStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeTaxRegistrationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeTaxRegistrationOutputs.ProtoReflect.Descriptor instead.
+func (*StripeTaxRegistrationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeTaxRegistrationStackOutputs) GetId() string {
+func (x *StripeTaxRegistrationOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeTaxRegistrationStackOutputs) GetStatus() string {
+func (x *StripeTaxRegistrationOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -84,8 +84,8 @@ var File_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/stripe/stripetaxregistration/v1alpha1/outputs.proto\x121dev.planton.stripe.stripetaxregistration.v1alpha1\"K\n" +
-	"!StripeTaxRegistrationStackOutputs\x12\x0e\n" +
+	";catalog/stripe/stripetaxregistration/v1alpha1/outputs.proto\x121dev.planton.stripe.stripetaxregistration.v1alpha1\"F\n" +
+	"\x1cStripeTaxRegistrationOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06statusB\x98\x03\n" +
 	"5com.dev.planton.stripe.stripetaxregistration.v1alpha1B\fOutputsProtoP\x01Zhgithub.com/plantonhq/planton/catalog/stripe/stripetaxregistration/v1alpha1;stripetaxregistrationv1alpha1\xa2\x02\x04DPSS\xaa\x021Dev.Planton.Stripe.Stripetaxregistration.V1alpha1\xca\x021Dev\\Planton\\Stripe\\Stripetaxregistration\\V1alpha1\xe2\x02=Dev\\Planton\\Stripe\\Stripetaxregistration\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Stripe::Stripetaxregistration::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeTaxRegistrationStackOutputs)(nil), // 0: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationStackOutputs
+	(*StripeTaxRegistrationOutputs)(nil), // 0: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationOutputs
 }
 var file_catalog_stripe_stripetaxregistration_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

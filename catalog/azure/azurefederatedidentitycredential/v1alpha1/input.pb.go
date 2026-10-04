@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureFederatedIdentityCredentialStackInput is the input to the IaC module.
+// AzureFederatedIdentityCredentialIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureFederatedIdentityCredentialStackInput struct {
+type AzureFederatedIdentityCredentialIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *AzureFederatedIdentityCredential `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureFederatedIdentityCredentialStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureFederatedIdentityCredentialStackInput) Reset() {
-	*x = AzureFederatedIdentityCredentialStackInput{}
+func (x *AzureFederatedIdentityCredentialIacInput) Reset() {
+	*x = AzureFederatedIdentityCredentialIacInput{}
 	mi := &file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFederatedIdentityCredentialStackInput) String() string {
+func (x *AzureFederatedIdentityCredentialIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFederatedIdentityCredentialStackInput) ProtoMessage() {}
+func (*AzureFederatedIdentityCredentialIacInput) ProtoMessage() {}
 
-func (x *AzureFederatedIdentityCredentialStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureFederatedIdentityCredentialIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureFederatedIdentityCredentialStackInput) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFederatedIdentityCredentialStackInput.ProtoReflect.Descriptor instead.
-func (*AzureFederatedIdentityCredentialStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFederatedIdentityCredentialIacInput.ProtoReflect.Descriptor instead.
+func (*AzureFederatedIdentityCredentialIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFederatedIdentityCredentialStackInput) GetTarget() *AzureFederatedIdentityCredential {
+func (x *AzureFederatedIdentityCredentialIacInput) GetTarget() *AzureFederatedIdentityCredential {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureFederatedIdentityCredentialStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureFederatedIdentityCredentialIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto pro
 
 const file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azurefederatedidentitycredential/v1alpha1/input.proto\x12;dev.planton.azure.azurefederatedidentitycredential.v1alpha1\x1aAcatalog/azure/azurefederatedidentitycredential/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf4\x01\n" +
-	"*AzureFederatedIdentityCredentialStackInput\x12u\n" +
+	"Ccatalog/azure/azurefederatedidentitycredential/v1alpha1/input.proto\x12;dev.planton.azure.azurefederatedidentitycredential.v1alpha1\x1aAcatalog/azure/azurefederatedidentitycredential/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf2\x01\n" +
+	"(AzureFederatedIdentityCredentialIacInput\x12u\n" +
 	"\x06target\x18\x01 \x01(\v2].dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xdd\x03\n" +
 	"?com.dev.planton.azure.azurefederatedidentitycredential.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_ra
 
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_goTypes = []any{
-	(*AzureFederatedIdentityCredentialStackInput)(nil), // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackInput
-	(*AzureFederatedIdentityCredential)(nil),           // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential
-	(*azure.AzureProviderConfig)(nil),                  // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureFederatedIdentityCredentialIacInput)(nil), // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialIacInput
+	(*AzureFederatedIdentityCredential)(nil),         // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential
+	(*azure.AzureProviderConfig)(nil),                // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackInput.target:type_name -> dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential
-	2, // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialIacInput.target:type_name -> dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential
+	2, // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

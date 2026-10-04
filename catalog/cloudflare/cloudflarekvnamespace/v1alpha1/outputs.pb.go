@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareKvNamespaceStackOutputs captures the key outputs after provisioning a Cloudflare KV namespace.
-type CloudflareKvNamespaceStackOutputs struct {
+// CloudflareKvNamespaceOutputs captures the key outputs after provisioning a Cloudflare KV namespace.
+type CloudflareKvNamespaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (ID) of the created KV namespace. A Worker's
 	// `kv_namespace` binding and a CloudflareWorkersKvPair both reference this.
@@ -33,20 +33,20 @@ type CloudflareKvNamespaceStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *CloudflareKvNamespaceStackOutputs) Reset() {
-	*x = CloudflareKvNamespaceStackOutputs{}
+func (x *CloudflareKvNamespaceOutputs) Reset() {
+	*x = CloudflareKvNamespaceOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareKvNamespaceStackOutputs) String() string {
+func (x *CloudflareKvNamespaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareKvNamespaceStackOutputs) ProtoMessage() {}
+func (*CloudflareKvNamespaceOutputs) ProtoMessage() {}
 
-func (x *CloudflareKvNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareKvNamespaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareKvNamespaceStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareKvNamespaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareKvNamespaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareKvNamespaceOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareKvNamespaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareKvNamespaceStackOutputs) GetNamespaceId() string {
+func (x *CloudflareKvNamespaceOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *CloudflareKvNamespaceStackOutputs) GetSupportsUrlEncoding() bool {
+func (x *CloudflareKvNamespaceOutputs) GetSupportsUrlEncoding() bool {
 	if x != nil {
 		return x.SupportsUrlEncoding
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto protore
 
 const file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/cloudflare/cloudflarekvnamespace/v1alpha1/outputs.proto\x125dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1\"z\n" +
-	"!CloudflareKvNamespaceStackOutputs\x12!\n" +
+	"?catalog/cloudflare/cloudflarekvnamespace/v1alpha1/outputs.proto\x125dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1\"u\n" +
+	"\x1cCloudflareKvNamespaceOutputs\x12!\n" +
 	"\fnamespace_id\x18\x01 \x01(\tR\vnamespaceId\x122\n" +
 	"\x15supports_url_encoding\x18\x02 \x01(\bR\x13supportsUrlEncodingB\xb0\x03\n" +
 	"9com.dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1B\fOutputsProtoP\x01Zlgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarekvnamespace/v1alpha1;cloudflarekvnamespacev1alpha1\xa2\x02\x04DPCC\xaa\x025Dev.Planton.Cloudflare.Cloudflarekvnamespace.V1alpha1\xca\x025Dev\\Planton\\Cloudflare\\Cloudflarekvnamespace\\V1alpha1\xe2\x02ADev\\Planton\\Cloudflare\\Cloudflarekvnamespace\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Cloudflare::Cloudflarekvnamespace::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareKvNamespaceStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1.CloudflareKvNamespaceStackOutputs
+	(*CloudflareKvNamespaceOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1.CloudflareKvNamespaceOutputs
 }
 var file_catalog_cloudflare_cloudflarekvnamespace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

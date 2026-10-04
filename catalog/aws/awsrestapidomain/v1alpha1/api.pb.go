@@ -27,7 +27,7 @@ type AwsRestApiDomain struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsRestApiDomainSpec         `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsRestApiDomainStatus       `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsRestApiDomain) GetKind() string {
 	return ""
 }
 
-func (x *AwsRestApiDomain) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRestApiDomain) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsRestApiDomain) GetStatus() *AwsRestApiDomainStatus {
 }
 
 type AwsRestApiDomainStatus struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	Outputs       *AwsRestApiDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Outputs       *AwsRestApiDomainOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsRestApiDomainStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrestapidomain_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRestApiDomainStatus) GetOutputs() *AwsRestApiDomainStackOutputs {
+func (x *AwsRestApiDomainStatus) GetOutputs() *AwsRestApiDomainOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsrestapidomain_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10AwsRestApiDomainR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStatusR\x06status\"{\n" +
-	"\x16AwsRestApiDomainStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStatusR\x06status\"v\n" +
+	"\x16AwsRestApiDomainStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.aws.awsrestapidomain.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/aws/awsrestapidomain/v1alpha1;awsrestapidomainv1alpha1\xa2\x02\x04DPAA\xaa\x02)Dev.Planton.Aws.Awsrestapidomain.V1alpha1\xca\x02)Dev\\Planton\\Aws\\Awsrestapidomain\\V1alpha1\xe2\x025Dev\\Planton\\Aws\\Awsrestapidomain\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Aws::Awsrestapidomain::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awsrestapidomain_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_aws_awsrestapidomain_v1alpha1_api_proto_goTypes = []any{
 	(*AwsRestApiDomain)(nil),             // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain
 	(*AwsRestApiDomainStatus)(nil),       // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsRestApiDomainSpec)(nil),         // 3: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainSpec
-	(*AwsRestApiDomainStackOutputs)(nil), // 4: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs
+	(*AwsRestApiDomainOutputs)(nil),      // 4: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs
 }
 var file_catalog_aws_awsrestapidomain_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain.spec:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainSpec
 	1, // 2: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain.status:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStatus
-	4, // 3: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStatus.outputs:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs
+	4, // 3: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStatus.outputs:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

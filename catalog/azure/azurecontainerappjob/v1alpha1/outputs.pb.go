@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppJobStackOutputs** captures the outputs of provisioning
+// **AzureContainerAppJobOutputs** captures the outputs of provisioning
 // an Azure Container App Job.
 //
 // This is a leaf workload resource -- no downstream Planton resources
@@ -29,7 +29,7 @@ const (
 // manual executions (`job_id`), event-stream consumers
 // (`event_stream_endpoint`), and firewall allowlists
 // (`outbound_ip_addresses`).
-type AzureContainerAppJobStackOutputs struct {
+type AzureContainerAppJobOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Container App Job.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/jobs/{name}
@@ -55,20 +55,20 @@ type AzureContainerAppJobStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppJobStackOutputs) Reset() {
-	*x = AzureContainerAppJobStackOutputs{}
+func (x *AzureContainerAppJobOutputs) Reset() {
+	*x = AzureContainerAppJobOutputs{}
 	mi := &file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppJobStackOutputs) String() string {
+func (x *AzureContainerAppJobOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppJobStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppJobOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppJobStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppJobOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,40 +80,40 @@ func (x *AzureContainerAppJobStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppJobStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppJobStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppJobOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppJobOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppJobStackOutputs) GetJobId() string {
+func (x *AzureContainerAppJobOutputs) GetJobId() string {
 	if x != nil {
 		return x.JobId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppJobStackOutputs) GetJobName() string {
+func (x *AzureContainerAppJobOutputs) GetJobName() string {
 	if x != nil {
 		return x.JobName
 	}
 	return ""
 }
 
-func (x *AzureContainerAppJobStackOutputs) GetEventStreamEndpoint() string {
+func (x *AzureContainerAppJobOutputs) GetEventStreamEndpoint() string {
 	if x != nil {
 		return x.EventStreamEndpoint
 	}
 	return ""
 }
 
-func (x *AzureContainerAppJobStackOutputs) GetOutboundIpAddresses() []string {
+func (x *AzureContainerAppJobOutputs) GetOutboundIpAddresses() []string {
 	if x != nil {
 		return x.OutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureContainerAppJobStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureContainerAppJobOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -124,8 +124,8 @@ var File_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurecontainerappjob/v1alpha1/outputs.proto\x12/dev.planton.azure.azurecontainerappjob.v1alpha1\"\xf0\x01\n" +
-	" AzureContainerAppJobStackOutputs\x12\x15\n" +
+	"9catalog/azure/azurecontainerappjob/v1alpha1/outputs.proto\x12/dev.planton.azure.azurecontainerappjob.v1alpha1\"\xeb\x01\n" +
+	"\x1bAzureContainerAppJobOutputs\x12\x15\n" +
 	"\x06job_id\x18\x01 \x01(\tR\x05jobId\x12\x19\n" +
 	"\bjob_name\x18\x02 \x01(\tR\ajobName\x122\n" +
 	"\x15event_stream_endpoint\x18\x03 \x01(\tR\x13eventStreamEndpoint\x122\n" +
@@ -147,7 +147,7 @@ func file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppJobStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackOutputs
+	(*AzureContainerAppJobOutputs)(nil), // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobOutputs
 }
 var file_catalog_azure_azurecontainerappjob_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppCustomDomainStackOutputs** captures the outputs of
+// **AzureContainerAppCustomDomainOutputs** captures the outputs of
 // binding a custom domain to a Container App.
-type AzureContainerAppCustomDomainStackOutputs struct {
+type AzureContainerAppCustomDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The binding's resource ID. Azure models the binding as an entry in
 	// the app's ingress configuration rather than a standalone ARM
@@ -40,20 +40,20 @@ type AzureContainerAppCustomDomainStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppCustomDomainStackOutputs) Reset() {
-	*x = AzureContainerAppCustomDomainStackOutputs{}
+func (x *AzureContainerAppCustomDomainOutputs) Reset() {
+	*x = AzureContainerAppCustomDomainOutputs{}
 	mi := &file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppCustomDomainStackOutputs) String() string {
+func (x *AzureContainerAppCustomDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppCustomDomainStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppCustomDomainOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppCustomDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppCustomDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,19 +65,19 @@ func (x *AzureContainerAppCustomDomainStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppCustomDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppCustomDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppCustomDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppCustomDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppCustomDomainStackOutputs) GetCustomDomainId() string {
+func (x *AzureContainerAppCustomDomainOutputs) GetCustomDomainId() string {
 	if x != nil {
 		return x.CustomDomainId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppCustomDomainStackOutputs) GetManagedCertificateId() string {
+func (x *AzureContainerAppCustomDomainOutputs) GetManagedCertificateId() string {
 	if x != nil {
 		return x.ManagedCertificateId
 	}
@@ -88,8 +88,8 @@ var File_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azurecontainerappcustomdomain/v1alpha1/outputs.proto\x128dev.planton.azure.azurecontainerappcustomdomain.v1alpha1\"\x8b\x01\n" +
-	")AzureContainerAppCustomDomainStackOutputs\x12(\n" +
+	"Bcatalog/azure/azurecontainerappcustomdomain/v1alpha1/outputs.proto\x128dev.planton.azure.azurecontainerappcustomdomain.v1alpha1\"\x86\x01\n" +
+	"$AzureContainerAppCustomDomainOutputs\x12(\n" +
 	"\x10custom_domain_id\x18\x01 \x01(\tR\x0ecustomDomainId\x124\n" +
 	"\x16managed_certificate_id\x18\x02 \x01(\tR\x14managedCertificateIdB\xca\x03\n" +
 	"<com.dev.planton.azure.azurecontainerappcustomdomain.v1alpha1B\fOutputsProtoP\x01Zwgithub.com/plantonhq/planton/catalog/azure/azurecontainerappcustomdomain/v1alpha1;azurecontainerappcustomdomainv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Azure.Azurecontainerappcustomdomain.V1alpha1\xca\x028Dev\\Planton\\Azure\\Azurecontainerappcustomdomain\\V1alpha1\xe2\x02DDev\\Planton\\Azure\\Azurecontainerappcustomdomain\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Azure::Azurecontainerappcustomdomain::V1alpha1b\x06proto3"
@@ -108,7 +108,7 @@ func file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppCustomDomainStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappcustomdomain.v1alpha1.AzureContainerAppCustomDomainStackOutputs
+	(*AzureContainerAppCustomDomainOutputs)(nil), // 0: dev.planton.azure.azurecontainerappcustomdomain.v1alpha1.AzureContainerAppCustomDomainOutputs
 }
 var file_catalog_azure_azurecontainerappcustomdomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

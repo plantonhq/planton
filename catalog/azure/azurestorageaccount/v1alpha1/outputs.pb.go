@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageAccountStackOutputs** captures the outputs of provisioning
+// **AzureStorageAccountOutputs** captures the outputs of provisioning
 // an Azure Storage Account: the ARM identity other resources reference, the
 // per-service endpoints applications connect to, and the account's access
 // keys.
@@ -30,7 +30,7 @@ const (
 // The secondary endpoints are populated only for the read-access
 // replication types (RA_GRS / RA_GZRS) -- they are the read-only mirror in
 // the paired region.
-type AzureStorageAccountStackOutputs struct {
+type AzureStorageAccountOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the account. This is the primary
 	// output: AzureStorageContainer's storage_account_id references it, and
@@ -135,20 +135,20 @@ type AzureStorageAccountStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureStorageAccountStackOutputs) Reset() {
-	*x = AzureStorageAccountStackOutputs{}
+func (x *AzureStorageAccountOutputs) Reset() {
+	*x = AzureStorageAccountOutputs{}
 	mi := &file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageAccountStackOutputs) String() string {
+func (x *AzureStorageAccountOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageAccountStackOutputs) ProtoMessage() {}
+func (*AzureStorageAccountOutputs) ProtoMessage() {}
 
-func (x *AzureStorageAccountStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageAccountOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -160,201 +160,201 @@ func (x *AzureStorageAccountStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageAccountStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageAccountStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageAccountOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageAccountOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageAccountStackOutputs) GetStorageAccountId() string {
+func (x *AzureStorageAccountOutputs) GetStorageAccountId() string {
 	if x != nil {
 		return x.StorageAccountId
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageAccountOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetResourceGroupName() string {
+func (x *AzureStorageAccountOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryBlobEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryBlobEndpoint() string {
 	if x != nil {
 		return x.PrimaryBlobEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryBlobHost() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryBlobHost() string {
 	if x != nil {
 		return x.PrimaryBlobHost
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryQueueEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryQueueEndpoint() string {
 	if x != nil {
 		return x.PrimaryQueueEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryTableEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryTableEndpoint() string {
 	if x != nil {
 		return x.PrimaryTableEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryFileEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryFileEndpoint() string {
 	if x != nil {
 		return x.PrimaryFileEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryDfsEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryDfsEndpoint() string {
 	if x != nil {
 		return x.PrimaryDfsEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryWebEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryWebEndpoint() string {
 	if x != nil {
 		return x.PrimaryWebEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryWebHost() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryWebHost() string {
 	if x != nil {
 		return x.PrimaryWebHost
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryBlobEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryBlobEndpoint() string {
 	if x != nil {
 		return x.SecondaryBlobEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryQueueEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryQueueEndpoint() string {
 	if x != nil {
 		return x.SecondaryQueueEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryTableEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryTableEndpoint() string {
 	if x != nil {
 		return x.SecondaryTableEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryFileEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryFileEndpoint() string {
 	if x != nil {
 		return x.SecondaryFileEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryDfsEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryDfsEndpoint() string {
 	if x != nil {
 		return x.SecondaryDfsEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryWebEndpoint() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryWebEndpoint() string {
 	if x != nil {
 		return x.SecondaryWebEndpoint
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryAccessKey() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryAccessKey() string {
 	if x != nil {
 		return x.PrimaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryAccessKey() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryAccessKey() string {
 	if x != nil {
 		return x.SecondaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryConnectionString() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryConnectionString() string {
 	if x != nil {
 		return x.PrimaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryConnectionString() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryConnectionString() string {
 	if x != nil {
 		return x.SecondaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetPrimaryBlobConnectionString() string {
+func (x *AzureStorageAccountOutputs) GetPrimaryBlobConnectionString() string {
 	if x != nil {
 		return x.PrimaryBlobConnectionString
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetSecondaryBlobConnectionString() string {
+func (x *AzureStorageAccountOutputs) GetSecondaryBlobConnectionString() string {
 	if x != nil {
 		return x.SecondaryBlobConnectionString
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureStorageAccountOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetBlobServiceId() string {
+func (x *AzureStorageAccountOutputs) GetBlobServiceId() string {
 	if x != nil {
 		return x.BlobServiceId
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetFileServiceId() string {
+func (x *AzureStorageAccountOutputs) GetFileServiceId() string {
 	if x != nil {
 		return x.FileServiceId
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetQueueServiceId() string {
+func (x *AzureStorageAccountOutputs) GetQueueServiceId() string {
 	if x != nil {
 		return x.QueueServiceId
 	}
 	return ""
 }
 
-func (x *AzureStorageAccountStackOutputs) GetTableServiceId() string {
+func (x *AzureStorageAccountOutputs) GetTableServiceId() string {
 	if x != nil {
 		return x.TableServiceId
 	}
@@ -365,8 +365,8 @@ var File_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurestorageaccount/v1alpha1/outputs.proto\x12.dev.planton.azure.azurestorageaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xf5\v\n" +
-	"\x1fAzureStorageAccountStackOutputs\x12,\n" +
+	"8catalog/azure/azurestorageaccount/v1alpha1/outputs.proto\x12.dev.planton.azure.azurestorageaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xf0\v\n" +
+	"\x1aAzureStorageAccountOutputs\x12,\n" +
 	"\x12storage_account_id\x18\x01 \x01(\tR\x10storageAccountId\x120\n" +
 	"\x14storage_account_name\x18\x02 \x01(\tR\x12storageAccountName\x12.\n" +
 	"\x13resource_group_name\x18\x03 \x01(\tR\x11resourceGroupName\x122\n" +
@@ -412,7 +412,7 @@ func file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageAccountStackOutputs)(nil), // 0: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountStackOutputs
+	(*AzureStorageAccountOutputs)(nil), // 0: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountOutputs
 }
 var file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

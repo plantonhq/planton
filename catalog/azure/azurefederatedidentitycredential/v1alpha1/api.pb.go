@@ -35,7 +35,7 @@ type AzureFederatedIdentityCredential struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFederatedIdentityCredentialSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureFederatedIdentityCredential) GetKind() string {
 	return ""
 }
 
-func (x *AzureFederatedIdentityCredential) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFederatedIdentityCredential) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureFederatedIdentityCredential) GetStatus() *AzureFederatedIdentityCr
 // AzureFederatedIdentityCredentialStatus holds the deployment status and outputs.
 type AzureFederatedIdentityCredentialStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureFederatedIdentityCredentialStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureFederatedIdentityCredentialOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureFederatedIdentityCredentialStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefederatedidentitycredential_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFederatedIdentityCredentialStatus) GetOutputs() *AzureFederatedIdentityCredentialStackOutputs {
+func (x *AzureFederatedIdentityCredentialStatus) GetOutputs() *AzureFederatedIdentityCredentialOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurefederatedidentitycredential_v1alpha1_api_proto_raw
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" AzureFederatedIdentityCredentialR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
 	"\x04spec\x18\x04 \x01(\v2a.dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12{\n" +
-	"\x06status\x18\x05 \x01(\v2c.dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatusR\x06status\"\xae\x01\n" +
-	"&AzureFederatedIdentityCredentialStatus\x12\x83\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2i.dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackOutputsR\aoutputsB\xdb\x03\n" +
+	"\x06status\x18\x05 \x01(\v2c.dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatusR\x06status\"\xa8\x01\n" +
+	"&AzureFederatedIdentityCredentialStatus\x12~\n" +
+	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialOutputsR\aoutputsB\xdb\x03\n" +
 	"?com.dev.planton.azure.azurefederatedidentitycredential.v1alpha1B\bApiProtoP\x01Z}github.com/plantonhq/planton/catalog/azure/azurefederatedidentitycredential/v1alpha1;azurefederatedidentitycredentialv1alpha1\xa2\x02\x04DPAA\xaa\x02;Dev.Planton.Azure.Azurefederatedidentitycredential.V1alpha1\xca\x02;Dev\\Planton\\Azure\\Azurefederatedidentitycredential\\V1alpha1\xe2\x02GDev\\Planton\\Azure\\Azurefederatedidentitycredential\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Azure::Azurefederatedidentitycredential::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurefederatedidentitycredential_v1alpha1_api_proto_rawD
 
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFederatedIdentityCredential)(nil),             // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential
-	(*AzureFederatedIdentityCredentialStatus)(nil),       // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFederatedIdentityCredentialSpec)(nil),         // 3: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialSpec
-	(*AzureFederatedIdentityCredentialStackOutputs)(nil), // 4: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackOutputs
+	(*AzureFederatedIdentityCredential)(nil),        // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential
+	(*AzureFederatedIdentityCredentialStatus)(nil),  // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFederatedIdentityCredentialSpec)(nil),    // 3: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialSpec
+	(*AzureFederatedIdentityCredentialOutputs)(nil), // 4: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialOutputs
 }
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential.spec:type_name -> dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialSpec
 	1, // 2: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredential.status:type_name -> dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatus
-	4, // 3: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatus.outputs:type_name -> dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackOutputs
+	4, // 3: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStatus.outputs:type_name -> dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

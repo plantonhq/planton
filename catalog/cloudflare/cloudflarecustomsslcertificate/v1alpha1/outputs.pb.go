@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareCustomSslCertificateStackOutputs captures the observable outputs
+// CloudflareCustomSslCertificateOutputs captures the observable outputs
 // after uploading a custom SSL certificate.
-type CloudflareCustomSslCertificateStackOutputs struct {
+type CloudflareCustomSslCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the uploaded certificate.
 	CertificateId string `protobuf:"bytes,1,opt,name=certificate_id,json=certificateId,proto3" json:"certificate_id,omitempty"`
@@ -35,20 +35,20 @@ type CloudflareCustomSslCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareCustomSslCertificateStackOutputs) Reset() {
-	*x = CloudflareCustomSslCertificateStackOutputs{}
+func (x *CloudflareCustomSslCertificateOutputs) Reset() {
+	*x = CloudflareCustomSslCertificateOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCustomSslCertificateStackOutputs) String() string {
+func (x *CloudflareCustomSslCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCustomSslCertificateStackOutputs) ProtoMessage() {}
+func (*CloudflareCustomSslCertificateOutputs) ProtoMessage() {}
 
-func (x *CloudflareCustomSslCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCustomSslCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *CloudflareCustomSslCertificateStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCustomSslCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareCustomSslCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCustomSslCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareCustomSslCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCustomSslCertificateStackOutputs) GetCertificateId() string {
+func (x *CloudflareCustomSslCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *CloudflareCustomSslCertificateStackOutputs) GetZoneId() string {
+func (x *CloudflareCustomSslCertificateOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareCustomSslCertificateStackOutputs) GetExpiresOn() string {
+func (x *CloudflareCustomSslCertificateOutputs) GetExpiresOn() string {
 	if x != nil {
 		return x.ExpiresOn
 	}
@@ -90,8 +90,8 @@ var File_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_prot
 
 const file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/cloudflare/cloudflarecustomsslcertificate/v1alpha1/outputs.proto\x12>dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1\"\x99\x01\n" +
-	"*CloudflareCustomSslCertificateStackOutputs\x12%\n" +
+	"Hcatalog/cloudflare/cloudflarecustomsslcertificate/v1alpha1/outputs.proto\x12>dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1\"\x94\x01\n" +
+	"%CloudflareCustomSslCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12\x1d\n" +
 	"\n" +
@@ -112,7 +112,7 @@ func file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_pro
 
 var file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareCustomSslCertificateStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStackOutputs
+	(*CloudflareCustomSslCertificateOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -47,7 +47,7 @@ const (
 //
 // SECURITY: `security.authentication_type: basic` bootstraps
 // basic-auth with operator-generated credentials in a Secret (see
-// stack outputs); no credential ever appears in this spec.
+// outputs); no credential ever appears in this spec.
 //
 // EXPOSURE: in-cluster access rides the common Service (see stack
 // outputs). The `external` block models the operator's own
@@ -866,7 +866,7 @@ type KubernetesSolrSecurity struct {
 	// the OPERATOR uses against secured pods. Empty = the operator
 	// bootstraps security.json plus admin/solr/k8s-oper users and
 	// writes their credentials to `<name>-solrcloud-basic-auth`
-	// (see stack outputs). If you later rotate that password through
+	// (see outputs). If you later rotate that password through
 	// Solr's security API, update the Secret too — the operator locks
 	// itself out otherwise (upstream contract).
 	BasicAuthSecret *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=basic_auth_secret,json=basicAuthSecret,proto3" json:"basic_auth_secret,omitempty"`

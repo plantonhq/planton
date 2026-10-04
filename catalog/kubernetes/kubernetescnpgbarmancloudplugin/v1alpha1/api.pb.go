@@ -34,7 +34,7 @@ type KubernetesCnpgBarmanCloudPlugin struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesCnpgBarmanCloudPluginSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *KubernetesCnpgBarmanCloudPlugin) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesCnpgBarmanCloudPlugin) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesCnpgBarmanCloudPlugin) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *KubernetesCnpgBarmanCloudPlugin) GetStatus() *KubernetesCnpgBarmanCloud
 // KubernetesCnpgBarmanCloudPluginStatus holds the deployment status and outputs.
 type KubernetesCnpgBarmanCloudPluginStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesCnpgBarmanCloudPluginStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesCnpgBarmanCloudPluginOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*KubernetesCnpgBarmanCloudPluginStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesCnpgBarmanCloudPluginStatus) GetOutputs() *KubernetesCnpgBarmanCloudPluginStackOutputs {
+func (x *KubernetesCnpgBarmanCloudPluginStatus) GetOutputs() *KubernetesCnpgBarmanCloudPluginOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_api_proto
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fKubernetesCnpgBarmanCloudPluginR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x80\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x80\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2d.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12~\n" +
-	"\x06status\x18\x05 \x01(\v2f.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatusR\x06status\"\xb0\x01\n" +
-	"%KubernetesCnpgBarmanCloudPluginStatus\x12\x86\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2l.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStackOutputsR\aoutputsB\xf3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2f.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatusR\x06status\"\xab\x01\n" +
+	"%KubernetesCnpgBarmanCloudPluginStatus\x12\x81\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginOutputsR\aoutputsB\xf3\x03\n" +
 	"Ccom.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1B\bApiProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/kubernetes/kubernetescnpgbarmancloudplugin/v1alpha1;kubernetescnpgbarmancloudpluginv1alpha1\xa2\x02\x04DPKK\xaa\x02?Dev.Planton.Kubernetes.Kubernetescnpgbarmancloudplugin.V1alpha1\xca\x02?Dev\\Planton\\Kubernetes\\Kubernetescnpgbarmancloudplugin\\V1alpha1\xe2\x02KDev\\Planton\\Kubernetes\\Kubernetescnpgbarmancloudplugin\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Kubernetes::Kubernetescnpgbarmancloudplugin::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_api_proto_
 
 var file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesCnpgBarmanCloudPlugin)(nil),             // 0: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPlugin
-	(*KubernetesCnpgBarmanCloudPluginStatus)(nil),       // 1: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesCnpgBarmanCloudPluginSpec)(nil),         // 3: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginSpec
-	(*KubernetesCnpgBarmanCloudPluginStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStackOutputs
+	(*KubernetesCnpgBarmanCloudPlugin)(nil),        // 0: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPlugin
+	(*KubernetesCnpgBarmanCloudPluginStatus)(nil),  // 1: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesCnpgBarmanCloudPluginSpec)(nil),    // 3: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginSpec
+	(*KubernetesCnpgBarmanCloudPluginOutputs)(nil), // 4: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginOutputs
 }
 var file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPlugin.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPlugin.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPlugin.spec:type_name -> dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginSpec
 	1, // 2: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPlugin.status:type_name -> dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatus
-	4, // 3: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatus.outputs:type_name -> dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStatus.outputs:type_name -> dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

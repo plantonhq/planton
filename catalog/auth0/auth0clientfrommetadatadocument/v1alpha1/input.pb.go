@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ClientFromMetadataDocumentStackInput is the input to the
+// Auth0ClientFromMetadataDocumentIacInput is the input to the
 // Auth0ClientFromMetadataDocument IaC module. It contains the target resource
 // and the Auth0 provider configuration.
-type Auth0ClientFromMetadataDocumentStackInput struct {
+type Auth0ClientFromMetadataDocumentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0ClientFromMetadataDocument resource to be deployed.
 	Target *Auth0ClientFromMetadataDocument `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -39,20 +39,20 @@ type Auth0ClientFromMetadataDocumentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackInput) Reset() {
-	*x = Auth0ClientFromMetadataDocumentStackInput{}
+func (x *Auth0ClientFromMetadataDocumentIacInput) Reset() {
+	*x = Auth0ClientFromMetadataDocumentIacInput{}
 	mi := &file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackInput) String() string {
+func (x *Auth0ClientFromMetadataDocumentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ClientFromMetadataDocumentStackInput) ProtoMessage() {}
+func (*Auth0ClientFromMetadataDocumentIacInput) ProtoMessage() {}
 
-func (x *Auth0ClientFromMetadataDocumentStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0ClientFromMetadataDocumentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *Auth0ClientFromMetadataDocumentStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ClientFromMetadataDocumentStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0ClientFromMetadataDocumentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ClientFromMetadataDocumentIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0ClientFromMetadataDocumentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackInput) GetTarget() *Auth0ClientFromMetadataDocument {
+func (x *Auth0ClientFromMetadataDocumentIacInput) GetTarget() *Auth0ClientFromMetadataDocument {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0ClientFromMetadataDocumentIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -87,8 +87,8 @@ var File_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto prot
 
 const file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/auth0/auth0clientfrommetadatadocument/v1alpha1/input.proto\x12:dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1\x1a@catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xf1\x01\n" +
-	")Auth0ClientFromMetadataDocumentStackInput\x12s\n" +
+	"Bcatalog/auth0/auth0clientfrommetadatadocument/v1alpha1/input.proto\x12:dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1\x1a@catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xef\x01\n" +
+	"'Auth0ClientFromMetadataDocumentIacInput\x12s\n" +
 	"\x06target\x18\x01 \x01(\v2[.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xd6\x03\n" +
 	">com.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1B\n" +
@@ -108,13 +108,13 @@ func file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_raw
 
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0ClientFromMetadataDocumentStackInput)(nil), // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackInput
-	(*Auth0ClientFromMetadataDocument)(nil),           // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument
-	(*auth0.Auth0ProviderConfig)(nil),                 // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0ClientFromMetadataDocumentIacInput)(nil), // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentIacInput
+	(*Auth0ClientFromMetadataDocument)(nil),         // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument
+	(*auth0.Auth0ProviderConfig)(nil),               // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackInput.target:type_name -> dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument
-	2, // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentIacInput.target:type_name -> dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument
+	2, // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

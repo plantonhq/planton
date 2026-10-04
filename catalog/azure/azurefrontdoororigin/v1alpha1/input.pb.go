@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-front-door-origin stack-input
-type AzureFrontDoorOriginStackInput struct {
+// azure-front-door-origin iac-input
+type AzureFrontDoorOriginIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureFrontDoorOrigin `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureFrontDoorOriginStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorOriginStackInput) Reset() {
-	*x = AzureFrontDoorOriginStackInput{}
+func (x *AzureFrontDoorOriginIacInput) Reset() {
+	*x = AzureFrontDoorOriginIacInput{}
 	mi := &file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorOriginStackInput) String() string {
+func (x *AzureFrontDoorOriginIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorOriginStackInput) ProtoMessage() {}
+func (*AzureFrontDoorOriginIacInput) ProtoMessage() {}
 
-func (x *AzureFrontDoorOriginStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorOriginIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureFrontDoorOriginStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorOriginStackInput.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorOriginStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorOriginIacInput.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorOriginIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorOriginStackInput) GetTarget() *AzureFrontDoorOrigin {
+func (x *AzureFrontDoorOriginIacInput) GetTarget() *AzureFrontDoorOrigin {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureFrontDoorOriginStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureFrontDoorOriginIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azurefrontdoororigin/v1alpha1/input.proto\x12/dev.planton.azure.azurefrontdoororigin.v1alpha1\x1a5catalog/azure/azurefrontdoororigin/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd0\x01\n" +
-	"\x1eAzureFrontDoorOriginStackInput\x12]\n" +
+	"7catalog/azure/azurefrontdoororigin/v1alpha1/input.proto\x12/dev.planton.azure.azurefrontdoororigin.v1alpha1\x1a5catalog/azure/azurefrontdoororigin/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xce\x01\n" +
+	"\x1cAzureFrontDoorOriginIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x89\x03\n" +
 	"3com.dev.planton.azure.azurefrontdoororigin.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_goTypes = []any{
-	(*AzureFrontDoorOriginStackInput)(nil), // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackInput
-	(*AzureFrontDoorOrigin)(nil),           // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin
-	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureFrontDoorOriginIacInput)(nil), // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginIacInput
+	(*AzureFrontDoorOrigin)(nil),         // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin
+	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackInput.target:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin
-	2, // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginIacInput.target:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin
+	2, // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -22,9 +22,9 @@ const (
 )
 
 // *
-// **KubernetesHorizontalPodAutoscalerStackOutputs** captures the observable
+// **KubernetesHorizontalPodAutoscalerOutputs** captures the observable
 // handles of a deployed HorizontalPodAutoscaler.
-type KubernetesHorizontalPodAutoscalerStackOutputs struct {
+type KubernetesHorizontalPodAutoscalerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the HorizontalPodAutoscaler object as created in the cluster.
 	HorizontalPodAutoscalerName string `protobuf:"bytes,1,opt,name=horizontal_pod_autoscaler_name,json=horizontalPodAutoscalerName,proto3" json:"horizontal_pod_autoscaler_name,omitempty"`
@@ -41,20 +41,20 @@ type KubernetesHorizontalPodAutoscalerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) Reset() {
-	*x = KubernetesHorizontalPodAutoscalerStackOutputs{}
+func (x *KubernetesHorizontalPodAutoscalerOutputs) Reset() {
+	*x = KubernetesHorizontalPodAutoscalerOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) String() string {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesHorizontalPodAutoscalerStackOutputs) ProtoMessage() {}
+func (*KubernetesHorizontalPodAutoscalerOutputs) ProtoMessage() {}
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,40 +66,40 @@ func (x *KubernetesHorizontalPodAutoscalerStackOutputs) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesHorizontalPodAutoscalerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesHorizontalPodAutoscalerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesHorizontalPodAutoscalerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesHorizontalPodAutoscalerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) GetHorizontalPodAutoscalerName() string {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) GetHorizontalPodAutoscalerName() string {
 	if x != nil {
 		return x.HorizontalPodAutoscalerName
 	}
 	return ""
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) GetNamespace() string {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) GetScaleTarget() string {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) GetScaleTarget() string {
 	if x != nil {
 		return x.ScaleTarget
 	}
 	return ""
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) GetMinReplicas() int32 {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) GetMinReplicas() int32 {
 	if x != nil {
 		return x.MinReplicas
 	}
 	return 0
 }
 
-func (x *KubernetesHorizontalPodAutoscalerStackOutputs) GetMaxReplicas() int32 {
+func (x *KubernetesHorizontalPodAutoscalerOutputs) GetMaxReplicas() int32 {
 	if x != nil {
 		return x.MaxReplicas
 	}
@@ -110,8 +110,8 @@ var File_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_p
 
 const file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Kcatalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/outputs.proto\x12Adev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1\"\xfb\x01\n" +
-	"-KubernetesHorizontalPodAutoscalerStackOutputs\x12C\n" +
+	"Kcatalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/outputs.proto\x12Adev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1\"\xf6\x01\n" +
+	"(KubernetesHorizontalPodAutoscalerOutputs\x12C\n" +
 	"\x1ehorizontal_pod_autoscaler_name\x18\x01 \x01(\tR\x1bhorizontalPodAutoscalerName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12!\n" +
 	"\fscale_target\x18\x03 \x01(\tR\vscaleTarget\x12!\n" +
@@ -133,7 +133,7 @@ func file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_
 
 var file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesHorizontalPodAutoscalerStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerStackOutputs
+	(*KubernetesHorizontalPodAutoscalerOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1.KubernetesHorizontalPodAutoscalerOutputs
 }
 var file_catalog_kubernetes_kuberneteshorizontalpodautoscaler_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

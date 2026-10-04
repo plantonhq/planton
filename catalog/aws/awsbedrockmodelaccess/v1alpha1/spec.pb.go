@@ -43,7 +43,7 @@ const (
 // form) replaces the agreement.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsBedrockModelAccessSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region whose model access this agreement grants (agreements

@@ -49,7 +49,7 @@ const (
 //   - Only Lustre file systems WITHOUT the legacy in-spec import_path arm can
 //     carry associations (AWS forbids mixing the two S3-link generations).
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsFsxDataRepositoryAssociationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the association will be created — the file system's

@@ -28,7 +28,7 @@ type GcpCertificateMap struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpCertificateMapSpec        `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpCertificateMapStatus      `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpCertificateMap) GetKind() string {
 	return ""
 }
 
-func (x *GcpCertificateMap) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCertificateMap) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpCertificateMap) GetStatus() *GcpCertificateMapStatus {
 }
 
 type GcpCertificateMapStatus struct {
-	state         protoimpl.MessageState         `protogen:"open.v1"`
-	Outputs       *GcpCertificateMapStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState    `protogen:"open.v1"`
+	Outputs       *GcpCertificateMapOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpCertificateMapStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertificatemap_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCertificateMapStatus) GetOutputs() *GcpCertificateMapStackOutputs {
+func (x *GcpCertificateMapStatus) GetOutputs() *GcpCertificateMapOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcertificatemap_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11GcpCertificateMapR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatusR\x06status\"~\n" +
-	"\x17GcpCertificateMapStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatusR\x06status\"y\n" +
+	"\x17GcpCertificateMapStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.gcp.gcpcertificatemap.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpcertificatemap/v1alpha1;gcpcertificatemapv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpcertificatemap.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpcertificatemap\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpcertificatemap\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpcertificatemap::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpcertificatemap_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpcertificatemap_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcertificatemap_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCertificateMap)(nil),             // 0: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMap
-	(*GcpCertificateMapStatus)(nil),       // 1: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCertificateMapSpec)(nil),         // 3: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapSpec
-	(*GcpCertificateMapStackOutputs)(nil), // 4: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStackOutputs
+	(*GcpCertificateMap)(nil),            // 0: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMap
+	(*GcpCertificateMapStatus)(nil),      // 1: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCertificateMapSpec)(nil),        // 3: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapSpec
+	(*GcpCertificateMapOutputs)(nil),     // 4: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapOutputs
 }
 var file_catalog_gcp_gcpcertificatemap_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMap.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMap.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMap.spec:type_name -> dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapSpec
 	1, // 2: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMap.status:type_name -> dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatus
-	4, // 3: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatus.outputs:type_name -> dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStackOutputs
+	4, // 3: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStatus.outputs:type_name -> dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

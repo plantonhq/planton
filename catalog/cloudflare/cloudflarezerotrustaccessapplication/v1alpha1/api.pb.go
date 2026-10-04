@@ -31,7 +31,7 @@ type CloudflareZeroTrustAccessApplication struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustAccessApplicationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareZeroTrustAccessApplication) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplication) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustAccessApplication) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareZeroTrustAccessApplication) GetStatus() *CloudflareZeroTrustA
 // cloudflare-zero-trust-access-application status
 type CloudflareZeroTrustAccessApplicationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-zero-trust-access-application stack-outputs
-	Outputs       *CloudflareZeroTrustAccessApplicationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-zero-trust-access-application outputs
+	Outputs       *CloudflareZeroTrustAccessApplicationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareZeroTrustAccessApplicationStatus) Descriptor() ([]byte, []int) 
 	return file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStatus) GetOutputs() *CloudflareZeroTrustAccessApplicationStackOutputs {
+func (x *CloudflareZeroTrustAccessApplicationStatus) GetOutputs() *CloudflareZeroTrustAccessApplicationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_api_
 	"apiVersion\x12?\n" +
 	"\x04kind\x18\x02 \x01(\tB+\xbaH(r&\n" +
 	"$CloudflareZeroTrustAccessApplicationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8a\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8a\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2n.dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x88\x01\n" +
-	"\x06status\x18\x05 \x01(\v2p.dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatusR\x06status\"\xbf\x01\n" +
-	"*CloudflareZeroTrustAccessApplicationStatus\x12\x90\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2v.dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStackOutputsR\aoutputsB\x96\x04\n" +
+	"\x06status\x18\x05 \x01(\v2p.dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatusR\x06status\"\xba\x01\n" +
+	"*CloudflareZeroTrustAccessApplicationStatus\x12\x8b\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2q.dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationOutputsR\aoutputsB\x96\x04\n" +
 	"Hcom.dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1B\bApiProtoP\x01Z\x8a\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustaccessapplication/v1alpha1;cloudflarezerotrustaccessapplicationv1alpha1\xa2\x02\x04DPCC\xaa\x02DDev.Planton.Cloudflare.Cloudflarezerotrustaccessapplication.V1alpha1\xca\x02DDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessapplication\\V1alpha1\xe2\x02PDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessapplication\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Cloudflare::Cloudflarezerotrustaccessapplication::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_api_p
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessApplication)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplication
-	(*CloudflareZeroTrustAccessApplicationStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatus
-	(*shared.CloudResourceMetadata)(nil),                     // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustAccessApplicationSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationSpec
-	(*CloudflareZeroTrustAccessApplicationStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStackOutputs
+	(*CloudflareZeroTrustAccessApplication)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplication
+	(*CloudflareZeroTrustAccessApplicationStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatus
+	(*shared.CatalogObjectMetadata)(nil),                // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustAccessApplicationSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationSpec
+	(*CloudflareZeroTrustAccessApplicationOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplication.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplication.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplication.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplication.status:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePriceStackOutputs identifies the price.
+// StripePriceOutputs identifies the price.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/price
-type StripePriceStackOutputs struct {
+type StripePriceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the price's Stripe id (price_...), the value Checkout sessions, subscriptions, payment
 	// links and a StripeBillingPortalConfiguration's switchable prices reference. It changes when
@@ -42,20 +42,20 @@ type StripePriceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripePriceStackOutputs) Reset() {
-	*x = StripePriceStackOutputs{}
+func (x *StripePriceOutputs) Reset() {
+	*x = StripePriceOutputs{}
 	mi := &file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePriceStackOutputs) String() string {
+func (x *StripePriceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePriceStackOutputs) ProtoMessage() {}
+func (*StripePriceOutputs) ProtoMessage() {}
 
-func (x *StripePriceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripePriceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,40 +67,40 @@ func (x *StripePriceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePriceStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripePriceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePriceOutputs.ProtoReflect.Descriptor instead.
+func (*StripePriceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePriceStackOutputs) GetId() string {
+func (x *StripePriceOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripePriceStackOutputs) GetType() string {
+func (x *StripePriceOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *StripePriceStackOutputs) GetActive() bool {
+func (x *StripePriceOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
 	return false
 }
 
-func (x *StripePriceStackOutputs) GetLookupKey() string {
+func (x *StripePriceOutputs) GetLookupKey() string {
 	if x != nil {
 		return x.LookupKey
 	}
 	return ""
 }
 
-func (x *StripePriceStackOutputs) GetProduct() string {
+func (x *StripePriceOutputs) GetProduct() string {
 	if x != nil {
 		return x.Product
 	}
@@ -111,8 +111,8 @@ var File_catalog_stripe_stripeprice_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/stripe/stripeprice/v1alpha1/outputs.proto\x12'dev.planton.stripe.stripeprice.v1alpha1\"\x8e\x01\n" +
-	"\x17StripePriceStackOutputs\x12\x0e\n" +
+	"1catalog/stripe/stripeprice/v1alpha1/outputs.proto\x12'dev.planton.stripe.stripeprice.v1alpha1\"\x89\x01\n" +
+	"\x12StripePriceOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x16\n" +
 	"\x06active\x18\x03 \x01(\bR\x06active\x12\x1d\n" +
@@ -135,7 +135,7 @@ func file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripePriceStackOutputs)(nil), // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackOutputs
+	(*StripePriceOutputs)(nil), // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePriceOutputs
 }
 var file_catalog_stripe_stripeprice_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -35,7 +35,7 @@ type AwsHttpApiGateway struct {
 	// resource-kind for this HTTP API Gateway resource, must be "AwsHttpApiGateway".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the HTTP API Gateway.
 	Spec *AwsHttpApiGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsHttpApiGateway) GetKind() string {
 	return ""
 }
 
-func (x *AwsHttpApiGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsHttpApiGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AwsHttpApiGateway) GetStatus() *AwsHttpApiGatewayStatus {
 // AwsHttpApiGatewayStatus captures lifecycle, audit, job linkage, and observable outputs.
 type AwsHttpApiGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsHttpApiGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsHttpApiGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsHttpApiGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapigateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsHttpApiGatewayStatus) GetOutputs() *AwsHttpApiGatewayStackOutputs {
+func (x *AwsHttpApiGatewayStatus) GetOutputs() *AwsHttpApiGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awshttpapigateway_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsHttpApiGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatusR\x06status\"~\n" +
-	"\x17AwsHttpApiGatewayStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatusR\x06status\"y\n" +
+	"\x17AwsHttpApiGatewayStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awshttpapigateway.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awshttpapigateway/v1alpha1;awshttpapigatewayv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awshttpapigateway.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awshttpapigateway\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awshttpapigateway\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awshttpapigateway::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awshttpapigateway_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awshttpapigateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awshttpapigateway_v1alpha1_api_proto_goTypes = []any{
-	(*AwsHttpApiGateway)(nil),             // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway
-	(*AwsHttpApiGatewayStatus)(nil),       // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsHttpApiGatewaySpec)(nil),         // 3: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewaySpec
-	(*AwsHttpApiGatewayStackOutputs)(nil), // 4: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackOutputs
+	(*AwsHttpApiGateway)(nil),            // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway
+	(*AwsHttpApiGatewayStatus)(nil),      // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsHttpApiGatewaySpec)(nil),        // 3: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewaySpec
+	(*AwsHttpApiGatewayOutputs)(nil),     // 4: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayOutputs
 }
 var file_catalog_aws_awshttpapigateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway.spec:type_name -> dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewaySpec
 	1, // 2: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway.status:type_name -> dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatus
-	4, // 3: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatus.outputs:type_name -> dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackOutputs
+	4, // 3: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStatus.outputs:type_name -> dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

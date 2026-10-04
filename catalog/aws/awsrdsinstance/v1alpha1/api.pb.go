@@ -31,7 +31,7 @@ type AwsRdsInstance struct {
 	// resource-kind for this resource, must be "AwsRdsInstance".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining the DB instance.
 	Spec *AwsRdsInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -84,7 +84,7 @@ func (x *AwsRdsInstance) GetKind() string {
 	return ""
 }
 
-func (x *AwsRdsInstance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRdsInstance) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsRdsInstance) GetStatus() *AwsRdsInstanceStatus {
 // AwsRdsInstanceStatus describes the status fields for an RDS instance resource.
 type AwsRdsInstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsRdsInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsRdsInstanceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsRdsInstanceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrdsinstance_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRdsInstanceStatus) GetOutputs() *AwsRdsInstanceStackOutputs {
+func (x *AwsRdsInstanceStatus) GetOutputs() *AwsRdsInstanceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsrdsinstance_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eAwsRdsInstanceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStatusR\x06status\"u\n" +
-	"\x14AwsRdsInstanceStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStatusR\x06status\"p\n" +
+	"\x14AwsRdsInstanceStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.aws.awsrdsinstance.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/aws/awsrdsinstance/v1alpha1;awsrdsinstancev1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Aws.Awsrdsinstance.V1alpha1\xca\x02'Dev\\Planton\\Aws\\Awsrdsinstance\\V1alpha1\xe2\x023Dev\\Planton\\Aws\\Awsrdsinstance\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Aws::Awsrdsinstance::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awsrdsinstance_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_aws_awsrdsinstance_v1alpha1_api_proto_goTypes = []any{
 	(*AwsRdsInstance)(nil),               // 0: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstance
 	(*AwsRdsInstanceStatus)(nil),         // 1: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsRdsInstanceSpec)(nil),           // 3: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec
-	(*AwsRdsInstanceStackOutputs)(nil),   // 4: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStackOutputs
+	(*AwsRdsInstanceOutputs)(nil),        // 4: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOutputs
 }
 var file_catalog_aws_awsrdsinstance_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstance.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstance.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstance.spec:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec
 	1, // 2: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstance.status:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStatus
-	4, // 3: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStatus.outputs:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStackOutputs
+	4, // 3: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStatus.outputs:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsHttpApiDomainStackOutputs captures observable identifiers from a
+// AwsHttpApiDomainOutputs captures observable identifiers from a
 // provisioned API Gateway v2 custom domain name. The target_domain_name and
 // hosted_zone_id pair is the DNS composition surface: point an alias record
 // (AwsRoute53DnsRecord) at them to route the domain to API Gateway.
-type AwsHttpApiDomainStackOutputs struct {
+type AwsHttpApiDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The custom domain name (e.g. "api.example.com"). Exported as an output
 	// because it is the domain's join key -- downstream resources resolve
@@ -46,20 +46,20 @@ type AwsHttpApiDomainStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsHttpApiDomainStackOutputs) Reset() {
-	*x = AwsHttpApiDomainStackOutputs{}
+func (x *AwsHttpApiDomainOutputs) Reset() {
+	*x = AwsHttpApiDomainOutputs{}
 	mi := &file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsHttpApiDomainStackOutputs) String() string {
+func (x *AwsHttpApiDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsHttpApiDomainStackOutputs) ProtoMessage() {}
+func (*AwsHttpApiDomainOutputs) ProtoMessage() {}
 
-func (x *AwsHttpApiDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsHttpApiDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,33 +71,33 @@ func (x *AwsHttpApiDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsHttpApiDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsHttpApiDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsHttpApiDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AwsHttpApiDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsHttpApiDomainStackOutputs) GetDomainName() string {
+func (x *AwsHttpApiDomainOutputs) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AwsHttpApiDomainStackOutputs) GetDomainNameArn() string {
+func (x *AwsHttpApiDomainOutputs) GetDomainNameArn() string {
 	if x != nil {
 		return x.DomainNameArn
 	}
 	return ""
 }
 
-func (x *AwsHttpApiDomainStackOutputs) GetTargetDomainName() string {
+func (x *AwsHttpApiDomainOutputs) GetTargetDomainName() string {
 	if x != nil {
 		return x.TargetDomainName
 	}
 	return ""
 }
 
-func (x *AwsHttpApiDomainStackOutputs) GetHostedZoneId() string {
+func (x *AwsHttpApiDomainOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
@@ -108,8 +108,8 @@ var File_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awshttpapidomain/v1alpha1/outputs.proto\x12)dev.planton.aws.awshttpapidomain.v1alpha1\"\xbb\x01\n" +
-	"\x1cAwsHttpApiDomainStackOutputs\x12\x1f\n" +
+	"3catalog/aws/awshttpapidomain/v1alpha1/outputs.proto\x12)dev.planton.aws.awshttpapidomain.v1alpha1\"\xb6\x01\n" +
+	"\x17AwsHttpApiDomainOutputs\x12\x1f\n" +
 	"\vdomain_name\x18\x01 \x01(\tR\n" +
 	"domainName\x12&\n" +
 	"\x0fdomain_name_arn\x18\x02 \x01(\tR\rdomainNameArn\x12,\n" +
@@ -131,7 +131,7 @@ func file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsHttpApiDomainStackOutputs)(nil), // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackOutputs
+	(*AwsHttpApiDomainOutputs)(nil), // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainOutputs
 }
 var file_catalog_aws_awshttpapidomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

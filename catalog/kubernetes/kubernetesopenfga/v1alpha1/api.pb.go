@@ -31,7 +31,7 @@ type KubernetesOpenFga struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesOpenFgaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesOpenFga) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesOpenFga) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesOpenFga) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesOpenFga) GetStatus() *KubernetesOpenFgaStatus {
 // open-fga-kubernetes status.
 type KubernetesOpenFgaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesOpenFgaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesOpenFgaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesOpenFgaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenfga_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesOpenFgaStatus) GetOutputs() *KubernetesOpenFgaStackOutputs {
+func (x *KubernetesOpenFgaStatus) GetOutputs() *KubernetesOpenFgaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesopenfga_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11KubernetesOpenFgaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatusR\x06status\"\x85\x01\n" +
-	"\x17KubernetesOpenFgaStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatusR\x06status\"\x80\x01\n" +
+	"\x17KubernetesOpenFgaStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaOutputsR\aoutputsB\x90\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesopenfga.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesopenfga/v1alpha1;kubernetesopenfgav1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kubernetesopenfga.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kubernetesopenfga\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kubernetesopenfga\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kubernetesopenfga::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesopenfga_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesOpenFga)(nil),             // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga
-	(*KubernetesOpenFgaStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesOpenFgaSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaSpec
-	(*KubernetesOpenFgaStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackOutputs
+	(*KubernetesOpenFga)(nil),            // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga
+	(*KubernetesOpenFgaStatus)(nil),      // 1: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesOpenFgaSpec)(nil),        // 3: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaSpec
+	(*KubernetesOpenFgaOutputs)(nil),     // 4: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaOutputs
 }
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga.spec:type_name -> dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaSpec
 	1, // 2: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga.status:type_name -> dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatus
-	4, // 3: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -31,7 +31,7 @@ type AzureNatGateway struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureNatGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureNatGateway) GetKind() string {
 	return ""
 }
 
-func (x *AzureNatGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureNatGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureNatGateway) GetStatus() *AzureNatGatewayStatus {
 // azure-nat-gateway status
 type AzureNatGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-nat-gateway stack-outputs
-	Outputs       *AzureNatGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-nat-gateway outputs
+	Outputs       *AzureNatGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureNatGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurenatgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureNatGatewayStatus) GetOutputs() *AzureNatGatewayStackOutputs {
+func (x *AzureNatGatewayStatus) GetOutputs() *AzureNatGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurenatgateway_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAzureNatGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStatusR\x06status\"z\n" +
-	"\x15AzureNatGatewayStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStackOutputsR\aoutputsB\xe4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStatusR\x06status\"u\n" +
+	"\x15AzureNatGatewayStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayOutputsR\aoutputsB\xe4\x02\n" +
 	".com.dev.planton.azure.azurenatgateway.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/azure/azurenatgateway/v1alpha1;azurenatgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Azure.Azurenatgateway.V1alpha1\xca\x02*Dev\\Planton\\Azure\\Azurenatgateway\\V1alpha1\xe2\x026Dev\\Planton\\Azure\\Azurenatgateway\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Azure::Azurenatgateway::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azurenatgateway_v1alpha1_api_proto_msgTypes = make([]prot
 var file_catalog_azure_azurenatgateway_v1alpha1_api_proto_goTypes = []any{
 	(*AzureNatGateway)(nil),              // 0: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGateway
 	(*AzureNatGatewayStatus)(nil),        // 1: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureNatGatewaySpec)(nil),          // 3: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewaySpec
-	(*AzureNatGatewayStackOutputs)(nil),  // 4: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStackOutputs
+	(*AzureNatGatewayOutputs)(nil),       // 4: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayOutputs
 }
 var file_catalog_azure_azurenatgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGateway.spec:type_name -> dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewaySpec
 	1, // 2: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGateway.status:type_name -> dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStatus
-	4, // 3: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStatus.outputs:type_name -> dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStackOutputs
+	4, // 3: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStatus.outputs:type_name -> dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

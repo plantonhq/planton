@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: gcpcloudsql
 spec:
@@ -119,6 +119,6 @@ spec:
           list_cost: "1.7000"
       total_list_cost: "100.3230"
       exclusions:
-        - the primary it replicates (master_instance_name) is a separate component with its own estimate
+        - the primary it replicates (master_instance_name) is a separate kind with its own estimate
         - replication traffic within the region is free; cross-region replicas would bill egress
       notes: A read replica bills like a zonal instance of its own tier -- the estimate is the replica alone, never the primary it references.

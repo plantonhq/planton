@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-redshift-serverless-workgroup stack-input
-type AwsRedshiftServerlessWorkgroupStackInput struct {
+// aws-redshift-serverless-workgroup iac-input
+type AwsRedshiftServerlessWorkgroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsRedshiftServerlessWorkgroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsRedshiftServerlessWorkgroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackInput) Reset() {
-	*x = AwsRedshiftServerlessWorkgroupStackInput{}
+func (x *AwsRedshiftServerlessWorkgroupIacInput) Reset() {
+	*x = AwsRedshiftServerlessWorkgroupIacInput{}
 	mi := &file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackInput) String() string {
+func (x *AwsRedshiftServerlessWorkgroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRedshiftServerlessWorkgroupStackInput) ProtoMessage() {}
+func (*AwsRedshiftServerlessWorkgroupIacInput) ProtoMessage() {}
 
-func (x *AwsRedshiftServerlessWorkgroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRedshiftServerlessWorkgroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsRedshiftServerlessWorkgroupStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRedshiftServerlessWorkgroupStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRedshiftServerlessWorkgroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRedshiftServerlessWorkgroupIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRedshiftServerlessWorkgroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackInput) GetTarget() *AwsRedshiftServerlessWorkgroup {
+func (x *AwsRedshiftServerlessWorkgroupIacInput) GetTarget() *AwsRedshiftServerlessWorkgroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRedshiftServerlessWorkgroupIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto protore
 
 const file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awsredshiftserverlessworkgroup/v1alpha1/input.proto\x127dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1\x1a=catalog/aws/awsredshiftserverlessworkgroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe8\x01\n" +
-	"(AwsRedshiftServerlessWorkgroupStackInput\x12o\n" +
+	"?catalog/aws/awsredshiftserverlessworkgroup/v1alpha1/input.proto\x127dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1\x1a=catalog/aws/awsredshiftserverlessworkgroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe6\x01\n" +
+	"&AwsRedshiftServerlessWorkgroupIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_rawDes
 
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRedshiftServerlessWorkgroupStackInput)(nil), // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackInput
-	(*AwsRedshiftServerlessWorkgroup)(nil),           // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup
-	(*aws.AwsProviderConfig)(nil),                    // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRedshiftServerlessWorkgroupIacInput)(nil), // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupIacInput
+	(*AwsRedshiftServerlessWorkgroup)(nil),         // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup
+	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackInput.target:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup
-	2, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupIacInput.target:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup
+	2, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

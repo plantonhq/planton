@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamOidcProviderStackOutputs describes the values returned by Pulumi/Terraform
+// AwsIamOidcProviderOutputs describes the values returned by Pulumi/Terraform
 // after provisioning an IAM OIDC identity provider.
-type AwsIamOidcProviderStackOutputs struct {
+type AwsIamOidcProviderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// provider_arn is the Amazon Resource Name (ARN) of the IAM OIDC provider
 	// (e.g. "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED").
@@ -40,20 +40,20 @@ type AwsIamOidcProviderStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsIamOidcProviderStackOutputs) Reset() {
-	*x = AwsIamOidcProviderStackOutputs{}
+func (x *AwsIamOidcProviderOutputs) Reset() {
+	*x = AwsIamOidcProviderOutputs{}
 	mi := &file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamOidcProviderStackOutputs) String() string {
+func (x *AwsIamOidcProviderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamOidcProviderStackOutputs) ProtoMessage() {}
+func (*AwsIamOidcProviderOutputs) ProtoMessage() {}
 
-func (x *AwsIamOidcProviderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamOidcProviderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,19 +65,19 @@ func (x *AwsIamOidcProviderStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamOidcProviderStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamOidcProviderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamOidcProviderOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamOidcProviderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamOidcProviderStackOutputs) GetProviderArn() string {
+func (x *AwsIamOidcProviderOutputs) GetProviderArn() string {
 	if x != nil {
 		return x.ProviderArn
 	}
 	return ""
 }
 
-func (x *AwsIamOidcProviderStackOutputs) GetProviderUrl() string {
+func (x *AwsIamOidcProviderOutputs) GetProviderUrl() string {
 	if x != nil {
 		return x.ProviderUrl
 	}
@@ -88,8 +88,8 @@ var File_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsiamoidcprovider/v1alpha1/outputs.proto\x12+dev.planton.aws.awsiamoidcprovider.v1alpha1\"f\n" +
-	"\x1eAwsIamOidcProviderStackOutputs\x12!\n" +
+	"5catalog/aws/awsiamoidcprovider/v1alpha1/outputs.proto\x12+dev.planton.aws.awsiamoidcprovider.v1alpha1\"a\n" +
+	"\x19AwsIamOidcProviderOutputs\x12!\n" +
 	"\fprovider_arn\x18\x01 \x01(\tR\vproviderArn\x12!\n" +
 	"\fprovider_url\x18\x02 \x01(\tR\vproviderUrlB\xf1\x02\n" +
 	"/com.dev.planton.aws.awsiamoidcprovider.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsiamoidcprovider/v1alpha1;awsiamoidcproviderv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsiamoidcprovider.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsiamoidcprovider\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsiamoidcprovider\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsiamoidcprovider::V1alpha1b\x06proto3"
@@ -108,7 +108,7 @@ func file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamOidcProviderStackOutputs)(nil), // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackOutputs
+	(*AwsIamOidcProviderOutputs)(nil), // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderOutputs
 }
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

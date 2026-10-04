@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsElasticacheUserStackOutputs captures observable identifiers from a
+// AwsElasticacheUserOutputs captures observable identifiers from a
 // provisioned ElastiCache user. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef — most importantly
 // the user group's `user_ids` list.
-type AwsElasticacheUserStackOutputs struct {
+type AwsElasticacheUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The user's AWS identifier (the user id). This is what user groups
 	// reference in their membership list and what the AWS CLI/API address.
@@ -42,20 +42,20 @@ type AwsElasticacheUserStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsElasticacheUserStackOutputs) Reset() {
-	*x = AwsElasticacheUserStackOutputs{}
+func (x *AwsElasticacheUserOutputs) Reset() {
+	*x = AwsElasticacheUserOutputs{}
 	mi := &file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsElasticacheUserStackOutputs) String() string {
+func (x *AwsElasticacheUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsElasticacheUserStackOutputs) ProtoMessage() {}
+func (*AwsElasticacheUserOutputs) ProtoMessage() {}
 
-func (x *AwsElasticacheUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsElasticacheUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AwsElasticacheUserStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsElasticacheUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsElasticacheUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsElasticacheUserOutputs.ProtoReflect.Descriptor instead.
+func (*AwsElasticacheUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsElasticacheUserStackOutputs) GetUserId() string {
+func (x *AwsElasticacheUserOutputs) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *AwsElasticacheUserStackOutputs) GetArn() string {
+func (x *AwsElasticacheUserOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsElasticacheUserStackOutputs) GetUserName() string {
+func (x *AwsElasticacheUserOutputs) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
@@ -97,8 +97,8 @@ var File_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awselasticacheuser/v1alpha1/outputs.proto\x12+dev.planton.aws.awselasticacheuser.v1alpha1\"h\n" +
-	"\x1eAwsElasticacheUserStackOutputs\x12\x17\n" +
+	"5catalog/aws/awselasticacheuser/v1alpha1/outputs.proto\x12+dev.planton.aws.awselasticacheuser.v1alpha1\"c\n" +
+	"\x19AwsElasticacheUserOutputs\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12\x1b\n" +
 	"\tuser_name\x18\x03 \x01(\tR\buserNameB\xf1\x02\n" +
@@ -118,7 +118,7 @@ func file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsElasticacheUserStackOutputs)(nil), // 0: dev.planton.aws.awselasticacheuser.v1alpha1.AwsElasticacheUserStackOutputs
+	(*AwsElasticacheUserOutputs)(nil), // 0: dev.planton.aws.awselasticacheuser.v1alpha1.AwsElasticacheUserOutputs
 }
 var file_catalog_aws_awselasticacheuser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

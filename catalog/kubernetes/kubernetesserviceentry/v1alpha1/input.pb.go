@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesServiceEntryStackInput provides the inputs for creating the ServiceEntry on a
+// KubernetesServiceEntryIacInput provides the inputs for creating the ServiceEntry on a
 // Kubernetes cluster.
-type KubernetesServiceEntryStackInput struct {
+type KubernetesServiceEntryIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesServiceEntry `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesServiceEntryStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceEntryStackInput) Reset() {
-	*x = KubernetesServiceEntryStackInput{}
+func (x *KubernetesServiceEntryIacInput) Reset() {
+	*x = KubernetesServiceEntryIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceEntryStackInput) String() string {
+func (x *KubernetesServiceEntryIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceEntryStackInput) ProtoMessage() {}
+func (*KubernetesServiceEntryIacInput) ProtoMessage() {}
 
-func (x *KubernetesServiceEntryStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceEntryIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesServiceEntryStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceEntryStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceEntryStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceEntryIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceEntryIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceEntryStackInput) GetTarget() *KubernetesServiceEntry {
+func (x *KubernetesServiceEntryIacInput) GetTarget() *KubernetesServiceEntry {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesServiceEntryStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesServiceEntryIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto protoref
 
 const file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesserviceentry/v1alpha1/input.proto\x126dev.planton.kubernetes.kubernetesserviceentry.v1alpha1\x1a<catalog/kubernetes/kubernetesserviceentry/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe5\x01\n" +
-	" KubernetesServiceEntryStackInput\x12f\n" +
+	">catalog/kubernetes/kubernetesserviceentry/v1alpha1/input.proto\x126dev.planton.kubernetes.kubernetesserviceentry.v1alpha1\x1a<catalog/kubernetes/kubernetesserviceentry/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe3\x01\n" +
+	"\x1eKubernetesServiceEntryIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesServiceEntryStackInput)(nil),    // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackInput
+	(*KubernetesServiceEntryIacInput)(nil),      // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryIacInput
 	(*KubernetesServiceEntry)(nil),              // 1: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackInput.target:type_name -> dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry
-	2, // 1: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryIacInput.target:type_name -> dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry
+	2, // 1: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

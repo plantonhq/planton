@@ -31,7 +31,7 @@ type CloudflareCertificatePack struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareCertificatePackSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareCertificatePack) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareCertificatePack) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareCertificatePack) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareCertificatePack) GetStatus() *CloudflareCertificatePackStatus
 // cloudflare-certificate-pack status
 type CloudflareCertificatePackStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-certificate-pack stack-outputs
-	Outputs       *CloudflareCertificatePackStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-certificate-pack outputs
+	Outputs       *CloudflareCertificatePackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareCertificatePackStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareCertificatePackStatus) GetOutputs() *CloudflareCertificatePackStackOutputs {
+func (x *CloudflareCertificatePackStatus) GetOutputs() *CloudflareCertificatePackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_api_proto_rawDe
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19CloudflareCertificatePackR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatusR\x06status\"\x9d\x01\n" +
-	"\x1fCloudflareCertificatePackStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatusR\x06status\"\x98\x01\n" +
+	"\x1fCloudflareCertificatePackStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackOutputsR\aoutputsB\xc8\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarecertificatepack/v1alpha1;cloudflarecertificatepackv1alpha1\xa2\x02\x04DPCC\xaa\x029Dev.Planton.Cloudflare.Cloudflarecertificatepack.V1alpha1\xca\x029Dev\\Planton\\Cloudflare\\Cloudflarecertificatepack\\V1alpha1\xe2\x02EDev\\Planton\\Cloudflare\\Cloudflarecertificatepack\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Cloudflare::Cloudflarecertificatepack::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_api_proto_rawDes
 
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareCertificatePack)(nil),             // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack
-	(*CloudflareCertificatePackStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareCertificatePackSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackSpec
-	(*CloudflareCertificatePackStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackOutputs
+	(*CloudflareCertificatePack)(nil),        // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack
+	(*CloudflareCertificatePackStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareCertificatePackSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackSpec
+	(*CloudflareCertificatePackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackOutputs
 }
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack.spec:type_name -> dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackSpec
 	1, // 2: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePack.status:type_name -> dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatus
-	4, // 3: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

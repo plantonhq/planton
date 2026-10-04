@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesStrimziKafkaOperatorStackOutputs** — the composition
+// **KubernetesStrimziKafkaOperatorOutputs** — the composition
 // handles a deployed Strimzi cluster operator exports. The operator
 // has no per-cluster surface of its own; KubernetesKafka resources
 // compose against the CRDs it installs, so the handles here identify
 // the installation rather than any workload.
-type KubernetesStrimziKafkaOperatorStackOutputs struct {
+type KubernetesStrimziKafkaOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the operator runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -37,20 +37,20 @@ type KubernetesStrimziKafkaOperatorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesStrimziKafkaOperatorStackOutputs) Reset() {
-	*x = KubernetesStrimziKafkaOperatorStackOutputs{}
+func (x *KubernetesStrimziKafkaOperatorOutputs) Reset() {
+	*x = KubernetesStrimziKafkaOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesStrimziKafkaOperatorStackOutputs) String() string {
+func (x *KubernetesStrimziKafkaOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesStrimziKafkaOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesStrimziKafkaOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesStrimziKafkaOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesStrimziKafkaOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *KubernetesStrimziKafkaOperatorStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesStrimziKafkaOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesStrimziKafkaOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesStrimziKafkaOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesStrimziKafkaOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesStrimziKafkaOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesStrimziKafkaOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesStrimziKafkaOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesStrimziKafkaOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
@@ -85,8 +85,8 @@ var File_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_prot
 
 const file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/kubernetes/kubernetesstrimzikafkaoperator/v1alpha1/outputs.proto\x12>dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1\"m\n" +
-	"*KubernetesStrimziKafkaOperatorStackOutputs\x12\x1c\n" +
+	"Hcatalog/kubernetes/kubernetesstrimzikafkaoperator/v1alpha1/outputs.proto\x12>dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1\"h\n" +
+	"%KubernetesStrimziKafkaOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseNameB\xef\x03\n" +
 	"Bcom.dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1B\fOutputsProtoP\x01Z~github.com/plantonhq/planton/catalog/kubernetes/kubernetesstrimzikafkaoperator/v1alpha1;kubernetesstrimzikafkaoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02>Dev.Planton.Kubernetes.Kubernetesstrimzikafkaoperator.V1alpha1\xca\x02>Dev\\Planton\\Kubernetes\\Kubernetesstrimzikafkaoperator\\V1alpha1\xe2\x02JDev\\Planton\\Kubernetes\\Kubernetesstrimzikafkaoperator\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Kubernetes::Kubernetesstrimzikafkaoperator::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_pro
 
 var file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesStrimziKafkaOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1.KubernetesStrimziKafkaOperatorStackOutputs
+	(*KubernetesStrimziKafkaOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1.KubernetesStrimziKafkaOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesstrimzikafkaoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

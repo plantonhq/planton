@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsManagedPrefixListStackInput is the input for the IaC modules that
+// AwsManagedPrefixListIacInput is the input for the IaC modules that
 // manage a customer-managed prefix list.
-type AwsManagedPrefixListStackInput struct {
+type AwsManagedPrefixListIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsManagedPrefixList resource to deploy.
 	Target *AwsManagedPrefixList `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsManagedPrefixListStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsManagedPrefixListStackInput) Reset() {
-	*x = AwsManagedPrefixListStackInput{}
+func (x *AwsManagedPrefixListIacInput) Reset() {
+	*x = AwsManagedPrefixListIacInput{}
 	mi := &file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsManagedPrefixListStackInput) String() string {
+func (x *AwsManagedPrefixListIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsManagedPrefixListStackInput) ProtoMessage() {}
+func (*AwsManagedPrefixListIacInput) ProtoMessage() {}
 
-func (x *AwsManagedPrefixListStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsManagedPrefixListIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsManagedPrefixListStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsManagedPrefixListStackInput.ProtoReflect.Descriptor instead.
-func (*AwsManagedPrefixListStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsManagedPrefixListIacInput.ProtoReflect.Descriptor instead.
+func (*AwsManagedPrefixListIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsManagedPrefixListStackInput) GetTarget() *AwsManagedPrefixList {
+func (x *AwsManagedPrefixListIacInput) GetTarget() *AwsManagedPrefixList {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsManagedPrefixListStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsManagedPrefixListIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsmanagedprefixlist/v1alpha1/input.proto\x12-dev.planton.aws.awsmanagedprefixlist.v1alpha1\x1a3catalog/aws/awsmanagedprefixlist/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsManagedPrefixListStackInput\x12[\n" +
+	"5catalog/aws/awsmanagedprefixlist/v1alpha1/input.proto\x12-dev.planton.aws.awsmanagedprefixlist.v1alpha1\x1a3catalog/aws/awsmanagedprefixlist/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsManagedPrefixListIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awsmanagedprefixlist.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_goTypes = []any{
-	(*AwsManagedPrefixListStackInput)(nil), // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackInput
-	(*AwsManagedPrefixList)(nil),           // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsManagedPrefixListIacInput)(nil), // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListIacInput
+	(*AwsManagedPrefixList)(nil),         // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackInput.target:type_name -> dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList
-	2, // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListIacInput.target:type_name -> dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList
+	2, // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

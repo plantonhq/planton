@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **CloudflareDnsZoneStackOutputs** captures the outputs after provisioning a Cloudflare DNS Zone.
+// **CloudflareDnsZoneOutputs** captures the outputs after provisioning a Cloudflare DNS Zone.
 // It includes the zone's identifier, assigned nameservers, status, and — when DNSSEC is
 // enabled — the DS record material to enter at the domain registrar.
-type CloudflareDnsZoneStackOutputs struct {
+type CloudflareDnsZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare Zone ID of the created DNS zone.
 	ZoneId string `protobuf:"bytes,1,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
@@ -59,20 +59,20 @@ type CloudflareDnsZoneStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareDnsZoneStackOutputs) Reset() {
-	*x = CloudflareDnsZoneStackOutputs{}
+func (x *CloudflareDnsZoneOutputs) Reset() {
+	*x = CloudflareDnsZoneOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareDnsZoneStackOutputs) String() string {
+func (x *CloudflareDnsZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareDnsZoneStackOutputs) ProtoMessage() {}
+func (*CloudflareDnsZoneOutputs) ProtoMessage() {}
 
-func (x *CloudflareDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareDnsZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,96 +84,96 @@ func (x *CloudflareDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareDnsZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareDnsZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareDnsZoneOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareDnsZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetZoneId() string {
+func (x *CloudflareDnsZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetNameservers() []string {
+func (x *CloudflareDnsZoneOutputs) GetNameservers() []string {
 	if x != nil {
 		return x.Nameservers
 	}
 	return nil
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetStatus() string {
+func (x *CloudflareDnsZoneOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecStatus() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecStatus() string {
 	if x != nil {
 		return x.DnssecStatus
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecDs() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecDs() string {
 	if x != nil {
 		return x.DnssecDs
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecDigest() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecDigest() string {
 	if x != nil {
 		return x.DnssecDigest
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecDigestType() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecDigestType() string {
 	if x != nil {
 		return x.DnssecDigestType
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecDigestAlgorithm() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecDigestAlgorithm() string {
 	if x != nil {
 		return x.DnssecDigestAlgorithm
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecAlgorithm() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecAlgorithm() string {
 	if x != nil {
 		return x.DnssecAlgorithm
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecKeyTag() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecKeyTag() string {
 	if x != nil {
 		return x.DnssecKeyTag
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecPublicKey() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecPublicKey() string {
 	if x != nil {
 		return x.DnssecPublicKey
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetDnssecFlags() string {
+func (x *CloudflareDnsZoneOutputs) GetDnssecFlags() string {
 	if x != nil {
 		return x.DnssecFlags
 	}
 	return ""
 }
 
-func (x *CloudflareDnsZoneStackOutputs) GetRecordIds() map[string]string {
+func (x *CloudflareDnsZoneOutputs) GetRecordIds() map[string]string {
 	if x != nil {
 		return x.RecordIds
 	}
@@ -184,8 +184,8 @@ var File_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/cloudflare/cloudflarednszone/v1alpha1/outputs.proto\x121dev.planton.cloudflare.cloudflarednszone.v1alpha1\"\x9d\x05\n" +
-	"\x1dCloudflareDnsZoneStackOutputs\x12\x17\n" +
+	";catalog/cloudflare/cloudflarednszone/v1alpha1/outputs.proto\x121dev.planton.cloudflare.cloudflarednszone.v1alpha1\"\x93\x05\n" +
+	"\x18CloudflareDnsZoneOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12 \n" +
 	"\vnameservers\x18\x02 \x03(\tR\vnameservers\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12#\n" +
@@ -198,9 +198,9 @@ const file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_rawDesc =
 	"\x0ednssec_key_tag\x18\n" +
 	" \x01(\tR\fdnssecKeyTag\x12*\n" +
 	"\x11dnssec_public_key\x18\v \x01(\tR\x0fdnssecPublicKey\x12!\n" +
-	"\fdnssec_flags\x18\f \x01(\tR\vdnssecFlags\x12~\n" +
+	"\fdnssec_flags\x18\f \x01(\tR\vdnssecFlags\x12y\n" +
 	"\n" +
-	"record_ids\x18\r \x03(\v2_.dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackOutputs.RecordIdsEntryR\trecordIds\x1a<\n" +
+	"record_ids\x18\r \x03(\v2Z.dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneOutputs.RecordIdsEntryR\trecordIds\x1a<\n" +
 	"\x0eRecordIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x94\x03\n" +
@@ -220,11 +220,11 @@ func file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareDnsZoneStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackOutputs
-	nil,                                   // 1: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackOutputs.RecordIdsEntry
+	(*CloudflareDnsZoneOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneOutputs
+	nil,                              // 1: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneOutputs.RecordIdsEntry
 }
 var file_catalog_cloudflare_cloudflarednszone_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackOutputs.record_ids:type_name -> dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackOutputs.RecordIdsEntry
+	1, // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneOutputs.record_ids:type_name -> dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneOutputs.RecordIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

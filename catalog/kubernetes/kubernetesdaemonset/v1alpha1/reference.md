@@ -1197,8 +1197,8 @@ The orchestrator resolves this and populates the value before invoking IaC modul
 Allowed values (use exactly as shown):
 
 - `unspecified` -- 0: Default/unspecified
-- `TestCloudResourceGeneric` -- 1–49: Test/dev/custom
-- `TestCloudResourceKubernetes`
+- `TestCatalogKindGeneric` -- 1–49: Test/dev/custom
+- `TestCatalogKindKubernetes`
 - `AwsAlb` -- 1000–1999: AWS resources AwsSubnet is a prerequisite because an ALB requires at least two subnets in different availability zones -- the spec's subnet references must resolve before the load balancer can be created.
 - `AwsCertManagerCert`
 - `AwsCloudFront`
@@ -1452,7 +1452,7 @@ Allowed values (use exactly as shown):
 - `AzureLinuxWebApp` -- AzureServicePlan is a prerequisite because a web app runs on a referenced plan (the resource group arrives transitively through the plan).
 - `AzureContainerAppJob` -- AzureContainerAppEnvironment is a prerequisite because a job runs inside a referenced environment (the resource group arrives transitively through it).
 - `AzureContainerAppEnvironmentStorage` -- AzureContainerAppEnvironment is a prerequisite because the storage registration lives on a referenced environment. The Azure Files share and storage account are deliberately NOT registry prerequisites: storage-account names are globally unique, so scenarios bring their own scenario-local account + share fixtures.
-- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr component is registered on a referenced environment.
+- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr kind is registered on a referenced environment.
 - `AzureContainerAppEnvironmentCertificate` -- AzureContainerAppEnvironment is a prerequisite because the certificate is stored on a referenced environment.
 - `AzureContainerAppEnvironmentManagedCertificate` -- AzureContainerAppEnvironment is a prerequisite because the managed certificate is provisioned on a referenced environment.
 - `AzureLogAnalyticsWorkspace` -- AzureResourceGroup is a prerequisite because the workspace is created inside a referenced resource group that must already exist.
@@ -1462,7 +1462,7 @@ Allowed values (use exactly as shown):
 - `AzureMonitorMetricAlert` -- AzureMonitorActionGroup is a prerequisite because a metric alert's actions fire into a referenced action group (the resource group chains transitively); alert scopes are polymorphic.
 - `AzureMonitorScheduledQueryAlert` -- AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a referenced workspace scope; AzureMonitorActionGroup because its action fires into a referenced action group.
 - `AzureMonitorActivityLogAlert` -- AzureMonitorActionGroup is a prerequisite because an activity log alert's actions fire into a referenced action group (the resource group chains transitively). The alert itself is subscription-global and its scopes are polymorphic.
-- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the component).
+- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the kind).
 - `AzureUserAssignedIdentity` -- AzureResourceGroup is a prerequisite because the identity is created inside a referenced resource group that must already exist.
 - `AzureRoleAssignment` -- AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because an assignment grants a role at a referenced scope (most commonly a resource group) to a referenced principal (most commonly a managed identity) -- both must exist before the grant can be written.
 - `AzureRoleDefinition` -- AzureResourceGroup is a prerequisite because a custom role definition is created at a referenced scope, most commonly a resource group in composed environments -- the scope must exist before the definition can be written.
@@ -1787,7 +1787,7 @@ Allowed values (use exactly as shown):
 - `KubernetesHelmRelease`
 - `KubernetesConfigMap`
 - `KubernetesServiceAccount`
-- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one component: "grant these permissions to these subjects in this scope".
+- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one kind: "grant these permissions to these subjects in this scope".
 - `KubernetesIngress`
 - `KubernetesNetworkPolicy`
 - `KubernetesPersistentVolumeClaim`
@@ -1819,7 +1819,7 @@ Allowed values (use exactly as shown):
 - `KubernetesBackendTlsPolicy`
 - `KubernetesIstioBaseCrds`
 - `KubernetesIstio`
-- `KubernetesDestinationRule` -- Istio API components (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
+- `KubernetesDestinationRule` -- Istio API kinds (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
 - `KubernetesServiceEntry`
 - `KubernetesPeerAuthentication`
 - `KubernetesRequestAuthentication`
@@ -2201,8 +2201,8 @@ The orchestrator resolves this before invoking IaC modules.
 Allowed values (use exactly as shown):
 
 - `unspecified` -- 0: Default/unspecified
-- `TestCloudResourceGeneric` -- 1–49: Test/dev/custom
-- `TestCloudResourceKubernetes`
+- `TestCatalogKindGeneric` -- 1–49: Test/dev/custom
+- `TestCatalogKindKubernetes`
 - `AwsAlb` -- 1000–1999: AWS resources AwsSubnet is a prerequisite because an ALB requires at least two subnets in different availability zones -- the spec's subnet references must resolve before the load balancer can be created.
 - `AwsCertManagerCert`
 - `AwsCloudFront`
@@ -2456,7 +2456,7 @@ Allowed values (use exactly as shown):
 - `AzureLinuxWebApp` -- AzureServicePlan is a prerequisite because a web app runs on a referenced plan (the resource group arrives transitively through the plan).
 - `AzureContainerAppJob` -- AzureContainerAppEnvironment is a prerequisite because a job runs inside a referenced environment (the resource group arrives transitively through it).
 - `AzureContainerAppEnvironmentStorage` -- AzureContainerAppEnvironment is a prerequisite because the storage registration lives on a referenced environment. The Azure Files share and storage account are deliberately NOT registry prerequisites: storage-account names are globally unique, so scenarios bring their own scenario-local account + share fixtures.
-- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr component is registered on a referenced environment.
+- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr kind is registered on a referenced environment.
 - `AzureContainerAppEnvironmentCertificate` -- AzureContainerAppEnvironment is a prerequisite because the certificate is stored on a referenced environment.
 - `AzureContainerAppEnvironmentManagedCertificate` -- AzureContainerAppEnvironment is a prerequisite because the managed certificate is provisioned on a referenced environment.
 - `AzureLogAnalyticsWorkspace` -- AzureResourceGroup is a prerequisite because the workspace is created inside a referenced resource group that must already exist.
@@ -2466,7 +2466,7 @@ Allowed values (use exactly as shown):
 - `AzureMonitorMetricAlert` -- AzureMonitorActionGroup is a prerequisite because a metric alert's actions fire into a referenced action group (the resource group chains transitively); alert scopes are polymorphic.
 - `AzureMonitorScheduledQueryAlert` -- AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a referenced workspace scope; AzureMonitorActionGroup because its action fires into a referenced action group.
 - `AzureMonitorActivityLogAlert` -- AzureMonitorActionGroup is a prerequisite because an activity log alert's actions fire into a referenced action group (the resource group chains transitively). The alert itself is subscription-global and its scopes are polymorphic.
-- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the component).
+- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the kind).
 - `AzureUserAssignedIdentity` -- AzureResourceGroup is a prerequisite because the identity is created inside a referenced resource group that must already exist.
 - `AzureRoleAssignment` -- AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because an assignment grants a role at a referenced scope (most commonly a resource group) to a referenced principal (most commonly a managed identity) -- both must exist before the grant can be written.
 - `AzureRoleDefinition` -- AzureResourceGroup is a prerequisite because a custom role definition is created at a referenced scope, most commonly a resource group in composed environments -- the scope must exist before the definition can be written.
@@ -2791,7 +2791,7 @@ Allowed values (use exactly as shown):
 - `KubernetesHelmRelease`
 - `KubernetesConfigMap`
 - `KubernetesServiceAccount`
-- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one component: "grant these permissions to these subjects in this scope".
+- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one kind: "grant these permissions to these subjects in this scope".
 - `KubernetesIngress`
 - `KubernetesNetworkPolicy`
 - `KubernetesPersistentVolumeClaim`
@@ -2823,7 +2823,7 @@ Allowed values (use exactly as shown):
 - `KubernetesBackendTlsPolicy`
 - `KubernetesIstioBaseCrds`
 - `KubernetesIstio`
-- `KubernetesDestinationRule` -- Istio API components (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
+- `KubernetesDestinationRule` -- Istio API kinds (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
 - `KubernetesServiceEntry`
 - `KubernetesPeerAuthentication`
 - `KubernetesRequestAuthentication`
@@ -4401,8 +4401,8 @@ The orchestrator resolves this and populates the value before invoking IaC modul
 Allowed values (use exactly as shown):
 
 - `unspecified` -- 0: Default/unspecified
-- `TestCloudResourceGeneric` -- 1–49: Test/dev/custom
-- `TestCloudResourceKubernetes`
+- `TestCatalogKindGeneric` -- 1–49: Test/dev/custom
+- `TestCatalogKindKubernetes`
 - `AwsAlb` -- 1000–1999: AWS resources AwsSubnet is a prerequisite because an ALB requires at least two subnets in different availability zones -- the spec's subnet references must resolve before the load balancer can be created.
 - `AwsCertManagerCert`
 - `AwsCloudFront`
@@ -4656,7 +4656,7 @@ Allowed values (use exactly as shown):
 - `AzureLinuxWebApp` -- AzureServicePlan is a prerequisite because a web app runs on a referenced plan (the resource group arrives transitively through the plan).
 - `AzureContainerAppJob` -- AzureContainerAppEnvironment is a prerequisite because a job runs inside a referenced environment (the resource group arrives transitively through it).
 - `AzureContainerAppEnvironmentStorage` -- AzureContainerAppEnvironment is a prerequisite because the storage registration lives on a referenced environment. The Azure Files share and storage account are deliberately NOT registry prerequisites: storage-account names are globally unique, so scenarios bring their own scenario-local account + share fixtures.
-- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr component is registered on a referenced environment.
+- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr kind is registered on a referenced environment.
 - `AzureContainerAppEnvironmentCertificate` -- AzureContainerAppEnvironment is a prerequisite because the certificate is stored on a referenced environment.
 - `AzureContainerAppEnvironmentManagedCertificate` -- AzureContainerAppEnvironment is a prerequisite because the managed certificate is provisioned on a referenced environment.
 - `AzureLogAnalyticsWorkspace` -- AzureResourceGroup is a prerequisite because the workspace is created inside a referenced resource group that must already exist.
@@ -4666,7 +4666,7 @@ Allowed values (use exactly as shown):
 - `AzureMonitorMetricAlert` -- AzureMonitorActionGroup is a prerequisite because a metric alert's actions fire into a referenced action group (the resource group chains transitively); alert scopes are polymorphic.
 - `AzureMonitorScheduledQueryAlert` -- AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a referenced workspace scope; AzureMonitorActionGroup because its action fires into a referenced action group.
 - `AzureMonitorActivityLogAlert` -- AzureMonitorActionGroup is a prerequisite because an activity log alert's actions fire into a referenced action group (the resource group chains transitively). The alert itself is subscription-global and its scopes are polymorphic.
-- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the component).
+- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the kind).
 - `AzureUserAssignedIdentity` -- AzureResourceGroup is a prerequisite because the identity is created inside a referenced resource group that must already exist.
 - `AzureRoleAssignment` -- AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because an assignment grants a role at a referenced scope (most commonly a resource group) to a referenced principal (most commonly a managed identity) -- both must exist before the grant can be written.
 - `AzureRoleDefinition` -- AzureResourceGroup is a prerequisite because a custom role definition is created at a referenced scope, most commonly a resource group in composed environments -- the scope must exist before the definition can be written.
@@ -4991,7 +4991,7 @@ Allowed values (use exactly as shown):
 - `KubernetesHelmRelease`
 - `KubernetesConfigMap`
 - `KubernetesServiceAccount`
-- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one component: "grant these permissions to these subjects in this scope".
+- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one kind: "grant these permissions to these subjects in this scope".
 - `KubernetesIngress`
 - `KubernetesNetworkPolicy`
 - `KubernetesPersistentVolumeClaim`
@@ -5023,7 +5023,7 @@ Allowed values (use exactly as shown):
 - `KubernetesBackendTlsPolicy`
 - `KubernetesIstioBaseCrds`
 - `KubernetesIstio`
-- `KubernetesDestinationRule` -- Istio API components (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
+- `KubernetesDestinationRule` -- Istio API kinds (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
 - `KubernetesServiceEntry`
 - `KubernetesPeerAuthentication`
 - `KubernetesRequestAuthentication`
@@ -5405,8 +5405,8 @@ The orchestrator resolves this before invoking IaC modules.
 Allowed values (use exactly as shown):
 
 - `unspecified` -- 0: Default/unspecified
-- `TestCloudResourceGeneric` -- 1–49: Test/dev/custom
-- `TestCloudResourceKubernetes`
+- `TestCatalogKindGeneric` -- 1–49: Test/dev/custom
+- `TestCatalogKindKubernetes`
 - `AwsAlb` -- 1000–1999: AWS resources AwsSubnet is a prerequisite because an ALB requires at least two subnets in different availability zones -- the spec's subnet references must resolve before the load balancer can be created.
 - `AwsCertManagerCert`
 - `AwsCloudFront`
@@ -5660,7 +5660,7 @@ Allowed values (use exactly as shown):
 - `AzureLinuxWebApp` -- AzureServicePlan is a prerequisite because a web app runs on a referenced plan (the resource group arrives transitively through the plan).
 - `AzureContainerAppJob` -- AzureContainerAppEnvironment is a prerequisite because a job runs inside a referenced environment (the resource group arrives transitively through it).
 - `AzureContainerAppEnvironmentStorage` -- AzureContainerAppEnvironment is a prerequisite because the storage registration lives on a referenced environment. The Azure Files share and storage account are deliberately NOT registry prerequisites: storage-account names are globally unique, so scenarios bring their own scenario-local account + share fixtures.
-- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr component is registered on a referenced environment.
+- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr kind is registered on a referenced environment.
 - `AzureContainerAppEnvironmentCertificate` -- AzureContainerAppEnvironment is a prerequisite because the certificate is stored on a referenced environment.
 - `AzureContainerAppEnvironmentManagedCertificate` -- AzureContainerAppEnvironment is a prerequisite because the managed certificate is provisioned on a referenced environment.
 - `AzureLogAnalyticsWorkspace` -- AzureResourceGroup is a prerequisite because the workspace is created inside a referenced resource group that must already exist.
@@ -5670,7 +5670,7 @@ Allowed values (use exactly as shown):
 - `AzureMonitorMetricAlert` -- AzureMonitorActionGroup is a prerequisite because a metric alert's actions fire into a referenced action group (the resource group chains transitively); alert scopes are polymorphic.
 - `AzureMonitorScheduledQueryAlert` -- AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a referenced workspace scope; AzureMonitorActionGroup because its action fires into a referenced action group.
 - `AzureMonitorActivityLogAlert` -- AzureMonitorActionGroup is a prerequisite because an activity log alert's actions fire into a referenced action group (the resource group chains transitively). The alert itself is subscription-global and its scopes are polymorphic.
-- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the component).
+- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the kind).
 - `AzureUserAssignedIdentity` -- AzureResourceGroup is a prerequisite because the identity is created inside a referenced resource group that must already exist.
 - `AzureRoleAssignment` -- AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because an assignment grants a role at a referenced scope (most commonly a resource group) to a referenced principal (most commonly a managed identity) -- both must exist before the grant can be written.
 - `AzureRoleDefinition` -- AzureResourceGroup is a prerequisite because a custom role definition is created at a referenced scope, most commonly a resource group in composed environments -- the scope must exist before the definition can be written.
@@ -5995,7 +5995,7 @@ Allowed values (use exactly as shown):
 - `KubernetesHelmRelease`
 - `KubernetesConfigMap`
 - `KubernetesServiceAccount`
-- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one component: "grant these permissions to these subjects in this scope".
+- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one kind: "grant these permissions to these subjects in this scope".
 - `KubernetesIngress`
 - `KubernetesNetworkPolicy`
 - `KubernetesPersistentVolumeClaim`
@@ -6027,7 +6027,7 @@ Allowed values (use exactly as shown):
 - `KubernetesBackendTlsPolicy`
 - `KubernetesIstioBaseCrds`
 - `KubernetesIstio`
-- `KubernetesDestinationRule` -- Istio API components (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
+- `KubernetesDestinationRule` -- Istio API kinds (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
 - `KubernetesServiceEntry`
 - `KubernetesPeerAuthentication`
 - `KubernetesRequestAuthentication`
@@ -7726,8 +7726,8 @@ The orchestrator resolves this and populates the value before invoking IaC modul
 Allowed values (use exactly as shown):
 
 - `unspecified` -- 0: Default/unspecified
-- `TestCloudResourceGeneric` -- 1–49: Test/dev/custom
-- `TestCloudResourceKubernetes`
+- `TestCatalogKindGeneric` -- 1–49: Test/dev/custom
+- `TestCatalogKindKubernetes`
 - `AwsAlb` -- 1000–1999: AWS resources AwsSubnet is a prerequisite because an ALB requires at least two subnets in different availability zones -- the spec's subnet references must resolve before the load balancer can be created.
 - `AwsCertManagerCert`
 - `AwsCloudFront`
@@ -7981,7 +7981,7 @@ Allowed values (use exactly as shown):
 - `AzureLinuxWebApp` -- AzureServicePlan is a prerequisite because a web app runs on a referenced plan (the resource group arrives transitively through the plan).
 - `AzureContainerAppJob` -- AzureContainerAppEnvironment is a prerequisite because a job runs inside a referenced environment (the resource group arrives transitively through it).
 - `AzureContainerAppEnvironmentStorage` -- AzureContainerAppEnvironment is a prerequisite because the storage registration lives on a referenced environment. The Azure Files share and storage account are deliberately NOT registry prerequisites: storage-account names are globally unique, so scenarios bring their own scenario-local account + share fixtures.
-- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr component is registered on a referenced environment.
+- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr kind is registered on a referenced environment.
 - `AzureContainerAppEnvironmentCertificate` -- AzureContainerAppEnvironment is a prerequisite because the certificate is stored on a referenced environment.
 - `AzureContainerAppEnvironmentManagedCertificate` -- AzureContainerAppEnvironment is a prerequisite because the managed certificate is provisioned on a referenced environment.
 - `AzureLogAnalyticsWorkspace` -- AzureResourceGroup is a prerequisite because the workspace is created inside a referenced resource group that must already exist.
@@ -7991,7 +7991,7 @@ Allowed values (use exactly as shown):
 - `AzureMonitorMetricAlert` -- AzureMonitorActionGroup is a prerequisite because a metric alert's actions fire into a referenced action group (the resource group chains transitively); alert scopes are polymorphic.
 - `AzureMonitorScheduledQueryAlert` -- AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a referenced workspace scope; AzureMonitorActionGroup because its action fires into a referenced action group.
 - `AzureMonitorActivityLogAlert` -- AzureMonitorActionGroup is a prerequisite because an activity log alert's actions fire into a referenced action group (the resource group chains transitively). The alert itself is subscription-global and its scopes are polymorphic.
-- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the component).
+- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the kind).
 - `AzureUserAssignedIdentity` -- AzureResourceGroup is a prerequisite because the identity is created inside a referenced resource group that must already exist.
 - `AzureRoleAssignment` -- AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because an assignment grants a role at a referenced scope (most commonly a resource group) to a referenced principal (most commonly a managed identity) -- both must exist before the grant can be written.
 - `AzureRoleDefinition` -- AzureResourceGroup is a prerequisite because a custom role definition is created at a referenced scope, most commonly a resource group in composed environments -- the scope must exist before the definition can be written.
@@ -8316,7 +8316,7 @@ Allowed values (use exactly as shown):
 - `KubernetesHelmRelease`
 - `KubernetesConfigMap`
 - `KubernetesServiceAccount`
-- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one component: "grant these permissions to these subjects in this scope".
+- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one kind: "grant these permissions to these subjects in this scope".
 - `KubernetesIngress`
 - `KubernetesNetworkPolicy`
 - `KubernetesPersistentVolumeClaim`
@@ -8348,7 +8348,7 @@ Allowed values (use exactly as shown):
 - `KubernetesBackendTlsPolicy`
 - `KubernetesIstioBaseCrds`
 - `KubernetesIstio`
-- `KubernetesDestinationRule` -- Istio API components (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
+- `KubernetesDestinationRule` -- Istio API kinds (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
 - `KubernetesServiceEntry`
 - `KubernetesPeerAuthentication`
 - `KubernetesRequestAuthentication`
@@ -8730,8 +8730,8 @@ The orchestrator resolves this before invoking IaC modules.
 Allowed values (use exactly as shown):
 
 - `unspecified` -- 0: Default/unspecified
-- `TestCloudResourceGeneric` -- 1–49: Test/dev/custom
-- `TestCloudResourceKubernetes`
+- `TestCatalogKindGeneric` -- 1–49: Test/dev/custom
+- `TestCatalogKindKubernetes`
 - `AwsAlb` -- 1000–1999: AWS resources AwsSubnet is a prerequisite because an ALB requires at least two subnets in different availability zones -- the spec's subnet references must resolve before the load balancer can be created.
 - `AwsCertManagerCert`
 - `AwsCloudFront`
@@ -8985,7 +8985,7 @@ Allowed values (use exactly as shown):
 - `AzureLinuxWebApp` -- AzureServicePlan is a prerequisite because a web app runs on a referenced plan (the resource group arrives transitively through the plan).
 - `AzureContainerAppJob` -- AzureContainerAppEnvironment is a prerequisite because a job runs inside a referenced environment (the resource group arrives transitively through it).
 - `AzureContainerAppEnvironmentStorage` -- AzureContainerAppEnvironment is a prerequisite because the storage registration lives on a referenced environment. The Azure Files share and storage account are deliberately NOT registry prerequisites: storage-account names are globally unique, so scenarios bring their own scenario-local account + share fixtures.
-- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr component is registered on a referenced environment.
+- `AzureContainerAppEnvironmentDaprComponent` -- AzureContainerAppEnvironment is a prerequisite because the Dapr kind is registered on a referenced environment.
 - `AzureContainerAppEnvironmentCertificate` -- AzureContainerAppEnvironment is a prerequisite because the certificate is stored on a referenced environment.
 - `AzureContainerAppEnvironmentManagedCertificate` -- AzureContainerAppEnvironment is a prerequisite because the managed certificate is provisioned on a referenced environment.
 - `AzureLogAnalyticsWorkspace` -- AzureResourceGroup is a prerequisite because the workspace is created inside a referenced resource group that must already exist.
@@ -8995,7 +8995,7 @@ Allowed values (use exactly as shown):
 - `AzureMonitorMetricAlert` -- AzureMonitorActionGroup is a prerequisite because a metric alert's actions fire into a referenced action group (the resource group chains transitively); alert scopes are polymorphic.
 - `AzureMonitorScheduledQueryAlert` -- AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a referenced workspace scope; AzureMonitorActionGroup because its action fires into a referenced action group.
 - `AzureMonitorActivityLogAlert` -- AzureMonitorActionGroup is a prerequisite because an activity log alert's actions fire into a referenced action group (the resource group chains transitively). The alert itself is subscription-global and its scopes are polymorphic.
-- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the component).
+- `AzureApplicationInsightsStandardWebTest` -- AzureApplicationInsights is a prerequisite because a standard web test binds to a referenced Application Insights component (the resource group chains transitively through the kind).
 - `AzureUserAssignedIdentity` -- AzureResourceGroup is a prerequisite because the identity is created inside a referenced resource group that must already exist.
 - `AzureRoleAssignment` -- AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because an assignment grants a role at a referenced scope (most commonly a resource group) to a referenced principal (most commonly a managed identity) -- both must exist before the grant can be written.
 - `AzureRoleDefinition` -- AzureResourceGroup is a prerequisite because a custom role definition is created at a referenced scope, most commonly a resource group in composed environments -- the scope must exist before the definition can be written.
@@ -9320,7 +9320,7 @@ Allowed values (use exactly as shown):
 - `KubernetesHelmRelease`
 - `KubernetesConfigMap`
 - `KubernetesServiceAccount`
-- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one component: "grant these permissions to these subjects in this scope".
+- `KubernetesRbac` -- Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one kind: "grant these permissions to these subjects in this scope".
 - `KubernetesIngress`
 - `KubernetesNetworkPolicy`
 - `KubernetesPersistentVolumeClaim`
@@ -9352,7 +9352,7 @@ Allowed values (use exactly as shown):
 - `KubernetesBackendTlsPolicy`
 - `KubernetesIstioBaseCrds`
 - `KubernetesIstio`
-- `KubernetesDestinationRule` -- Istio API components (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
+- `KubernetesDestinationRule` -- Istio API kinds (mesh traffic policy, security, telemetry). The seven typed resources below (4053–4059) require the Istio CRDs on the cluster, provided by the lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh KubernetesIstio (852).
 - `KubernetesServiceEntry`
 - `KubernetesPeerAuthentication`
 - `KubernetesRequestAuthentication`
@@ -10912,7 +10912,7 @@ Hard rules — unschedulable until satisfied. Use sparingly; they can deadlock r
 `map<string, string>` · required
 
 Labels of the pods to match against — for self-anti-affinity, the workload's own
-selector labels (exported as the `selector_labels` stack output).
+selector labels (exported as the `selector_labels` output).
 
 - rule: {"map":{"minPairs":"1"}}
 
@@ -10956,7 +10956,7 @@ Preference weight, 1–100.
 `map<string, string>` · required
 
 Labels of the pods to match against — for self-anti-affinity, the workload's own
-selector labels (exported as the `selector_labels` stack output).
+selector labels (exported as the `selector_labels` output).
 
 - rule: {"map":{"minPairs":"1"}}
 
@@ -10994,7 +10994,7 @@ Hard rules — unschedulable until satisfied. Use sparingly; they can deadlock r
 `map<string, string>` · required
 
 Labels of the pods to match against — for self-anti-affinity, the workload's own
-selector labels (exported as the `selector_labels` stack output).
+selector labels (exported as the `selector_labels` output).
 
 - rule: {"map":{"minPairs":"1"}}
 
@@ -11038,7 +11038,7 @@ Preference weight, 1–100.
 `map<string, string>` · required
 
 Labels of the pods to match against — for self-anti-affinity, the workload's own
-selector labels (exported as the `selector_labels` stack output).
+selector labels (exported as the `selector_labels` output).
 
 - rule: {"map":{"minPairs":"1"}}
 

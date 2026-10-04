@@ -39,7 +39,7 @@ type KubernetesPersistentVolumeClaim struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the PersistentVolumeClaim resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the PersistentVolumeClaim.
 	// Defines the storage request, access modes, and provisioning class.
 	Spec *KubernetesPersistentVolumeClaimSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -94,7 +94,7 @@ func (x *KubernetesPersistentVolumeClaim) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPersistentVolumeClaim) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPersistentVolumeClaim) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -123,7 +123,7 @@ type KubernetesPersistentVolumeClaimStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the PersistentVolumeClaim deployment.
 	// Contains the claim name and namespace workloads mount by.
-	Outputs       *KubernetesPersistentVolumeClaimStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesPersistentVolumeClaimOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -158,7 +158,7 @@ func (*KubernetesPersistentVolumeClaimStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPersistentVolumeClaimStatus) GetOutputs() *KubernetesPersistentVolumeClaimStackOutputs {
+func (x *KubernetesPersistentVolumeClaimStatus) GetOutputs() *KubernetesPersistentVolumeClaimOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -176,11 +176,11 @@ const file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_api_proto
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fKubernetesPersistentVolumeClaimR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x80\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x80\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2d.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12~\n" +
-	"\x06status\x18\x05 \x01(\v2f.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatusR\x06status\"\xb0\x01\n" +
-	"%KubernetesPersistentVolumeClaimStatus\x12\x86\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2l.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackOutputsR\aoutputsB\xf3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2f.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatusR\x06status\"\xab\x01\n" +
+	"%KubernetesPersistentVolumeClaimStatus\x12\x81\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimOutputsR\aoutputsB\xf3\x03\n" +
 	"Ccom.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1B\bApiProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1;kubernetespersistentvolumeclaimv1alpha1\xa2\x02\x04DPKK\xaa\x02?Dev.Planton.Kubernetes.Kubernetespersistentvolumeclaim.V1alpha1\xca\x02?Dev\\Planton\\Kubernetes\\Kubernetespersistentvolumeclaim\\V1alpha1\xe2\x02KDev\\Planton\\Kubernetes\\Kubernetespersistentvolumeclaim\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Kubernetes::Kubernetespersistentvolumeclaim::V1alpha1b\x06proto3"
 
 var (
@@ -197,17 +197,17 @@ func file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_api_proto_
 
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPersistentVolumeClaim)(nil),             // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim
-	(*KubernetesPersistentVolumeClaimStatus)(nil),       // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPersistentVolumeClaimSpec)(nil),         // 3: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimSpec
-	(*KubernetesPersistentVolumeClaimStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackOutputs
+	(*KubernetesPersistentVolumeClaim)(nil),        // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim
+	(*KubernetesPersistentVolumeClaimStatus)(nil),  // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPersistentVolumeClaimSpec)(nil),    // 3: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimSpec
+	(*KubernetesPersistentVolumeClaimOutputs)(nil), // 4: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimOutputs
 }
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim.spec:type_name -> dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimSpec
 	1, // 2: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim.status:type_name -> dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatus
-	4, // 3: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatus.outputs:type_name -> dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStatus.outputs:type_name -> dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

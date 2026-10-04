@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpTpuVmSpec defines a Cloud TPU VM (`google_tpu_v2_vm`) -- a slice of
 Google's AI accelerators (v2 through v6e / Trillium) with its host VMs,

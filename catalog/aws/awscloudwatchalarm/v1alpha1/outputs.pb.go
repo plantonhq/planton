@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchAlarmStackOutputs captures observable identifiers from a
+// AwsCloudwatchAlarmOutputs captures observable identifiers from a
 // provisioned CloudWatch metric alarm.
 //
 // The primary output is `alarm_arn`, which downstream resources (such as
 // composite alarms or dashboards) can reference via StringValueOrRef. The
 // `alarm_name` is useful for operational tooling and cross-referencing in
 // the CloudWatch console.
-type AwsCloudwatchAlarmStackOutputs struct {
+type AwsCloudwatchAlarmOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the metric alarm. This is the primary
 	// identifier used to reference the alarm in composite alarms, dashboards,
@@ -42,20 +42,20 @@ type AwsCloudwatchAlarmStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchAlarmStackOutputs) Reset() {
-	*x = AwsCloudwatchAlarmStackOutputs{}
+func (x *AwsCloudwatchAlarmOutputs) Reset() {
+	*x = AwsCloudwatchAlarmOutputs{}
 	mi := &file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchAlarmStackOutputs) String() string {
+func (x *AwsCloudwatchAlarmOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchAlarmStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchAlarmOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchAlarmStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchAlarmOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,19 +67,19 @@ func (x *AwsCloudwatchAlarmStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchAlarmStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchAlarmStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchAlarmOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchAlarmOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchAlarmStackOutputs) GetAlarmArn() string {
+func (x *AwsCloudwatchAlarmOutputs) GetAlarmArn() string {
 	if x != nil {
 		return x.AlarmArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchAlarmStackOutputs) GetAlarmName() string {
+func (x *AwsCloudwatchAlarmOutputs) GetAlarmName() string {
 	if x != nil {
 		return x.AlarmName
 	}
@@ -90,8 +90,8 @@ var File_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awscloudwatchalarm/v1alpha1/outputs.proto\x12+dev.planton.aws.awscloudwatchalarm.v1alpha1\"\\\n" +
-	"\x1eAwsCloudwatchAlarmStackOutputs\x12\x1b\n" +
+	"5catalog/aws/awscloudwatchalarm/v1alpha1/outputs.proto\x12+dev.planton.aws.awscloudwatchalarm.v1alpha1\"W\n" +
+	"\x19AwsCloudwatchAlarmOutputs\x12\x1b\n" +
 	"\talarm_arn\x18\x01 \x01(\tR\balarmArn\x12\x1d\n" +
 	"\n" +
 	"alarm_name\x18\x02 \x01(\tR\talarmNameB\xf1\x02\n" +
@@ -111,7 +111,7 @@ func file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchAlarmStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchalarm.v1alpha1.AwsCloudwatchAlarmStackOutputs
+	(*AwsCloudwatchAlarmOutputs)(nil), // 0: dev.planton.aws.awscloudwatchalarm.v1alpha1.AwsCloudwatchAlarmOutputs
 }
 var file_catalog_aws_awscloudwatchalarm_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -31,7 +31,7 @@ type KubernetesSolr struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesSolrSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesSolr) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesSolr) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesSolr) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesSolr) GetStatus() *KubernetesSolrStatus {
 // solr-kubernetes status
 type KubernetesSolrStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesSolrStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesSolrOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesSolrStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessolr_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesSolrStatus) GetOutputs() *KubernetesSolrStackOutputs {
+func (x *KubernetesSolrStatus) GetOutputs() *KubernetesSolrOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetessolr_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eKubernetesSolrR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
 	"\x04spec\x18\x04 \x01(\v2B.dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\\\n" +
-	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStatusR\x06status\"|\n" +
-	"\x14KubernetesSolrStatus\x12d\n" +
-	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStatusR\x06status\"w\n" +
+	"\x14KubernetesSolrStatus\x12_\n" +
+	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrOutputsR\aoutputsB\xfb\x02\n" +
 	"2com.dev.planton.kubernetes.kubernetessolr.v1alpha1B\bApiProtoP\x01Z^github.com/plantonhq/planton/catalog/kubernetes/kubernetessolr/v1alpha1;kubernetessolrv1alpha1\xa2\x02\x04DPKK\xaa\x02.Dev.Planton.Kubernetes.Kubernetessolr.V1alpha1\xca\x02.Dev\\Planton\\Kubernetes\\Kubernetessolr\\V1alpha1\xe2\x02:Dev\\Planton\\Kubernetes\\Kubernetessolr\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Kubernetes::Kubernetessolr::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetessolr_v1alpha1_api_proto_msgTypes = make([]
 var file_catalog_kubernetes_kubernetessolr_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesSolr)(nil),               // 0: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolr
 	(*KubernetesSolrStatus)(nil),         // 1: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesSolrSpec)(nil),           // 3: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrSpec
-	(*KubernetesSolrStackOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStackOutputs
+	(*KubernetesSolrOutputs)(nil),        // 4: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrOutputs
 }
 var file_catalog_kubernetes_kubernetessolr_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolr.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolr.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolr.spec:type_name -> dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrSpec
 	1, // 2: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolr.status:type_name -> dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStatus
-	4, // 3: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

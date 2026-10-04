@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureAvailabilitySetStackOutputs** captures the outputs from
+// **AzureAvailabilitySetOutputs** captures the outputs from
 // provisioning an availability set.
-type AzureAvailabilitySetStackOutputs struct {
+type AzureAvailabilitySetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The availability set's Azure Resource Manager ID -- what VMs
 	// reference to join the set.
@@ -34,20 +34,20 @@ type AzureAvailabilitySetStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureAvailabilitySetStackOutputs) Reset() {
-	*x = AzureAvailabilitySetStackOutputs{}
+func (x *AzureAvailabilitySetOutputs) Reset() {
+	*x = AzureAvailabilitySetOutputs{}
 	mi := &file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureAvailabilitySetStackOutputs) String() string {
+func (x *AzureAvailabilitySetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureAvailabilitySetStackOutputs) ProtoMessage() {}
+func (*AzureAvailabilitySetOutputs) ProtoMessage() {}
 
-func (x *AzureAvailabilitySetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureAvailabilitySetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureAvailabilitySetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureAvailabilitySetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureAvailabilitySetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureAvailabilitySetOutputs.ProtoReflect.Descriptor instead.
+func (*AzureAvailabilitySetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureAvailabilitySetStackOutputs) GetAvailabilitySetId() string {
+func (x *AzureAvailabilitySetOutputs) GetAvailabilitySetId() string {
 	if x != nil {
 		return x.AvailabilitySetId
 	}
 	return ""
 }
 
-func (x *AzureAvailabilitySetStackOutputs) GetAvailabilitySetName() string {
+func (x *AzureAvailabilitySetOutputs) GetAvailabilitySetName() string {
 	if x != nil {
 		return x.AvailabilitySetName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureavailabilityset/v1alpha1/outputs.proto\x12/dev.planton.azure.azureavailabilityset.v1alpha1\"\x86\x01\n" +
-	" AzureAvailabilitySetStackOutputs\x12.\n" +
+	"9catalog/azure/azureavailabilityset/v1alpha1/outputs.proto\x12/dev.planton.azure.azureavailabilityset.v1alpha1\"\x81\x01\n" +
+	"\x1bAzureAvailabilitySetOutputs\x12.\n" +
 	"\x13availability_set_id\x18\x01 \x01(\tR\x11availabilitySetId\x122\n" +
 	"\x15availability_set_name\x18\x02 \x01(\tR\x13availabilitySetNameB\x8b\x03\n" +
 	"3com.dev.planton.azure.azureavailabilityset.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azureavailabilityset/v1alpha1;azureavailabilitysetv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azureavailabilityset.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azureavailabilityset\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azureavailabilityset\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azureavailabilityset::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureAvailabilitySetStackOutputs)(nil), // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackOutputs
+	(*AzureAvailabilitySetOutputs)(nil), // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetOutputs
 }
 var file_catalog_azure_azureavailabilityset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

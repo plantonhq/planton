@@ -50,7 +50,7 @@ const (
 //     an access point whose path does not exist fails.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsEfsAccessPointSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

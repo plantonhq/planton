@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: kubernetessignoz
 spec:
@@ -18,7 +18,7 @@ spec:
         persistent_storage: 1Gi
         basis: 1 server x (100m CPU / 100Mi chart-default requests, 1Gi chart-default state volume) + 1 collector x (100m CPU / 200Mi chart-default requests) -- the preset declares no sizing, so every number is the pinned chart's (0.133.0) own default; no limits apply (the chart ships requests only)
       exclusions:
-        - every trace, metric and log is stored in the composed KubernetesClickHouse -- the telemetry store's capacity, and its growth with telemetry volume and retention, rides that component's own footprint, never this one's
+        - every trace, metric and log is stored in the composed KubernetesClickHouse -- the telemetry store's capacity, and its growth with telemetry volume and retention, rides that kind's own footprint, never this one's
         - the schema migrator runs as Jobs (the chart's default) whose capacity is reserved only while their pods run; their sizing is the chart's, with no typed seam
         - helm_values merges LAST over the typed rendering and can override modeled values, including resources, replicas and storage -- this footprint describes the spec's declaration plus the pinned chart's defaults
         - the dollar value of this capacity is the target cluster's node and storage-class economics
@@ -32,7 +32,7 @@ spec:
         basis: 1 server x (500m CPU / 1Gi requests, 2 CPU / 4Gi limits, 5Gi state volume) + 2 collector replicas at the HPA floor x (500m CPU / 1Gi requests, 2 CPU / 2Gi limits)
       exclusions:
         - the collector scales on an HPA -- this footprint states its min_replicas floor (2); runtime scaling can reach 8 replicas, each new replica adding its full declared resources (500m CPU / 1Gi requests, 2 CPU / 2Gi limits)
-        - every trace, metric and log is stored in the composed KubernetesClickHouse -- the telemetry store's capacity, and its growth with telemetry volume and retention, rides that component's own footprint, never this one's
+        - every trace, metric and log is stored in the composed KubernetesClickHouse -- the telemetry store's capacity, and its growth with telemetry volume and retention, rides that kind's own footprint, never this one's
         - the schema migrator runs as Jobs (the chart's default) whose capacity is reserved only while their pods run; their sizing is the chart's, with no typed seam
         - helm_values merges LAST over the typed rendering and can override modeled values, including resources, replicas and storage -- this footprint describes the spec's declaration
         - the dollar value of this capacity is the target cluster's node and storage-class economics

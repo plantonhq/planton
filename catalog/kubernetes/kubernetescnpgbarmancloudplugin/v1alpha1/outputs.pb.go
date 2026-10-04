@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesCnpgBarmanCloudPluginStackOutputs** -- the composition handles
+// **KubernetesCnpgBarmanCloudPluginOutputs** -- the composition handles
 // a deployed Barman Cloud plugin exports. The plugin has no per-database
 // surface of its own: KubernetesPostgres backup blocks name the plugin
 // inside their Cluster and point at ObjectStore resources they render
 // themselves, so the handles here identify the installation.
-type KubernetesCnpgBarmanCloudPluginStackOutputs struct {
+type KubernetesCnpgBarmanCloudPluginOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the plugin runs in -- the CloudNativePG operator's namespace,
 	// by requirement.
@@ -43,20 +43,20 @@ type KubernetesCnpgBarmanCloudPluginStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) Reset() {
-	*x = KubernetesCnpgBarmanCloudPluginStackOutputs{}
+func (x *KubernetesCnpgBarmanCloudPluginOutputs) Reset() {
+	*x = KubernetesCnpgBarmanCloudPluginOutputs{}
 	mi := &file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) String() string {
+func (x *KubernetesCnpgBarmanCloudPluginOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCnpgBarmanCloudPluginStackOutputs) ProtoMessage() {}
+func (*KubernetesCnpgBarmanCloudPluginOutputs) ProtoMessage() {}
 
-func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCnpgBarmanCloudPluginOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCnpgBarmanCloudPluginStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesCnpgBarmanCloudPluginStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCnpgBarmanCloudPluginOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesCnpgBarmanCloudPluginOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) GetNamespace() string {
+func (x *KubernetesCnpgBarmanCloudPluginOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) GetReleaseName() string {
+func (x *KubernetesCnpgBarmanCloudPluginOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesCnpgBarmanCloudPluginStackOutputs) GetPluginName() string {
+func (x *KubernetesCnpgBarmanCloudPluginOutputs) GetPluginName() string {
 	if x != nil {
 		return x.PluginName
 	}
@@ -98,8 +98,8 @@ var File_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_pro
 
 const file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/kubernetes/kubernetescnpgbarmancloudplugin/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1\"\x8f\x01\n" +
-	"+KubernetesCnpgBarmanCloudPluginStackOutputs\x12\x1c\n" +
+	"Icatalog/kubernetes/kubernetescnpgbarmancloudplugin/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1\"\x8a\x01\n" +
+	"&KubernetesCnpgBarmanCloudPluginOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12\x1f\n" +
 	"\vplugin_name\x18\x03 \x01(\tR\n" +
@@ -120,7 +120,7 @@ func file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_pr
 
 var file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesCnpgBarmanCloudPluginStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginStackOutputs
+	(*KubernetesCnpgBarmanCloudPluginOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginOutputs
 }
 var file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -34,7 +34,7 @@ type AzureLoadBalancer struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureLoadBalancerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureLoadBalancer) GetKind() string {
 	return ""
 }
 
-func (x *AzureLoadBalancer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureLoadBalancer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureLoadBalancer) GetStatus() *AzureLoadBalancerStatus {
 // AzureLoadBalancerStatus holds the deployment status and outputs.
 type AzureLoadBalancerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureLoadBalancerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureLoadBalancerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureLoadBalancerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureloadbalancer_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureLoadBalancerStatus) GetOutputs() *AzureLoadBalancerStackOutputs {
+func (x *AzureLoadBalancerStatus) GetOutputs() *AzureLoadBalancerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azureloadbalancer_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AzureLoadBalancerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatusR\x06status\"\x80\x01\n" +
-	"\x17AzureLoadBalancerStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputsR\aoutputsB\xf2\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatusR\x06status\"{\n" +
+	"\x17AzureLoadBalancerStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputsR\aoutputsB\xf2\x02\n" +
 	"0com.dev.planton.azure.azureloadbalancer.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/azure/azureloadbalancer/v1alpha1;azureloadbalancerv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Azure.Azureloadbalancer.V1alpha1\xca\x02,Dev\\Planton\\Azure\\Azureloadbalancer\\V1alpha1\xe2\x028Dev\\Planton\\Azure\\Azureloadbalancer\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Azure::Azureloadbalancer::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azureloadbalancer_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azureloadbalancer_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureloadbalancer_v1alpha1_api_proto_goTypes = []any{
-	(*AzureLoadBalancer)(nil),             // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancer
-	(*AzureLoadBalancerStatus)(nil),       // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureLoadBalancerSpec)(nil),         // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerSpec
-	(*AzureLoadBalancerStackOutputs)(nil), // 4: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs
+	(*AzureLoadBalancer)(nil),            // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancer
+	(*AzureLoadBalancerStatus)(nil),      // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureLoadBalancerSpec)(nil),        // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerSpec
+	(*AzureLoadBalancerOutputs)(nil),     // 4: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs
 }
 var file_catalog_azure_azureloadbalancer_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancer.spec:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerSpec
 	1, // 2: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancer.status:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatus
-	4, // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatus.outputs:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs
+	4, // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStatus.outputs:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -34,7 +34,7 @@ type AzureContainerInstance struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureContainerInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureContainerInstance) GetKind() string {
 	return ""
 }
 
-func (x *AzureContainerInstance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureContainerInstance) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureContainerInstance) GetStatus() *AzureContainerInstanceStatus {
 // group deployment.
 type AzureContainerInstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-container-instance stack-outputs
-	Outputs       *AzureContainerInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-container-instance outputs
+	Outputs       *AzureContainerInstanceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureContainerInstanceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerinstance_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureContainerInstanceStatus) GetOutputs() *AzureContainerInstanceStackOutputs {
+func (x *AzureContainerInstanceStatus) GetOutputs() *AzureContainerInstanceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azurecontainerinstance_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16AzureContainerInstanceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatusR\x06status\"\x8f\x01\n" +
-	"\x1cAzureContainerInstanceStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStackOutputsR\aoutputsB\x95\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatusR\x06status\"\x8a\x01\n" +
+	"\x1cAzureContainerInstanceStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceOutputsR\aoutputsB\x95\x03\n" +
 	"5com.dev.planton.azure.azurecontainerinstance.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/azure/azurecontainerinstance/v1alpha1;azurecontainerinstancev1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Azure.Azurecontainerinstance.V1alpha1\xca\x021Dev\\Planton\\Azure\\Azurecontainerinstance\\V1alpha1\xe2\x02=Dev\\Planton\\Azure\\Azurecontainerinstance\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Azure::Azurecontainerinstance::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azurecontainerinstance_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_azure_azurecontainerinstance_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecontainerinstance_v1alpha1_api_proto_goTypes = []any{
-	(*AzureContainerInstance)(nil),             // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance
-	(*AzureContainerInstanceStatus)(nil),       // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureContainerInstanceSpec)(nil),         // 3: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceSpec
-	(*AzureContainerInstanceStackOutputs)(nil), // 4: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStackOutputs
+	(*AzureContainerInstance)(nil),        // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance
+	(*AzureContainerInstanceStatus)(nil),  // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureContainerInstanceSpec)(nil),    // 3: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceSpec
+	(*AzureContainerInstanceOutputs)(nil), // 4: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceOutputs
 }
 var file_catalog_azure_azurecontainerinstance_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance.spec:type_name -> dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceSpec
 	1, // 2: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance.status:type_name -> dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatus
-	4, // 3: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatus.outputs:type_name -> dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStackOutputs
+	4, // 3: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStatus.outputs:type_name -> dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -97,13 +97,13 @@ type Auth0User struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0User" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	//   - name: Unique identifier for the user within Planton (never sent to Auth0;
 	//     the email, username, or phone number is the sign-in identifier)
 	//   - org: Organization that owns this user
 	//   - env: Environment (development, staging, production)
 	//   - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the Auth0 user: the
 	// connection, the profile, the password posture, roles, and permissions.
 	Spec *Auth0UserSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -159,7 +159,7 @@ func (x *Auth0User) GetKind() string {
 	return ""
 }
 
-func (x *Auth0User) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0User) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -184,10 +184,10 @@ func (x *Auth0User) GetStatus() *Auth0UserStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type Auth0UserStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the Auth0 user deployment: the
+	// outputs contains the outputs from the Auth0 user deployment: the
 	// user's identity-provider subject, the profile as stored, the connection,
 	// and the module-minted password when one was generated.
-	Outputs       *Auth0UserStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0UserOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -222,7 +222,7 @@ func (*Auth0UserStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0user_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0UserStatus) GetOutputs() *Auth0UserStackOutputs {
+func (x *Auth0UserStatus) GetOutputs() *Auth0UserOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -240,11 +240,11 @@ const file_catalog_auth0_auth0user_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12$\n" +
 	"\x04kind\x18\x02 \x01(\tB\x10\xbaH\rr\v\n" +
 	"\tAuth0UserR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
 	"\x04spec\x18\x04 \x01(\v23.dev.planton.auth0.auth0user.v1alpha1.Auth0UserSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12M\n" +
-	"\x06status\x18\x05 \x01(\v25.dev.planton.auth0.auth0user.v1alpha1.Auth0UserStatusR\x06status\"h\n" +
-	"\x0fAuth0UserStatus\x12U\n" +
-	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.auth0.auth0user.v1alpha1.Auth0UserStackOutputsR\aoutputsB\xba\x02\n" +
+	"\x06status\x18\x05 \x01(\v25.dev.planton.auth0.auth0user.v1alpha1.Auth0UserStatusR\x06status\"c\n" +
+	"\x0fAuth0UserStatus\x12P\n" +
+	"\aoutputs\x18\x01 \x01(\v26.dev.planton.auth0.auth0user.v1alpha1.Auth0UserOutputsR\aoutputsB\xba\x02\n" +
 	"(com.dev.planton.auth0.auth0user.v1alpha1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/catalog/auth0/auth0user/v1alpha1;auth0userv1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Auth0.Auth0user.V1alpha1\xca\x02$Dev\\Planton\\Auth0\\Auth0user\\V1alpha1\xe2\x020Dev\\Planton\\Auth0\\Auth0user\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Auth0::Auth0user::V1alpha1b\x06proto3"
 
 var (
@@ -263,15 +263,15 @@ var file_catalog_auth0_auth0user_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_auth0_auth0user_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0User)(nil),                    // 0: dev.planton.auth0.auth0user.v1alpha1.Auth0User
 	(*Auth0UserStatus)(nil),              // 1: dev.planton.auth0.auth0user.v1alpha1.Auth0UserStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0UserSpec)(nil),                // 3: dev.planton.auth0.auth0user.v1alpha1.Auth0UserSpec
-	(*Auth0UserStackOutputs)(nil),        // 4: dev.planton.auth0.auth0user.v1alpha1.Auth0UserStackOutputs
+	(*Auth0UserOutputs)(nil),             // 4: dev.planton.auth0.auth0user.v1alpha1.Auth0UserOutputs
 }
 var file_catalog_auth0_auth0user_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0user.v1alpha1.Auth0User.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0user.v1alpha1.Auth0User.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0user.v1alpha1.Auth0User.spec:type_name -> dev.planton.auth0.auth0user.v1alpha1.Auth0UserSpec
 	1, // 2: dev.planton.auth0.auth0user.v1alpha1.Auth0User.status:type_name -> dev.planton.auth0.auth0user.v1alpha1.Auth0UserStatus
-	4, // 3: dev.planton.auth0.auth0user.v1alpha1.Auth0UserStatus.outputs:type_name -> dev.planton.auth0.auth0user.v1alpha1.Auth0UserStackOutputs
+	4, // 3: dev.planton.auth0.auth0user.v1alpha1.Auth0UserStatus.outputs:type_name -> dev.planton.auth0.auth0user.v1alpha1.Auth0UserOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

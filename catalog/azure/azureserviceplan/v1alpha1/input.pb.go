@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureServicePlanStackInput is the input to the IaC module.
+// AzureServicePlanIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureServicePlanStackInput struct {
+type AzureServicePlanIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *AzureServicePlan `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureServicePlanStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureServicePlanStackInput) Reset() {
-	*x = AzureServicePlanStackInput{}
+func (x *AzureServicePlanIacInput) Reset() {
+	*x = AzureServicePlanIacInput{}
 	mi := &file_catalog_azure_azureserviceplan_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServicePlanStackInput) String() string {
+func (x *AzureServicePlanIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServicePlanStackInput) ProtoMessage() {}
+func (*AzureServicePlanIacInput) ProtoMessage() {}
 
-func (x *AzureServicePlanStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureServicePlanIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureserviceplan_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureServicePlanStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServicePlanStackInput.ProtoReflect.Descriptor instead.
-func (*AzureServicePlanStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServicePlanIacInput.ProtoReflect.Descriptor instead.
+func (*AzureServicePlanIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureserviceplan_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServicePlanStackInput) GetTarget() *AzureServicePlan {
+func (x *AzureServicePlanIacInput) GetTarget() *AzureServicePlan {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureServicePlanStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureServicePlanIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureserviceplan_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_azure_azureserviceplan_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/azure/azureserviceplan/v1alpha1/input.proto\x12+dev.planton.azure.azureserviceplan.v1alpha1\x1a1catalog/azure/azureserviceplan/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc4\x01\n" +
-	"\x1aAzureServicePlanStackInput\x12U\n" +
+	"3catalog/azure/azureserviceplan/v1alpha1/input.proto\x12+dev.planton.azure.azureserviceplan.v1alpha1\x1a1catalog/azure/azureserviceplan/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc2\x01\n" +
+	"\x18AzureServicePlanIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xed\x02\n" +
 	"/com.dev.planton.azure.azureserviceplan.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azureserviceplan_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azureserviceplan_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureserviceplan_v1alpha1_input_proto_goTypes = []any{
-	(*AzureServicePlanStackInput)(nil), // 0: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanStackInput
-	(*AzureServicePlan)(nil),           // 1: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlan
-	(*azure.AzureProviderConfig)(nil),  // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureServicePlanIacInput)(nil),  // 0: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanIacInput
+	(*AzureServicePlan)(nil),          // 1: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlan
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureserviceplan_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanStackInput.target:type_name -> dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlan
-	2, // 1: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanIacInput.target:type_name -> dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlan
+	2, // 1: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

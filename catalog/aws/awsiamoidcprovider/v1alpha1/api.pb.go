@@ -35,7 +35,7 @@ type AwsIamOidcProvider struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration: the issuer URL, allowed client IDs, and optional thumbprints.
 	Spec *AwsIamOidcProviderSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsIamOidcProvider) GetKind() string {
 	return ""
 }
 
-func (x *AwsIamOidcProvider) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsIamOidcProvider) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ func (x *AwsIamOidcProvider) GetStatus() *AwsIamOidcProviderStatus {
 type AwsIamOidcProviderStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsIamOidcProviderStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsIamOidcProviderOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsIamOidcProviderStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamoidcprovider_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsIamOidcProviderStatus) GetOutputs() *AwsIamOidcProviderStackOutputs {
+func (x *AwsIamOidcProviderStatus) GetOutputs() *AwsIamOidcProviderOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awsiamoidcprovider_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsIamOidcProviderR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsIamOidcProviderStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatusR\x06status\"|\n" +
+	"\x18AwsIamOidcProviderStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awsiamoidcprovider.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsiamoidcprovider/v1alpha1;awsiamoidcproviderv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsiamoidcprovider.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsiamoidcprovider\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsiamoidcprovider\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsiamoidcprovider::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awsiamoidcprovider_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_api_proto_goTypes = []any{
-	(*AwsIamOidcProvider)(nil),             // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider
-	(*AwsIamOidcProviderStatus)(nil),       // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsIamOidcProviderSpec)(nil),         // 3: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderSpec
-	(*AwsIamOidcProviderStackOutputs)(nil), // 4: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackOutputs
+	(*AwsIamOidcProvider)(nil),           // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider
+	(*AwsIamOidcProviderStatus)(nil),     // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsIamOidcProviderSpec)(nil),       // 3: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderSpec
+	(*AwsIamOidcProviderOutputs)(nil),    // 4: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderOutputs
 }
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider.spec:type_name -> dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderSpec
 	1, // 2: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider.status:type_name -> dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatus
-	4, // 3: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatus.outputs:type_name -> dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackOutputs
+	4, // 3: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStatus.outputs:type_name -> dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

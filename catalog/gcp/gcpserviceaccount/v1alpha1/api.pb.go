@@ -31,7 +31,7 @@ type GcpServiceAccount struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpServiceAccountSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpServiceAccount) GetKind() string {
 	return ""
 }
 
-func (x *GcpServiceAccount) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpServiceAccount) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *GcpServiceAccount) GetStatus() *GcpServiceAccountStatus {
 // gcp-service-account status
 type GcpServiceAccountStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	stack outputs
-	Outputs       *GcpServiceAccountStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	outputs
+	Outputs       *GcpServiceAccountOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*GcpServiceAccountStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpserviceaccount_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpServiceAccountStatus) GetOutputs() *GcpServiceAccountStackOutputs {
+func (x *GcpServiceAccountStatus) GetOutputs() *GcpServiceAccountOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_gcp_gcpserviceaccount_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11GcpServiceAccountR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatusR\x06status\"~\n" +
-	"\x17GcpServiceAccountStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatusR\x06status\"y\n" +
+	"\x17GcpServiceAccountStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.gcp.gcpserviceaccount.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpserviceaccount/v1alpha1;gcpserviceaccountv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpserviceaccount.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpserviceaccount\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpserviceaccount\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpserviceaccount::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_gcp_gcpserviceaccount_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_api_proto_goTypes = []any{
-	(*GcpServiceAccount)(nil),             // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount
-	(*GcpServiceAccountStatus)(nil),       // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpServiceAccountSpec)(nil),         // 3: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountSpec
-	(*GcpServiceAccountStackOutputs)(nil), // 4: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackOutputs
+	(*GcpServiceAccount)(nil),            // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount
+	(*GcpServiceAccountStatus)(nil),      // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpServiceAccountSpec)(nil),        // 3: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountSpec
+	(*GcpServiceAccountOutputs)(nil),     // 4: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountOutputs
 }
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount.spec:type_name -> dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountSpec
 	1, // 2: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount.status:type_name -> dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatus
-	4, // 3: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatus.outputs:type_name -> dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackOutputs
+	4, // 3: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStatus.outputs:type_name -> dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

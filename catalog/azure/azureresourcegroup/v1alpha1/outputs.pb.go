@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureResourceGroupStackOutputs** captures the outputs of provisioning an Azure Resource Group.
+// **AzureResourceGroupOutputs** captures the outputs of provisioning an Azure Resource Group.
 // These outputs are used by downstream Azure resources via StringValueOrRef to establish
 // the resource group dependency in infra chart DAGs.
-type AzureResourceGroupStackOutputs struct {
+type AzureResourceGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the resource group.
 	// Format: /subscriptions/{subscription-id}/resourceGroups/{resource-group-name}
@@ -39,20 +39,20 @@ type AzureResourceGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureResourceGroupStackOutputs) Reset() {
-	*x = AzureResourceGroupStackOutputs{}
+func (x *AzureResourceGroupOutputs) Reset() {
+	*x = AzureResourceGroupOutputs{}
 	mi := &file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureResourceGroupStackOutputs) String() string {
+func (x *AzureResourceGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureResourceGroupStackOutputs) ProtoMessage() {}
+func (*AzureResourceGroupOutputs) ProtoMessage() {}
 
-func (x *AzureResourceGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureResourceGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AzureResourceGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureResourceGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureResourceGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureResourceGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureResourceGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureResourceGroupStackOutputs) GetResourceGroupId() string {
+func (x *AzureResourceGroupOutputs) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AzureResourceGroupStackOutputs) GetResourceGroupName() string {
+func (x *AzureResourceGroupOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
 	return ""
 }
 
-func (x *AzureResourceGroupStackOutputs) GetRegion() string {
+func (x *AzureResourceGroupOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -94,8 +94,8 @@ var File_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azureresourcegroup/v1alpha1/outputs.proto\x12-dev.planton.azure.azureresourcegroup.v1alpha1\"\x94\x01\n" +
-	"\x1eAzureResourceGroupStackOutputs\x12*\n" +
+	"7catalog/azure/azureresourcegroup/v1alpha1/outputs.proto\x12-dev.planton.azure.azureresourcegroup.v1alpha1\"\x8f\x01\n" +
+	"\x19AzureResourceGroupOutputs\x12*\n" +
 	"\x11resource_group_id\x18\x01 \x01(\tR\x0fresourceGroupId\x12.\n" +
 	"\x13resource_group_name\x18\x02 \x01(\tR\x11resourceGroupName\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06regionB\xfd\x02\n" +
@@ -115,7 +115,7 @@ func file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureResourceGroupStackOutputs)(nil), // 0: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStackOutputs
+	(*AzureResourceGroupOutputs)(nil), // 0: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupOutputs
 }
 var file_catalog_azure_azureresourcegroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

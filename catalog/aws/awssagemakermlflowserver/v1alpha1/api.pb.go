@@ -27,7 +27,7 @@ type AwsSagemakerMlflowServer struct {
 	state         protoimpl.MessageState          `protogen:"open.v1"`
 	ApiVersion    string                          `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                          `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsSagemakerMlflowServerSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsSagemakerMlflowServerStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsSagemakerMlflowServer) GetKind() string {
 	return ""
 }
 
-func (x *AwsSagemakerMlflowServer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSagemakerMlflowServer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsSagemakerMlflowServer) GetStatus() *AwsSagemakerMlflowServerStatus {
 }
 
 type AwsSagemakerMlflowServerStatus struct {
-	state         protoimpl.MessageState                `protogen:"open.v1"`
-	Outputs       *AwsSagemakerMlflowServerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState           `protogen:"open.v1"`
+	Outputs       *AwsSagemakerMlflowServerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsSagemakerMlflowServerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakermlflowserver_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSagemakerMlflowServerStatus) GetOutputs() *AwsSagemakerMlflowServerStackOutputs {
+func (x *AwsSagemakerMlflowServerStatus) GetOutputs() *AwsSagemakerMlflowServerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awssagemakermlflowserver_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AwsSagemakerMlflowServerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatusR\x06status\"\x93\x01\n" +
-	"\x1eAwsSagemakerMlflowServerStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatusR\x06status\"\x8e\x01\n" +
+	"\x1eAwsSagemakerMlflowServerStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerOutputsR\aoutputsB\x97\x03\n" +
 	"5com.dev.planton.aws.awssagemakermlflowserver.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/aws/awssagemakermlflowserver/v1alpha1;awssagemakermlflowserverv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Aws.Awssagemakermlflowserver.V1alpha1\xca\x021Dev\\Planton\\Aws\\Awssagemakermlflowserver\\V1alpha1\xe2\x02=Dev\\Planton\\Aws\\Awssagemakermlflowserver\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Aws::Awssagemakermlflowserver::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awssagemakermlflowserver_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_aws_awssagemakermlflowserver_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssagemakermlflowserver_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSagemakerMlflowServer)(nil),             // 0: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServer
-	(*AwsSagemakerMlflowServerStatus)(nil),       // 1: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSagemakerMlflowServerSpec)(nil),         // 3: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerSpec
-	(*AwsSagemakerMlflowServerStackOutputs)(nil), // 4: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStackOutputs
+	(*AwsSagemakerMlflowServer)(nil),        // 0: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServer
+	(*AwsSagemakerMlflowServerStatus)(nil),  // 1: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSagemakerMlflowServerSpec)(nil),    // 3: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerSpec
+	(*AwsSagemakerMlflowServerOutputs)(nil), // 4: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerOutputs
 }
 var file_catalog_aws_awssagemakermlflowserver_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServer.spec:type_name -> dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerSpec
 	1, // 2: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServer.status:type_name -> dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatus
-	4, // 3: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatus.outputs:type_name -> dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStackOutputs
+	4, // 3: dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerStatus.outputs:type_name -> dev.planton.aws.awssagemakermlflowserver.v1alpha1.AwsSagemakerMlflowServerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

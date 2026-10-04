@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpTpuQueuedResourceStackOutputs carries the request's identity.
-type GcpTpuQueuedResourceStackOutputs struct {
+// GcpTpuQueuedResourceOutputs carries the request's identity.
+type GcpTpuQueuedResourceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{zone}/queuedResources/{queued_resource_id}.
@@ -35,20 +35,20 @@ type GcpTpuQueuedResourceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpTpuQueuedResourceStackOutputs) Reset() {
-	*x = GcpTpuQueuedResourceStackOutputs{}
+func (x *GcpTpuQueuedResourceOutputs) Reset() {
+	*x = GcpTpuQueuedResourceOutputs{}
 	mi := &file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTpuQueuedResourceStackOutputs) String() string {
+func (x *GcpTpuQueuedResourceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTpuQueuedResourceStackOutputs) ProtoMessage() {}
+func (*GcpTpuQueuedResourceOutputs) ProtoMessage() {}
 
-func (x *GcpTpuQueuedResourceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpTpuQueuedResourceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *GcpTpuQueuedResourceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTpuQueuedResourceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpTpuQueuedResourceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTpuQueuedResourceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpTpuQueuedResourceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTpuQueuedResourceStackOutputs) GetName() string {
+func (x *GcpTpuQueuedResourceOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpTpuQueuedResourceStackOutputs) GetQueuedResourceId() string {
+func (x *GcpTpuQueuedResourceOutputs) GetQueuedResourceId() string {
 	if x != nil {
 		return x.QueuedResourceId
 	}
 	return ""
 }
 
-func (x *GcpTpuQueuedResourceStackOutputs) GetZone() string {
+func (x *GcpTpuQueuedResourceOutputs) GetZone() string {
 	if x != nil {
 		return x.Zone
 	}
@@ -90,8 +90,8 @@ var File_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcptpuqueuedresource/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcptpuqueuedresource.v1alpha1\"x\n" +
-	" GcpTpuQueuedResourceStackOutputs\x12\x12\n" +
+	"7catalog/gcp/gcptpuqueuedresource/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcptpuqueuedresource.v1alpha1\"s\n" +
+	"\x1bGcpTpuQueuedResourceOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12,\n" +
 	"\x12queued_resource_id\x18\x02 \x01(\tR\x10queuedResourceId\x12\x12\n" +
 	"\x04zone\x18\x03 \x01(\tR\x04zoneB\xff\x02\n" +
@@ -111,7 +111,7 @@ func file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpTpuQueuedResourceStackOutputs)(nil), // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackOutputs
+	(*GcpTpuQueuedResourceOutputs)(nil), // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceOutputs
 }
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

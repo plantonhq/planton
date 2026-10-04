@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: compliance/componentcontrolprofile/v1/api.proto
+// source: compliance/catalogkindcontrolprofile/v1/api.proto
 
-package componentcontrolprofilev1
+package catalogkindcontrolprofilev1
 
 import (
 	shared "github.com/plantonhq/planton/shared"
@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentControlProfile declares a single component's posture against the
+// CatalogKindControlProfile declares a single kind's posture against the
 // central control catalog: for each control, whether the official modules
 // enforce it by default, expose it as a spec choice, or whether it does not
 // apply -- each claim backed by evidence. It describes the OFFICIAL modules
 // as shipped; deployments using customized modules must be presented as
 // "official-module baseline; verify against your customization". Follows
 // the KRM pattern (apiVersion + kind + metadata + spec).
-// Lives at catalog/{provider}/{component}/controls.yaml.
+// Lives at catalog/{provider}/{kind}/controls.yaml.
 //
 // Language discipline: this profile states technical posture only. Framework
 // mapping (HIPAA, CIS, ...) happens through the central crosswalks -- never
@@ -38,7 +38,7 @@ const (
 // Example:
 //
 //	apiVersion: compliance.planton.dev/v1
-//	kind: ComponentControlProfile
+//	kind: CatalogKindControlProfile
 //	metadata:
 //	  name: awsdynamodb
 //	spec:
@@ -48,31 +48,31 @@ const (
 //	      evidence:
 //	        type: provider_default
 //	        reference: DynamoDB encrypts all tables at rest; encryption cannot be disabled
-type ComponentControlProfile struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
-	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Spec          *ComponentControlProfileSpec  `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+type CatalogKindControlProfile struct {
+	state         protoimpl.MessageState         `protogen:"open.v1"`
+	ApiVersion    string                         `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
+	Kind          string                         `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata  `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Spec          *CatalogKindControlProfileSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentControlProfile) Reset() {
-	*x = ComponentControlProfile{}
-	mi := &file_compliance_componentcontrolprofile_v1_api_proto_msgTypes[0]
+func (x *CatalogKindControlProfile) Reset() {
+	*x = CatalogKindControlProfile{}
+	mi := &file_compliance_catalogkindcontrolprofile_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentControlProfile) String() string {
+func (x *CatalogKindControlProfile) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentControlProfile) ProtoMessage() {}
+func (*CatalogKindControlProfile) ProtoMessage() {}
 
-func (x *ComponentControlProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_compliance_componentcontrolprofile_v1_api_proto_msgTypes[0]
+func (x *CatalogKindControlProfile) ProtoReflect() protoreflect.Message {
+	mi := &file_compliance_catalogkindcontrolprofile_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -83,73 +83,73 @@ func (x *ComponentControlProfile) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentControlProfile.ProtoReflect.Descriptor instead.
-func (*ComponentControlProfile) Descriptor() ([]byte, []int) {
-	return file_compliance_componentcontrolprofile_v1_api_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindControlProfile.ProtoReflect.Descriptor instead.
+func (*CatalogKindControlProfile) Descriptor() ([]byte, []int) {
+	return file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentControlProfile) GetApiVersion() string {
+func (x *CatalogKindControlProfile) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *ComponentControlProfile) GetKind() string {
+func (x *CatalogKindControlProfile) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *ComponentControlProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CatalogKindControlProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *ComponentControlProfile) GetSpec() *ComponentControlProfileSpec {
+func (x *CatalogKindControlProfile) GetSpec() *CatalogKindControlProfileSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-var File_compliance_componentcontrolprofile_v1_api_proto protoreflect.FileDescriptor
+var File_compliance_catalogkindcontrolprofile_v1_api_proto protoreflect.FileDescriptor
 
-const file_compliance_componentcontrolprofile_v1_api_proto_rawDesc = "" +
+const file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"/compliance/componentcontrolprofile/v1/api.proto\x121dev.planton.compliance.componentcontrolprofile.v1\x1a0compliance/componentcontrolprofile/v1/spec.proto\x1a\x15shared/metadata.proto\"\xf9\x01\n" +
-	"\x17ComponentControlProfile\x12\x1f\n" +
+	"1compliance/catalogkindcontrolprofile/v1/api.proto\x123dev.planton.compliance.catalogkindcontrolprofile.v1\x1a2compliance/catalogkindcontrolprofile/v1/spec.proto\x1a\x15shared/metadata.proto\"\xff\x01\n" +
+	"\x19CatalogKindControlProfile\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12b\n" +
-	"\x04spec\x18\x04 \x01(\v2N.dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfileSpecR\x04specB\x88\x03\n" +
-	"5com.dev.planton.compliance.componentcontrolprofile.v1B\bApiProtoP\x01Z\\github.com/plantonhq/planton/compliance/componentcontrolprofile/v1;componentcontrolprofilev1\xa2\x02\x04DPCC\xaa\x021Dev.Planton.Compliance.Componentcontrolprofile.V1\xca\x021Dev\\Planton\\Compliance\\Componentcontrolprofile\\V1\xe2\x02=Dev\\Planton\\Compliance\\Componentcontrolprofile\\V1\\GPBMetadata\xea\x025Dev::Planton::Compliance::Componentcontrolprofile::V1b\x06proto3"
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12f\n" +
+	"\x04spec\x18\x04 \x01(\v2R.dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfileSpecR\x04specB\x96\x03\n" +
+	"7com.dev.planton.compliance.catalogkindcontrolprofile.v1B\bApiProtoP\x01Z`github.com/plantonhq/planton/compliance/catalogkindcontrolprofile/v1;catalogkindcontrolprofilev1\xa2\x02\x04DPCC\xaa\x023Dev.Planton.Compliance.Catalogkindcontrolprofile.V1\xca\x023Dev\\Planton\\Compliance\\Catalogkindcontrolprofile\\V1\xe2\x02?Dev\\Planton\\Compliance\\Catalogkindcontrolprofile\\V1\\GPBMetadata\xea\x027Dev::Planton::Compliance::Catalogkindcontrolprofile::V1b\x06proto3"
 
 var (
-	file_compliance_componentcontrolprofile_v1_api_proto_rawDescOnce sync.Once
-	file_compliance_componentcontrolprofile_v1_api_proto_rawDescData []byte
+	file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescOnce sync.Once
+	file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescData []byte
 )
 
-func file_compliance_componentcontrolprofile_v1_api_proto_rawDescGZIP() []byte {
-	file_compliance_componentcontrolprofile_v1_api_proto_rawDescOnce.Do(func() {
-		file_compliance_componentcontrolprofile_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_compliance_componentcontrolprofile_v1_api_proto_rawDesc), len(file_compliance_componentcontrolprofile_v1_api_proto_rawDesc)))
+func file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescGZIP() []byte {
+	file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescOnce.Do(func() {
+		file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDesc), len(file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDesc)))
 	})
-	return file_compliance_componentcontrolprofile_v1_api_proto_rawDescData
+	return file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDescData
 }
 
-var file_compliance_componentcontrolprofile_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_compliance_componentcontrolprofile_v1_api_proto_goTypes = []any{
-	(*ComponentControlProfile)(nil),      // 0: dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfile
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
-	(*ComponentControlProfileSpec)(nil),  // 2: dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfileSpec
+var file_compliance_catalogkindcontrolprofile_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_compliance_catalogkindcontrolprofile_v1_api_proto_goTypes = []any{
+	(*CatalogKindControlProfile)(nil),     // 0: dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfile
+	(*shared.CatalogObjectMetadata)(nil),  // 1: dev.planton.shared.CatalogObjectMetadata
+	(*CatalogKindControlProfileSpec)(nil), // 2: dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfileSpec
 }
-var file_compliance_componentcontrolprofile_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
-	2, // 1: dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfile.spec:type_name -> dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfileSpec
+var file_compliance_catalogkindcontrolprofile_v1_api_proto_depIdxs = []int32{
+	1, // 0: dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
+	2, // 1: dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfile.spec:type_name -> dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfileSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -157,27 +157,27 @@ var file_compliance_componentcontrolprofile_v1_api_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_compliance_componentcontrolprofile_v1_api_proto_init() }
-func file_compliance_componentcontrolprofile_v1_api_proto_init() {
-	if File_compliance_componentcontrolprofile_v1_api_proto != nil {
+func init() { file_compliance_catalogkindcontrolprofile_v1_api_proto_init() }
+func file_compliance_catalogkindcontrolprofile_v1_api_proto_init() {
+	if File_compliance_catalogkindcontrolprofile_v1_api_proto != nil {
 		return
 	}
-	file_compliance_componentcontrolprofile_v1_spec_proto_init()
+	file_compliance_catalogkindcontrolprofile_v1_spec_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_compliance_componentcontrolprofile_v1_api_proto_rawDesc), len(file_compliance_componentcontrolprofile_v1_api_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDesc), len(file_compliance_catalogkindcontrolprofile_v1_api_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_compliance_componentcontrolprofile_v1_api_proto_goTypes,
-		DependencyIndexes: file_compliance_componentcontrolprofile_v1_api_proto_depIdxs,
-		MessageInfos:      file_compliance_componentcontrolprofile_v1_api_proto_msgTypes,
+		GoTypes:           file_compliance_catalogkindcontrolprofile_v1_api_proto_goTypes,
+		DependencyIndexes: file_compliance_catalogkindcontrolprofile_v1_api_proto_depIdxs,
+		MessageInfos:      file_compliance_catalogkindcontrolprofile_v1_api_proto_msgTypes,
 	}.Build()
-	File_compliance_componentcontrolprofile_v1_api_proto = out.File
-	file_compliance_componentcontrolprofile_v1_api_proto_goTypes = nil
-	file_compliance_componentcontrolprofile_v1_api_proto_depIdxs = nil
+	File_compliance_catalogkindcontrolprofile_v1_api_proto = out.File
+	file_compliance_catalogkindcontrolprofile_v1_api_proto_goTypes = nil
+	file_compliance_catalogkindcontrolprofile_v1_api_proto_depIdxs = nil
 }

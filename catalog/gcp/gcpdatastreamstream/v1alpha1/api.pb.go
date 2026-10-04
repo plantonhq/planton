@@ -31,7 +31,7 @@ type GcpDatastreamStream struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpDatastreamStreamSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpDatastreamStream) GetKind() string {
 	return ""
 }
 
-func (x *GcpDatastreamStream) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpDatastreamStream) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpDatastreamStream) GetStatus() *GcpDatastreamStreamStatus {
 // gcp-datastream-stream status
 type GcpDatastreamStreamStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpDatastreamStreamStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpDatastreamStreamOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpDatastreamStreamStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdatastreamstream_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpDatastreamStreamStatus) GetOutputs() *GcpDatastreamStreamStackOutputs {
+func (x *GcpDatastreamStreamStatus) GetOutputs() *GcpDatastreamStreamOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpdatastreamstream_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13GcpDatastreamStreamR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatusR\x06status\"\x84\x01\n" +
-	"\x19GcpDatastreamStreamStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatusR\x06status\"\x7f\n" +
+	"\x19GcpDatastreamStreamStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.gcp.gcpdatastreamstream.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpdatastreamstream/v1alpha1;gcpdatastreamstreamv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpdatastreamstream.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpdatastreamstream\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpdatastreamstream\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpdatastreamstream::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpdatastreamstream_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpdatastreamstream_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpdatastreamstream_v1alpha1_api_proto_goTypes = []any{
-	(*GcpDatastreamStream)(nil),             // 0: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStream
-	(*GcpDatastreamStreamStatus)(nil),       // 1: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpDatastreamStreamSpec)(nil),         // 3: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSpec
-	(*GcpDatastreamStreamStackOutputs)(nil), // 4: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStackOutputs
+	(*GcpDatastreamStream)(nil),          // 0: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStream
+	(*GcpDatastreamStreamStatus)(nil),    // 1: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpDatastreamStreamSpec)(nil),      // 3: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSpec
+	(*GcpDatastreamStreamOutputs)(nil),   // 4: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamOutputs
 }
 var file_catalog_gcp_gcpdatastreamstream_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStream.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStream.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStream.spec:type_name -> dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSpec
 	1, // 2: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStream.status:type_name -> dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatus
-	4, // 3: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatus.outputs:type_name -> dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStackOutputs
+	4, // 3: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStatus.outputs:type_name -> dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

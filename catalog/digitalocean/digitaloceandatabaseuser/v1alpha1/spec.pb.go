@@ -29,7 +29,7 @@ const (
 // OpenSearch access-control lists.
 //
 // DigitalOcean generates the user's password and role server-side; both are
-// exported as stack outputs, never configured here. The API serializes user
+// exported as outputs, never configured here. The API serializes user
 // creation and deletion per cluster, so composing many users on one cluster
 // is safe but inherently sequential.
 type DigitalOceanDatabaseUserSpec struct {

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpIdentityPlatformConfigStackInput struct {
+type GcpIdentityPlatformConfigIacInput struct {
 	state          protoimpl.MessageState     `protogen:"open.v1"`
 	Target         *GcpIdentityPlatformConfig `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig     `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpIdentityPlatformConfigStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpIdentityPlatformConfigStackInput) Reset() {
-	*x = GcpIdentityPlatformConfigStackInput{}
+func (x *GcpIdentityPlatformConfigIacInput) Reset() {
+	*x = GcpIdentityPlatformConfigIacInput{}
 	mi := &file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIdentityPlatformConfigStackInput) String() string {
+func (x *GcpIdentityPlatformConfigIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIdentityPlatformConfigStackInput) ProtoMessage() {}
+func (*GcpIdentityPlatformConfigIacInput) ProtoMessage() {}
 
-func (x *GcpIdentityPlatformConfigStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpIdentityPlatformConfigIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpIdentityPlatformConfigStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIdentityPlatformConfigStackInput.ProtoReflect.Descriptor instead.
-func (*GcpIdentityPlatformConfigStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIdentityPlatformConfigIacInput.ProtoReflect.Descriptor instead.
+func (*GcpIdentityPlatformConfigIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIdentityPlatformConfigStackInput) GetTarget() *GcpIdentityPlatformConfig {
+func (x *GcpIdentityPlatformConfigIacInput) GetTarget() *GcpIdentityPlatformConfig {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpIdentityPlatformConfigStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpIdentityPlatformConfigIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto protoreflect
 
 const file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpidentityplatformconfig/v1alpha1/input.proto\x122dev.planton.gcp.gcpidentityplatformconfig.v1alpha1\x1a8catalog/gcp/gcpidentityplatformconfig/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd9\x01\n" +
-	"#GcpIdentityPlatformConfigStackInput\x12e\n" +
+	":catalog/gcp/gcpidentityplatformconfig/v1alpha1/input.proto\x122dev.planton.gcp.gcpidentityplatformconfig.v1alpha1\x1a8catalog/gcp/gcpidentityplatformconfig/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd7\x01\n" +
+	"!GcpIdentityPlatformConfigIacInput\x12e\n" +
 	"\x06target\x18\x01 \x01(\v2M.dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"6com.dev.planton.gcp.gcpidentityplatformconfig.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_goTypes = []any{
-	(*GcpIdentityPlatformConfigStackInput)(nil), // 0: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigStackInput
-	(*GcpIdentityPlatformConfig)(nil),           // 1: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfig
-	(*gcp.GcpProviderConfig)(nil),               // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpIdentityPlatformConfigIacInput)(nil), // 0: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigIacInput
+	(*GcpIdentityPlatformConfig)(nil),         // 1: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfig
+	(*gcp.GcpProviderConfig)(nil),             // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigStackInput.target:type_name -> dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfig
-	2, // 1: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigIacInput.target:type_name -> dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfig
+	2, // 1: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

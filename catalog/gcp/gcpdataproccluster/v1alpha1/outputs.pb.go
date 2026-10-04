@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Dataproc cluster.
-type GcpDataprocClusterStackOutputs struct {
+type GcpDataprocClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified cluster resource name.
 	// Format: projects/{project}/regions/{region}/clusters/{cluster}
@@ -41,20 +41,20 @@ type GcpDataprocClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDataprocClusterStackOutputs) Reset() {
-	*x = GcpDataprocClusterStackOutputs{}
+func (x *GcpDataprocClusterOutputs) Reset() {
+	*x = GcpDataprocClusterOutputs{}
 	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDataprocClusterStackOutputs) String() string {
+func (x *GcpDataprocClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDataprocClusterStackOutputs) ProtoMessage() {}
+func (*GcpDataprocClusterOutputs) ProtoMessage() {}
 
-func (x *GcpDataprocClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDataprocClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *GcpDataprocClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDataprocClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDataprocClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDataprocClusterOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDataprocClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDataprocClusterStackOutputs) GetClusterId() string {
+func (x *GcpDataprocClusterOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *GcpDataprocClusterStackOutputs) GetClusterName() string {
+func (x *GcpDataprocClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *GcpDataprocClusterStackOutputs) GetStagingBucket() string {
+func (x *GcpDataprocClusterOutputs) GetStagingBucket() string {
 	if x != nil {
 		return x.StagingBucket
 	}
@@ -96,8 +96,8 @@ var File_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpdataproccluster/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpdataproccluster.v1alpha1\"\x89\x01\n" +
-	"\x1eGcpDataprocClusterStackOutputs\x12\x1d\n" +
+	"5catalog/gcp/gcpdataproccluster/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpdataproccluster.v1alpha1\"\x84\x01\n" +
+	"\x19GcpDataprocClusterOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12%\n" +
@@ -118,7 +118,7 @@ func file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDataprocClusterStackOutputs)(nil), // 0: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterStackOutputs
+	(*GcpDataprocClusterOutputs)(nil), // 0: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterOutputs
 }
 var file_catalog_gcp_gcpdataproccluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

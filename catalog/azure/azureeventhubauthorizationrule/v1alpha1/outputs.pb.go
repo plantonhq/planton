@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubAuthorizationRuleStackOutputs** captures the outputs of
+// **AzureEventHubAuthorizationRuleOutputs** captures the outputs of
 // provisioning a SAS authorization rule. Both scope variants expose
 // identical credential faces.
-type AzureEventHubAuthorizationRuleStackOutputs struct {
+type AzureEventHubAuthorizationRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the authorization rule.
 	// Namespace scope: .../namespaces/{ns}/authorizationRules/{name}
@@ -54,20 +54,20 @@ type AzureEventHubAuthorizationRuleStackOutputs struct {
 	sizeCache                      protoimpl.SizeCache
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) Reset() {
-	*x = AzureEventHubAuthorizationRuleStackOutputs{}
+func (x *AzureEventHubAuthorizationRuleOutputs) Reset() {
+	*x = AzureEventHubAuthorizationRuleOutputs{}
 	mi := &file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) String() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubAuthorizationRuleStackOutputs) ProtoMessage() {}
+func (*AzureEventHubAuthorizationRuleOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubAuthorizationRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,61 +79,61 @@ func (x *AzureEventHubAuthorizationRuleStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubAuthorizationRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubAuthorizationRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubAuthorizationRuleOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubAuthorizationRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetAuthorizationRuleId() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetAuthorizationRuleId() string {
 	if x != nil {
 		return x.AuthorizationRuleId
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetRuleName() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetRuleName() string {
 	if x != nil {
 		return x.RuleName
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetPrimaryKey() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetPrimaryKey() string {
 	if x != nil {
 		return x.PrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetSecondaryKey() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetSecondaryKey() string {
 	if x != nil {
 		return x.SecondaryKey
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetPrimaryConnectionString() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetPrimaryConnectionString() string {
 	if x != nil {
 		return x.PrimaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetSecondaryConnectionString() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetSecondaryConnectionString() string {
 	if x != nil {
 		return x.SecondaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetPrimaryConnectionStringAlias() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetPrimaryConnectionStringAlias() string {
 	if x != nil {
 		return x.PrimaryConnectionStringAlias
 	}
 	return ""
 }
 
-func (x *AzureEventHubAuthorizationRuleStackOutputs) GetSecondaryConnectionStringAlias() string {
+func (x *AzureEventHubAuthorizationRuleOutputs) GetSecondaryConnectionStringAlias() string {
 	if x != nil {
 		return x.SecondaryConnectionStringAlias
 	}
@@ -144,8 +144,8 @@ var File_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto pro
 
 const file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azureeventhubauthorizationrule/v1alpha1/outputs.proto\x129dev.planton.azure.azureeventhubauthorizationrule.v1alpha1\x1a\x1cshared/options/options.proto\"\xf5\x03\n" +
-	"*AzureEventHubAuthorizationRuleStackOutputs\x122\n" +
+	"Ccatalog/azure/azureeventhubauthorizationrule/v1alpha1/outputs.proto\x129dev.planton.azure.azureeventhubauthorizationrule.v1alpha1\x1a\x1cshared/options/options.proto\"\xf0\x03\n" +
+	"%AzureEventHubAuthorizationRuleOutputs\x122\n" +
 	"\x15authorization_rule_id\x18\x01 \x01(\tR\x13authorizationRuleId\x12\x1b\n" +
 	"\trule_name\x18\x02 \x01(\tR\bruleName\x12%\n" +
 	"\vprimary_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
@@ -171,7 +171,7 @@ func file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_ra
 
 var file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubAuthorizationRuleStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleStackOutputs
+	(*AzureEventHubAuthorizationRuleOutputs)(nil), // 0: dev.planton.azure.azureeventhubauthorizationrule.v1alpha1.AzureEventHubAuthorizationRuleOutputs
 }
 var file_catalog_azure_azureeventhubauthorizationrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

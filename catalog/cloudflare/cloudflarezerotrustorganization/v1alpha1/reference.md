@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareZeroTrustOrganizationSpec configures the Zero Trust organization:
 the account-wide (or zone-wide) Access login experience -- the team domain,

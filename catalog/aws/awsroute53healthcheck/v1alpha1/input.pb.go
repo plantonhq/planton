@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53HealthCheckStackInput is the input for the
+// AwsRoute53HealthCheckIacInput is the input for the
 // aws-route53-health-check IaC modules.
-type AwsRoute53HealthCheckStackInput struct {
+type AwsRoute53HealthCheckIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsRoute53HealthCheck `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsRoute53HealthCheckStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRoute53HealthCheckStackInput) Reset() {
-	*x = AwsRoute53HealthCheckStackInput{}
+func (x *AwsRoute53HealthCheckIacInput) Reset() {
+	*x = AwsRoute53HealthCheckIacInput{}
 	mi := &file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53HealthCheckStackInput) String() string {
+func (x *AwsRoute53HealthCheckIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53HealthCheckStackInput) ProtoMessage() {}
+func (*AwsRoute53HealthCheckIacInput) ProtoMessage() {}
 
-func (x *AwsRoute53HealthCheckStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53HealthCheckIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsRoute53HealthCheckStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53HealthCheckStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRoute53HealthCheckStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53HealthCheckIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRoute53HealthCheckIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53HealthCheckStackInput) GetTarget() *AwsRoute53HealthCheck {
+func (x *AwsRoute53HealthCheckIacInput) GetTarget() *AwsRoute53HealthCheck {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRoute53HealthCheckStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRoute53HealthCheckIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsroute53healthcheck/v1alpha1/input.proto\x12.dev.planton.aws.awsroute53healthcheck.v1alpha1\x1a4catalog/aws/awsroute53healthcheck/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsRoute53HealthCheckStackInput\x12]\n" +
+	"6catalog/aws/awsroute53healthcheck/v1alpha1/input.proto\x12.dev.planton.aws.awsroute53healthcheck.v1alpha1\x1a4catalog/aws/awsroute53healthcheck/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsRoute53HealthCheckIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awsroute53healthcheck.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRoute53HealthCheckStackInput)(nil), // 0: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckStackInput
-	(*AwsRoute53HealthCheck)(nil),           // 1: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheck
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRoute53HealthCheckIacInput)(nil), // 0: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckIacInput
+	(*AwsRoute53HealthCheck)(nil),         // 1: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheck
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsroute53healthcheck_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckStackInput.target:type_name -> dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheck
-	2, // 1: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckIacInput.target:type_name -> dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheck
+	2, // 1: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

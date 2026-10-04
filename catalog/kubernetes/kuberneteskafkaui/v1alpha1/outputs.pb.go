@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesKafkaUiStackOutputs** — the handles the console exports
+// **KubernetesKafkaUiOutputs** — the handles the console exports
 // for composition (exposure kinds attach Ingress/Gateway routes to
 // the service).
-type KubernetesKafkaUiStackOutputs struct {
+type KubernetesKafkaUiOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the console runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -41,20 +41,20 @@ type KubernetesKafkaUiStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaUiStackOutputs) Reset() {
-	*x = KubernetesKafkaUiStackOutputs{}
+func (x *KubernetesKafkaUiOutputs) Reset() {
+	*x = KubernetesKafkaUiOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaUiStackOutputs) String() string {
+func (x *KubernetesKafkaUiOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaUiStackOutputs) ProtoMessage() {}
+func (*KubernetesKafkaUiOutputs) ProtoMessage() {}
 
-func (x *KubernetesKafkaUiStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaUiOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *KubernetesKafkaUiStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaUiStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaUiStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaUiOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaUiOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaUiStackOutputs) GetNamespace() string {
+func (x *KubernetesKafkaUiOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaUiStackOutputs) GetServiceName() string {
+func (x *KubernetesKafkaUiOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaUiStackOutputs) GetEndpoint() string {
+func (x *KubernetesKafkaUiOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaUiStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesKafkaUiOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -103,8 +103,8 @@ var File_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kuberneteskafkaui/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kuberneteskafkaui.v1alpha1\"\xae\x01\n" +
-	"\x1dKubernetesKafkaUiStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kuberneteskafkaui/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kuberneteskafkaui.v1alpha1\"\xa9\x01\n" +
+	"\x18KubernetesKafkaUiOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x120\n" +
@@ -125,7 +125,7 @@ func file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKafkaUiStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkaui.v1alpha1.KubernetesKafkaUiStackOutputs
+	(*KubernetesKafkaUiOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkaui.v1alpha1.KubernetesKafkaUiOutputs
 }
 var file_catalog_kubernetes_kuberneteskafkaui_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

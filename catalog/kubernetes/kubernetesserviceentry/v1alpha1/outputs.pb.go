@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesServiceEntryStackOutputs captures observable outputs after the ServiceEntry is
+// KubernetesServiceEntryOutputs captures observable outputs after the ServiceEntry is
 // created on the target cluster. A ServiceEntry is a registry entry consumed by istiod (it
 // has no controller-reconciled status subresource useful to surface here), so only the
 // resource identity is exported.
-type KubernetesServiceEntryStackOutputs struct {
+type KubernetesServiceEntryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created ServiceEntry (equals metadata.name).
 	ServiceEntryName string `protobuf:"bytes,1,opt,name=service_entry_name,json=serviceEntryName,proto3" json:"service_entry_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesServiceEntryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceEntryStackOutputs) Reset() {
-	*x = KubernetesServiceEntryStackOutputs{}
+func (x *KubernetesServiceEntryOutputs) Reset() {
+	*x = KubernetesServiceEntryOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceEntryStackOutputs) String() string {
+func (x *KubernetesServiceEntryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceEntryStackOutputs) ProtoMessage() {}
+func (*KubernetesServiceEntryOutputs) ProtoMessage() {}
 
-func (x *KubernetesServiceEntryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceEntryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesServiceEntryStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceEntryStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceEntryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceEntryOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceEntryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceEntryStackOutputs) GetServiceEntryName() string {
+func (x *KubernetesServiceEntryOutputs) GetServiceEntryName() string {
 	if x != nil {
 		return x.ServiceEntryName
 	}
 	return ""
 }
 
-func (x *KubernetesServiceEntryStackOutputs) GetNamespace() string {
+func (x *KubernetesServiceEntryOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto protor
 
 const file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesserviceentry/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesserviceentry.v1alpha1\"p\n" +
-	"\"KubernetesServiceEntryStackOutputs\x12,\n" +
+	"@catalog/kubernetes/kubernetesserviceentry/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesserviceentry.v1alpha1\"k\n" +
+	"\x1dKubernetesServiceEntryOutputs\x12,\n" +
 	"\x12service_entry_name\x18\x01 \x01(\tR\x10serviceEntryName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xb7\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1B\fOutputsProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kubernetesserviceentry/v1alpha1;kubernetesserviceentryv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kubernetesserviceentry.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kubernetesserviceentry\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kubernetesserviceentry\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kubernetesserviceentry::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesServiceEntryStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackOutputs
+	(*KubernetesServiceEntryOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryOutputs
 }
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBudgetStackOutputs captures the observable state of the budget
+// AwsBudgetOutputs captures the observable state of the budget
 // after apply.
-type AwsBudgetStackOutputs struct {
+type AwsBudgetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The budget's name (with the account ID, the provider's import ID:
 	// "account_id:budget_name").
@@ -40,20 +40,20 @@ type AwsBudgetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBudgetStackOutputs) Reset() {
-	*x = AwsBudgetStackOutputs{}
+func (x *AwsBudgetOutputs) Reset() {
+	*x = AwsBudgetOutputs{}
 	mi := &file_catalog_aws_awsbudget_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBudgetStackOutputs) String() string {
+func (x *AwsBudgetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBudgetStackOutputs) ProtoMessage() {}
+func (*AwsBudgetOutputs) ProtoMessage() {}
 
-func (x *AwsBudgetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBudgetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbudget_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *AwsBudgetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBudgetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBudgetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBudgetOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBudgetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbudget_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBudgetStackOutputs) GetBudgetName() string {
+func (x *AwsBudgetOutputs) GetBudgetName() string {
 	if x != nil {
 		return x.BudgetName
 	}
 	return ""
 }
 
-func (x *AwsBudgetStackOutputs) GetBudgetArn() string {
+func (x *AwsBudgetOutputs) GetBudgetArn() string {
 	if x != nil {
 		return x.BudgetArn
 	}
 	return ""
 }
 
-func (x *AwsBudgetStackOutputs) GetAccountId() string {
+func (x *AwsBudgetOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *AwsBudgetStackOutputs) GetActionIds() map[string]string {
+func (x *AwsBudgetOutputs) GetActionIds() map[string]string {
 	if x != nil {
 		return x.ActionIds
 	}
@@ -102,16 +102,16 @@ var File_catalog_aws_awsbudget_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_aws_awsbudget_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/aws/awsbudget/v1alpha1/outputs.proto\x12\"dev.planton.aws.awsbudget.v1alpha1\"\x9d\x02\n" +
-	"\x15AwsBudgetStackOutputs\x12\x1f\n" +
+	",catalog/aws/awsbudget/v1alpha1/outputs.proto\x12\"dev.planton.aws.awsbudget.v1alpha1\"\x93\x02\n" +
+	"\x10AwsBudgetOutputs\x12\x1f\n" +
 	"\vbudget_name\x18\x01 \x01(\tR\n" +
 	"budgetName\x12\x1d\n" +
 	"\n" +
 	"budget_arn\x18\x02 \x01(\tR\tbudgetArn\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x03 \x01(\tR\taccountId\x12g\n" +
+	"account_id\x18\x03 \x01(\tR\taccountId\x12b\n" +
 	"\n" +
-	"action_ids\x18\x04 \x03(\v2H.dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackOutputs.ActionIdsEntryR\tactionIds\x1a<\n" +
+	"action_ids\x18\x04 \x03(\v2C.dev.planton.aws.awsbudget.v1alpha1.AwsBudgetOutputs.ActionIdsEntryR\tactionIds\x1a<\n" +
 	"\x0eActionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xb2\x02\n" +
@@ -131,11 +131,11 @@ func file_catalog_aws_awsbudget_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsbudget_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbudget_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBudgetStackOutputs)(nil), // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackOutputs
-	nil,                           // 1: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackOutputs.ActionIdsEntry
+	(*AwsBudgetOutputs)(nil), // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetOutputs
+	nil,                      // 1: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetOutputs.ActionIdsEntry
 }
 var file_catalog_aws_awsbudget_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackOutputs.action_ids:type_name -> dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackOutputs.ActionIdsEntry
+	1, // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetOutputs.action_ids:type_name -> dev.planton.aws.awsbudget.v1alpha1.AwsBudgetOutputs.ActionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

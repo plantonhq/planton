@@ -22,12 +22,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCognitoUserPoolClientStackOutputs captures observable identifiers from a
+// AwsCognitoUserPoolClientOutputs captures observable identifiers from a
 // provisioned Cognito User Pool app client. Downstream systems reference the
 // client ID: API Gateway JWT authorizers list it as an audience, ALB
 // authenticate-cognito actions take it as their user_pool_client_id, and
 // application configs embed it for SDK sign-in.
-type AwsCognitoUserPoolClientStackOutputs struct {
+type AwsCognitoUserPoolClientOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The app client ID (e.g. "1a2b3c4d5e6f7g8h9i0j"). The public identifier
 	// applications present at sign-in and token endpoints -- and the "aud"
@@ -45,20 +45,20 @@ type AwsCognitoUserPoolClientStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCognitoUserPoolClientStackOutputs) Reset() {
-	*x = AwsCognitoUserPoolClientStackOutputs{}
+func (x *AwsCognitoUserPoolClientOutputs) Reset() {
+	*x = AwsCognitoUserPoolClientOutputs{}
 	mi := &file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCognitoUserPoolClientStackOutputs) String() string {
+func (x *AwsCognitoUserPoolClientOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCognitoUserPoolClientStackOutputs) ProtoMessage() {}
+func (*AwsCognitoUserPoolClientOutputs) ProtoMessage() {}
 
-func (x *AwsCognitoUserPoolClientStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCognitoUserPoolClientOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,26 +70,26 @@ func (x *AwsCognitoUserPoolClientStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCognitoUserPoolClientStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCognitoUserPoolClientStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCognitoUserPoolClientOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCognitoUserPoolClientOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCognitoUserPoolClientStackOutputs) GetClientId() string {
+func (x *AwsCognitoUserPoolClientOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolClientStackOutputs) GetClientSecret() string {
+func (x *AwsCognitoUserPoolClientOutputs) GetClientSecret() string {
 	if x != nil {
 		return x.ClientSecret
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolClientStackOutputs) GetUserPoolId() string {
+func (x *AwsCognitoUserPoolClientOutputs) GetUserPoolId() string {
 	if x != nil {
 		return x.UserPoolId
 	}
@@ -100,8 +100,8 @@ var File_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awscognitouserpoolclient/v1alpha1/outputs.proto\x121dev.planton.aws.awscognitouserpoolclient.v1alpha1\x1a\x1cshared/options/options.proto\"\x90\x01\n" +
-	"$AwsCognitoUserPoolClientStackOutputs\x12\x1b\n" +
+	";catalog/aws/awscognitouserpoolclient/v1alpha1/outputs.proto\x121dev.planton.aws.awscognitouserpoolclient.v1alpha1\x1a\x1cshared/options/options.proto\"\x8b\x01\n" +
+	"\x1fAwsCognitoUserPoolClientOutputs\x12\x1b\n" +
 	"\tclient_id\x18\x01 \x01(\tR\bclientId\x12)\n" +
 	"\rclient_secret\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12 \n" +
 	"\fuser_pool_id\x18\x03 \x01(\tR\n" +
@@ -122,7 +122,7 @@ func file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCognitoUserPoolClientStackOutputs)(nil), // 0: dev.planton.aws.awscognitouserpoolclient.v1alpha1.AwsCognitoUserPoolClientStackOutputs
+	(*AwsCognitoUserPoolClientOutputs)(nil), // 0: dev.planton.aws.awscognitouserpoolclient.v1alpha1.AwsCognitoUserPoolClientOutputs
 }
 var file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

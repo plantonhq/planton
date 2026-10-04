@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: iac/componentpermissions/v1/api.proto
+// source: iac/catalogkindpermissions/v1/api.proto
 
-package componentpermissionsv1
+package catalogkindpermissionsv1
 
 import (
 	shared "github.com/plantonhq/planton/shared"
@@ -22,13 +22,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentPermissions declares the least-privilege permissions the IaC
+// CatalogKindPermissions declares the least-privilege permissions the IaC
 // runner's cloud principal needs to provision, update, and destroy this
-// component with the OFFICIAL modules. This is the data behind "download
+// kind with the OFFICIAL modules. This is the data behind "download
 // the exact IAM policy your runner needs" -- the air-gapped enterprise's
-// first-day question, answered per component and unioned per stack.
+// first-day question, answered per kind and unioned per stack.
 // Follows the KRM pattern (apiVersion + kind + metadata + spec).
-// Lives at catalog/{provider}/{component}/iac/permissions.yaml, beside the
+// Lives at catalog/{provider}/{kind}/iac/permissions.yaml, beside the
 // modules whose behavior it describes.
 //
 // Every entry carries provenance: `derived` (static analysis of the module
@@ -41,7 +41,7 @@ const (
 // Example:
 //
 //	apiVersion: iac.planton.dev/v1
-//	kind: ComponentPermissions
+//	kind: CatalogKindPermissions
 //	metadata:
 //	  name: awsdynamodb
 //	spec:
@@ -51,31 +51,31 @@ const (
 //	        actions: [dynamodb:CreateTable, dynamodb:DeleteTable]
 //	        resources: ["arn:aws:dynamodb:*:*:table/*"]
 //	        provenance: derived
-type ComponentPermissions struct {
+type CatalogKindPermissions struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Spec          *ComponentPermissionsSpec     `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Spec          *CatalogKindPermissionsSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentPermissions) Reset() {
-	*x = ComponentPermissions{}
-	mi := &file_iac_componentpermissions_v1_api_proto_msgTypes[0]
+func (x *CatalogKindPermissions) Reset() {
+	*x = CatalogKindPermissions{}
+	mi := &file_iac_catalogkindpermissions_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentPermissions) String() string {
+func (x *CatalogKindPermissions) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentPermissions) ProtoMessage() {}
+func (*CatalogKindPermissions) ProtoMessage() {}
 
-func (x *ComponentPermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_api_proto_msgTypes[0]
+func (x *CatalogKindPermissions) ProtoReflect() protoreflect.Message {
+	mi := &file_iac_catalogkindpermissions_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -86,73 +86,73 @@ func (x *ComponentPermissions) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentPermissions.ProtoReflect.Descriptor instead.
-func (*ComponentPermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_api_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindPermissions.ProtoReflect.Descriptor instead.
+func (*CatalogKindPermissions) Descriptor() ([]byte, []int) {
+	return file_iac_catalogkindpermissions_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentPermissions) GetApiVersion() string {
+func (x *CatalogKindPermissions) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *ComponentPermissions) GetKind() string {
+func (x *CatalogKindPermissions) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *ComponentPermissions) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CatalogKindPermissions) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *ComponentPermissions) GetSpec() *ComponentPermissionsSpec {
+func (x *CatalogKindPermissions) GetSpec() *CatalogKindPermissionsSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-var File_iac_componentpermissions_v1_api_proto protoreflect.FileDescriptor
+var File_iac_catalogkindpermissions_v1_api_proto protoreflect.FileDescriptor
 
-const file_iac_componentpermissions_v1_api_proto_rawDesc = "" +
+const file_iac_catalogkindpermissions_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"%iac/componentpermissions/v1/api.proto\x12'dev.planton.iac.componentpermissions.v1\x1a&iac/componentpermissions/v1/spec.proto\x1a\x15shared/metadata.proto\"\xe9\x01\n" +
-	"\x14ComponentPermissions\x12\x1f\n" +
+	"'iac/catalogkindpermissions/v1/api.proto\x12)dev.planton.iac.catalogkindpermissions.v1\x1a(iac/catalogkindpermissions/v1/spec.proto\x1a\x15shared/metadata.proto\"\xef\x01\n" +
+	"\x16CatalogKindPermissions\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12U\n" +
-	"\x04spec\x18\x04 \x01(\v2A.dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpecR\x04specB\xc9\x02\n" +
-	"+com.dev.planton.iac.componentpermissions.v1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/iac/componentpermissions/v1;componentpermissionsv1\xa2\x02\x04DPIC\xaa\x02'Dev.Planton.Iac.Componentpermissions.V1\xca\x02'Dev\\Planton\\Iac\\Componentpermissions\\V1\xe2\x023Dev\\Planton\\Iac\\Componentpermissions\\V1\\GPBMetadata\xea\x02+Dev::Planton::Iac::Componentpermissions::V1b\x06proto3"
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12Y\n" +
+	"\x04spec\x18\x04 \x01(\v2E.dev.planton.iac.catalogkindpermissions.v1.CatalogKindPermissionsSpecR\x04specB\xd7\x02\n" +
+	"-com.dev.planton.iac.catalogkindpermissions.v1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/iac/catalogkindpermissions/v1;catalogkindpermissionsv1\xa2\x02\x04DPIC\xaa\x02)Dev.Planton.Iac.Catalogkindpermissions.V1\xca\x02)Dev\\Planton\\Iac\\Catalogkindpermissions\\V1\xe2\x025Dev\\Planton\\Iac\\Catalogkindpermissions\\V1\\GPBMetadata\xea\x02-Dev::Planton::Iac::Catalogkindpermissions::V1b\x06proto3"
 
 var (
-	file_iac_componentpermissions_v1_api_proto_rawDescOnce sync.Once
-	file_iac_componentpermissions_v1_api_proto_rawDescData []byte
+	file_iac_catalogkindpermissions_v1_api_proto_rawDescOnce sync.Once
+	file_iac_catalogkindpermissions_v1_api_proto_rawDescData []byte
 )
 
-func file_iac_componentpermissions_v1_api_proto_rawDescGZIP() []byte {
-	file_iac_componentpermissions_v1_api_proto_rawDescOnce.Do(func() {
-		file_iac_componentpermissions_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_iac_componentpermissions_v1_api_proto_rawDesc), len(file_iac_componentpermissions_v1_api_proto_rawDesc)))
+func file_iac_catalogkindpermissions_v1_api_proto_rawDescGZIP() []byte {
+	file_iac_catalogkindpermissions_v1_api_proto_rawDescOnce.Do(func() {
+		file_iac_catalogkindpermissions_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_iac_catalogkindpermissions_v1_api_proto_rawDesc), len(file_iac_catalogkindpermissions_v1_api_proto_rawDesc)))
 	})
-	return file_iac_componentpermissions_v1_api_proto_rawDescData
+	return file_iac_catalogkindpermissions_v1_api_proto_rawDescData
 }
 
-var file_iac_componentpermissions_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_iac_componentpermissions_v1_api_proto_goTypes = []any{
-	(*ComponentPermissions)(nil),         // 0: dev.planton.iac.componentpermissions.v1.ComponentPermissions
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
-	(*ComponentPermissionsSpec)(nil),     // 2: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec
+var file_iac_catalogkindpermissions_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_iac_catalogkindpermissions_v1_api_proto_goTypes = []any{
+	(*CatalogKindPermissions)(nil),       // 0: dev.planton.iac.catalogkindpermissions.v1.CatalogKindPermissions
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
+	(*CatalogKindPermissionsSpec)(nil),   // 2: dev.planton.iac.catalogkindpermissions.v1.CatalogKindPermissionsSpec
 }
-var file_iac_componentpermissions_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.iac.componentpermissions.v1.ComponentPermissions.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
-	2, // 1: dev.planton.iac.componentpermissions.v1.ComponentPermissions.spec:type_name -> dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec
+var file_iac_catalogkindpermissions_v1_api_proto_depIdxs = []int32{
+	1, // 0: dev.planton.iac.catalogkindpermissions.v1.CatalogKindPermissions.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
+	2, // 1: dev.planton.iac.catalogkindpermissions.v1.CatalogKindPermissions.spec:type_name -> dev.planton.iac.catalogkindpermissions.v1.CatalogKindPermissionsSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -160,27 +160,27 @@ var file_iac_componentpermissions_v1_api_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_iac_componentpermissions_v1_api_proto_init() }
-func file_iac_componentpermissions_v1_api_proto_init() {
-	if File_iac_componentpermissions_v1_api_proto != nil {
+func init() { file_iac_catalogkindpermissions_v1_api_proto_init() }
+func file_iac_catalogkindpermissions_v1_api_proto_init() {
+	if File_iac_catalogkindpermissions_v1_api_proto != nil {
 		return
 	}
-	file_iac_componentpermissions_v1_spec_proto_init()
+	file_iac_catalogkindpermissions_v1_spec_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_componentpermissions_v1_api_proto_rawDesc), len(file_iac_componentpermissions_v1_api_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_catalogkindpermissions_v1_api_proto_rawDesc), len(file_iac_catalogkindpermissions_v1_api_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_iac_componentpermissions_v1_api_proto_goTypes,
-		DependencyIndexes: file_iac_componentpermissions_v1_api_proto_depIdxs,
-		MessageInfos:      file_iac_componentpermissions_v1_api_proto_msgTypes,
+		GoTypes:           file_iac_catalogkindpermissions_v1_api_proto_goTypes,
+		DependencyIndexes: file_iac_catalogkindpermissions_v1_api_proto_depIdxs,
+		MessageInfos:      file_iac_catalogkindpermissions_v1_api_proto_msgTypes,
 	}.Build()
-	File_iac_componentpermissions_v1_api_proto = out.File
-	file_iac_componentpermissions_v1_api_proto_goTypes = nil
-	file_iac_componentpermissions_v1_api_proto_depIdxs = nil
+	File_iac_catalogkindpermissions_v1_api_proto = out.File
+	file_iac_catalogkindpermissions_v1_api_proto_goTypes = nil
+	file_iac_catalogkindpermissions_v1_api_proto_depIdxs = nil
 }

@@ -35,7 +35,7 @@ type AwsElasticacheUserGroup struct {
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming. The name doubles
 	// as the AWS user group id and is create-time immutable.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining how the group is provisioned.
 	Spec *AwsElasticacheUserGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsElasticacheUserGroup) GetKind() string {
 	return ""
 }
 
-func (x *AwsElasticacheUserGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsElasticacheUserGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ func (x *AwsElasticacheUserGroup) GetStatus() *AwsElasticacheUserGroupStatus {
 type AwsElasticacheUserGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsElasticacheUserGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsElasticacheUserGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsElasticacheUserGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awselasticacheusergroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsElasticacheUserGroupStatus) GetOutputs() *AwsElasticacheUserGroupStackOutputs {
+func (x *AwsElasticacheUserGroupStatus) GetOutputs() *AwsElasticacheUserGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awselasticacheusergroup_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AwsElasticacheUserGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatusR\x06status\"\x90\x01\n" +
-	"\x1dAwsElasticacheUserGroupStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatusR\x06status\"\x8b\x01\n" +
+	"\x1dAwsElasticacheUserGroupStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.aws.awselasticacheusergroup.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/aws/awselasticacheusergroup/v1alpha1;awselasticacheusergroupv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Aws.Awselasticacheusergroup.V1alpha1\xca\x020Dev\\Planton\\Aws\\Awselasticacheusergroup\\V1alpha1\xe2\x02<Dev\\Planton\\Aws\\Awselasticacheusergroup\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Aws::Awselasticacheusergroup::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awselasticacheusergroup_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_aws_awselasticacheusergroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awselasticacheusergroup_v1alpha1_api_proto_goTypes = []any{
-	(*AwsElasticacheUserGroup)(nil),             // 0: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroup
-	(*AwsElasticacheUserGroupStatus)(nil),       // 1: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsElasticacheUserGroupSpec)(nil),         // 3: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupSpec
-	(*AwsElasticacheUserGroupStackOutputs)(nil), // 4: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStackOutputs
+	(*AwsElasticacheUserGroup)(nil),        // 0: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroup
+	(*AwsElasticacheUserGroupStatus)(nil),  // 1: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsElasticacheUserGroupSpec)(nil),    // 3: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupSpec
+	(*AwsElasticacheUserGroupOutputs)(nil), // 4: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupOutputs
 }
 var file_catalog_aws_awselasticacheusergroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroup.spec:type_name -> dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupSpec
 	1, // 2: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroup.status:type_name -> dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatus
-	4, // 3: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatus.outputs:type_name -> dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStackOutputs
+	4, // 3: dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupStatus.outputs:type_name -> dev.planton.aws.awselasticacheusergroup.v1alpha1.AwsElasticacheUserGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

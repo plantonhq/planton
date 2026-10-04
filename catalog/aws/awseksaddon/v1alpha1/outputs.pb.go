@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEksAddonStackOutputs describes the values returned after
+// AwsEksAddonOutputs describes the values returned after
 // provisioning an EKS managed add-on.
-type AwsEksAddonStackOutputs struct {
+type AwsEksAddonOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// addon_arn is the Amazon Resource Name of the add-on --
 	// arn:aws:eks:<region>:<account>:addon/<cluster>/<addon-name>/<uuid>.
@@ -39,20 +39,20 @@ type AwsEksAddonStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEksAddonStackOutputs) Reset() {
-	*x = AwsEksAddonStackOutputs{}
+func (x *AwsEksAddonOutputs) Reset() {
+	*x = AwsEksAddonOutputs{}
 	mi := &file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEksAddonStackOutputs) String() string {
+func (x *AwsEksAddonOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEksAddonStackOutputs) ProtoMessage() {}
+func (*AwsEksAddonOutputs) ProtoMessage() {}
 
-func (x *AwsEksAddonStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEksAddonOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsEksAddonStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEksAddonStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEksAddonStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEksAddonOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEksAddonOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEksAddonStackOutputs) GetAddonArn() string {
+func (x *AwsEksAddonOutputs) GetAddonArn() string {
 	if x != nil {
 		return x.AddonArn
 	}
 	return ""
 }
 
-func (x *AwsEksAddonStackOutputs) GetAddonName() string {
+func (x *AwsEksAddonOutputs) GetAddonName() string {
 	if x != nil {
 		return x.AddonName
 	}
 	return ""
 }
 
-func (x *AwsEksAddonStackOutputs) GetAddonVersion() string {
+func (x *AwsEksAddonOutputs) GetAddonVersion() string {
 	if x != nil {
 		return x.AddonVersion
 	}
@@ -94,8 +94,8 @@ var File_catalog_aws_awseksaddon_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awseksaddon/v1alpha1/outputs.proto\x12$dev.planton.aws.awseksaddon.v1alpha1\"z\n" +
-	"\x17AwsEksAddonStackOutputs\x12\x1b\n" +
+	".catalog/aws/awseksaddon/v1alpha1/outputs.proto\x12$dev.planton.aws.awseksaddon.v1alpha1\"u\n" +
+	"\x12AwsEksAddonOutputs\x12\x1b\n" +
 	"\taddon_arn\x18\x01 \x01(\tR\baddonArn\x12\x1d\n" +
 	"\n" +
 	"addon_name\x18\x02 \x01(\tR\taddonName\x12#\n" +
@@ -116,7 +116,7 @@ func file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEksAddonStackOutputs)(nil), // 0: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStackOutputs
+	(*AwsEksAddonOutputs)(nil), // 0: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonOutputs
 }
 var file_catalog_aws_awseksaddon_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

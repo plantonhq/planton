@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureRedisCacheStackOutputs** captures the outputs of provisioning an
+// **AzureRedisCacheOutputs** captures the outputs of provisioning an
 // Azure Cache for Redis instance.
 //
 // For application connectivity, `primary_connection_string` is the
@@ -34,7 +34,7 @@ const (
 //
 // The access keys and connection strings are SECRET-BEARING: treat any
 // output that embeds them as a credential in downstream configuration.
-type AzureRedisCacheStackOutputs struct {
+type AzureRedisCacheOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Redis cache.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redis/{name}
@@ -82,20 +82,20 @@ type AzureRedisCacheStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureRedisCacheStackOutputs) Reset() {
-	*x = AzureRedisCacheStackOutputs{}
+func (x *AzureRedisCacheOutputs) Reset() {
+	*x = AzureRedisCacheOutputs{}
 	mi := &file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRedisCacheStackOutputs) String() string {
+func (x *AzureRedisCacheOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRedisCacheStackOutputs) ProtoMessage() {}
+func (*AzureRedisCacheOutputs) ProtoMessage() {}
 
-func (x *AzureRedisCacheStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureRedisCacheOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -107,89 +107,89 @@ func (x *AzureRedisCacheStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRedisCacheStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureRedisCacheStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRedisCacheOutputs.ProtoReflect.Descriptor instead.
+func (*AzureRedisCacheOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRedisCacheStackOutputs) GetRedisCacheId() string {
+func (x *AzureRedisCacheOutputs) GetRedisCacheId() string {
 	if x != nil {
 		return x.RedisCacheId
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetRedisCacheName() string {
+func (x *AzureRedisCacheOutputs) GetRedisCacheName() string {
 	if x != nil {
 		return x.RedisCacheName
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetRegion() string {
+func (x *AzureRedisCacheOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetResourceGroupName() string {
+func (x *AzureRedisCacheOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetHostname() string {
+func (x *AzureRedisCacheOutputs) GetHostname() string {
 	if x != nil {
 		return x.Hostname
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetPort() int32 {
+func (x *AzureRedisCacheOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AzureRedisCacheStackOutputs) GetSslPort() int32 {
+func (x *AzureRedisCacheOutputs) GetSslPort() int32 {
 	if x != nil {
 		return x.SslPort
 	}
 	return 0
 }
 
-func (x *AzureRedisCacheStackOutputs) GetPrimaryAccessKey() string {
+func (x *AzureRedisCacheOutputs) GetPrimaryAccessKey() string {
 	if x != nil {
 		return x.PrimaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetSecondaryAccessKey() string {
+func (x *AzureRedisCacheOutputs) GetSecondaryAccessKey() string {
 	if x != nil {
 		return x.SecondaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetPrimaryConnectionString() string {
+func (x *AzureRedisCacheOutputs) GetPrimaryConnectionString() string {
 	if x != nil {
 		return x.PrimaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetSecondaryConnectionString() string {
+func (x *AzureRedisCacheOutputs) GetSecondaryConnectionString() string {
 	if x != nil {
 		return x.SecondaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureRedisCacheStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureRedisCacheOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -200,8 +200,8 @@ var File_catalog_azure_azurerediscache_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurerediscache/v1alpha1/outputs.proto\x12*dev.planton.azure.azurerediscache.v1alpha1\x1a\x1cshared/options/options.proto\"\xa8\x04\n" +
-	"\x1bAzureRedisCacheStackOutputs\x12$\n" +
+	"4catalog/azure/azurerediscache/v1alpha1/outputs.proto\x12*dev.planton.azure.azurerediscache.v1alpha1\x1a\x1cshared/options/options.proto\"\xa3\x04\n" +
+	"\x16AzureRedisCacheOutputs\x12$\n" +
 	"\x0eredis_cache_id\x18\x01 \x01(\tR\fredisCacheId\x12(\n" +
 	"\x10redis_cache_name\x18\x02 \x01(\tR\x0eredisCacheName\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06region\x12.\n" +
@@ -231,7 +231,7 @@ func file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureRedisCacheStackOutputs)(nil), // 0: dev.planton.azure.azurerediscache.v1alpha1.AzureRedisCacheStackOutputs
+	(*AzureRedisCacheOutputs)(nil), // 0: dev.planton.azure.azurerediscache.v1alpha1.AzureRedisCacheOutputs
 }
 var file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

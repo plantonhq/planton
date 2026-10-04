@@ -44,7 +44,7 @@ exported front-door Service.
 # the kind-cluster lanes exclude (composed external PostgreSQL/Redis,
 # S3-compatible artifact storage with declared credentials + the
 # disable-redirect posture, LoadBalancer exposure with TLS from a
-# cert Secret, internal TLS from per-component Secrets, the air-gap
+# cert Secret, internal TLS from per-kind Secrets, the air-gap
 # image mirror, Trivy air-gap knobs, metrics + ServiceMonitor, the
 # outbound proxy, and the escape hatch).
 apiVersion: kubernetes.planton.dev/v1alpha1

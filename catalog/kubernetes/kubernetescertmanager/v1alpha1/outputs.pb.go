@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesCertManagerStackOutputs captures observable outputs after
+// KubernetesCertManagerOutputs captures observable outputs after
 // cert-manager installation.
-type KubernetesCertManagerStackOutputs struct {
+type KubernetesCertManagerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Kubernetes namespace cert-manager was installed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -42,20 +42,20 @@ type KubernetesCertManagerStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *KubernetesCertManagerStackOutputs) Reset() {
-	*x = KubernetesCertManagerStackOutputs{}
+func (x *KubernetesCertManagerOutputs) Reset() {
+	*x = KubernetesCertManagerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCertManagerStackOutputs) String() string {
+func (x *KubernetesCertManagerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCertManagerStackOutputs) ProtoMessage() {}
+func (*KubernetesCertManagerOutputs) ProtoMessage() {}
 
-func (x *KubernetesCertManagerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCertManagerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *KubernetesCertManagerStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCertManagerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesCertManagerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCertManagerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesCertManagerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCertManagerStackOutputs) GetNamespace() string {
+func (x *KubernetesCertManagerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesCertManagerStackOutputs) GetReleaseName() string {
+func (x *KubernetesCertManagerOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesCertManagerStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesCertManagerOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
 	return ""
 }
 
-func (x *KubernetesCertManagerStackOutputs) GetClusterResourceNamespace() string {
+func (x *KubernetesCertManagerOutputs) GetClusterResourceNamespace() string {
 	if x != nil {
 		return x.ClusterResourceNamespace
 	}
@@ -104,8 +104,8 @@ var File_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto protore
 
 const file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetescertmanager/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetescertmanager.v1alpha1\"\xd4\x01\n" +
-	"!KubernetesCertManagerStackOutputs\x12\x1c\n" +
+	"?catalog/kubernetes/kubernetescertmanager/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetescertmanager.v1alpha1\"\xcf\x01\n" +
+	"\x1cKubernetesCertManagerOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x120\n" +
 	"\x14service_account_name\x18\x03 \x01(\tR\x12serviceAccountName\x12<\n" +
@@ -126,7 +126,7 @@ func file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesCertManagerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerStackOutputs
+	(*KubernetesCertManagerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetescertmanager.v1alpha1.KubernetesCertManagerOutputs
 }
 var file_catalog_kubernetes_kubernetescertmanager_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

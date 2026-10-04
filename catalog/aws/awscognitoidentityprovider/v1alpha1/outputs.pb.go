@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCognitoIdentityProviderStackOutputs captures observable identifiers from
+// AwsCognitoIdentityProviderOutputs captures observable identifiers from
 // a provisioned Cognito Identity Provider.
 //
 // The primary output is `provider_name`, which downstream User Pool Clients
 // reference in their `supported_identity_providers` list to enable federated
 // sign-in. Unlike most AWS resources, identity providers do not produce an
 // ARN — the provider_name is the sole identifier used for integration.
-type AwsCognitoIdentityProviderStackOutputs struct {
+type AwsCognitoIdentityProviderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the identity provider as registered in the User Pool.
 	// This is the value that must appear in a User Pool Client's
@@ -47,20 +47,20 @@ type AwsCognitoIdentityProviderStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCognitoIdentityProviderStackOutputs) Reset() {
-	*x = AwsCognitoIdentityProviderStackOutputs{}
+func (x *AwsCognitoIdentityProviderOutputs) Reset() {
+	*x = AwsCognitoIdentityProviderOutputs{}
 	mi := &file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCognitoIdentityProviderStackOutputs) String() string {
+func (x *AwsCognitoIdentityProviderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCognitoIdentityProviderStackOutputs) ProtoMessage() {}
+func (*AwsCognitoIdentityProviderOutputs) ProtoMessage() {}
 
-func (x *AwsCognitoIdentityProviderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCognitoIdentityProviderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,26 +72,26 @@ func (x *AwsCognitoIdentityProviderStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCognitoIdentityProviderStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCognitoIdentityProviderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCognitoIdentityProviderOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCognitoIdentityProviderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCognitoIdentityProviderStackOutputs) GetProviderName() string {
+func (x *AwsCognitoIdentityProviderOutputs) GetProviderName() string {
 	if x != nil {
 		return x.ProviderName
 	}
 	return ""
 }
 
-func (x *AwsCognitoIdentityProviderStackOutputs) GetProviderType() string {
+func (x *AwsCognitoIdentityProviderOutputs) GetProviderType() string {
 	if x != nil {
 		return x.ProviderType
 	}
 	return ""
 }
 
-func (x *AwsCognitoIdentityProviderStackOutputs) GetUserPoolId() string {
+func (x *AwsCognitoIdentityProviderOutputs) GetUserPoolId() string {
 	if x != nil {
 		return x.UserPoolId
 	}
@@ -102,8 +102,8 @@ var File_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awscognitoidentityprovider/v1alpha1/outputs.proto\x123dev.planton.aws.awscognitoidentityprovider.v1alpha1\"\x94\x01\n" +
-	"&AwsCognitoIdentityProviderStackOutputs\x12#\n" +
+	"=catalog/aws/awscognitoidentityprovider/v1alpha1/outputs.proto\x123dev.planton.aws.awscognitoidentityprovider.v1alpha1\"\x8f\x01\n" +
+	"!AwsCognitoIdentityProviderOutputs\x12#\n" +
 	"\rprovider_name\x18\x01 \x01(\tR\fproviderName\x12#\n" +
 	"\rprovider_type\x18\x02 \x01(\tR\fproviderType\x12 \n" +
 	"\fuser_pool_id\x18\x03 \x01(\tR\n" +
@@ -124,7 +124,7 @@ func file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCognitoIdentityProviderStackOutputs)(nil), // 0: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderStackOutputs
+	(*AwsCognitoIdentityProviderOutputs)(nil), // 0: dev.planton.aws.awscognitoidentityprovider.v1alpha1.AwsCognitoIdentityProviderOutputs
 }
 var file_catalog_aws_awscognitoidentityprovider_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpComputeMigSpec defines a Google Compute Engine Managed Instance
 Group (MIG) — a self-healing, optionally auto-scaling fleet of
@@ -31,7 +31,7 @@ running VMs pick up the new template is governed by update_policy:
 PROACTIVE rolls the fleet automatically within the surge/unavailable
 budget; OPPORTUNISTIC waits for manual or lifecycle-driven refreshes.
 
-The group's instance_group stack output is the load-balancer backend
+The group's instance_group output is the load-balancer backend
 handle: a GcpBackendService backend's group takes exactly that value.
 
 ## Example

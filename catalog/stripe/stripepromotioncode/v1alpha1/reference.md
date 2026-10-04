@@ -6,7 +6,7 @@
 
 **apiVersion**: `stripe.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 StripePromotionCodeSpec declares a code customers type to redeem a StripeCoupon -- LAUNCH25 in
 Checkout, the customer portal or a payment link -- with its own limits: first-time customers

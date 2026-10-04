@@ -2402,7 +2402,7 @@ type GcpDatastreamStreamBlmtConfig struct {
 	// The BigQuery connection whose service account writes the bucket -- a
 	// GcpBigQueryConnection reference (its name output, which the modules
 	// convert to Google's {project}.{location}.{connection_id} form) or a
-	// literal in the dotted form. Use a cloud_resource connection and grant
+	// literal in the dotted form. Use an infra_component connection and grant
 	// its service account storage access on the bucket.
 	ConnectionName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=connection_name,json=connectionName,proto3" json:"connection_name,omitempty"`
 	// The data file format. Google offers "PARQUET".

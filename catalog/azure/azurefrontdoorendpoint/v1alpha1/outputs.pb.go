@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorEndpointStackOutputs** captures the outputs of
+// **AzureFrontDoorEndpointOutputs** captures the outputs of
 // provisioning an Azure Front Door endpoint.
-type AzureFrontDoorEndpointStackOutputs struct {
+type AzureFrontDoorEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the endpoint -- what
 	// AzureFrontDoorRoute's endpoint_id references, and (alongside custom
@@ -42,20 +42,20 @@ type AzureFrontDoorEndpointStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorEndpointStackOutputs) Reset() {
-	*x = AzureFrontDoorEndpointStackOutputs{}
+func (x *AzureFrontDoorEndpointOutputs) Reset() {
+	*x = AzureFrontDoorEndpointOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorEndpointStackOutputs) String() string {
+func (x *AzureFrontDoorEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorEndpointStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorEndpointOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AzureFrontDoorEndpointStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorEndpointStackOutputs) GetEndpointId() string {
+func (x *AzureFrontDoorEndpointOutputs) GetEndpointId() string {
 	if x != nil {
 		return x.EndpointId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorEndpointStackOutputs) GetEndpointName() string {
+func (x *AzureFrontDoorEndpointOutputs) GetEndpointName() string {
 	if x != nil {
 		return x.EndpointName
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorEndpointStackOutputs) GetHostName() string {
+func (x *AzureFrontDoorEndpointOutputs) GetHostName() string {
 	if x != nil {
 		return x.HostName
 	}
@@ -97,8 +97,8 @@ var File_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azurefrontdoorendpoint/v1alpha1/outputs.proto\x121dev.planton.azure.azurefrontdoorendpoint.v1alpha1\"\x87\x01\n" +
-	"\"AzureFrontDoorEndpointStackOutputs\x12\x1f\n" +
+	";catalog/azure/azurefrontdoorendpoint/v1alpha1/outputs.proto\x121dev.planton.azure.azurefrontdoorendpoint.v1alpha1\"\x82\x01\n" +
+	"\x1dAzureFrontDoorEndpointOutputs\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12#\n" +
 	"\rendpoint_name\x18\x02 \x01(\tR\fendpointName\x12\x1b\n" +
@@ -119,7 +119,7 @@ func file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorEndpointStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorendpoint.v1alpha1.AzureFrontDoorEndpointStackOutputs
+	(*AzureFrontDoorEndpointOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorendpoint.v1alpha1.AzureFrontDoorEndpointOutputs
 }
 var file_catalog_azure_azurefrontdoorendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

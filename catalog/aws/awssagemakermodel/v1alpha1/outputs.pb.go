@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerModelStackOutputs captures observable identifiers from a
+// AwsSagemakerModelOutputs captures observable identifiers from a
 // provisioned SageMaker model. Endpoints wire their variants to
 // `model_name` via StringValueOrRef.
-type AwsSagemakerModelStackOutputs struct {
+type AwsSagemakerModelOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The model name (the AWS identity - endpoint production variants
 	// reference it).
@@ -35,20 +35,20 @@ type AwsSagemakerModelStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerModelStackOutputs) Reset() {
-	*x = AwsSagemakerModelStackOutputs{}
+func (x *AwsSagemakerModelOutputs) Reset() {
+	*x = AwsSagemakerModelOutputs{}
 	mi := &file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerModelStackOutputs) String() string {
+func (x *AwsSagemakerModelOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerModelStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerModelOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerModelStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerModelOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsSagemakerModelStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerModelStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerModelStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerModelOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerModelOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerModelStackOutputs) GetModelName() string {
+func (x *AwsSagemakerModelOutputs) GetModelName() string {
 	if x != nil {
 		return x.ModelName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerModelStackOutputs) GetModelArn() string {
+func (x *AwsSagemakerModelOutputs) GetModelArn() string {
 	if x != nil {
 		return x.ModelArn
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awssagemakermodel/v1alpha1/outputs.proto\x12*dev.planton.aws.awssagemakermodel.v1alpha1\"[\n" +
-	"\x1dAwsSagemakerModelStackOutputs\x12\x1d\n" +
+	"4catalog/aws/awssagemakermodel/v1alpha1/outputs.proto\x12*dev.planton.aws.awssagemakermodel.v1alpha1\"V\n" +
+	"\x18AwsSagemakerModelOutputs\x12\x1d\n" +
 	"\n" +
 	"model_name\x18\x01 \x01(\tR\tmodelName\x12\x1b\n" +
 	"\tmodel_arn\x18\x02 \x01(\tR\bmodelArnB\xea\x02\n" +
@@ -104,7 +104,7 @@ func file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerModelStackOutputs)(nil), // 0: dev.planton.aws.awssagemakermodel.v1alpha1.AwsSagemakerModelStackOutputs
+	(*AwsSagemakerModelOutputs)(nil), // 0: dev.planton.aws.awssagemakermodel.v1alpha1.AwsSagemakerModelOutputs
 }
 var file_catalog_aws_awssagemakermodel_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

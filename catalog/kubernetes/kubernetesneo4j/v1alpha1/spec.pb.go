@@ -130,7 +130,7 @@ type KubernetesNeo4JSpec struct {
 	// deliberate override of the chart's LoadBalancer default; exposure
 	// composes from first-class kinds instead. In-cluster clients use
 	// the always-created default Service (= the resource name — the
-	// endpoints in the stack outputs), so this block matters only when
+	// endpoints in the outputs), so this block matters only when
 	// exposing the server directly.
 	Service *KubernetesNeo4JService `protobuf:"bytes,15,opt,name=service,proto3" json:"service,omitempty"`
 	// *

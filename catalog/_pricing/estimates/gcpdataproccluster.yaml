@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: gcpdataproccluster
 spec:
@@ -113,5 +113,5 @@ spec:
       total_list_cost: "3562.87648"
       exclusions:
         - network egress and Cloud Logging/Monitoring ingestion follow what the jobs do
-        - internal-only nodes need Cloud NAT for internet egress -- a separate component with its own hourly and per-GB charges
+        - internal-only nodes need Cloud NAT for internet egress -- a separate kind with its own hourly and per-GB charges
         - the auto-created staging and temp buckets bill Cloud Storage rates by actual usage

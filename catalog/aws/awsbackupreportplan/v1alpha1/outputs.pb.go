@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupReportPlanStackOutputs captures the observable state of
+// AwsBackupReportPlanOutputs captures the observable state of
 // the report plan after apply.
-type AwsBackupReportPlanStackOutputs struct {
+type AwsBackupReportPlanOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The report plan's ARN.
 	ReportPlanArn string `protobuf:"bytes,1,opt,name=report_plan_arn,json=reportPlanArn,proto3" json:"report_plan_arn,omitempty"`
@@ -31,20 +31,20 @@ type AwsBackupReportPlanStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBackupReportPlanStackOutputs) Reset() {
-	*x = AwsBackupReportPlanStackOutputs{}
+func (x *AwsBackupReportPlanOutputs) Reset() {
+	*x = AwsBackupReportPlanOutputs{}
 	mi := &file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupReportPlanStackOutputs) String() string {
+func (x *AwsBackupReportPlanOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupReportPlanStackOutputs) ProtoMessage() {}
+func (*AwsBackupReportPlanOutputs) ProtoMessage() {}
 
-func (x *AwsBackupReportPlanStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupReportPlanOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *AwsBackupReportPlanStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupReportPlanStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBackupReportPlanStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupReportPlanOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBackupReportPlanOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupReportPlanStackOutputs) GetReportPlanArn() string {
+func (x *AwsBackupReportPlanOutputs) GetReportPlanArn() string {
 	if x != nil {
 		return x.ReportPlanArn
 	}
@@ -72,8 +72,8 @@ var File_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsbackupreportplan/v1alpha1/outputs.proto\x12,dev.planton.aws.awsbackupreportplan.v1alpha1\"I\n" +
-	"\x1fAwsBackupReportPlanStackOutputs\x12&\n" +
+	"6catalog/aws/awsbackupreportplan/v1alpha1/outputs.proto\x12,dev.planton.aws.awsbackupreportplan.v1alpha1\"D\n" +
+	"\x1aAwsBackupReportPlanOutputs\x12&\n" +
 	"\x0freport_plan_arn\x18\x01 \x01(\tR\rreportPlanArnB\xf8\x02\n" +
 	"0com.dev.planton.aws.awsbackupreportplan.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsbackupreportplan/v1alpha1;awsbackupreportplanv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsbackupreportplan.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsbackupreportplan\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsbackupreportplan\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsbackupreportplan::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBackupReportPlanStackOutputs)(nil), // 0: dev.planton.aws.awsbackupreportplan.v1alpha1.AwsBackupReportPlanStackOutputs
+	(*AwsBackupReportPlanOutputs)(nil), // 0: dev.planton.aws.awsbackupreportplan.v1alpha1.AwsBackupReportPlanOutputs
 }
 var file_catalog_aws_awsbackupreportplan_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

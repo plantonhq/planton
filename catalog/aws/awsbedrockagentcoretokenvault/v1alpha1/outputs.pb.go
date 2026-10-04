@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreTokenVaultStackOutputs captures the observable
+// AwsBedrockAgentCoreTokenVaultOutputs captures the observable
 // state of the configured token vault.
-type AwsBedrockAgentCoreTokenVaultStackOutputs struct {
+type AwsBedrockAgentCoreTokenVaultOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The vault the setting was applied to ("default" unless the spec
 	// targeted another vault) - also the provider's import ID.
@@ -39,20 +39,20 @@ type AwsBedrockAgentCoreTokenVaultStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreTokenVaultStackOutputs{}
+func (x *AwsBedrockAgentCoreTokenVaultOutputs) Reset() {
+	*x = AwsBedrockAgentCoreTokenVaultOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreTokenVaultOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreTokenVaultStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreTokenVaultOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreTokenVaultOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreTokenVaultStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreTokenVaultStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreTokenVaultOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreTokenVaultOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) GetTokenVaultId() string {
+func (x *AwsBedrockAgentCoreTokenVaultOutputs) GetTokenVaultId() string {
 	if x != nil {
 		return x.TokenVaultId
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) GetKeyType() string {
+func (x *AwsBedrockAgentCoreTokenVaultOutputs) GetKeyType() string {
 	if x != nil {
 		return x.KeyType
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackOutputs) GetKmsKeyArn() string {
+func (x *AwsBedrockAgentCoreTokenVaultOutputs) GetKmsKeyArn() string {
 	if x != nil {
 		return x.KmsKeyArn
 	}
@@ -94,8 +94,8 @@ var File_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto protor
 
 const file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/outputs.proto\x126dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1\"\x8c\x01\n" +
-	")AwsBedrockAgentCoreTokenVaultStackOutputs\x12$\n" +
+	"@catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/outputs.proto\x126dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1\"\x87\x01\n" +
+	"$AwsBedrockAgentCoreTokenVaultOutputs\x12$\n" +
 	"\x0etoken_vault_id\x18\x01 \x01(\tR\ftokenVaultId\x12\x19\n" +
 	"\bkey_type\x18\x02 \x01(\tR\akeyType\x12\x1e\n" +
 	"\vkms_key_arn\x18\x03 \x01(\tR\tkmsKeyArnB\xbe\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreTokenVaultStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultStackOutputs
+	(*AwsBedrockAgentCoreTokenVaultOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultOutputs
 }
 var file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

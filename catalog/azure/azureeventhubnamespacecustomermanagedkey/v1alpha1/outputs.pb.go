@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubNamespaceCustomerManagedKeyStackOutputs** captures the
+// **AzureEventHubNamespaceCustomerManagedKeyOutputs** captures the
 // outputs of applying customer-managed-key encryption to an Event Hubs
 // namespace.
-type AzureEventHubNamespaceCustomerManagedKeyStackOutputs struct {
+type AzureEventHubNamespaceCustomerManagedKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The provider's identity for the CMK configuration -- the namespace's
 	// ARM ID (the configuration is a property of the namespace; it has no
@@ -34,20 +34,20 @@ type AzureEventHubNamespaceCustomerManagedKeyStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackOutputs) Reset() {
-	*x = AzureEventHubNamespaceCustomerManagedKeyStackOutputs{}
+func (x *AzureEventHubNamespaceCustomerManagedKeyOutputs) Reset() {
+	*x = AzureEventHubNamespaceCustomerManagedKeyOutputs{}
 	mi := &file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackOutputs) String() string {
+func (x *AzureEventHubNamespaceCustomerManagedKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubNamespaceCustomerManagedKeyStackOutputs) ProtoMessage() {}
+func (*AzureEventHubNamespaceCustomerManagedKeyOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubNamespaceCustomerManagedKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,12 +59,12 @@ func (x *AzureEventHubNamespaceCustomerManagedKeyStackOutputs) ProtoReflect() pr
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubNamespaceCustomerManagedKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubNamespaceCustomerManagedKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubNamespaceCustomerManagedKeyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubNamespaceCustomerManagedKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStackOutputs) GetCustomerManagedKeyId() string {
+func (x *AzureEventHubNamespaceCustomerManagedKeyOutputs) GetCustomerManagedKeyId() string {
 	if x != nil {
 		return x.CustomerManagedKeyId
 	}
@@ -75,8 +75,8 @@ var File_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs
 
 const file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Mcatalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1/outputs.proto\x12Cdev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1\"m\n" +
-	"4AzureEventHubNamespaceCustomerManagedKeyStackOutputs\x125\n" +
+	"Mcatalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1/outputs.proto\x12Cdev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1\"h\n" +
+	"/AzureEventHubNamespaceCustomerManagedKeyOutputs\x125\n" +
 	"\x17customer_managed_key_id\x18\x01 \x01(\tR\x14customerManagedKeyIdB\x98\x04\n" +
 	"Gcom.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1B\fOutputsProtoP\x01Z\x8d\x01github.com/plantonhq/planton/catalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1;azureeventhubnamespacecustomermanagedkeyv1alpha1\xa2\x02\x04DPAA\xaa\x02CDev.Planton.Azure.Azureeventhubnamespacecustomermanagedkey.V1alpha1\xca\x02CDev\\Planton\\Azure\\Azureeventhubnamespacecustomermanagedkey\\V1alpha1\xe2\x02ODev\\Planton\\Azure\\Azureeventhubnamespacecustomermanagedkey\\V1alpha1\\GPBMetadata\xea\x02GDev::Planton::Azure::Azureeventhubnamespacecustomermanagedkey::V1alpha1b\x06proto3"
 
@@ -94,7 +94,7 @@ func file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_output
 
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubNamespaceCustomerManagedKeyStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackOutputs
+	(*AzureEventHubNamespaceCustomerManagedKeyOutputs)(nil), // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyOutputs
 }
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

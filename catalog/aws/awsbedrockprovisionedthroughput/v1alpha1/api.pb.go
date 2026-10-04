@@ -34,7 +34,7 @@ type AwsBedrockProvisionedThroughput struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the provisioned throughput.
 	Spec *AwsBedrockProvisionedThroughputSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -87,7 +87,7 @@ func (x *AwsBedrockProvisionedThroughput) GetKind() string {
 	return ""
 }
 
-func (x *AwsBedrockProvisionedThroughput) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBedrockProvisionedThroughput) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ func (x *AwsBedrockProvisionedThroughput) GetStatus() *AwsBedrockProvisionedThro
 type AwsBedrockProvisionedThroughputStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsBedrockProvisionedThroughputStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsBedrockProvisionedThroughputOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsBedrockProvisionedThroughputStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBedrockProvisionedThroughputStatus) GetOutputs() *AwsBedrockProvisionedThroughputStackOutputs {
+func (x *AwsBedrockProvisionedThroughputStatus) GetOutputs() *AwsBedrockProvisionedThroughputOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_api_proto_rawDes
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAwsBedrockProvisionedThroughputR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatusR\x06status\"\xa8\x01\n" +
-	"%AwsBedrockProvisionedThroughputStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatusR\x06status\"\xa3\x01\n" +
+	"%AwsBedrockProvisionedThroughputStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputOutputsR\aoutputsB\xc8\x03\n" +
 	"<com.dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/aws/awsbedrockprovisionedthroughput/v1alpha1;awsbedrockprovisionedthroughputv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Aws.Awsbedrockprovisionedthroughput.V1alpha1\xca\x028Dev\\Planton\\Aws\\Awsbedrockprovisionedthroughput\\V1alpha1\xe2\x02DDev\\Planton\\Aws\\Awsbedrockprovisionedthroughput\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Aws::Awsbedrockprovisionedthroughput::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_api_proto_rawDesc
 
 var file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBedrockProvisionedThroughput)(nil),             // 0: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughput
-	(*AwsBedrockProvisionedThroughputStatus)(nil),       // 1: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBedrockProvisionedThroughputSpec)(nil),         // 3: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputSpec
-	(*AwsBedrockProvisionedThroughputStackOutputs)(nil), // 4: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStackOutputs
+	(*AwsBedrockProvisionedThroughput)(nil),        // 0: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughput
+	(*AwsBedrockProvisionedThroughputStatus)(nil),  // 1: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBedrockProvisionedThroughputSpec)(nil),    // 3: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputSpec
+	(*AwsBedrockProvisionedThroughputOutputs)(nil), // 4: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputOutputs
 }
 var file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughput.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughput.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughput.spec:type_name -> dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputSpec
 	1, // 2: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughput.status:type_name -> dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatus
-	4, // 3: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatus.outputs:type_name -> dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStackOutputs
+	4, // 3: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStatus.outputs:type_name -> dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogAccountPolicyStackOutputs captures the observable
+// AwsCloudwatchLogAccountPolicyOutputs captures the observable
 // state of the account policy after apply.
-type AwsCloudwatchLogAccountPolicyStackOutputs struct {
+type AwsCloudwatchLogAccountPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The policy's name.
 	PolicyName string `protobuf:"bytes,1,opt,name=policy_name,json=policyName,proto3" json:"policy_name,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudwatchLogAccountPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackOutputs) Reset() {
-	*x = AwsCloudwatchLogAccountPolicyStackOutputs{}
+func (x *AwsCloudwatchLogAccountPolicyOutputs) Reset() {
+	*x = AwsCloudwatchLogAccountPolicyOutputs{}
 	mi := &file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackOutputs) String() string {
+func (x *AwsCloudwatchLogAccountPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogAccountPolicyStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchLogAccountPolicyOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogAccountPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogAccountPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudwatchLogAccountPolicyStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogAccountPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogAccountPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogAccountPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogAccountPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackOutputs) GetPolicyName() string {
+func (x *AwsCloudwatchLogAccountPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackOutputs) GetPolicyType() string {
+func (x *AwsCloudwatchLogAccountPolicyOutputs) GetPolicyType() string {
 	if x != nil {
 		return x.PolicyType
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto protor
 
 const file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/outputs.proto\x126dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1\"m\n" +
-	")AwsCloudwatchLogAccountPolicyStackOutputs\x12\x1f\n" +
+	"@catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/outputs.proto\x126dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1\"h\n" +
+	"$AwsCloudwatchLogAccountPolicyOutputs\x12\x1f\n" +
 	"\vpolicy_name\x18\x01 \x01(\tR\n" +
 	"policyName\x12\x1f\n" +
 	"\vpolicy_type\x18\x02 \x01(\tR\n" +
@@ -104,7 +104,7 @@ func file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchLogAccountPolicyStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyStackOutputs
+	(*AwsCloudwatchLogAccountPolicyOutputs)(nil), // 0: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyOutputs
 }
 var file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

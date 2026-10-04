@@ -31,7 +31,7 @@ type GcpVertexAiTensorboard struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiTensorboardSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiTensorboard) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiTensorboard) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiTensorboard) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiTensorboard) GetStatus() *GcpVertexAiTensorboardStatus {
 // gcp-vertex-ai-tensorboard status
 type GcpVertexAiTensorboardStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiTensorboardStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiTensorboardOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiTensorboardStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiTensorboardStatus) GetOutputs() *GcpVertexAiTensorboardStackOutputs {
+func (x *GcpVertexAiTensorboardStatus) GetOutputs() *GcpVertexAiTensorboardOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16GcpVertexAiTensorboardR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatusR\x06status\"\x8d\x01\n" +
-	"\x1cGcpVertexAiTensorboardStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatusR\x06status\"\x88\x01\n" +
+	"\x1cGcpVertexAiTensorboardStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardOutputsR\aoutputsB\x89\x03\n" +
 	"3com.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpvertexaitensorboard/v1alpha1;gcpvertexaitensorboardv1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpvertexaitensorboard.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpvertexaitensorboard\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpvertexaitensorboard\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpvertexaitensorboard::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiTensorboard)(nil),             // 0: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboard
-	(*GcpVertexAiTensorboardStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiTensorboardSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardSpec
-	(*GcpVertexAiTensorboardStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStackOutputs
+	(*GcpVertexAiTensorboard)(nil),        // 0: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboard
+	(*GcpVertexAiTensorboardStatus)(nil),  // 1: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiTensorboardSpec)(nil),    // 3: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardSpec
+	(*GcpVertexAiTensorboardOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardOutputs
 }
 var file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboard.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboard.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboard.spec:type_name -> dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardSpec
 	1, // 2: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboard.status:type_name -> dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatus
-	4, // 3: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

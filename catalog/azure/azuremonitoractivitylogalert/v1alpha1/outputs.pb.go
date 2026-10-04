@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorActivityLogAlertStackOutputs** captures the outputs of
+// **AzureMonitorActivityLogAlertOutputs** captures the outputs of
 // provisioning an Azure Monitor Activity Log Alert.
-type AzureMonitorActivityLogAlertStackOutputs struct {
+type AzureMonitorActivityLogAlertOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the activity log alert.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/activityLogAlerts/{name}
@@ -34,20 +34,20 @@ type AzureMonitorActivityLogAlertStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AzureMonitorActivityLogAlertStackOutputs) Reset() {
-	*x = AzureMonitorActivityLogAlertStackOutputs{}
+func (x *AzureMonitorActivityLogAlertOutputs) Reset() {
+	*x = AzureMonitorActivityLogAlertOutputs{}
 	mi := &file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorActivityLogAlertStackOutputs) String() string {
+func (x *AzureMonitorActivityLogAlertOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorActivityLogAlertStackOutputs) ProtoMessage() {}
+func (*AzureMonitorActivityLogAlertOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorActivityLogAlertStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorActivityLogAlertOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureMonitorActivityLogAlertStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorActivityLogAlertStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorActivityLogAlertStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorActivityLogAlertOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorActivityLogAlertOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorActivityLogAlertStackOutputs) GetActivityLogAlertId() string {
+func (x *AzureMonitorActivityLogAlertOutputs) GetActivityLogAlertId() string {
 	if x != nil {
 		return x.ActivityLogAlertId
 	}
 	return ""
 }
 
-func (x *AzureMonitorActivityLogAlertStackOutputs) GetActivityLogAlertName() string {
+func (x *AzureMonitorActivityLogAlertOutputs) GetActivityLogAlertName() string {
 	if x != nil {
 		return x.ActivityLogAlertName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azuremonitoractivitylogalert/v1alpha1/outputs.proto\x127dev.planton.azure.azuremonitoractivitylogalert.v1alpha1\"\x94\x01\n" +
-	"(AzureMonitorActivityLogAlertStackOutputs\x121\n" +
+	"Acatalog/azure/azuremonitoractivitylogalert/v1alpha1/outputs.proto\x127dev.planton.azure.azuremonitoractivitylogalert.v1alpha1\"\x8f\x01\n" +
+	"#AzureMonitorActivityLogAlertOutputs\x121\n" +
 	"\x15activity_log_alert_id\x18\x01 \x01(\tR\x12activityLogAlertId\x125\n" +
 	"\x17activity_log_alert_name\x18\x02 \x01(\tR\x14activityLogAlertNameB\xc3\x03\n" +
 	";com.dev.planton.azure.azuremonitoractivitylogalert.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azuremonitoractivitylogalert/v1alpha1;azuremonitoractivitylogalertv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azuremonitoractivitylogalert.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azuremonitoractivitylogalert\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azuremonitoractivitylogalert\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azuremonitoractivitylogalert::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorActivityLogAlertStackOutputs)(nil), // 0: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertStackOutputs
+	(*AzureMonitorActivityLogAlertOutputs)(nil), // 0: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertOutputs
 }
 var file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

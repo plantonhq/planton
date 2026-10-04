@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeEventDestinationStackInput is the input to the StripeEventDestination IaC module.
+// StripeEventDestinationIacInput is the input to the StripeEventDestination IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeEventDestinationStackInput struct {
+type StripeEventDestinationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeEventDestination resource to be deployed.
 	Target *StripeEventDestination `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeEventDestinationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeEventDestinationStackInput) Reset() {
-	*x = StripeEventDestinationStackInput{}
+func (x *StripeEventDestinationIacInput) Reset() {
+	*x = StripeEventDestinationIacInput{}
 	mi := &file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeEventDestinationStackInput) String() string {
+func (x *StripeEventDestinationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeEventDestinationStackInput) ProtoMessage() {}
+func (*StripeEventDestinationIacInput) ProtoMessage() {}
 
-func (x *StripeEventDestinationStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeEventDestinationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeEventDestinationStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeEventDestinationStackInput.ProtoReflect.Descriptor instead.
-func (*StripeEventDestinationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeEventDestinationIacInput.ProtoReflect.Descriptor instead.
+func (*StripeEventDestinationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeEventDestinationStackInput) GetTarget() *StripeEventDestination {
+func (x *StripeEventDestinationIacInput) GetTarget() *StripeEventDestination {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeEventDestinationStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeEventDestinationIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripeeventdestination_v1alpha1_input_proto protoreflect
 
 const file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/stripe/stripeeventdestination/v1alpha1/input.proto\x122dev.planton.stripe.stripeeventdestination.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a8catalog/stripe/stripeeventdestination/v1alpha1/api.proto\"\xd9\x01\n" +
-	" StripeEventDestinationStackInput\x12b\n" +
+	":catalog/stripe/stripeeventdestination/v1alpha1/input.proto\x122dev.planton.stripe.stripeeventdestination.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a8catalog/stripe/stripeeventdestination/v1alpha1/api.proto\"\xd7\x01\n" +
+	"\x1eStripeEventDestinationIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x9d\x03\n" +
 	"6com.dev.planton.stripe.stripeeventdestination.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_goTypes = []any{
-	(*StripeEventDestinationStackInput)(nil), // 0: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationStackInput
-	(*StripeEventDestination)(nil),           // 1: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestination
-	(*stripe.StripeProviderConfig)(nil),      // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeEventDestinationIacInput)(nil), // 0: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationIacInput
+	(*StripeEventDestination)(nil),         // 1: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestination
+	(*stripe.StripeProviderConfig)(nil),    // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripeeventdestination_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationStackInput.target:type_name -> dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestination
-	2, // 1: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationIacInput.target:type_name -> dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestination
+	2, // 1: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

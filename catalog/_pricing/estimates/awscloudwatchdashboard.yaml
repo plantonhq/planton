@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awscloudwatchdashboard
 spec:
@@ -33,7 +33,7 @@ spec:
         - log widgets execute a Logs Insights query on every dashboard load, billing per GB of log data scanned -- view frequency is human-driven and invisible to this manifest
         - sharing the dashboard bills the GetMetricData API calls used to render the shared copy; rendering the original in the owner's console stays free
         - custom widgets and external metric data sources invoke a Lambda function per render, billed on that function
-        - the metrics, logs, and alarms the widgets chart bill on their own source components -- the dashboard only visualizes them
+        - the metrics, logs, and alarms the widgets chart bill on their own source kinds -- the dashboard only visualizes them
       notes: The account's first 3 custom dashboards (up to 50 metrics referenced each) are free as a permanent allowance; whether THIS dashboard falls inside it depends on account-wide dashboard count, which no single manifest can see, so the estimate states the full committed rate. A dashboard referencing more than 50 metrics bills even inside the allowance. Nothing in the widget layout moves the committed fee; PutDashboard is a pure upsert, so body edits never restart or duplicate the meter.
     - preset: 02-alarm-overview
       region_assumption: us-east-1
@@ -54,5 +54,5 @@ spec:
         - log widgets execute a Logs Insights query on every dashboard load, billing per GB of log data scanned -- view frequency is human-driven and invisible to this manifest
         - sharing the dashboard bills the GetMetricData API calls used to render the shared copy; rendering the original in the owner's console stays free
         - custom widgets and external metric data sources invoke a Lambda function per render, billed on that function
-        - the metrics, logs, and alarms the widgets chart bill on their own source components -- the dashboard only visualizes them
+        - the metrics, logs, and alarms the widgets chart bill on their own source kinds -- the dashboard only visualizes them
       notes: The account's first 3 custom dashboards (up to 50 metrics referenced each) are free as a permanent allowance; whether THIS dashboard falls inside it depends on account-wide dashboard count, which no single manifest can see, so the estimate states the full committed rate. A dashboard referencing more than 50 metrics bills even inside the allowance. Nothing in the widget layout moves the committed fee; PutDashboard is a pure upsert, so body edits never restart or duplicate the meter.

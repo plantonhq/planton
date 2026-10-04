@@ -1,14 +1,14 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its capacity derivation
+# This file replays the kind's presets through its capacity derivation
 # (../capacity/, the machine-executable value-to-capacity rules): each
 # preset states the CPU/memory requests and limits and the persistent
 # volume storage it reserves from its target cluster, with a basis sentence
 # tracing every total back to the manifest's values. Cluster-capacity
-# components carry no priced lines -- the dollar value of the reservation
+# kinds carry no priced lines -- the dollar value of the reservation
 # is the target cluster's node and storage-class economics, which this
-# catalog cannot know. Schema: finops/componentcostestimate/v1.
+# catalog cannot know. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: kubernetesairflow
 spec:
@@ -21,7 +21,7 @@ spec:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - without a Celery broker every task runs as its own ephemeral pod (the KubernetesExecutor path) -- per-task reservations exist only while tasks run and no standing worker fleet is counted
         - a triggerer or worker component block declared without its persistence size is stated at the 100Gi spec-declared default; with no component block at all the chart still provisions the volume, a reservation this footprint cannot count
-        - the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate components with their own footprints
+        - the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate Infra Components with their own footprints
     - preset: 02-production-celery
       capacity_footprint:
         cpu_requests: 2500m
@@ -33,4 +33,4 @@ spec:
         - when KEDA autoscaling is enabled it owns the Celery worker replica count at runtime between its declared bounds -- the footprint states the declared replicas
         - the git-sync sidecar rides every Airflow component -- its declared resources are per-sidecar and are not multiplied into this footprint
         - a triggerer or worker component block declared without its persistence size is stated at the 100Gi spec-declared default; with no component block at all the chart still provisions the volume, a reservation this footprint cannot count
-        - the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate components with their own footprints
+        - the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate Infra Components with their own footprints

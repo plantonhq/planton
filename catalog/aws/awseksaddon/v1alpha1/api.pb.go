@@ -34,7 +34,7 @@ type AwsEksAddon struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining how the add-on is provisioned.
 	Spec *AwsEksAddonSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsEksAddon) GetKind() string {
 	return ""
 }
 
-func (x *AwsEksAddon) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEksAddon) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsEksAddon) GetStatus() *AwsEksAddonStatus {
 type AwsEksAddonStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsEksAddonStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsEksAddonOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsEksAddonStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksaddon_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEksAddonStatus) GetOutputs() *AwsEksAddonStackOutputs {
+func (x *AwsEksAddonStatus) GetOutputs() *AwsEksAddonOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awseksaddon_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAwsEksAddonR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
 	"\x04spec\x18\x04 \x01(\v25.dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12O\n" +
-	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStatusR\x06status\"l\n" +
-	"\x11AwsEksAddonStatus\x12W\n" +
-	"\aoutputs\x18\x01 \x01(\v2=.dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStackOutputsR\aoutputsB\xbc\x02\n" +
+	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStatusR\x06status\"g\n" +
+	"\x11AwsEksAddonStatus\x12R\n" +
+	"\aoutputs\x18\x01 \x01(\v28.dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonOutputsR\aoutputsB\xbc\x02\n" +
 	"(com.dev.planton.aws.awseksaddon.v1alpha1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/catalog/aws/awseksaddon/v1alpha1;awseksaddonv1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Aws.Awseksaddon.V1alpha1\xca\x02$Dev\\Planton\\Aws\\Awseksaddon\\V1alpha1\xe2\x020Dev\\Planton\\Aws\\Awseksaddon\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Aws::Awseksaddon::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_aws_awseksaddon_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_aws_awseksaddon_v1alpha1_api_proto_goTypes = []any{
 	(*AwsEksAddon)(nil),                  // 0: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddon
 	(*AwsEksAddonStatus)(nil),            // 1: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsEksAddonSpec)(nil),              // 3: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonSpec
-	(*AwsEksAddonStackOutputs)(nil),      // 4: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStackOutputs
+	(*AwsEksAddonOutputs)(nil),           // 4: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonOutputs
 }
 var file_catalog_aws_awseksaddon_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddon.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddon.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddon.spec:type_name -> dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonSpec
 	1, // 2: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddon.status:type_name -> dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStatus
-	4, // 3: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStatus.outputs:type_name -> dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStackOutputs
+	4, // 3: dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonStatus.outputs:type_name -> dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

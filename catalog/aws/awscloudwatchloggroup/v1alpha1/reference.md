@@ -37,7 +37,7 @@ satellites that share the group's lifecycle:
 For the common use case, only `retention_in_days` is needed. KMS encryption
 and log group class are optional settings for compliance and cost optimization.
 
-Credentials, region, and deployment workflow live outside this spec in stack inputs.
+Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 
 ## Example
 

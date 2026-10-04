@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureApplicationInsightsStackOutputs** captures the outputs of provisioning
+// **AzureApplicationInsightsOutputs** captures the outputs of provisioning
 // an Azure Application Insights resource.
 //
 // The `connection_string` output is the composition seam: AzureFunctionApp,
 // AzureLinuxWebApp, and AzureContainerAppEnvironment (Dapr instrumentation)
 // reference it to wire applications to this APM resource.
-type AzureApplicationInsightsStackOutputs struct {
+type AzureApplicationInsightsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Application Insights resource.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/components/{name}
@@ -55,20 +55,20 @@ type AzureApplicationInsightsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureApplicationInsightsStackOutputs) Reset() {
-	*x = AzureApplicationInsightsStackOutputs{}
+func (x *AzureApplicationInsightsOutputs) Reset() {
+	*x = AzureApplicationInsightsOutputs{}
 	mi := &file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureApplicationInsightsStackOutputs) String() string {
+func (x *AzureApplicationInsightsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureApplicationInsightsStackOutputs) ProtoMessage() {}
+func (*AzureApplicationInsightsOutputs) ProtoMessage() {}
 
-func (x *AzureApplicationInsightsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureApplicationInsightsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,40 +80,40 @@ func (x *AzureApplicationInsightsStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureApplicationInsightsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureApplicationInsightsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureApplicationInsightsOutputs.ProtoReflect.Descriptor instead.
+func (*AzureApplicationInsightsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureApplicationInsightsStackOutputs) GetApplicationInsightsId() string {
+func (x *AzureApplicationInsightsOutputs) GetApplicationInsightsId() string {
 	if x != nil {
 		return x.ApplicationInsightsId
 	}
 	return ""
 }
 
-func (x *AzureApplicationInsightsStackOutputs) GetApplicationInsightsName() string {
+func (x *AzureApplicationInsightsOutputs) GetApplicationInsightsName() string {
 	if x != nil {
 		return x.ApplicationInsightsName
 	}
 	return ""
 }
 
-func (x *AzureApplicationInsightsStackOutputs) GetInstrumentationKey() string {
+func (x *AzureApplicationInsightsOutputs) GetInstrumentationKey() string {
 	if x != nil {
 		return x.InstrumentationKey
 	}
 	return ""
 }
 
-func (x *AzureApplicationInsightsStackOutputs) GetConnectionString() string {
+func (x *AzureApplicationInsightsOutputs) GetConnectionString() string {
 	if x != nil {
 		return x.ConnectionString
 	}
 	return ""
 }
 
-func (x *AzureApplicationInsightsStackOutputs) GetAppId() string {
+func (x *AzureApplicationInsightsOutputs) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
@@ -124,8 +124,8 @@ var File_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureapplicationinsights/v1alpha1/outputs.proto\x123dev.planton.azure.azureapplicationinsights.v1alpha1\"\x8f\x02\n" +
-	"$AzureApplicationInsightsStackOutputs\x126\n" +
+	"=catalog/azure/azureapplicationinsights/v1alpha1/outputs.proto\x123dev.planton.azure.azureapplicationinsights.v1alpha1\"\x8a\x02\n" +
+	"\x1fAzureApplicationInsightsOutputs\x126\n" +
 	"\x17application_insights_id\x18\x01 \x01(\tR\x15applicationInsightsId\x12:\n" +
 	"\x19application_insights_name\x18\x02 \x01(\tR\x17applicationInsightsName\x12/\n" +
 	"\x13instrumentation_key\x18\x03 \x01(\tR\x12instrumentationKey\x12+\n" +
@@ -147,7 +147,7 @@ func file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureApplicationInsightsStackOutputs)(nil), // 0: dev.planton.azure.azureapplicationinsights.v1alpha1.AzureApplicationInsightsStackOutputs
+	(*AzureApplicationInsightsOutputs)(nil), // 0: dev.planton.azure.azureapplicationinsights.v1alpha1.AzureApplicationInsightsOutputs
 }
 var file_catalog_azure_azureapplicationinsights_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

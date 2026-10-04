@@ -25,7 +25,7 @@ const (
 // The grant itself has no server-generated identity beyond its inputs; the
 // outputs echo the fully-resolved grant tuple so downstream tooling and audits
 // can see exactly what was applied without re-resolving references.
-type GcpKmsKeyIamMemberStackOutputs struct {
+type GcpKmsKeyIamMemberOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully-qualified resource path of the crypto key whose IAM policy
 	// received the grant
@@ -45,20 +45,20 @@ type GcpKmsKeyIamMemberStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpKmsKeyIamMemberStackOutputs) Reset() {
-	*x = GcpKmsKeyIamMemberStackOutputs{}
+func (x *GcpKmsKeyIamMemberOutputs) Reset() {
+	*x = GcpKmsKeyIamMemberOutputs{}
 	mi := &file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpKmsKeyIamMemberStackOutputs) String() string {
+func (x *GcpKmsKeyIamMemberOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpKmsKeyIamMemberStackOutputs) ProtoMessage() {}
+func (*GcpKmsKeyIamMemberOutputs) ProtoMessage() {}
 
-func (x *GcpKmsKeyIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpKmsKeyIamMemberOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *GcpKmsKeyIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpKmsKeyIamMemberStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpKmsKeyIamMemberStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpKmsKeyIamMemberOutputs.ProtoReflect.Descriptor instead.
+func (*GcpKmsKeyIamMemberOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpKmsKeyIamMemberStackOutputs) GetCryptoKeyId() string {
+func (x *GcpKmsKeyIamMemberOutputs) GetCryptoKeyId() string {
 	if x != nil {
 		return x.CryptoKeyId
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyIamMemberStackOutputs) GetRole() string {
+func (x *GcpKmsKeyIamMemberOutputs) GetRole() string {
 	if x != nil {
 		return x.Role
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyIamMemberStackOutputs) GetMember() string {
+func (x *GcpKmsKeyIamMemberOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyIamMemberStackOutputs) GetEtag() string {
+func (x *GcpKmsKeyIamMemberOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -107,8 +107,8 @@ var File_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpkmskeyiammember/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpkmskeyiammember.v1alpha1\"\x84\x01\n" +
-	"\x1eGcpKmsKeyIamMemberStackOutputs\x12\"\n" +
+	"5catalog/gcp/gcpkmskeyiammember/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpkmskeyiammember.v1alpha1\"\x7f\n" +
+	"\x19GcpKmsKeyIamMemberOutputs\x12\"\n" +
 	"\rcrypto_key_id\x18\x01 \x01(\tR\vcryptoKeyId\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x16\n" +
 	"\x06member\x18\x03 \x01(\tR\x06member\x12\x12\n" +
@@ -129,7 +129,7 @@ func file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpKmsKeyIamMemberStackOutputs)(nil), // 0: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStackOutputs
+	(*GcpKmsKeyIamMemberOutputs)(nil), // 0: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberOutputs
 }
 var file_catalog_gcp_gcpkmskeyiammember_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

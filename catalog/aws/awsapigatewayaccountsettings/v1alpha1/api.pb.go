@@ -27,7 +27,7 @@ type AwsApiGatewayAccountSettings struct {
 	state         protoimpl.MessageState              `protogen:"open.v1"`
 	ApiVersion    string                              `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                              `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata       `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata       `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsApiGatewayAccountSettingsSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsApiGatewayAccountSettingsStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsApiGatewayAccountSettings) GetKind() string {
 	return ""
 }
 
-func (x *AwsApiGatewayAccountSettings) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsApiGatewayAccountSettings) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsApiGatewayAccountSettings) GetStatus() *AwsApiGatewayAccountSettings
 }
 
 type AwsApiGatewayAccountSettingsStatus struct {
-	state         protoimpl.MessageState                    `protogen:"open.v1"`
-	Outputs       *AwsApiGatewayAccountSettingsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState               `protogen:"open.v1"`
+	Outputs       *AwsApiGatewayAccountSettingsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsApiGatewayAccountSettingsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsApiGatewayAccountSettingsStatus) GetOutputs() *AwsApiGatewayAccountSettingsStackOutputs {
+func (x *AwsApiGatewayAccountSettingsStatus) GetOutputs() *AwsApiGatewayAccountSettingsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cAwsApiGatewayAccountSettingsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatusR\x06status\"\x9f\x01\n" +
-	"\"AwsApiGatewayAccountSettingsStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatusR\x06status\"\x9a\x01\n" +
+	"\"AwsApiGatewayAccountSettingsStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsOutputsR\aoutputsB\xb3\x03\n" +
 	"9com.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/aws/awsapigatewayaccountsettings/v1alpha1;awsapigatewayaccountsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Aws.Awsapigatewayaccountsettings.V1alpha1\xca\x025Dev\\Planton\\Aws\\Awsapigatewayaccountsettings\\V1alpha1\xe2\x02ADev\\Planton\\Aws\\Awsapigatewayaccountsettings\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Aws::Awsapigatewayaccountsettings::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_api_proto_goTypes = []any{
-	(*AwsApiGatewayAccountSettings)(nil),             // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings
-	(*AwsApiGatewayAccountSettingsStatus)(nil),       // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsApiGatewayAccountSettingsSpec)(nil),         // 3: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsSpec
-	(*AwsApiGatewayAccountSettingsStackOutputs)(nil), // 4: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackOutputs
+	(*AwsApiGatewayAccountSettings)(nil),        // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings
+	(*AwsApiGatewayAccountSettingsStatus)(nil),  // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsApiGatewayAccountSettingsSpec)(nil),    // 3: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsSpec
+	(*AwsApiGatewayAccountSettingsOutputs)(nil), // 4: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsOutputs
 }
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings.spec:type_name -> dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsSpec
 	1, // 2: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings.status:type_name -> dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatus
-	4, // 3: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatus.outputs:type_name -> dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackOutputs
+	4, // 3: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStatus.outputs:type_name -> dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDeployCustomTargetTypeStackOutputs carries the custom target type's
+// GcpDeployCustomTargetTypeOutputs carries the custom target type's
 // identity: what a Cloud Deploy target's custom_target.custom_target_type
 // takes.
-type GcpDeployCustomTargetTypeStackOutputs struct {
+type GcpDeployCustomTargetTypeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/customTargetTypes/{custom_target_type_id}.
@@ -37,20 +37,20 @@ type GcpDeployCustomTargetTypeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDeployCustomTargetTypeStackOutputs) Reset() {
-	*x = GcpDeployCustomTargetTypeStackOutputs{}
+func (x *GcpDeployCustomTargetTypeOutputs) Reset() {
+	*x = GcpDeployCustomTargetTypeOutputs{}
 	mi := &file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDeployCustomTargetTypeStackOutputs) String() string {
+func (x *GcpDeployCustomTargetTypeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDeployCustomTargetTypeStackOutputs) ProtoMessage() {}
+func (*GcpDeployCustomTargetTypeOutputs) ProtoMessage() {}
 
-func (x *GcpDeployCustomTargetTypeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDeployCustomTargetTypeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *GcpDeployCustomTargetTypeStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDeployCustomTargetTypeStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDeployCustomTargetTypeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDeployCustomTargetTypeOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDeployCustomTargetTypeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDeployCustomTargetTypeStackOutputs) GetName() string {
+func (x *GcpDeployCustomTargetTypeOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDeployCustomTargetTypeStackOutputs) GetCustomTargetTypeId() string {
+func (x *GcpDeployCustomTargetTypeOutputs) GetCustomTargetTypeId() string {
 	if x != nil {
 		return x.CustomTargetTypeId
 	}
 	return ""
 }
 
-func (x *GcpDeployCustomTargetTypeStackOutputs) GetUid() string {
+func (x *GcpDeployCustomTargetTypeOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
@@ -92,8 +92,8 @@ var File_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpdeploycustomtargettype/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1\"\x80\x01\n" +
-	"%GcpDeployCustomTargetTypeStackOutputs\x12\x12\n" +
+	"<catalog/gcp/gcpdeploycustomtargettype/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1\"{\n" +
+	" GcpDeployCustomTargetTypeOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x121\n" +
 	"\x15custom_target_type_id\x18\x02 \x01(\tR\x12customTargetTypeId\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uidB\xa2\x03\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDeployCustomTargetTypeStackOutputs)(nil), // 0: dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1.GcpDeployCustomTargetTypeStackOutputs
+	(*GcpDeployCustomTargetTypeOutputs)(nil), // 0: dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1.GcpDeployCustomTargetTypeOutputs
 }
 var file_catalog_gcp_gcpdeploycustomtargettype_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

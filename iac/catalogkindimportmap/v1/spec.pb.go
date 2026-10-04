@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: iac/componentimportmap/v1/spec.proto
+// source: iac/catalogkindimportmap/v1/spec.proto
 
-package componentimportmapv1
+package catalogkindimportmapv1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentImportMapSpec declares where the values in a component's import
+// CatalogKindImportMapSpec declares where the values in a kind's import
 // IDs come from. The provider-tier ProviderImportCatalog owns the ID FORMAT
 // per resource type ("{bucket}", "{vpc_id}_{association_id}"); this map owns
-// the VALUE SOURCE per placeholder for one component -- which spec field,
+// the VALUE SOURCE per placeholder for one kind -- which spec field,
 // ARN part, or discovered attribute supplies it, or what to ask the user
 // when nothing can derive it.
 //
@@ -32,7 +32,7 @@ const (
 // per spec at import time (a read-only preview lists them), so constructed
 // names, repeated resources, and conditional resources are handled by
 // construction.
-type ComponentImportMapSpec struct {
+type CatalogKindImportMapSpec struct {
 	state  protoimpl.MessageState `protogen:"open.v1"`
 	Values []*ImportValue         `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
 	// Resources whose post-import plan legitimately updates a declared
@@ -53,21 +53,21 @@ type ComponentImportMapSpec struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *ComponentImportMapSpec) Reset() {
-	*x = ComponentImportMapSpec{}
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindImportMapSpec) Reset() {
+	*x = CatalogKindImportMapSpec{}
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentImportMapSpec) String() string {
+func (x *CatalogKindImportMapSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentImportMapSpec) ProtoMessage() {}
+func (*CatalogKindImportMapSpec) ProtoMessage() {}
 
-func (x *ComponentImportMapSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindImportMapSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -78,19 +78,19 @@ func (x *ComponentImportMapSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentImportMapSpec.ProtoReflect.Descriptor instead.
-func (*ComponentImportMapSpec) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindImportMapSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindImportMapSpec) Descriptor() ([]byte, []int) {
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentImportMapSpec) GetValues() []*ImportValue {
+func (x *CatalogKindImportMapSpec) GetValues() []*ImportValue {
 	if x != nil {
 		return x.Values
 	}
 	return nil
 }
 
-func (x *ComponentImportMapSpec) GetImportNormalized() []*ImportNormalizedResource {
+func (x *CatalogKindImportMapSpec) GetImportNormalized() []*ImportNormalizedResource {
 	if x != nil {
 		return x.ImportNormalized
 	}
@@ -111,7 +111,7 @@ type ImportNormalizedResource struct {
 
 func (x *ImportNormalizedResource) Reset() {
 	*x = ImportNormalizedResource{}
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[1]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -123,7 +123,7 @@ func (x *ImportNormalizedResource) String() string {
 func (*ImportNormalizedResource) ProtoMessage() {}
 
 func (x *ImportNormalizedResource) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[1]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -136,7 +136,7 @@ func (x *ImportNormalizedResource) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImportNormalizedResource.ProtoReflect.Descriptor instead.
 func (*ImportNormalizedResource) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ImportNormalizedResource) GetTofuResourceName() string {
@@ -174,7 +174,7 @@ type ImportNormalizedSubPath struct {
 
 func (x *ImportNormalizedSubPath) Reset() {
 	*x = ImportNormalizedSubPath{}
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[2]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -186,7 +186,7 @@ func (x *ImportNormalizedSubPath) String() string {
 func (*ImportNormalizedSubPath) ProtoMessage() {}
 
 func (x *ImportNormalizedSubPath) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[2]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -199,7 +199,7 @@ func (x *ImportNormalizedSubPath) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImportNormalizedSubPath.ProtoReflect.Descriptor instead.
 func (*ImportNormalizedSubPath) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ImportNormalizedSubPath) GetPath() string {
@@ -237,7 +237,7 @@ type ImportValue struct {
 	// releases: each release's `{release_name}` is a different constant. A
 	// scoped declaration wins over an unscoped one for its resource; addresses
 	// with no scoped declaration fall back to the unscoped declaration of the
-	// same placeholder name. Leave empty (the common case) when the component
+	// same placeholder name. Leave empty (the common case) when the kind
 	// has at most one resource per type.
 	TofuResourceName string `protobuf:"bytes,4,opt,name=tofu_resource_name,json=tofuResourceName,proto3" json:"tofu_resource_name,omitempty"`
 	unknownFields    protoimpl.UnknownFields
@@ -246,7 +246,7 @@ type ImportValue struct {
 
 func (x *ImportValue) Reset() {
 	*x = ImportValue{}
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[3]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -258,7 +258,7 @@ func (x *ImportValue) String() string {
 func (*ImportValue) ProtoMessage() {}
 
 func (x *ImportValue) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[3]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -271,7 +271,7 @@ func (x *ImportValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImportValue.ProtoReflect.Descriptor instead.
 func (*ImportValue) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ImportValue) GetName() string {
@@ -310,14 +310,14 @@ type ImportValueDerivation struct {
 	//
 	//	*ImportValueDerivation_FromMetadataName
 	//	*ImportValueDerivation_FromSpecField
-	//	*ImportValueDerivation_FromStackOutput
+	//	*ImportValueDerivation_FromOutput
 	//	*ImportValueDerivation_FromArnPart
 	//	*ImportValueDerivation_FromAddressKey
 	//	*ImportValueDerivation_FromMetadataNameSuffix
 	//	*ImportValueDerivation_Literal
 	//	*ImportValueDerivation_FromAddressKeySegment
 	//	*ImportValueDerivation_FromClusterSecretKey
-	//	*ImportValueDerivation_FromStackOutputKeyedByAddress
+	//	*ImportValueDerivation_FromOutputKeyedByAddress
 	//	*ImportValueDerivation_FromMetadataNamePrefix
 	Source        isImportValueDerivation_Source `protobuf_oneof:"source"`
 	unknownFields protoimpl.UnknownFields
@@ -326,7 +326,7 @@ type ImportValueDerivation struct {
 
 func (x *ImportValueDerivation) Reset() {
 	*x = ImportValueDerivation{}
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[4]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -338,7 +338,7 @@ func (x *ImportValueDerivation) String() string {
 func (*ImportValueDerivation) ProtoMessage() {}
 
 func (x *ImportValueDerivation) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[4]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -351,7 +351,7 @@ func (x *ImportValueDerivation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImportValueDerivation.ProtoReflect.Descriptor instead.
 func (*ImportValueDerivation) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_spec_proto_rawDescGZIP(), []int{4}
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ImportValueDerivation) GetSource() isImportValueDerivation_Source {
@@ -379,10 +379,10 @@ func (x *ImportValueDerivation) GetFromSpecField() string {
 	return ""
 }
 
-func (x *ImportValueDerivation) GetFromStackOutput() string {
+func (x *ImportValueDerivation) GetFromOutput() string {
 	if x != nil {
-		if x, ok := x.Source.(*ImportValueDerivation_FromStackOutput); ok {
-			return x.FromStackOutput
+		if x, ok := x.Source.(*ImportValueDerivation_FromOutput); ok {
+			return x.FromOutput
 		}
 	}
 	return ""
@@ -442,10 +442,10 @@ func (x *ImportValueDerivation) GetFromClusterSecretKey() *FromClusterSecretKey 
 	return nil
 }
 
-func (x *ImportValueDerivation) GetFromStackOutputKeyedByAddress() string {
+func (x *ImportValueDerivation) GetFromOutputKeyedByAddress() string {
 	if x != nil {
-		if x, ok := x.Source.(*ImportValueDerivation_FromStackOutputKeyedByAddress); ok {
-			return x.FromStackOutputKeyedByAddress
+		if x, ok := x.Source.(*ImportValueDerivation_FromOutputKeyedByAddress); ok {
+			return x.FromOutputKeyedByAddress
 		}
 	}
 	return ""
@@ -465,8 +465,8 @@ type isImportValueDerivation_Source interface {
 }
 
 type ImportValueDerivation_FromMetadataName struct {
-	// The value is the resource's metadata.name (modules that name their
-	// cloud resource after the Planton resource).
+	// The value is the catalog object's metadata.name (modules that name
+	// their provider resource after the catalog object).
 	FromMetadataName bool `protobuf:"varint,1,opt,name=from_metadata_name,json=fromMetadataName,proto3,oneof"`
 }
 
@@ -475,10 +475,10 @@ type ImportValueDerivation_FromSpecField struct {
 	FromSpecField string `protobuf:"bytes,2,opt,name=from_spec_field,json=fromSpecField,proto3,oneof"`
 }
 
-type ImportValueDerivation_FromStackOutput struct {
-	// A stack output key (e.g. "vpc_id") -- resolvable when the resource
+type ImportValueDerivation_FromOutput struct {
+	// An output key (e.g. "vpc_id") -- resolvable when the resource
 	// was previously deployed or refreshed by this platform.
-	FromStackOutput string `protobuf:"bytes,3,opt,name=from_stack_output,json=fromStackOutput,proto3,oneof"`
+	FromOutput string `protobuf:"bytes,3,opt,name=from_output,json=fromOutput,proto3,oneof"`
 }
 
 type ImportValueDerivation_FromArnPart struct {
@@ -502,7 +502,7 @@ type ImportValueDerivation_FromMetadataNameSuffix struct {
 	// module names by convention off the parent's name (a workload's
 	// "<name>-hpa" autoscaler, its "<name>-env-secrets" Secret). Keeps
 	// convention-named satellites blind-derivable without exporting their
-	// names as stack outputs.
+	// names as outputs.
 	FromMetadataNameSuffix string `protobuf:"bytes,6,opt,name=from_metadata_name_suffix,json=fromMetadataNameSuffix,proto3,oneof"`
 }
 
@@ -547,8 +547,8 @@ type ImportValueDerivation_FromClusterSecretKey struct {
 	FromClusterSecretKey *FromClusterSecretKey `protobuf:"bytes,9,opt,name=from_cluster_secret_key,json=fromClusterSecretKey,proto3,oneof"`
 }
 
-type ImportValueDerivation_FromStackOutputKeyedByAddress struct {
-	// A map-valued stack output whose entries the module keys by the SAME
+type ImportValueDerivation_FromOutputKeyedByAddress struct {
+	// A map-valued output whose entries the module keys by the SAME
 	// key it uses for the resource's for_each instances -- for
 	// CLOUD-GENERATED per-instance identifiers of keyed satellite
 	// resources, where the instance key is config-time identity but the
@@ -556,12 +556,12 @@ type ImportValueDerivation_FromStackOutputKeyedByAddress struct {
 	// "vpc-cidr-assoc-..." association id keyed by the CIDR, a KMS
 	// grant's generated grant id keyed by list position). from_address_key
 	// cannot serve these (the key is not the ID), and a plain
-	// from_stack_output cannot either (one static key cannot vary per
+	// from_output cannot either (one static key cannot vary per
 	// instance). Resolves as the flattened output entry
 	// "<output>.<address key>" per the platform's dot-path output
 	// flattening; resolves empty for addresses without an instance key,
 	// falling back to the next derivation or where_to_find.
-	FromStackOutputKeyedByAddress string `protobuf:"bytes,10,opt,name=from_stack_output_keyed_by_address,json=fromStackOutputKeyedByAddress,proto3,oneof"`
+	FromOutputKeyedByAddress string `protobuf:"bytes,10,opt,name=from_output_keyed_by_address,json=fromOutputKeyedByAddress,proto3,oneof"`
 }
 
 type ImportValueDerivation_FromMetadataNamePrefix struct {
@@ -571,7 +571,7 @@ type ImportValueDerivation_FromMetadataNamePrefix struct {
 	// Application Auto Scaling's resource_id "table/<table_name>", where
 	// the module names the table after the Planton resource). Keeps
 	// provider-composed identifiers blind-derivable without exporting
-	// them as stack outputs.
+	// them as outputs.
 	FromMetadataNamePrefix string `protobuf:"bytes,11,opt,name=from_metadata_name_prefix,json=fromMetadataNamePrefix,proto3,oneof"`
 }
 
@@ -579,7 +579,7 @@ func (*ImportValueDerivation_FromMetadataName) isImportValueDerivation_Source() 
 
 func (*ImportValueDerivation_FromSpecField) isImportValueDerivation_Source() {}
 
-func (*ImportValueDerivation_FromStackOutput) isImportValueDerivation_Source() {}
+func (*ImportValueDerivation_FromOutput) isImportValueDerivation_Source() {}
 
 func (*ImportValueDerivation_FromArnPart) isImportValueDerivation_Source() {}
 
@@ -593,7 +593,7 @@ func (*ImportValueDerivation_FromAddressKeySegment) isImportValueDerivation_Sour
 
 func (*ImportValueDerivation_FromClusterSecretKey) isImportValueDerivation_Source() {}
 
-func (*ImportValueDerivation_FromStackOutputKeyedByAddress) isImportValueDerivation_Source() {}
+func (*ImportValueDerivation_FromOutputKeyedByAddress) isImportValueDerivation_Source() {}
 
 func (*ImportValueDerivation_FromMetadataNamePrefix) isImportValueDerivation_Source() {}
 
@@ -622,7 +622,7 @@ type FromClusterSecretKey struct {
 
 func (x *FromClusterSecretKey) Reset() {
 	*x = FromClusterSecretKey{}
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[5]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -634,7 +634,7 @@ func (x *FromClusterSecretKey) String() string {
 func (*FromClusterSecretKey) ProtoMessage() {}
 
 func (x *FromClusterSecretKey) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_spec_proto_msgTypes[5]
+	mi := &file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -647,7 +647,7 @@ func (x *FromClusterSecretKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FromClusterSecretKey.ProtoReflect.Descriptor instead.
 func (*FromClusterSecretKey) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *FromClusterSecretKey) GetNameSuffix() string {
@@ -671,73 +671,74 @@ func (x *FromClusterSecretKey) GetKeyFromAddressKey() bool {
 	return false
 }
 
-var File_iac_componentimportmap_v1_spec_proto protoreflect.FileDescriptor
+var File_iac_catalogkindimportmap_v1_spec_proto protoreflect.FileDescriptor
 
-const file_iac_componentimportmap_v1_spec_proto_rawDesc = "" +
+const file_iac_catalogkindimportmap_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"$iac/componentimportmap/v1/spec.proto\x12%dev.planton.iac.componentimportmap.v1\"\xd2\x01\n" +
-	"\x16ComponentImportMapSpec\x12J\n" +
-	"\x06values\x18\x01 \x03(\v22.dev.planton.iac.componentimportmap.v1.ImportValueR\x06values\x12l\n" +
-	"\x11import_normalized\x18\x02 \x03(\v2?.dev.planton.iac.componentimportmap.v1.ImportNormalizedResourceR\x10importNormalized\"\xa5\x01\n" +
+	"&iac/catalogkindimportmap/v1/spec.proto\x12'dev.planton.iac.catalogkindimportmap.v1\"\xd8\x01\n" +
+	"\x18CatalogKindImportMapSpec\x12L\n" +
+	"\x06values\x18\x01 \x03(\v24.dev.planton.iac.catalogkindimportmap.v1.ImportValueR\x06values\x12n\n" +
+	"\x11import_normalized\x18\x02 \x03(\v2A.dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedResourceR\x10importNormalized\"\xa7\x01\n" +
 	"\x18ImportNormalizedResource\x12,\n" +
-	"\x12tofu_resource_name\x18\x01 \x01(\tR\x10tofuResourceName\x12[\n" +
-	"\tsub_paths\x18\x02 \x03(\v2>.dev.planton.iac.componentimportmap.v1.ImportNormalizedSubPathR\bsubPaths\"E\n" +
+	"\x12tofu_resource_name\x18\x01 \x01(\tR\x10tofuResourceName\x12]\n" +
+	"\tsub_paths\x18\x02 \x03(\v2@.dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedSubPathR\bsubPaths\"E\n" +
 	"\x17ImportNormalizedSubPath\x12\x12\n" +
 	"\x04path\x18\x01 \x01(\tR\x04path\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\"\xd3\x01\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\"\xd5\x01\n" +
 	"\vImportValue\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12^\n" +
-	"\vderivations\x18\x02 \x03(\v2<.dev.planton.iac.componentimportmap.v1.ImportValueDerivationR\vderivations\x12\"\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12`\n" +
+	"\vderivations\x18\x02 \x03(\v2>.dev.planton.iac.catalogkindimportmap.v1.ImportValueDerivationR\vderivations\x12\"\n" +
 	"\rwhere_to_find\x18\x03 \x01(\tR\vwhereToFind\x12,\n" +
-	"\x12tofu_resource_name\x18\x04 \x01(\tR\x10tofuResourceName\"\x8f\x05\n" +
+	"\x12tofu_resource_name\x18\x04 \x01(\tR\x10tofuResourceName\"\xfb\x04\n" +
 	"\x15ImportValueDerivation\x12.\n" +
 	"\x12from_metadata_name\x18\x01 \x01(\bH\x00R\x10fromMetadataName\x12(\n" +
-	"\x0ffrom_spec_field\x18\x02 \x01(\tH\x00R\rfromSpecField\x12,\n" +
-	"\x11from_stack_output\x18\x03 \x01(\tH\x00R\x0ffromStackOutput\x12$\n" +
+	"\x0ffrom_spec_field\x18\x02 \x01(\tH\x00R\rfromSpecField\x12!\n" +
+	"\vfrom_output\x18\x03 \x01(\tH\x00R\n" +
+	"fromOutput\x12$\n" +
 	"\rfrom_arn_part\x18\x04 \x01(\tH\x00R\vfromArnPart\x12*\n" +
 	"\x10from_address_key\x18\x05 \x01(\bH\x00R\x0efromAddressKey\x12;\n" +
 	"\x19from_metadata_name_suffix\x18\x06 \x01(\tH\x00R\x16fromMetadataNameSuffix\x12\x1a\n" +
 	"\aliteral\x18\a \x01(\tH\x00R\aliteral\x129\n" +
-	"\x18from_address_key_segment\x18\b \x01(\x05H\x00R\x15fromAddressKeySegment\x12t\n" +
-	"\x17from_cluster_secret_key\x18\t \x01(\v2;.dev.planton.iac.componentimportmap.v1.FromClusterSecretKeyH\x00R\x14fromClusterSecretKey\x12K\n" +
-	"\"from_stack_output_keyed_by_address\x18\n" +
-	" \x01(\tH\x00R\x1dfromStackOutputKeyedByAddress\x12;\n" +
+	"\x18from_address_key_segment\x18\b \x01(\x05H\x00R\x15fromAddressKeySegment\x12v\n" +
+	"\x17from_cluster_secret_key\x18\t \x01(\v2=.dev.planton.iac.catalogkindimportmap.v1.FromClusterSecretKeyH\x00R\x14fromClusterSecretKey\x12@\n" +
+	"\x1cfrom_output_keyed_by_address\x18\n" +
+	" \x01(\tH\x00R\x18fromOutputKeyedByAddress\x12;\n" +
 	"\x19from_metadata_name_prefix\x18\v \x01(\tH\x00R\x16fromMetadataNamePrefixB\b\n" +
 	"\x06source\"z\n" +
 	"\x14FromClusterSecretKey\x12\x1f\n" +
 	"\vname_suffix\x18\x01 \x01(\tR\n" +
 	"nameSuffix\x12\x10\n" +
 	"\x03key\x18\x02 \x01(\tR\x03key\x12/\n" +
-	"\x14key_from_address_key\x18\x03 \x01(\bR\x11keyFromAddressKeyB\xbc\x02\n" +
-	")com.dev.planton.iac.componentimportmap.v1B\tSpecProtoP\x01ZKgithub.com/plantonhq/planton/iac/componentimportmap/v1;componentimportmapv1\xa2\x02\x04DPIC\xaa\x02%Dev.Planton.Iac.Componentimportmap.V1\xca\x02%Dev\\Planton\\Iac\\Componentimportmap\\V1\xe2\x021Dev\\Planton\\Iac\\Componentimportmap\\V1\\GPBMetadata\xea\x02)Dev::Planton::Iac::Componentimportmap::V1b\x06proto3"
+	"\x14key_from_address_key\x18\x03 \x01(\bR\x11keyFromAddressKeyB\xca\x02\n" +
+	"+com.dev.planton.iac.catalogkindimportmap.v1B\tSpecProtoP\x01ZOgithub.com/plantonhq/planton/iac/catalogkindimportmap/v1;catalogkindimportmapv1\xa2\x02\x04DPIC\xaa\x02'Dev.Planton.Iac.Catalogkindimportmap.V1\xca\x02'Dev\\Planton\\Iac\\Catalogkindimportmap\\V1\xe2\x023Dev\\Planton\\Iac\\Catalogkindimportmap\\V1\\GPBMetadata\xea\x02+Dev::Planton::Iac::Catalogkindimportmap::V1b\x06proto3"
 
 var (
-	file_iac_componentimportmap_v1_spec_proto_rawDescOnce sync.Once
-	file_iac_componentimportmap_v1_spec_proto_rawDescData []byte
+	file_iac_catalogkindimportmap_v1_spec_proto_rawDescOnce sync.Once
+	file_iac_catalogkindimportmap_v1_spec_proto_rawDescData []byte
 )
 
-func file_iac_componentimportmap_v1_spec_proto_rawDescGZIP() []byte {
-	file_iac_componentimportmap_v1_spec_proto_rawDescOnce.Do(func() {
-		file_iac_componentimportmap_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_iac_componentimportmap_v1_spec_proto_rawDesc), len(file_iac_componentimportmap_v1_spec_proto_rawDesc)))
+func file_iac_catalogkindimportmap_v1_spec_proto_rawDescGZIP() []byte {
+	file_iac_catalogkindimportmap_v1_spec_proto_rawDescOnce.Do(func() {
+		file_iac_catalogkindimportmap_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_iac_catalogkindimportmap_v1_spec_proto_rawDesc), len(file_iac_catalogkindimportmap_v1_spec_proto_rawDesc)))
 	})
-	return file_iac_componentimportmap_v1_spec_proto_rawDescData
+	return file_iac_catalogkindimportmap_v1_spec_proto_rawDescData
 }
 
-var file_iac_componentimportmap_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
-var file_iac_componentimportmap_v1_spec_proto_goTypes = []any{
-	(*ComponentImportMapSpec)(nil),   // 0: dev.planton.iac.componentimportmap.v1.ComponentImportMapSpec
-	(*ImportNormalizedResource)(nil), // 1: dev.planton.iac.componentimportmap.v1.ImportNormalizedResource
-	(*ImportNormalizedSubPath)(nil),  // 2: dev.planton.iac.componentimportmap.v1.ImportNormalizedSubPath
-	(*ImportValue)(nil),              // 3: dev.planton.iac.componentimportmap.v1.ImportValue
-	(*ImportValueDerivation)(nil),    // 4: dev.planton.iac.componentimportmap.v1.ImportValueDerivation
-	(*FromClusterSecretKey)(nil),     // 5: dev.planton.iac.componentimportmap.v1.FromClusterSecretKey
+var file_iac_catalogkindimportmap_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_iac_catalogkindimportmap_v1_spec_proto_goTypes = []any{
+	(*CatalogKindImportMapSpec)(nil), // 0: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMapSpec
+	(*ImportNormalizedResource)(nil), // 1: dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedResource
+	(*ImportNormalizedSubPath)(nil),  // 2: dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedSubPath
+	(*ImportValue)(nil),              // 3: dev.planton.iac.catalogkindimportmap.v1.ImportValue
+	(*ImportValueDerivation)(nil),    // 4: dev.planton.iac.catalogkindimportmap.v1.ImportValueDerivation
+	(*FromClusterSecretKey)(nil),     // 5: dev.planton.iac.catalogkindimportmap.v1.FromClusterSecretKey
 }
-var file_iac_componentimportmap_v1_spec_proto_depIdxs = []int32{
-	3, // 0: dev.planton.iac.componentimportmap.v1.ComponentImportMapSpec.values:type_name -> dev.planton.iac.componentimportmap.v1.ImportValue
-	1, // 1: dev.planton.iac.componentimportmap.v1.ComponentImportMapSpec.import_normalized:type_name -> dev.planton.iac.componentimportmap.v1.ImportNormalizedResource
-	2, // 2: dev.planton.iac.componentimportmap.v1.ImportNormalizedResource.sub_paths:type_name -> dev.planton.iac.componentimportmap.v1.ImportNormalizedSubPath
-	4, // 3: dev.planton.iac.componentimportmap.v1.ImportValue.derivations:type_name -> dev.planton.iac.componentimportmap.v1.ImportValueDerivation
-	5, // 4: dev.planton.iac.componentimportmap.v1.ImportValueDerivation.from_cluster_secret_key:type_name -> dev.planton.iac.componentimportmap.v1.FromClusterSecretKey
+var file_iac_catalogkindimportmap_v1_spec_proto_depIdxs = []int32{
+	3, // 0: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMapSpec.values:type_name -> dev.planton.iac.catalogkindimportmap.v1.ImportValue
+	1, // 1: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMapSpec.import_normalized:type_name -> dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedResource
+	2, // 2: dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedResource.sub_paths:type_name -> dev.planton.iac.catalogkindimportmap.v1.ImportNormalizedSubPath
+	4, // 3: dev.planton.iac.catalogkindimportmap.v1.ImportValue.derivations:type_name -> dev.planton.iac.catalogkindimportmap.v1.ImportValueDerivation
+	5, // 4: dev.planton.iac.catalogkindimportmap.v1.ImportValueDerivation.from_cluster_secret_key:type_name -> dev.planton.iac.catalogkindimportmap.v1.FromClusterSecretKey
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name
@@ -745,39 +746,39 @@ var file_iac_componentimportmap_v1_spec_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_iac_componentimportmap_v1_spec_proto_init() }
-func file_iac_componentimportmap_v1_spec_proto_init() {
-	if File_iac_componentimportmap_v1_spec_proto != nil {
+func init() { file_iac_catalogkindimportmap_v1_spec_proto_init() }
+func file_iac_catalogkindimportmap_v1_spec_proto_init() {
+	if File_iac_catalogkindimportmap_v1_spec_proto != nil {
 		return
 	}
-	file_iac_componentimportmap_v1_spec_proto_msgTypes[4].OneofWrappers = []any{
+	file_iac_catalogkindimportmap_v1_spec_proto_msgTypes[4].OneofWrappers = []any{
 		(*ImportValueDerivation_FromMetadataName)(nil),
 		(*ImportValueDerivation_FromSpecField)(nil),
-		(*ImportValueDerivation_FromStackOutput)(nil),
+		(*ImportValueDerivation_FromOutput)(nil),
 		(*ImportValueDerivation_FromArnPart)(nil),
 		(*ImportValueDerivation_FromAddressKey)(nil),
 		(*ImportValueDerivation_FromMetadataNameSuffix)(nil),
 		(*ImportValueDerivation_Literal)(nil),
 		(*ImportValueDerivation_FromAddressKeySegment)(nil),
 		(*ImportValueDerivation_FromClusterSecretKey)(nil),
-		(*ImportValueDerivation_FromStackOutputKeyedByAddress)(nil),
+		(*ImportValueDerivation_FromOutputKeyedByAddress)(nil),
 		(*ImportValueDerivation_FromMetadataNamePrefix)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_componentimportmap_v1_spec_proto_rawDesc), len(file_iac_componentimportmap_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_catalogkindimportmap_v1_spec_proto_rawDesc), len(file_iac_catalogkindimportmap_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_iac_componentimportmap_v1_spec_proto_goTypes,
-		DependencyIndexes: file_iac_componentimportmap_v1_spec_proto_depIdxs,
-		MessageInfos:      file_iac_componentimportmap_v1_spec_proto_msgTypes,
+		GoTypes:           file_iac_catalogkindimportmap_v1_spec_proto_goTypes,
+		DependencyIndexes: file_iac_catalogkindimportmap_v1_spec_proto_depIdxs,
+		MessageInfos:      file_iac_catalogkindimportmap_v1_spec_proto_msgTypes,
 	}.Build()
-	File_iac_componentimportmap_v1_spec_proto = out.File
-	file_iac_componentimportmap_v1_spec_proto_goTypes = nil
-	file_iac_componentimportmap_v1_spec_proto_depIdxs = nil
+	File_iac_catalogkindimportmap_v1_spec_proto = out.File
+	file_iac_catalogkindimportmap_v1_spec_proto_goTypes = nil
+	file_iac_catalogkindimportmap_v1_spec_proto_depIdxs = nil
 }

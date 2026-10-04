@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptStackOutputs contains the login-flow settings as applied: the values
+// Auth0PromptOutputs contains the login-flow settings as applied: the values
 // the tenant carries after the deployment, managed or not.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt#attributes-reference
-type Auth0PromptStackOutputs struct {
+type Auth0PromptOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// universal_login_experience is the login experience the tenant runs.
 	UniversalLoginExperience string `protobuf:"bytes,1,opt,name=universal_login_experience,json=universalLoginExperience,proto3" json:"universal_login_experience,omitempty"`
@@ -38,20 +38,20 @@ type Auth0PromptStackOutputs struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *Auth0PromptStackOutputs) Reset() {
-	*x = Auth0PromptStackOutputs{}
+func (x *Auth0PromptOutputs) Reset() {
+	*x = Auth0PromptOutputs{}
 	mi := &file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0PromptStackOutputs) String() string {
+func (x *Auth0PromptOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0PromptStackOutputs) ProtoMessage() {}
+func (*Auth0PromptOutputs) ProtoMessage() {}
 
-func (x *Auth0PromptStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0PromptOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *Auth0PromptStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0PromptStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0PromptStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0PromptOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0PromptOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0PromptStackOutputs) GetUniversalLoginExperience() string {
+func (x *Auth0PromptOutputs) GetUniversalLoginExperience() string {
 	if x != nil {
 		return x.UniversalLoginExperience
 	}
 	return ""
 }
 
-func (x *Auth0PromptStackOutputs) GetIdentifierFirst() bool {
+func (x *Auth0PromptOutputs) GetIdentifierFirst() bool {
 	if x != nil {
 		return x.IdentifierFirst
 	}
 	return false
 }
 
-func (x *Auth0PromptStackOutputs) GetWebauthnPlatformFirstFactor() bool {
+func (x *Auth0PromptOutputs) GetWebauthnPlatformFirstFactor() bool {
 	if x != nil {
 		return x.WebauthnPlatformFirstFactor
 	}
@@ -93,8 +93,8 @@ var File_catalog_auth0_auth0prompt_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/auth0/auth0prompt/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0prompt.v1alpha1\"\xc7\x01\n" +
-	"\x17Auth0PromptStackOutputs\x12<\n" +
+	"0catalog/auth0/auth0prompt/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0prompt.v1alpha1\"\xc2\x01\n" +
+	"\x12Auth0PromptOutputs\x12<\n" +
 	"\x1auniversal_login_experience\x18\x01 \x01(\tR\x18universalLoginExperience\x12)\n" +
 	"\x10identifier_first\x18\x02 \x01(\bR\x0fidentifierFirst\x12C\n" +
 	"\x1ewebauthn_platform_first_factor\x18\x03 \x01(\bR\x1bwebauthnPlatformFirstFactorB\xcc\x02\n" +
@@ -114,7 +114,7 @@ func file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0PromptStackOutputs)(nil), // 0: dev.planton.auth0.auth0prompt.v1alpha1.Auth0PromptStackOutputs
+	(*Auth0PromptOutputs)(nil), // 0: dev.planton.auth0.auth0prompt.v1alpha1.Auth0PromptOutputs
 }
 var file_catalog_auth0_auth0prompt_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

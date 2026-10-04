@@ -36,7 +36,7 @@ type AwsTransitGateway struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration defining how the Transit Gateway is
 	// provisioned.
 	Spec *AwsTransitGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -90,7 +90,7 @@ func (x *AwsTransitGateway) GetKind() string {
 	return ""
 }
 
-func (x *AwsTransitGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsTransitGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -117,7 +117,7 @@ type AwsTransitGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after
 	// provisioning.
-	Outputs       *AwsTransitGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsTransitGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +152,7 @@ func (*AwsTransitGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsTransitGatewayStatus) GetOutputs() *AwsTransitGatewayStackOutputs {
+func (x *AwsTransitGatewayStatus) GetOutputs() *AwsTransitGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -170,11 +170,11 @@ const file_catalog_aws_awstransitgateway_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsTransitGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatusR\x06status\"~\n" +
-	"\x17AwsTransitGatewayStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatusR\x06status\"y\n" +
+	"\x17AwsTransitGatewayStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awstransitgateway.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awstransitgateway/v1alpha1;awstransitgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awstransitgateway.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awstransitgateway\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awstransitgateway\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awstransitgateway::V1alpha1b\x06proto3"
 
 var (
@@ -191,17 +191,17 @@ func file_catalog_aws_awstransitgateway_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awstransitgateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awstransitgateway_v1alpha1_api_proto_goTypes = []any{
-	(*AwsTransitGateway)(nil),             // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway
-	(*AwsTransitGatewayStatus)(nil),       // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsTransitGatewaySpec)(nil),         // 3: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewaySpec
-	(*AwsTransitGatewayStackOutputs)(nil), // 4: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackOutputs
+	(*AwsTransitGateway)(nil),            // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway
+	(*AwsTransitGatewayStatus)(nil),      // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsTransitGatewaySpec)(nil),        // 3: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewaySpec
+	(*AwsTransitGatewayOutputs)(nil),     // 4: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayOutputs
 }
 var file_catalog_aws_awstransitgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway.spec:type_name -> dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewaySpec
 	1, // 2: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway.status:type_name -> dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatus
-	4, // 3: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatus.outputs:type_name -> dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackOutputs
+	4, // 3: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStatus.outputs:type_name -> dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

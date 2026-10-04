@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsBedrockInferenceProfileSpec defines the desired configuration for an
 Amazon Bedrock APPLICATION inference profile - a named handle over a
@@ -24,7 +24,7 @@ recreates the profile, which changes its ARN; consumers pinning the ARN
 must be updated.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareWorkersKvPairStackOutputs captures the outputs after writing a
+// CloudflareWorkersKvPairOutputs captures the outputs after writing a
 // Workers KV entry.
-type CloudflareWorkersKvPairStackOutputs struct {
+type CloudflareWorkersKvPairOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The entry's key name.
 	KeyName string `protobuf:"bytes,1,opt,name=key_name,json=keyName,proto3" json:"key_name,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareWorkersKvPairStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareWorkersKvPairStackOutputs) Reset() {
-	*x = CloudflareWorkersKvPairStackOutputs{}
+func (x *CloudflareWorkersKvPairOutputs) Reset() {
+	*x = CloudflareWorkersKvPairOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWorkersKvPairStackOutputs) String() string {
+func (x *CloudflareWorkersKvPairOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWorkersKvPairStackOutputs) ProtoMessage() {}
+func (*CloudflareWorkersKvPairOutputs) ProtoMessage() {}
 
-func (x *CloudflareWorkersKvPairStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWorkersKvPairOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareWorkersKvPairStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWorkersKvPairStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkersKvPairStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWorkersKvPairOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkersKvPairOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWorkersKvPairStackOutputs) GetKeyName() string {
+func (x *CloudflareWorkersKvPairOutputs) GetKeyName() string {
 	if x != nil {
 		return x.KeyName
 	}
 	return ""
 }
 
-func (x *CloudflareWorkersKvPairStackOutputs) GetNamespaceId() string {
+func (x *CloudflareWorkersKvPairOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto proto
 
 const file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/cloudflare/cloudflareworkerskvpair/v1alpha1/outputs.proto\x127dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1\"c\n" +
-	"#CloudflareWorkersKvPairStackOutputs\x12\x19\n" +
+	"Acatalog/cloudflare/cloudflareworkerskvpair/v1alpha1/outputs.proto\x127dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1\"^\n" +
+	"\x1eCloudflareWorkersKvPairOutputs\x12\x19\n" +
 	"\bkey_name\x18\x01 \x01(\tR\akeyName\x12!\n" +
 	"\fnamespace_id\x18\x02 \x01(\tR\vnamespaceIdB\xbe\x03\n" +
 	";com.dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/cloudflare/cloudflareworkerskvpair/v1alpha1;cloudflareworkerskvpairv1alpha1\xa2\x02\x04DPCC\xaa\x027Dev.Planton.Cloudflare.Cloudflareworkerskvpair.V1alpha1\xca\x027Dev\\Planton\\Cloudflare\\Cloudflareworkerskvpair\\V1alpha1\xe2\x02CDev\\Planton\\Cloudflare\\Cloudflareworkerskvpair\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Cloudflare::Cloudflareworkerskvpair::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_rawD
 
 var file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareWorkersKvPairStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairStackOutputs
+	(*CloudflareWorkersKvPairOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairOutputs
 }
 var file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

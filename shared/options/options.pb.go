@@ -259,14 +259,14 @@ var (
 	// value_from is not a secret literal and is left to reference resolution). A
 	// message-typed field is not itself a slot; mark the secret fields inside it.
 	//
-	// On a field of a kind's StackOutputs it marks a secret the resource generates
+	// On a field of a kind's Outputs it marks a secret the resource generates
 	// (a client secret, an access key, an admin password). Downstream platforms
 	// store the value in the organization's secret store and keep only a reference
 	// to it in the output, which the runner resolves wherever another resource
 	// reads it. Both IaC engines must export exactly the marked outputs as secrets
 	// (OpenTofu `sensitive = true`, Pulumi `pulumi.ToSecret`), so the engine never
 	// prints one; `planton module verify` holds every module to that. An output
-	// mark sits only on a top-level StackOutputs field, the granularity both
+	// mark sits only on a top-level Outputs field, the granularity both
 	// engines decide secrecy at.
 	//
 	// optional bool sensitive = 60004;

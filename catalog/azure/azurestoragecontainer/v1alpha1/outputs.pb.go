@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageContainerStackOutputs** captures the outputs of
+// **AzureStorageContainerOutputs** captures the outputs of
 // provisioning a blob container.
 //
 // No URL output on purpose: the container's data-plane URL is the
@@ -29,7 +29,7 @@ const (
 // knows its real endpoint (partitioned-DNS accounts use a different
 // hostname than the classic shared DNS). Compose URLs from
 // AzureStorageAccount's primary_blob_endpoint output + container_name.
-type AzureStorageContainerStackOutputs struct {
+type AzureStorageContainerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the container. Role assignments
 	// (Storage Blob Data Reader/Contributor) scope to it for
@@ -47,20 +47,20 @@ type AzureStorageContainerStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageContainerStackOutputs) Reset() {
-	*x = AzureStorageContainerStackOutputs{}
+func (x *AzureStorageContainerOutputs) Reset() {
+	*x = AzureStorageContainerOutputs{}
 	mi := &file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageContainerStackOutputs) String() string {
+func (x *AzureStorageContainerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageContainerStackOutputs) ProtoMessage() {}
+func (*AzureStorageContainerOutputs) ProtoMessage() {}
 
-func (x *AzureStorageContainerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageContainerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,26 +72,26 @@ func (x *AzureStorageContainerStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageContainerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageContainerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageContainerOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageContainerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageContainerStackOutputs) GetContainerId() string {
+func (x *AzureStorageContainerOutputs) GetContainerId() string {
 	if x != nil {
 		return x.ContainerId
 	}
 	return ""
 }
 
-func (x *AzureStorageContainerStackOutputs) GetContainerName() string {
+func (x *AzureStorageContainerOutputs) GetContainerName() string {
 	if x != nil {
 		return x.ContainerName
 	}
 	return ""
 }
 
-func (x *AzureStorageContainerStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageContainerOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -102,8 +102,8 @@ var File_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurestoragecontainer/v1alpha1/outputs.proto\x120dev.planton.azure.azurestoragecontainer.v1alpha1\"\x9f\x01\n" +
-	"!AzureStorageContainerStackOutputs\x12!\n" +
+	":catalog/azure/azurestoragecontainer/v1alpha1/outputs.proto\x120dev.planton.azure.azurestoragecontainer.v1alpha1\"\x9a\x01\n" +
+	"\x1cAzureStorageContainerOutputs\x12!\n" +
 	"\fcontainer_id\x18\x01 \x01(\tR\vcontainerId\x12%\n" +
 	"\x0econtainer_name\x18\x02 \x01(\tR\rcontainerName\x120\n" +
 	"\x14storage_account_name\x18\x03 \x01(\tR\x12storageAccountNameB\x92\x03\n" +
@@ -123,7 +123,7 @@ func file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageContainerStackOutputs)(nil), // 0: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStackOutputs
+	(*AzureStorageContainerOutputs)(nil), // 0: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerOutputs
 }
 var file_catalog_azure_azurestoragecontainer_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

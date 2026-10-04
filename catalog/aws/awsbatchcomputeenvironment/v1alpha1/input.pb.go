@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBatchComputeEnvironmentStackInput is the input for the IaC modules that
+// AwsBatchComputeEnvironmentIacInput is the input for the IaC modules that
 // deploy the Batch compute environment, job queues, and scheduling policy.
-type AwsBatchComputeEnvironmentStackInput struct {
+type AwsBatchComputeEnvironmentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBatchComputeEnvironment resource to deploy.
 	Target *AwsBatchComputeEnvironment `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBatchComputeEnvironmentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBatchComputeEnvironmentStackInput) Reset() {
-	*x = AwsBatchComputeEnvironmentStackInput{}
+func (x *AwsBatchComputeEnvironmentIacInput) Reset() {
+	*x = AwsBatchComputeEnvironmentIacInput{}
 	mi := &file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBatchComputeEnvironmentStackInput) String() string {
+func (x *AwsBatchComputeEnvironmentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBatchComputeEnvironmentStackInput) ProtoMessage() {}
+func (*AwsBatchComputeEnvironmentIacInput) ProtoMessage() {}
 
-func (x *AwsBatchComputeEnvironmentStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBatchComputeEnvironmentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBatchComputeEnvironmentStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBatchComputeEnvironmentStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBatchComputeEnvironmentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBatchComputeEnvironmentIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBatchComputeEnvironmentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBatchComputeEnvironmentStackInput) GetTarget() *AwsBatchComputeEnvironment {
+func (x *AwsBatchComputeEnvironmentIacInput) GetTarget() *AwsBatchComputeEnvironment {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBatchComputeEnvironmentStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBatchComputeEnvironmentIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto protoreflec
 
 const file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsbatchcomputeenvironment/v1alpha1/input.proto\x123dev.planton.aws.awsbatchcomputeenvironment.v1alpha1\x1a9catalog/aws/awsbatchcomputeenvironment/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdc\x01\n" +
-	"$AwsBatchComputeEnvironmentStackInput\x12g\n" +
+	";catalog/aws/awsbatchcomputeenvironment/v1alpha1/input.proto\x123dev.planton.aws.awsbatchcomputeenvironment.v1alpha1\x1a9catalog/aws/awsbatchcomputeenvironment/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xda\x01\n" +
+	"\"AwsBatchComputeEnvironmentIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.aws.awsbatchcomputeenvironment.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBatchComputeEnvironmentStackInput)(nil), // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackInput
-	(*AwsBatchComputeEnvironment)(nil),           // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment
-	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBatchComputeEnvironmentIacInput)(nil), // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentIacInput
+	(*AwsBatchComputeEnvironment)(nil),         // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment
+	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackInput.target:type_name -> dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment
-	2, // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentIacInput.target:type_name -> dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironment
+	2, // 1: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

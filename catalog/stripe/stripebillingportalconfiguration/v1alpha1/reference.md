@@ -6,7 +6,7 @@
 
 **apiVersion**: `stripe.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 StripeBillingPortalConfigurationSpec declares what Stripe's customer portal lets a customer
 do: cancel (and how), switch plans (and to which prices), update payment methods and details,

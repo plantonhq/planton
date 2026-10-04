@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesDeploymentStackOutputs** captures the observable handles of a deployed
+// **KubernetesDeploymentOutputs** captures the observable handles of a deployed
 // workload. Downstream resources compose on these: routes and network policies match
 // `selector_labels`, clients connect through `service` / `kube_endpoint`, and charts
 // wire dependents to the exported hostnames.
-type KubernetesDeploymentStackOutputs struct {
+type KubernetesDeploymentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the workload was deployed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -56,20 +56,20 @@ type KubernetesDeploymentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesDeploymentStackOutputs) Reset() {
-	*x = KubernetesDeploymentStackOutputs{}
+func (x *KubernetesDeploymentOutputs) Reset() {
+	*x = KubernetesDeploymentOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesDeploymentStackOutputs) String() string {
+func (x *KubernetesDeploymentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesDeploymentStackOutputs) ProtoMessage() {}
+func (*KubernetesDeploymentOutputs) ProtoMessage() {}
 
-func (x *KubernetesDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesDeploymentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *KubernetesDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesDeploymentStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesDeploymentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesDeploymentOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesDeploymentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesDeploymentStackOutputs) GetNamespace() string {
+func (x *KubernetesDeploymentOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesDeploymentStackOutputs) GetDeploymentName() string {
+func (x *KubernetesDeploymentOutputs) GetDeploymentName() string {
 	if x != nil {
 		return x.DeploymentName
 	}
 	return ""
 }
 
-func (x *KubernetesDeploymentStackOutputs) GetService() string {
+func (x *KubernetesDeploymentOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesDeploymentStackOutputs) GetSelectorLabels() string {
+func (x *KubernetesDeploymentOutputs) GetSelectorLabels() string {
 	if x != nil {
 		return x.SelectorLabels
 	}
 	return ""
 }
 
-func (x *KubernetesDeploymentStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesDeploymentOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesDeploymentStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesDeploymentOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
@@ -132,8 +132,8 @@ var File_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesdeployment/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesdeployment.v1alpha1\"\x83\x02\n" +
-	" KubernetesDeploymentStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kubernetesdeployment/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesdeployment.v1alpha1\"\xfe\x01\n" +
+	"\x1bKubernetesDeploymentOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12'\n" +
 	"\x0fdeployment_name\x18\x02 \x01(\tR\x0edeploymentName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12'\n" +
@@ -156,7 +156,7 @@ func file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesDeploymentStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesdeployment.v1alpha1.KubernetesDeploymentStackOutputs
+	(*KubernetesDeploymentOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesdeployment.v1alpha1.KubernetesDeploymentOutputs
 }
 var file_catalog_kubernetes_kubernetesdeployment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

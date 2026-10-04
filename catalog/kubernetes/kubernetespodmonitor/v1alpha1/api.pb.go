@@ -33,7 +33,7 @@ type KubernetesPodMonitor struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesPodMonitorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesPodMonitor) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPodMonitor) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPodMonitor) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesPodMonitor) GetStatus() *KubernetesPodMonitorStatus {
 // KubernetesPodMonitorStatus holds the deployment status and outputs.
 type KubernetesPodMonitorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesPodMonitorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesPodMonitorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesPodMonitorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPodMonitorStatus) GetOutputs() *KubernetesPodMonitorStackOutputs {
+func (x *KubernetesPodMonitorStatus) GetOutputs() *KubernetesPodMonitorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14KubernetesPodMonitorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatusR\x06status\"\x8e\x01\n" +
-	"\x1aKubernetesPodMonitorStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatusR\x06status\"\x89\x01\n" +
+	"\x1aKubernetesPodMonitorStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/kubernetes/kubernetespodmonitor/v1alpha1;kubernetespodmonitorv1alpha1\xa2\x02\x04DPKK\xaa\x024Dev.Planton.Kubernetes.Kubernetespodmonitor.V1alpha1\xca\x024Dev\\Planton\\Kubernetes\\Kubernetespodmonitor\\V1alpha1\xe2\x02@Dev\\Planton\\Kubernetes\\Kubernetespodmonitor\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Kubernetes::Kubernetespodmonitor::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPodMonitor)(nil),             // 0: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitor
-	(*KubernetesPodMonitorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPodMonitorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorSpec
-	(*KubernetesPodMonitorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStackOutputs
+	(*KubernetesPodMonitor)(nil),         // 0: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitor
+	(*KubernetesPodMonitorStatus)(nil),   // 1: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPodMonitorSpec)(nil),     // 3: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorSpec
+	(*KubernetesPodMonitorOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorOutputs
 }
 var file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitor.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitor.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitor.spec:type_name -> dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorSpec
 	1, // 2: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitor.status:type_name -> dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatus
-	4, // 3: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

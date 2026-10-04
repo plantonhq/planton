@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Compute Engine backend service.
-type GcpBackendServiceStackOutputs struct {
+type GcpBackendServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the backend service. This is the value URL maps
 	// reference as a default service or path-rule target — the composition
@@ -46,20 +46,20 @@ type GcpBackendServiceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpBackendServiceStackOutputs) Reset() {
-	*x = GcpBackendServiceStackOutputs{}
+func (x *GcpBackendServiceOutputs) Reset() {
+	*x = GcpBackendServiceOutputs{}
 	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBackendServiceStackOutputs) String() string {
+func (x *GcpBackendServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBackendServiceStackOutputs) ProtoMessage() {}
+func (*GcpBackendServiceOutputs) ProtoMessage() {}
 
-func (x *GcpBackendServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBackendServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,40 +71,40 @@ func (x *GcpBackendServiceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBackendServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBackendServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBackendServiceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBackendServiceStackOutputs) GetSelfLink() string {
+func (x *GcpBackendServiceOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpBackendServiceStackOutputs) GetBackendServiceName() string {
+func (x *GcpBackendServiceOutputs) GetBackendServiceName() string {
 	if x != nil {
 		return x.BackendServiceName
 	}
 	return ""
 }
 
-func (x *GcpBackendServiceStackOutputs) GetGeneratedId() string {
+func (x *GcpBackendServiceOutputs) GetGeneratedId() string {
 	if x != nil {
 		return x.GeneratedId
 	}
 	return ""
 }
 
-func (x *GcpBackendServiceStackOutputs) GetFingerprint() string {
+func (x *GcpBackendServiceOutputs) GetFingerprint() string {
 	if x != nil {
 		return x.Fingerprint
 	}
 	return ""
 }
 
-func (x *GcpBackendServiceStackOutputs) GetRegion() string {
+func (x *GcpBackendServiceOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -115,8 +115,8 @@ var File_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpbackendservice/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\"\xcb\x01\n" +
-	"\x1dGcpBackendServiceStackOutputs\x12\x1b\n" +
+	"4catalog/gcp/gcpbackendservice/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\"\xc6\x01\n" +
+	"\x18GcpBackendServiceOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x120\n" +
 	"\x14backend_service_name\x18\x02 \x01(\tR\x12backendServiceName\x12!\n" +
 	"\fgenerated_id\x18\x03 \x01(\tR\vgeneratedId\x12 \n" +
@@ -138,7 +138,7 @@ func file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBackendServiceStackOutputs)(nil), // 0: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStackOutputs
+	(*GcpBackendServiceOutputs)(nil), // 0: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutputs
 }
 var file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

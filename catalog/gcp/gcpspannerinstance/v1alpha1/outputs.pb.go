@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSpannerInstanceStackOutputs captures observable values produced after
+// GcpSpannerInstanceOutputs captures observable values produced after
 // provisioning a Cloud Spanner instance.
-type GcpSpannerInstanceStackOutputs struct {
+type GcpSpannerInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified instance ID.
 	// Format: projects/{project}/instances/{instance_name}
@@ -48,20 +48,20 @@ type GcpSpannerInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSpannerInstanceStackOutputs) Reset() {
-	*x = GcpSpannerInstanceStackOutputs{}
+func (x *GcpSpannerInstanceOutputs) Reset() {
+	*x = GcpSpannerInstanceOutputs{}
 	mi := &file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSpannerInstanceStackOutputs) String() string {
+func (x *GcpSpannerInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSpannerInstanceStackOutputs) ProtoMessage() {}
+func (*GcpSpannerInstanceOutputs) ProtoMessage() {}
 
-func (x *GcpSpannerInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSpannerInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,33 +73,33 @@ func (x *GcpSpannerInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSpannerInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSpannerInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSpannerInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSpannerInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSpannerInstanceStackOutputs) GetInstanceId() string {
+func (x *GcpSpannerInstanceOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *GcpSpannerInstanceStackOutputs) GetInstanceName() string {
+func (x *GcpSpannerInstanceOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpSpannerInstanceStackOutputs) GetState() string {
+func (x *GcpSpannerInstanceOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpSpannerInstanceStackOutputs) GetConfig() string {
+func (x *GcpSpannerInstanceOutputs) GetConfig() string {
 	if x != nil {
 		return x.Config
 	}
@@ -110,8 +110,8 @@ var File_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpspannerinstance/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpspannerinstance.v1alpha1\"\x94\x01\n" +
-	"\x1eGcpSpannerInstanceStackOutputs\x12\x1f\n" +
+	"5catalog/gcp/gcpspannerinstance/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpspannerinstance.v1alpha1\"\x8f\x01\n" +
+	"\x19GcpSpannerInstanceOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12#\n" +
 	"\rinstance_name\x18\x02 \x01(\tR\finstanceName\x12\x14\n" +
@@ -133,7 +133,7 @@ func file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSpannerInstanceStackOutputs)(nil), // 0: dev.planton.gcp.gcpspannerinstance.v1alpha1.GcpSpannerInstanceStackOutputs
+	(*GcpSpannerInstanceOutputs)(nil), // 0: dev.planton.gcp.gcpspannerinstance.v1alpha1.GcpSpannerInstanceOutputs
 }
 var file_catalog_gcp_gcpspannerinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

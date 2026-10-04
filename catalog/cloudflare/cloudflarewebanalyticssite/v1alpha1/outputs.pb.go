@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareWebAnalyticsSiteStackOutputs captures the observable outputs
+// CloudflareWebAnalyticsSiteOutputs captures the observable outputs
 // after creating the Web Analytics site.
-type CloudflareWebAnalyticsSiteStackOutputs struct {
+type CloudflareWebAnalyticsSiteOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned site tag (the site's identity in every RUM API
 	// path).
@@ -40,20 +40,20 @@ type CloudflareWebAnalyticsSiteStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) Reset() {
-	*x = CloudflareWebAnalyticsSiteStackOutputs{}
+func (x *CloudflareWebAnalyticsSiteOutputs) Reset() {
+	*x = CloudflareWebAnalyticsSiteOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) String() string {
+func (x *CloudflareWebAnalyticsSiteOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWebAnalyticsSiteStackOutputs) ProtoMessage() {}
+func (*CloudflareWebAnalyticsSiteOutputs) ProtoMessage() {}
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWebAnalyticsSiteOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *CloudflareWebAnalyticsSiteStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWebAnalyticsSiteStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareWebAnalyticsSiteStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWebAnalyticsSiteOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareWebAnalyticsSiteOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) GetSiteTag() string {
+func (x *CloudflareWebAnalyticsSiteOutputs) GetSiteTag() string {
 	if x != nil {
 		return x.SiteTag
 	}
 	return ""
 }
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) GetSiteToken() string {
+func (x *CloudflareWebAnalyticsSiteOutputs) GetSiteToken() string {
 	if x != nil {
 		return x.SiteToken
 	}
 	return ""
 }
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) GetSnippet() string {
+func (x *CloudflareWebAnalyticsSiteOutputs) GetSnippet() string {
 	if x != nil {
 		return x.Snippet
 	}
 	return ""
 }
 
-func (x *CloudflareWebAnalyticsSiteStackOutputs) GetRulesetId() string {
+func (x *CloudflareWebAnalyticsSiteOutputs) GetRulesetId() string {
 	if x != nil {
 		return x.RulesetId
 	}
@@ -102,8 +102,8 @@ var File_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto pr
 
 const file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflarewebanalyticssite/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1\"\x9b\x01\n" +
-	"&CloudflareWebAnalyticsSiteStackOutputs\x12\x19\n" +
+	"Dcatalog/cloudflare/cloudflarewebanalyticssite/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1\"\x96\x01\n" +
+	"!CloudflareWebAnalyticsSiteOutputs\x12\x19\n" +
 	"\bsite_tag\x18\x01 \x01(\tR\asiteTag\x12\x1d\n" +
 	"\n" +
 	"site_token\x18\x02 \x01(\tR\tsiteToken\x12\x18\n" +
@@ -126,7 +126,7 @@ func file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_r
 
 var file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareWebAnalyticsSiteStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1.CloudflareWebAnalyticsSiteStackOutputs
+	(*CloudflareWebAnalyticsSiteOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1.CloudflareWebAnalyticsSiteOutputs
 }
 var file_catalog_cloudflare_cloudflarewebanalyticssite_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

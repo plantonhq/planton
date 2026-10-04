@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesPlantonPlatformStackInput provides the input for the Planton
+// KubernetesPlantonPlatformIacInput provides the input for the Planton
 // platform IaC stack.
-type KubernetesPlantonPlatformStackInput struct {
+type KubernetesPlantonPlatformIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesPlantonPlatform `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Kubernetes provider
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesPlantonPlatformStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesPlantonPlatformStackInput) Reset() {
-	*x = KubernetesPlantonPlatformStackInput{}
+func (x *KubernetesPlantonPlatformIacInput) Reset() {
+	*x = KubernetesPlantonPlatformIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPlantonPlatformStackInput) String() string {
+func (x *KubernetesPlantonPlatformIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPlantonPlatformStackInput) ProtoMessage() {}
+func (*KubernetesPlantonPlatformIacInput) ProtoMessage() {}
 
-func (x *KubernetesPlantonPlatformStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPlantonPlatformIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesPlantonPlatformStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPlantonPlatformStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesPlantonPlatformStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPlantonPlatformIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPlantonPlatformStackInput) GetTarget() *KubernetesPlantonPlatform {
+func (x *KubernetesPlantonPlatformIacInput) GetTarget() *KubernetesPlantonPlatform {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesPlantonPlatformStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesPlantonPlatformIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto proto
 
 const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesplantonplatform/v1alpha1/input.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a?catalog/kubernetes/kubernetesplantonplatform/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xee\x01\n" +
-	"#KubernetesPlantonPlatformStackInput\x12l\n" +
+	"Acatalog/kubernetes/kubernetesplantonplatform/v1alpha1/input.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a?catalog/kubernetes/kubernetesplantonplatform/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xec\x01\n" +
+	"!KubernetesPlantonPlatformIacInput\x12l\n" +
 	"\x06target\x18\x01 \x01(\v2T.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xca\x03\n" +
 	"=com.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_rawD
 
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesPlantonPlatformStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStackInput
+	(*KubernetesPlantonPlatformIacInput)(nil),   // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIacInput
 	(*KubernetesPlantonPlatform)(nil),           // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatform
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStackInput.target:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatform
-	2, // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIacInput.target:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatform
+	2, // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

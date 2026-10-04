@@ -23,10 +23,10 @@ const (
 
 // ProviderImportCatalogSpec maps a cloud provider's IaC resource types to the
 // identifier format their state import requires. This is provider-level
-// knowledge (stable across components): what value string `tofu import` /
+// knowledge (stable across kinds): what value string `tofu import` /
 // `pulumi import` expects for each resource type. Which concrete value fills
-// each placeholder is component-level knowledge and lives in that component's
-// ComponentImportMap.
+// each placeholder is kind-level knowledge and lives in that kind's
+// CatalogKindImportMap.
 type ProviderImportCatalogSpec struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
 	ResourceTypes []*ResourceTypeImportId `protobuf:"bytes,1,rep,name=resource_types,json=resourceTypes,proto3" json:"resource_types,omitempty"`
@@ -78,11 +78,11 @@ type ResourceTypeImportId struct {
 	// Terraform/OpenTofu resource type (e.g. "aws_s3_bucket").
 	TerraformType string `protobuf:"bytes,1,opt,name=terraform_type,json=terraformType,proto3" json:"terraform_type,omitempty"`
 	// Pulumi type token for the same provider resource
-	// (e.g. "aws:s3/bucketV2:BucketV2"). Empty when the component's Pulumi
+	// (e.g. "aws:s3/bucketV2:BucketV2"). Empty when the kind's Pulumi
 	// module does not declare this resource.
 	PulumiType string `protobuf:"bytes,2,opt,name=pulumi_type,json=pulumiType,proto3" json:"pulumi_type,omitempty"`
 	// Import-ID template. Placeholders in {braces} name the values a
-	// component's import map supplies (e.g. "{bucket}",
+	// kind's import map supplies (e.g. "{bucket}",
 	// "{vpc_id}_{association_id}"). A trailing "?" inside the braces marks a
 	// segment the provider documents as legitimately empty in some variants
 	// (e.g. DynamoDB contributor insights on the table itself:
@@ -151,7 +151,7 @@ type ResourceTypeImportId struct {
 	// proves the ADOPTER'S contract for them: the plan over the re-imported
 	// state proposes re-creating the resource, and the reconcile-apply
 	// executes it -- so declare this only for types whose create path
-	// CONVERGES on an existing cloud resource (an upsert-style Put), which
+	// CONVERGES on an existing provider resource (an upsert-style Put), which
 	// the round-trip lane verifies live. A type whose create would conflict
 	// with its own survivor needs a different treatment, not this field.
 	NotImportableUpstreamReason string `protobuf:"bytes,8,opt,name=not_importable_upstream_reason,json=notImportableUpstreamReason,proto3" json:"not_importable_upstream_reason,omitempty"`

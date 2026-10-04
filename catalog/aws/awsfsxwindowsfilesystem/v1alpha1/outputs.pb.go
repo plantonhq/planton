@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxWindowsFileSystemStackOutputs captures observable identifiers and
+// AwsFsxWindowsFileSystemOutputs captures observable identifiers and
 // endpoints from a provisioned FSx for Windows File Server. These outputs are
 // used by downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -34,7 +34,7 @@ const (
 // - Network troubleshooting: uses `preferred_file_server_ip`, `network_interface_ids`
 //
 // Mount command: net use Z: \\<dns_name>\share
-type AwsFsxWindowsFileSystemStackOutputs struct {
+type AwsFsxWindowsFileSystemOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
 	// identifier used by EKS SMB CSI driver, AWS Backup, and other AWS services.
@@ -69,20 +69,20 @@ type AwsFsxWindowsFileSystemStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) Reset() {
-	*x = AwsFsxWindowsFileSystemStackOutputs{}
+func (x *AwsFsxWindowsFileSystemOutputs) Reset() {
+	*x = AwsFsxWindowsFileSystemOutputs{}
 	mi := &file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) String() string {
+func (x *AwsFsxWindowsFileSystemOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxWindowsFileSystemStackOutputs) ProtoMessage() {}
+func (*AwsFsxWindowsFileSystemOutputs) ProtoMessage() {}
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxWindowsFileSystemOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -94,61 +94,61 @@ func (x *AwsFsxWindowsFileSystemStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxWindowsFileSystemStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxWindowsFileSystemStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxWindowsFileSystemOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxWindowsFileSystemOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetFileSystemId() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetFileSystemArn() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetFileSystemArn() string {
 	if x != nil {
 		return x.FileSystemArn
 	}
 	return ""
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetDnsName() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetPreferredFileServerIp() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetPreferredFileServerIp() string {
 	if x != nil {
 		return x.PreferredFileServerIp
 	}
 	return ""
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetRemoteAdministrationEndpoint() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetRemoteAdministrationEndpoint() string {
 	if x != nil {
 		return x.RemoteAdministrationEndpoint
 	}
 	return ""
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetNetworkInterfaceIds() []string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetNetworkInterfaceIds() []string {
 	if x != nil {
 		return x.NetworkInterfaceIds
 	}
 	return nil
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetVpcId() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsFsxWindowsFileSystemStackOutputs) GetOwnerId() string {
+func (x *AwsFsxWindowsFileSystemOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
@@ -159,8 +159,8 @@ var File_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awsfsxwindowsfilesystem/v1alpha1/outputs.proto\x120dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1\"\xf3\x02\n" +
-	"#AwsFsxWindowsFileSystemStackOutputs\x12$\n" +
+	":catalog/aws/awsfsxwindowsfilesystem/v1alpha1/outputs.proto\x120dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1\"\xee\x02\n" +
+	"\x1eAwsFsxWindowsFileSystemOutputs\x12$\n" +
 	"\x0efile_system_id\x18\x01 \x01(\tR\ffileSystemId\x12&\n" +
 	"\x0ffile_system_arn\x18\x02 \x01(\tR\rfileSystemArn\x12\x19\n" +
 	"\bdns_name\x18\x03 \x01(\tR\adnsName\x127\n" +
@@ -185,7 +185,7 @@ func file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxWindowsFileSystemStackOutputs)(nil), // 0: dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1.AwsFsxWindowsFileSystemStackOutputs
+	(*AwsFsxWindowsFileSystemOutputs)(nil), // 0: dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1.AwsFsxWindowsFileSystemOutputs
 }
 var file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

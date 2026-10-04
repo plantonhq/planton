@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpManagedKafkaTopicStackOutputs captures the topic's identity.
-type GcpManagedKafkaTopicStackOutputs struct {
+// GcpManagedKafkaTopicOutputs captures the topic's identity.
+type GcpManagedKafkaTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic_id}.
@@ -33,20 +33,20 @@ type GcpManagedKafkaTopicStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpManagedKafkaTopicStackOutputs) Reset() {
-	*x = GcpManagedKafkaTopicStackOutputs{}
+func (x *GcpManagedKafkaTopicOutputs) Reset() {
+	*x = GcpManagedKafkaTopicOutputs{}
 	mi := &file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpManagedKafkaTopicStackOutputs) String() string {
+func (x *GcpManagedKafkaTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpManagedKafkaTopicStackOutputs) ProtoMessage() {}
+func (*GcpManagedKafkaTopicOutputs) ProtoMessage() {}
 
-func (x *GcpManagedKafkaTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpManagedKafkaTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpManagedKafkaTopicStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpManagedKafkaTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpManagedKafkaTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpManagedKafkaTopicOutputs.ProtoReflect.Descriptor instead.
+func (*GcpManagedKafkaTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpManagedKafkaTopicStackOutputs) GetName() string {
+func (x *GcpManagedKafkaTopicOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpManagedKafkaTopicStackOutputs) GetTopicId() string {
+func (x *GcpManagedKafkaTopicOutputs) GetTopicId() string {
 	if x != nil {
 		return x.TopicId
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpmanagedkafkatopic/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1\"Q\n" +
-	" GcpManagedKafkaTopicStackOutputs\x12\x12\n" +
+	"7catalog/gcp/gcpmanagedkafkatopic/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1\"L\n" +
+	"\x1bGcpManagedKafkaTopicOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x19\n" +
 	"\btopic_id\x18\x02 \x01(\tR\atopicIdB\xff\x02\n" +
 	"1com.dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkatopic/v1alpha1;gcpmanagedkafkatopicv1alpha1\xa2\x02\x04DPGG\xaa\x02-Dev.Planton.Gcp.Gcpmanagedkafkatopic.V1alpha1\xca\x02-Dev\\Planton\\Gcp\\Gcpmanagedkafkatopic\\V1alpha1\xe2\x029Dev\\Planton\\Gcp\\Gcpmanagedkafkatopic\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Gcp::Gcpmanagedkafkatopic::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpManagedKafkaTopicStackOutputs)(nil), // 0: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicStackOutputs
+	(*GcpManagedKafkaTopicOutputs)(nil), // 0: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicOutputs
 }
 var file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

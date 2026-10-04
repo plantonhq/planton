@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanDatabaseUserSpec models the full digitalocean_database_user
 resource surface: an additional user on a DigitalOcean managed database
@@ -14,7 +14,7 @@ cluster, with the MySQL authentication plugin choice and the Kafka /
 OpenSearch access-control lists.
 
 DigitalOcean generates the user's password and role server-side; both are
-exported as stack outputs, never configured here. The API serializes user
+exported as outputs, never configured here. The API serializes user
 creation and deletion per cluster, so composing many users on one cluster
 is safe but inherently sequential.
 

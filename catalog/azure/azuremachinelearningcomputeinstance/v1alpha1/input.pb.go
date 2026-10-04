@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureMachineLearningComputeInstanceStackInput is the input to the
+// AzureMachineLearningComputeInstanceIacInput is the input to the
 // IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureMachineLearningComputeInstanceStackInput struct {
+type AzureMachineLearningComputeInstanceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The compute instance resource to deploy.
 	Target *AzureMachineLearningComputeInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureMachineLearningComputeInstanceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningComputeInstanceStackInput) Reset() {
-	*x = AzureMachineLearningComputeInstanceStackInput{}
+func (x *AzureMachineLearningComputeInstanceIacInput) Reset() {
+	*x = AzureMachineLearningComputeInstanceIacInput{}
 	mi := &file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningComputeInstanceStackInput) String() string {
+func (x *AzureMachineLearningComputeInstanceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningComputeInstanceStackInput) ProtoMessage() {}
+func (*AzureMachineLearningComputeInstanceIacInput) ProtoMessage() {}
 
-func (x *AzureMachineLearningComputeInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningComputeInstanceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMachineLearningComputeInstanceStackInput) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningComputeInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningComputeInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningComputeInstanceIacInput.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningComputeInstanceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningComputeInstanceStackInput) GetTarget() *AzureMachineLearningComputeInstance {
+func (x *AzureMachineLearningComputeInstanceIacInput) GetTarget() *AzureMachineLearningComputeInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureMachineLearningComputeInstanceStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureMachineLearningComputeInstanceIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto 
 
 const file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/azure/azuremachinelearningcomputeinstance/v1alpha1/input.proto\x12>dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1\x1aDcatalog/azure/azuremachinelearningcomputeinstance/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xfd\x01\n" +
-	"-AzureMachineLearningComputeInstanceStackInput\x12{\n" +
+	"Fcatalog/azure/azuremachinelearningcomputeinstance/v1alpha1/input.proto\x12>dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1\x1aDcatalog/azure/azuremachinelearningcomputeinstance/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xfb\x01\n" +
+	"+AzureMachineLearningComputeInstanceIacInput\x12{\n" +
 	"\x06target\x18\x01 \x01(\v2c.dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xf3\x03\n" +
 	"Bcom.dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto
 
 var file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_goTypes = []any{
-	(*AzureMachineLearningComputeInstanceStackInput)(nil), // 0: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceStackInput
-	(*AzureMachineLearningComputeInstance)(nil),           // 1: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstance
-	(*azure.AzureProviderConfig)(nil),                     // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureMachineLearningComputeInstanceIacInput)(nil), // 0: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceIacInput
+	(*AzureMachineLearningComputeInstance)(nil),         // 1: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstance
+	(*azure.AzureProviderConfig)(nil),                   // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremachinelearningcomputeinstance_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceStackInput.target:type_name -> dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstance
-	2, // 1: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceIacInput.target:type_name -> dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstance
+	2, // 1: dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

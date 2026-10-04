@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryLinkedServiceStackOutputs** captures the outputs
+// **AzureDataFactoryLinkedServiceOutputs** captures the outputs
 // from provisioning an Azure Data Factory linked service.
-type AzureDataFactoryLinkedServiceStackOutputs struct {
+type AzureDataFactoryLinkedServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The linked service's Azure Resource Manager ID
 	// ({factory_id}/linkedservices/{name}) -- the same ID shape for all
@@ -37,20 +37,20 @@ type AzureDataFactoryLinkedServiceStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryLinkedServiceStackOutputs) Reset() {
-	*x = AzureDataFactoryLinkedServiceStackOutputs{}
+func (x *AzureDataFactoryLinkedServiceOutputs) Reset() {
+	*x = AzureDataFactoryLinkedServiceOutputs{}
 	mi := &file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryLinkedServiceStackOutputs) String() string {
+func (x *AzureDataFactoryLinkedServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryLinkedServiceStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryLinkedServiceOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryLinkedServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryLinkedServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AzureDataFactoryLinkedServiceStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryLinkedServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryLinkedServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryLinkedServiceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryLinkedServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryLinkedServiceStackOutputs) GetLinkedServiceId() string {
+func (x *AzureDataFactoryLinkedServiceOutputs) GetLinkedServiceId() string {
 	if x != nil {
 		return x.LinkedServiceId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryLinkedServiceStackOutputs) GetLinkedServiceName() string {
+func (x *AzureDataFactoryLinkedServiceOutputs) GetLinkedServiceName() string {
 	if x != nil {
 		return x.LinkedServiceName
 	}
@@ -85,8 +85,8 @@ var File_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azuredatafactorylinkedservice/v1alpha1/outputs.proto\x128dev.planton.azure.azuredatafactorylinkedservice.v1alpha1\"\x87\x01\n" +
-	")AzureDataFactoryLinkedServiceStackOutputs\x12*\n" +
+	"Bcatalog/azure/azuredatafactorylinkedservice/v1alpha1/outputs.proto\x128dev.planton.azure.azuredatafactorylinkedservice.v1alpha1\"\x82\x01\n" +
+	"$AzureDataFactoryLinkedServiceOutputs\x12*\n" +
 	"\x11linked_service_id\x18\x01 \x01(\tR\x0flinkedServiceId\x12.\n" +
 	"\x13linked_service_name\x18\x02 \x01(\tR\x11linkedServiceNameB\xca\x03\n" +
 	"<com.dev.planton.azure.azuredatafactorylinkedservice.v1alpha1B\fOutputsProtoP\x01Zwgithub.com/plantonhq/planton/catalog/azure/azuredatafactorylinkedservice/v1alpha1;azuredatafactorylinkedservicev1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Azure.Azuredatafactorylinkedservice.V1alpha1\xca\x028Dev\\Planton\\Azure\\Azuredatafactorylinkedservice\\V1alpha1\xe2\x02DDev\\Planton\\Azure\\Azuredatafactorylinkedservice\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Azure::Azuredatafactorylinkedservice::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryLinkedServiceStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactorylinkedservice.v1alpha1.AzureDataFactoryLinkedServiceStackOutputs
+	(*AzureDataFactoryLinkedServiceOutputs)(nil), // 0: dev.planton.azure.azuredatafactorylinkedservice.v1alpha1.AzureDataFactoryLinkedServiceOutputs
 }
 var file_catalog_azure_azuredatafactorylinkedservice_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcostprofile/v1/spec.proto
+// source: finops/catalogkindcostprofile/v1/spec.proto
 
-package componentcostprofilev1
+package catalogkindcostprofilev1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// BillingModel classifies how a component's cloud cost accrues.
+// BillingModel classifies how a kind's cloud cost accrues.
 type BillingModel int32
 
 const (
@@ -76,11 +76,11 @@ func (x BillingModel) String() string {
 }
 
 func (BillingModel) Descriptor() protoreflect.EnumDescriptor {
-	return file_finops_componentcostprofile_v1_spec_proto_enumTypes[0].Descriptor()
+	return file_finops_catalogkindcostprofile_v1_spec_proto_enumTypes[0].Descriptor()
 }
 
 func (BillingModel) Type() protoreflect.EnumType {
-	return &file_finops_componentcostprofile_v1_spec_proto_enumTypes[0]
+	return &file_finops_catalogkindcostprofile_v1_spec_proto_enumTypes[0]
 }
 
 func (x BillingModel) Number() protoreflect.EnumNumber {
@@ -89,25 +89,25 @@ func (x BillingModel) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use BillingModel.Descriptor instead.
 func (BillingModel) EnumDescriptor() ([]byte, []int) {
-	return file_finops_componentcostprofile_v1_spec_proto_rawDescGZIP(), []int{0}
+	return file_finops_catalogkindcostprofile_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-// ComponentCostProfileSpec is the component's cost anatomy. Authoring
+// CatalogKindCostProfileSpec is the kind's cost anatomy. Authoring
 // contract: every statement here must be true of the OFFICIAL modules as
-// shipped -- a profile describes what the component IS, not what a customer
+// shipped -- a profile describes what the kind IS, not what a customer
 // might customize it into. Field paths use spec-relative proto field names
 // (the same vocabulary as import-map from_spec_field), validated against the
 // served version's compiled descriptors by the conformance gate: a schema
 // rename that orphans a path fails CI loudly.
-type ComponentCostProfileSpec struct {
+type CatalogKindCostProfileSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// How this component's cloud cost fundamentally accrues. Pick the model
+	// How this kind's cloud cost fundamentally accrues. Pick the model
 	// that describes the DOMINANT behavior; use hybrid when both an always-on
 	// baseline and usage-driven dimensions materially exist.
-	BillingModel BillingModel `protobuf:"varint,1,opt,name=billing_model,json=billingModel,proto3,enum=dev.planton.finops.componentcostprofile.v1.BillingModel" json:"billing_model,omitempty"`
+	BillingModel BillingModel `protobuf:"varint,1,opt,name=billing_model,json=billingModel,proto3,enum=dev.planton.finops.catalogkindcostprofile.v1.BillingModel" json:"billing_model,omitempty"`
 	// Charges that accrue while the resource exists, independent of traffic
 	// or usage. Empty for purely usage-based, free, and cluster-capacity
-	// components. These are what a "this costs money the moment you create
+	// kinds. These are what a "this costs money the moment you create
 	// it" warning is built from.
 	BaselineCharges []*BaselineCharge `protobuf:"bytes,2,rep,name=baseline_charges,json=baselineCharges,proto3" json:"baseline_charges,omitempty"`
 	// The spec fields that move the bill, each mapped to the functionality
@@ -116,7 +116,7 @@ type ComponentCostProfileSpec struct {
 	// prices the metered functionality from the central price book. Order by
 	// impact, largest first.
 	CostDrivers []*CostDriver `protobuf:"bytes,3,rep,name=cost_drivers,json=costDrivers,proto3" json:"cost_drivers,omitempty"`
-	// Provider free-tier or free-allowance notes relevant to this component,
+	// Provider free-tier or free-allowance notes relevant to this kind,
 	// in plain language (e.g. "25 GB storage and 25 provisioned RCU/WCU
 	// always free per account"). Empty when no free tier applies.
 	FreeTier string `protobuf:"bytes,4,opt,name=free_tier,json=freeTier,proto3" json:"free_tier,omitempty"`
@@ -133,21 +133,21 @@ type ComponentCostProfileSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCostProfileSpec) Reset() {
-	*x = ComponentCostProfileSpec{}
-	mi := &file_finops_componentcostprofile_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostProfileSpec) Reset() {
+	*x = CatalogKindCostProfileSpec{}
+	mi := &file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCostProfileSpec) String() string {
+func (x *CatalogKindCostProfileSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCostProfileSpec) ProtoMessage() {}
+func (*CatalogKindCostProfileSpec) ProtoMessage() {}
 
-func (x *ComponentCostProfileSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostprofile_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostProfileSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -158,47 +158,47 @@ func (x *ComponentCostProfileSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCostProfileSpec.ProtoReflect.Descriptor instead.
-func (*ComponentCostProfileSpec) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostprofile_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCostProfileSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindCostProfileSpec) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcostprofile_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCostProfileSpec) GetBillingModel() BillingModel {
+func (x *CatalogKindCostProfileSpec) GetBillingModel() BillingModel {
 	if x != nil {
 		return x.BillingModel
 	}
 	return BillingModel_billing_model_unspecified
 }
 
-func (x *ComponentCostProfileSpec) GetBaselineCharges() []*BaselineCharge {
+func (x *CatalogKindCostProfileSpec) GetBaselineCharges() []*BaselineCharge {
 	if x != nil {
 		return x.BaselineCharges
 	}
 	return nil
 }
 
-func (x *ComponentCostProfileSpec) GetCostDrivers() []*CostDriver {
+func (x *CatalogKindCostProfileSpec) GetCostDrivers() []*CostDriver {
 	if x != nil {
 		return x.CostDrivers
 	}
 	return nil
 }
 
-func (x *ComponentCostProfileSpec) GetFreeTier() string {
+func (x *CatalogKindCostProfileSpec) GetFreeTier() string {
 	if x != nil {
 		return x.FreeTier
 	}
 	return ""
 }
 
-func (x *ComponentCostProfileSpec) GetEstimateExclusions() []string {
+func (x *CatalogKindCostProfileSpec) GetEstimateExclusions() []string {
 	if x != nil {
 		return x.EstimateExclusions
 	}
 	return nil
 }
 
-func (x *ComponentCostProfileSpec) GetNotes() string {
+func (x *CatalogKindCostProfileSpec) GetNotes() string {
 	if x != nil {
 		return x.Notes
 	}
@@ -227,7 +227,7 @@ type BaselineCharge struct {
 
 func (x *BaselineCharge) Reset() {
 	*x = BaselineCharge{}
-	mi := &file_finops_componentcostprofile_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -239,7 +239,7 @@ func (x *BaselineCharge) String() string {
 func (*BaselineCharge) ProtoMessage() {}
 
 func (x *BaselineCharge) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostprofile_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -252,7 +252,7 @@ func (x *BaselineCharge) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BaselineCharge.ProtoReflect.Descriptor instead.
 func (*BaselineCharge) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostprofile_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_finops_catalogkindcostprofile_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *BaselineCharge) GetServiceName() string {
@@ -313,7 +313,7 @@ type CostDriver struct {
 
 func (x *CostDriver) Reset() {
 	*x = CostDriver{}
-	mi := &file_finops_componentcostprofile_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -325,7 +325,7 @@ func (x *CostDriver) String() string {
 func (*CostDriver) ProtoMessage() {}
 
 func (x *CostDriver) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostprofile_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -338,7 +338,7 @@ func (x *CostDriver) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CostDriver.ProtoReflect.Descriptor instead.
 func (*CostDriver) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostprofile_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_finops_catalogkindcostprofile_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CostDriver) GetFieldPath() string {
@@ -369,15 +369,15 @@ func (x *CostDriver) GetImpact() string {
 	return ""
 }
 
-var File_finops_componentcostprofile_v1_spec_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcostprofile_v1_spec_proto protoreflect.FileDescriptor
 
-const file_finops_componentcostprofile_v1_spec_proto_rawDesc = "" +
+const file_finops_catalogkindcostprofile_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	")finops/componentcostprofile/v1/spec.proto\x12*dev.planton.finops.componentcostprofile.v1\"\x9f\x03\n" +
-	"\x18ComponentCostProfileSpec\x12]\n" +
-	"\rbilling_model\x18\x01 \x01(\x0e28.dev.planton.finops.componentcostprofile.v1.BillingModelR\fbillingModel\x12e\n" +
-	"\x10baseline_charges\x18\x02 \x03(\v2:.dev.planton.finops.componentcostprofile.v1.BaselineChargeR\x0fbaselineCharges\x12Y\n" +
-	"\fcost_drivers\x18\x03 \x03(\v26.dev.planton.finops.componentcostprofile.v1.CostDriverR\vcostDrivers\x12\x1b\n" +
+	"+finops/catalogkindcostprofile/v1/spec.proto\x12,dev.planton.finops.catalogkindcostprofile.v1\"\xa7\x03\n" +
+	"\x1aCatalogKindCostProfileSpec\x12_\n" +
+	"\rbilling_model\x18\x01 \x01(\x0e2:.dev.planton.finops.catalogkindcostprofile.v1.BillingModelR\fbillingModel\x12g\n" +
+	"\x10baseline_charges\x18\x02 \x03(\v2<.dev.planton.finops.catalogkindcostprofile.v1.BaselineChargeR\x0fbaselineCharges\x12[\n" +
+	"\fcost_drivers\x18\x03 \x03(\v28.dev.planton.finops.catalogkindcostprofile.v1.CostDriverR\vcostDrivers\x12\x1b\n" +
 	"\tfree_tier\x18\x04 \x01(\tR\bfreeTier\x12/\n" +
 	"\x13estimate_exclusions\x18\x05 \x03(\tR\x12estimateExclusions\x12\x14\n" +
 	"\x05notes\x18\x06 \x01(\tR\x05notes\"\x95\x01\n" +
@@ -400,33 +400,33 @@ const file_finops_componentcostprofile_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"\x06hybrid\x10\x03\x12\b\n" +
 	"\x04free\x10\x04\x12\x14\n" +
-	"\x10cluster_capacity\x10\x05B\xdc\x02\n" +
-	".com.dev.planton.finops.componentcostprofile.v1B\tSpecProtoP\x01ZRgithub.com/plantonhq/planton/finops/componentcostprofile/v1;componentcostprofilev1\xa2\x02\x04DPFC\xaa\x02*Dev.Planton.Finops.Componentcostprofile.V1\xca\x02*Dev\\Planton\\Finops\\Componentcostprofile\\V1\xe2\x026Dev\\Planton\\Finops\\Componentcostprofile\\V1\\GPBMetadata\xea\x02.Dev::Planton::Finops::Componentcostprofile::V1b\x06proto3"
+	"\x10cluster_capacity\x10\x05B\xea\x02\n" +
+	"0com.dev.planton.finops.catalogkindcostprofile.v1B\tSpecProtoP\x01ZVgithub.com/plantonhq/planton/finops/catalogkindcostprofile/v1;catalogkindcostprofilev1\xa2\x02\x04DPFC\xaa\x02,Dev.Planton.Finops.Catalogkindcostprofile.V1\xca\x02,Dev\\Planton\\Finops\\Catalogkindcostprofile\\V1\xe2\x028Dev\\Planton\\Finops\\Catalogkindcostprofile\\V1\\GPBMetadata\xea\x020Dev::Planton::Finops::Catalogkindcostprofile::V1b\x06proto3"
 
 var (
-	file_finops_componentcostprofile_v1_spec_proto_rawDescOnce sync.Once
-	file_finops_componentcostprofile_v1_spec_proto_rawDescData []byte
+	file_finops_catalogkindcostprofile_v1_spec_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcostprofile_v1_spec_proto_rawDescData []byte
 )
 
-func file_finops_componentcostprofile_v1_spec_proto_rawDescGZIP() []byte {
-	file_finops_componentcostprofile_v1_spec_proto_rawDescOnce.Do(func() {
-		file_finops_componentcostprofile_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcostprofile_v1_spec_proto_rawDesc), len(file_finops_componentcostprofile_v1_spec_proto_rawDesc)))
+func file_finops_catalogkindcostprofile_v1_spec_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcostprofile_v1_spec_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcostprofile_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostprofile_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostprofile_v1_spec_proto_rawDesc)))
 	})
-	return file_finops_componentcostprofile_v1_spec_proto_rawDescData
+	return file_finops_catalogkindcostprofile_v1_spec_proto_rawDescData
 }
 
-var file_finops_componentcostprofile_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_finops_componentcostprofile_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_finops_componentcostprofile_v1_spec_proto_goTypes = []any{
-	(BillingModel)(0),                // 0: dev.planton.finops.componentcostprofile.v1.BillingModel
-	(*ComponentCostProfileSpec)(nil), // 1: dev.planton.finops.componentcostprofile.v1.ComponentCostProfileSpec
-	(*BaselineCharge)(nil),           // 2: dev.planton.finops.componentcostprofile.v1.BaselineCharge
-	(*CostDriver)(nil),               // 3: dev.planton.finops.componentcostprofile.v1.CostDriver
+var file_finops_catalogkindcostprofile_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_finops_catalogkindcostprofile_v1_spec_proto_goTypes = []any{
+	(BillingModel)(0),                  // 0: dev.planton.finops.catalogkindcostprofile.v1.BillingModel
+	(*CatalogKindCostProfileSpec)(nil), // 1: dev.planton.finops.catalogkindcostprofile.v1.CatalogKindCostProfileSpec
+	(*BaselineCharge)(nil),             // 2: dev.planton.finops.catalogkindcostprofile.v1.BaselineCharge
+	(*CostDriver)(nil),                 // 3: dev.planton.finops.catalogkindcostprofile.v1.CostDriver
 }
-var file_finops_componentcostprofile_v1_spec_proto_depIdxs = []int32{
-	0, // 0: dev.planton.finops.componentcostprofile.v1.ComponentCostProfileSpec.billing_model:type_name -> dev.planton.finops.componentcostprofile.v1.BillingModel
-	2, // 1: dev.planton.finops.componentcostprofile.v1.ComponentCostProfileSpec.baseline_charges:type_name -> dev.planton.finops.componentcostprofile.v1.BaselineCharge
-	3, // 2: dev.planton.finops.componentcostprofile.v1.ComponentCostProfileSpec.cost_drivers:type_name -> dev.planton.finops.componentcostprofile.v1.CostDriver
+var file_finops_catalogkindcostprofile_v1_spec_proto_depIdxs = []int32{
+	0, // 0: dev.planton.finops.catalogkindcostprofile.v1.CatalogKindCostProfileSpec.billing_model:type_name -> dev.planton.finops.catalogkindcostprofile.v1.BillingModel
+	2, // 1: dev.planton.finops.catalogkindcostprofile.v1.CatalogKindCostProfileSpec.baseline_charges:type_name -> dev.planton.finops.catalogkindcostprofile.v1.BaselineCharge
+	3, // 2: dev.planton.finops.catalogkindcostprofile.v1.CatalogKindCostProfileSpec.cost_drivers:type_name -> dev.planton.finops.catalogkindcostprofile.v1.CostDriver
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -434,27 +434,27 @@ var file_finops_componentcostprofile_v1_spec_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcostprofile_v1_spec_proto_init() }
-func file_finops_componentcostprofile_v1_spec_proto_init() {
-	if File_finops_componentcostprofile_v1_spec_proto != nil {
+func init() { file_finops_catalogkindcostprofile_v1_spec_proto_init() }
+func file_finops_catalogkindcostprofile_v1_spec_proto_init() {
+	if File_finops_catalogkindcostprofile_v1_spec_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcostprofile_v1_spec_proto_rawDesc), len(file_finops_componentcostprofile_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostprofile_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostprofile_v1_spec_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcostprofile_v1_spec_proto_goTypes,
-		DependencyIndexes: file_finops_componentcostprofile_v1_spec_proto_depIdxs,
-		EnumInfos:         file_finops_componentcostprofile_v1_spec_proto_enumTypes,
-		MessageInfos:      file_finops_componentcostprofile_v1_spec_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcostprofile_v1_spec_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcostprofile_v1_spec_proto_depIdxs,
+		EnumInfos:         file_finops_catalogkindcostprofile_v1_spec_proto_enumTypes,
+		MessageInfos:      file_finops_catalogkindcostprofile_v1_spec_proto_msgTypes,
 	}.Build()
-	File_finops_componentcostprofile_v1_spec_proto = out.File
-	file_finops_componentcostprofile_v1_spec_proto_goTypes = nil
-	file_finops_componentcostprofile_v1_spec_proto_depIdxs = nil
+	File_finops_catalogkindcostprofile_v1_spec_proto = out.File
+	file_finops_catalogkindcostprofile_v1_spec_proto_goTypes = nil
+	file_finops_catalogkindcostprofile_v1_spec_proto_depIdxs = nil
 }

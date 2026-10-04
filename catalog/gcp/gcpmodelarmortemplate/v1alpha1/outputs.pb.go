@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpModelArmorTemplateStackOutputs carries the identity an application or
+// GcpModelArmorTemplateOutputs carries the identity an application or
 // a Vertex AI Search engine names the template by.
-type GcpModelArmorTemplateStackOutputs struct {
+type GcpModelArmorTemplateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/templates/{template_id} -- what
@@ -38,20 +38,20 @@ type GcpModelArmorTemplateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpModelArmorTemplateStackOutputs) Reset() {
-	*x = GcpModelArmorTemplateStackOutputs{}
+func (x *GcpModelArmorTemplateOutputs) Reset() {
+	*x = GcpModelArmorTemplateOutputs{}
 	mi := &file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpModelArmorTemplateStackOutputs) String() string {
+func (x *GcpModelArmorTemplateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpModelArmorTemplateStackOutputs) ProtoMessage() {}
+func (*GcpModelArmorTemplateOutputs) ProtoMessage() {}
 
-func (x *GcpModelArmorTemplateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpModelArmorTemplateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpModelArmorTemplateStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpModelArmorTemplateStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpModelArmorTemplateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpModelArmorTemplateOutputs.ProtoReflect.Descriptor instead.
+func (*GcpModelArmorTemplateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpModelArmorTemplateStackOutputs) GetName() string {
+func (x *GcpModelArmorTemplateOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpModelArmorTemplateStackOutputs) GetTemplateId() string {
+func (x *GcpModelArmorTemplateOutputs) GetTemplateId() string {
 	if x != nil {
 		return x.TemplateId
 	}
 	return ""
 }
 
-func (x *GcpModelArmorTemplateStackOutputs) GetLocation() string {
+func (x *GcpModelArmorTemplateOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpmodelarmortemplate/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1\"t\n" +
-	"!GcpModelArmorTemplateStackOutputs\x12\x12\n" +
+	"8catalog/gcp/gcpmodelarmortemplate/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1\"o\n" +
+	"\x1cGcpModelArmorTemplateOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vtemplate_id\x18\x02 \x01(\tR\n" +
 	"templateId\x12\x1a\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpModelArmorTemplateStackOutputs)(nil), // 0: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStackOutputs
+	(*GcpModelArmorTemplateOutputs)(nil), // 0: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateOutputs
 }
 var file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

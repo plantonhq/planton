@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudFrontStackOutputs captures the observable identifiers of a
+// AwsCloudFrontOutputs captures the observable identifiers of a
 // deployed CloudFront distribution -- the join keys DNS and security
 // resources compose against.
-type AwsCloudFrontStackOutputs struct {
+type AwsCloudFrontOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The distribution ID (e.g. "E2ABCDEF123456") -- what invalidation
 	// requests and monitoring subscriptions key on.
@@ -49,20 +49,20 @@ type AwsCloudFrontStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudFrontStackOutputs) Reset() {
-	*x = AwsCloudFrontStackOutputs{}
+func (x *AwsCloudFrontOutputs) Reset() {
+	*x = AwsCloudFrontOutputs{}
 	mi := &file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudFrontStackOutputs) String() string {
+func (x *AwsCloudFrontOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudFrontStackOutputs) ProtoMessage() {}
+func (*AwsCloudFrontOutputs) ProtoMessage() {}
 
-func (x *AwsCloudFrontStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudFrontOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,40 +74,40 @@ func (x *AwsCloudFrontStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudFrontStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudFrontStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudFrontOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudFrontOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudFrontStackOutputs) GetDistributionId() string {
+func (x *AwsCloudFrontOutputs) GetDistributionId() string {
 	if x != nil {
 		return x.DistributionId
 	}
 	return ""
 }
 
-func (x *AwsCloudFrontStackOutputs) GetDistributionArn() string {
+func (x *AwsCloudFrontOutputs) GetDistributionArn() string {
 	if x != nil {
 		return x.DistributionArn
 	}
 	return ""
 }
 
-func (x *AwsCloudFrontStackOutputs) GetDomainName() string {
+func (x *AwsCloudFrontOutputs) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AwsCloudFrontStackOutputs) GetHostedZoneId() string {
+func (x *AwsCloudFrontOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsCloudFrontStackOutputs) GetStatus() string {
+func (x *AwsCloudFrontOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -118,8 +118,8 @@ var File_catalog_aws_awscloudfront_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awscloudfront/v1alpha1/outputs.proto\x12&dev.planton.aws.awscloudfront.v1alpha1\"\xce\x01\n" +
-	"\x19AwsCloudFrontStackOutputs\x12'\n" +
+	"0catalog/aws/awscloudfront/v1alpha1/outputs.proto\x12&dev.planton.aws.awscloudfront.v1alpha1\"\xc9\x01\n" +
+	"\x14AwsCloudFrontOutputs\x12'\n" +
 	"\x0fdistribution_id\x18\x01 \x01(\tR\x0edistributionId\x12)\n" +
 	"\x10distribution_arn\x18\x02 \x01(\tR\x0fdistributionArn\x12\x1f\n" +
 	"\vdomain_name\x18\x03 \x01(\tR\n" +
@@ -142,7 +142,7 @@ func file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudFrontStackOutputs)(nil), // 0: dev.planton.aws.awscloudfront.v1alpha1.AwsCloudFrontStackOutputs
+	(*AwsCloudFrontOutputs)(nil), // 0: dev.planton.aws.awscloudfront.v1alpha1.AwsCloudFrontOutputs
 }
 var file_catalog_aws_awscloudfront_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

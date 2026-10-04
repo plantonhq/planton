@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-neo4j stack outputs
-type KubernetesNeo4JStackOutputs struct {
+// kubernetes-neo4j outputs
+type KubernetesNeo4JOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the server runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -57,20 +57,20 @@ type KubernetesNeo4JStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesNeo4JStackOutputs) Reset() {
-	*x = KubernetesNeo4JStackOutputs{}
+func (x *KubernetesNeo4JOutputs) Reset() {
+	*x = KubernetesNeo4JOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesNeo4JStackOutputs) String() string {
+func (x *KubernetesNeo4JOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesNeo4JStackOutputs) ProtoMessage() {}
+func (*KubernetesNeo4JOutputs) ProtoMessage() {}
 
-func (x *KubernetesNeo4JStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesNeo4JOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,61 +82,61 @@ func (x *KubernetesNeo4JStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesNeo4JStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesNeo4JStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesNeo4JOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesNeo4JOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetNamespace() string {
+func (x *KubernetesNeo4JOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetReleaseName() string {
+func (x *KubernetesNeo4JOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetServiceName() string {
+func (x *KubernetesNeo4JOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetBoltEndpoint() string {
+func (x *KubernetesNeo4JOutputs) GetBoltEndpoint() string {
 	if x != nil {
 		return x.BoltEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetHttpEndpoint() string {
+func (x *KubernetesNeo4JOutputs) GetHttpEndpoint() string {
 	if x != nil {
 		return x.HttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetAuthSecretName() string {
+func (x *KubernetesNeo4JOutputs) GetAuthSecretName() string {
 	if x != nil {
 		return x.AuthSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesNeo4JOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesNeo4JStackOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesNeo4JOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.PasswordSecret
 	}
@@ -147,8 +147,8 @@ var File_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesneo4j/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetesneo4j.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xfd\x02\n" +
-	"\x1bKubernetesNeo4jStackOutputs\x12\x1c\n" +
+	"9catalog/kubernetes/kubernetesneo4j/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetesneo4j.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf8\x02\n" +
+	"\x16KubernetesNeo4jOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12!\n" +
 	"\fservice_name\x18\x03 \x01(\tR\vserviceName\x12#\n" +
@@ -173,11 +173,11 @@ func file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesNeo4JStackOutputs)(nil),    // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStackOutputs
+	(*KubernetesNeo4JOutputs)(nil),         // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesneo4j_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStackOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

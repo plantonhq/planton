@@ -31,7 +31,7 @@ type GcpCloudRun struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpCloudRunSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpCloudRun) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudRun) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudRun) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpCloudRun) GetStatus() *GcpCloudRunStatus {
 // gcp-cloud-run status
 type GcpCloudRunStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpCloudRunStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpCloudRunOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpCloudRunStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrun_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudRunStatus) GetOutputs() *GcpCloudRunStackOutputs {
+func (x *GcpCloudRunStatus) GetOutputs() *GcpCloudRunOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcloudrun_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vGcpCloudRunR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
 	"\x04spec\x18\x04 \x01(\v25.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12O\n" +
-	"\x06status\x18\x05 \x01(\v27.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStatusR\x06status\"l\n" +
-	"\x11GcpCloudRunStatus\x12W\n" +
-	"\aoutputs\x18\x01 \x01(\v2=.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackOutputsR\aoutputsB\xbc\x02\n" +
+	"\x06status\x18\x05 \x01(\v27.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStatusR\x06status\"g\n" +
+	"\x11GcpCloudRunStatus\x12R\n" +
+	"\aoutputs\x18\x01 \x01(\v28.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunOutputsR\aoutputsB\xbc\x02\n" +
 	"(com.dev.planton.gcp.gcpcloudrun.v1alpha1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1;gcpcloudrunv1alpha1\xa2\x02\x04DPGG\xaa\x02$Dev.Planton.Gcp.Gcpcloudrun.V1alpha1\xca\x02$Dev\\Planton\\Gcp\\Gcpcloudrun\\V1alpha1\xe2\x020Dev\\Planton\\Gcp\\Gcpcloudrun\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Gcp::Gcpcloudrun::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpcloudrun_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_gcp_gcpcloudrun_v1alpha1_api_proto_goTypes = []any{
 	(*GcpCloudRun)(nil),                  // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun
 	(*GcpCloudRunStatus)(nil),            // 1: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpCloudRunSpec)(nil),              // 3: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunSpec
-	(*GcpCloudRunStackOutputs)(nil),      // 4: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackOutputs
+	(*GcpCloudRunOutputs)(nil),           // 4: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunOutputs
 }
 var file_catalog_gcp_gcpcloudrun_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun.spec:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunSpec
 	1, // 2: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun.status:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStatus
-	4, // 3: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStatus.outputs:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStatus.outputs:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

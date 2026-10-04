@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpProjectStackOutputs surfaces key attributes of the newly-provisioned
+// GcpProjectOutputs surfaces key attributes of the newly-provisioned
 // Google Cloud project. These values are stored in the resource.status
 // for downstream modules (e.g. networking, CI/CD) to consume.
-type GcpProjectStackOutputs struct {
+type GcpProjectOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Display name of the project (mirrors spec.name).
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -36,20 +36,20 @@ type GcpProjectStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpProjectStackOutputs) Reset() {
-	*x = GcpProjectStackOutputs{}
+func (x *GcpProjectOutputs) Reset() {
+	*x = GcpProjectOutputs{}
 	mi := &file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpProjectStackOutputs) String() string {
+func (x *GcpProjectOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpProjectStackOutputs) ProtoMessage() {}
+func (*GcpProjectOutputs) ProtoMessage() {}
 
-func (x *GcpProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpProjectOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpProjectStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpProjectOutputs.ProtoReflect.Descriptor instead.
+func (*GcpProjectOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpProjectStackOutputs) GetName() string {
+func (x *GcpProjectOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpProjectStackOutputs) GetProjectId() string {
+func (x *GcpProjectOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *GcpProjectStackOutputs) GetProjectNumber() string {
+func (x *GcpProjectOutputs) GetProjectNumber() string {
 	if x != nil {
 		return x.ProjectNumber
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpproject_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcpproject/v1alpha1/outputs.proto\x12#dev.planton.gcp.gcpproject.v1alpha1\"r\n" +
-	"\x16GcpProjectStackOutputs\x12\x12\n" +
+	"-catalog/gcp/gcpproject/v1alpha1/outputs.proto\x12#dev.planton.gcp.gcpproject.v1alpha1\"m\n" +
+	"\x11GcpProjectOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x02 \x01(\tR\tprojectId\x12%\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpProjectStackOutputs)(nil), // 0: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectStackOutputs
+	(*GcpProjectOutputs)(nil), // 0: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectOutputs
 }
 var file_catalog_gcp_gcpproject_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

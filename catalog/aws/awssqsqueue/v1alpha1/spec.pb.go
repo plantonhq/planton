@@ -41,7 +41,7 @@ const (
 //     setting `sqs_managed_sse_enabled` at all).
 //   - Dead letter queue configuration allows routing failed messages to a separate queue
 //     for investigation and reprocessing.
-//   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+//   - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsSqsQueueSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

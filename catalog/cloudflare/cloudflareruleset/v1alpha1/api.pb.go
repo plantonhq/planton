@@ -36,7 +36,7 @@ type CloudflareRuleset struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareRulesetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *CloudflareRuleset) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareRuleset) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareRuleset) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *CloudflareRuleset) GetStatus() *CloudflareRulesetStatus {
 // CloudflareRulesetStatus represents the observed state of a Cloudflare Ruleset.
 type CloudflareRulesetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareRulesetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareRulesetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*CloudflareRulesetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareruleset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareRulesetStatus) GetOutputs() *CloudflareRulesetStackOutputs {
+func (x *CloudflareRulesetStatus) GetOutputs() *CloudflareRulesetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_cloudflare_cloudflareruleset_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11CloudflareRulesetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatusR\x06status\"\x85\x01\n" +
-	"\x17CloudflareRulesetStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatusR\x06status\"\x80\x01\n" +
+	"\x17CloudflareRulesetStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetOutputsR\aoutputsB\x90\x03\n" +
 	"5com.dev.planton.cloudflare.cloudflareruleset.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/cloudflare/cloudflareruleset/v1alpha1;cloudflarerulesetv1alpha1\xa2\x02\x04DPCC\xaa\x021Dev.Planton.Cloudflare.Cloudflareruleset.V1alpha1\xca\x021Dev\\Planton\\Cloudflare\\Cloudflareruleset\\V1alpha1\xe2\x02=Dev\\Planton\\Cloudflare\\Cloudflareruleset\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Cloudflare::Cloudflareruleset::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_cloudflare_cloudflareruleset_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_cloudflare_cloudflareruleset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareruleset_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareRuleset)(nil),             // 0: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRuleset
-	(*CloudflareRulesetStatus)(nil),       // 1: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareRulesetSpec)(nil),         // 3: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetSpec
-	(*CloudflareRulesetStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStackOutputs
+	(*CloudflareRuleset)(nil),            // 0: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRuleset
+	(*CloudflareRulesetStatus)(nil),      // 1: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareRulesetSpec)(nil),        // 3: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetSpec
+	(*CloudflareRulesetOutputs)(nil),     // 4: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetOutputs
 }
 var file_catalog_cloudflare_cloudflareruleset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRuleset.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRuleset.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRuleset.spec:type_name -> dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetSpec
 	1, // 2: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRuleset.status:type_name -> dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatus
-	4, // 3: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

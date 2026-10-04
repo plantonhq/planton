@@ -62,12 +62,12 @@ type Auth0CustomDomain struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0CustomDomain" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the custom domain resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the custom domain's configuration.
 	Spec *Auth0CustomDomainSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the domain as Auth0 created it, populated after deployment.
@@ -120,7 +120,7 @@ func (x *Auth0CustomDomain) GetKind() string {
 	return ""
 }
 
-func (x *Auth0CustomDomain) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0CustomDomain) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -145,9 +145,9 @@ func (x *Auth0CustomDomain) GetStatus() *Auth0CustomDomainStatus {
 // resource. Populated by the deployment system.
 type Auth0CustomDomainStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the domain's identity, its state and the
+	// outputs contains the outputs: the domain's identity, its state and the
 	// DNS record that proves control of it.
-	Outputs       *Auth0CustomDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0CustomDomainOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -182,7 +182,7 @@ func (*Auth0CustomDomainStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0customdomain_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0CustomDomainStatus) GetOutputs() *Auth0CustomDomainStackOutputs {
+func (x *Auth0CustomDomainStatus) GetOutputs() *Auth0CustomDomainOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -200,11 +200,11 @@ const file_catalog_auth0_auth0customdomain_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11Auth0CustomDomainR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatusR\x06status\"\x80\x01\n" +
-	"\x17Auth0CustomDomainStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackOutputsR\aoutputsB\xf2\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatusR\x06status\"{\n" +
+	"\x17Auth0CustomDomainStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainOutputsR\aoutputsB\xf2\x02\n" +
 	"0com.dev.planton.auth0.auth0customdomain.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/auth0/auth0customdomain/v1alpha1;auth0customdomainv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Auth0.Auth0customdomain.V1alpha1\xca\x02,Dev\\Planton\\Auth0\\Auth0customdomain\\V1alpha1\xe2\x028Dev\\Planton\\Auth0\\Auth0customdomain\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Auth0::Auth0customdomain::V1alpha1b\x06proto3"
 
 var (
@@ -221,17 +221,17 @@ func file_catalog_auth0_auth0customdomain_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_auth0_auth0customdomain_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0customdomain_v1alpha1_api_proto_goTypes = []any{
-	(*Auth0CustomDomain)(nil),             // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain
-	(*Auth0CustomDomainStatus)(nil),       // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*Auth0CustomDomainSpec)(nil),         // 3: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainSpec
-	(*Auth0CustomDomainStackOutputs)(nil), // 4: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackOutputs
+	(*Auth0CustomDomain)(nil),            // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain
+	(*Auth0CustomDomainStatus)(nil),      // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*Auth0CustomDomainSpec)(nil),        // 3: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainSpec
+	(*Auth0CustomDomainOutputs)(nil),     // 4: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainOutputs
 }
 var file_catalog_auth0_auth0customdomain_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain.spec:type_name -> dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainSpec
 	1, // 2: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain.status:type_name -> dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatus
-	4, // 3: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatus.outputs:type_name -> dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackOutputs
+	4, // 3: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStatus.outputs:type_name -> dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

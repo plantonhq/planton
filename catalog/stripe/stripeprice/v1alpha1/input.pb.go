@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePriceStackInput is the input to the StripePrice IaC module.
+// StripePriceIacInput is the input to the StripePrice IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripePriceStackInput struct {
+type StripePriceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripePrice resource to be deployed.
 	Target *StripePrice `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripePriceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripePriceStackInput) Reset() {
-	*x = StripePriceStackInput{}
+func (x *StripePriceIacInput) Reset() {
+	*x = StripePriceIacInput{}
 	mi := &file_catalog_stripe_stripeprice_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePriceStackInput) String() string {
+func (x *StripePriceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePriceStackInput) ProtoMessage() {}
+func (*StripePriceIacInput) ProtoMessage() {}
 
-func (x *StripePriceStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripePriceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeprice_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripePriceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePriceStackInput.ProtoReflect.Descriptor instead.
-func (*StripePriceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePriceIacInput.ProtoReflect.Descriptor instead.
+func (*StripePriceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeprice_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePriceStackInput) GetTarget() *StripePrice {
+func (x *StripePriceIacInput) GetTarget() *StripePrice {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripePriceStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripePriceIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripeprice_v1alpha1_input_proto protoreflect.FileDescri
 
 const file_catalog_stripe_stripeprice_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/stripe/stripeprice/v1alpha1/input.proto\x12'dev.planton.stripe.stripeprice.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a-catalog/stripe/stripeprice/v1alpha1/api.proto\"\xb8\x01\n" +
-	"\x15StripePriceStackInput\x12L\n" +
+	"/catalog/stripe/stripeprice/v1alpha1/input.proto\x12'dev.planton.stripe.stripeprice.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a-catalog/stripe/stripeprice/v1alpha1/api.proto\"\xb6\x01\n" +
+	"\x13StripePriceIacInput\x12L\n" +
 	"\x06target\x18\x01 \x01(\v24.dev.planton.stripe.stripeprice.v1alpha1.StripePriceR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xd0\x02\n" +
 	"+com.dev.planton.stripe.stripeprice.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripeprice_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_stripe_stripeprice_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeprice_v1alpha1_input_proto_goTypes = []any{
-	(*StripePriceStackInput)(nil),       // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackInput
+	(*StripePriceIacInput)(nil),         // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePriceIacInput
 	(*StripePrice)(nil),                 // 1: dev.planton.stripe.stripeprice.v1alpha1.StripePrice
 	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripeprice_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackInput.target:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePrice
-	2, // 1: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePriceIacInput.target:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePrice
+	2, // 1: dev.planton.stripe.stripeprice.v1alpha1.StripePriceIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

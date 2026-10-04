@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorMetricAlertStackOutputs** captures the outputs of provisioning
+// **AzureMonitorMetricAlertOutputs** captures the outputs of provisioning
 // an Azure Monitor metric alert rule.
-type AzureMonitorMetricAlertStackOutputs struct {
+type AzureMonitorMetricAlertOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the metric alert rule.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/metricAlerts/{name}
@@ -34,20 +34,20 @@ type AzureMonitorMetricAlertStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureMonitorMetricAlertStackOutputs) Reset() {
-	*x = AzureMonitorMetricAlertStackOutputs{}
+func (x *AzureMonitorMetricAlertOutputs) Reset() {
+	*x = AzureMonitorMetricAlertOutputs{}
 	mi := &file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorMetricAlertStackOutputs) String() string {
+func (x *AzureMonitorMetricAlertOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorMetricAlertStackOutputs) ProtoMessage() {}
+func (*AzureMonitorMetricAlertOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorMetricAlertStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorMetricAlertOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureMonitorMetricAlertStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorMetricAlertStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorMetricAlertStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorMetricAlertOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorMetricAlertOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorMetricAlertStackOutputs) GetMetricAlertId() string {
+func (x *AzureMonitorMetricAlertOutputs) GetMetricAlertId() string {
 	if x != nil {
 		return x.MetricAlertId
 	}
 	return ""
 }
 
-func (x *AzureMonitorMetricAlertStackOutputs) GetMetricAlertName() string {
+func (x *AzureMonitorMetricAlertOutputs) GetMetricAlertName() string {
 	if x != nil {
 		return x.MetricAlertName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azuremonitormetricalert/v1alpha1/outputs.proto\x122dev.planton.azure.azuremonitormetricalert.v1alpha1\"y\n" +
-	"#AzureMonitorMetricAlertStackOutputs\x12&\n" +
+	"<catalog/azure/azuremonitormetricalert/v1alpha1/outputs.proto\x122dev.planton.azure.azuremonitormetricalert.v1alpha1\"t\n" +
+	"\x1eAzureMonitorMetricAlertOutputs\x12&\n" +
 	"\x0fmetric_alert_id\x18\x01 \x01(\tR\rmetricAlertId\x12*\n" +
 	"\x11metric_alert_name\x18\x02 \x01(\tR\x0fmetricAlertNameB\xa0\x03\n" +
 	"6com.dev.planton.azure.azuremonitormetricalert.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azuremonitormetricalert/v1alpha1;azuremonitormetricalertv1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azuremonitormetricalert.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azuremonitormetricalert\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azuremonitormetricalert\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azuremonitormetricalert::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorMetricAlertStackOutputs)(nil), // 0: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStackOutputs
+	(*AzureMonitorMetricAlertOutputs)(nil), // 0: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertOutputs
 }
 var file_catalog_azure_azuremonitormetricalert_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

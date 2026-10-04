@@ -69,7 +69,7 @@ const (
 //     HTTP endpoint, Snowflake) can source it from AWS Secrets Manager instead
 //     of embedding it in the manifest -- prefer that for production.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsKinesisFirehoseSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

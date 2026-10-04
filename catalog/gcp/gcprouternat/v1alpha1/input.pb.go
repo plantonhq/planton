@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-router-nat stack-input
-type GcpRouterNatStackInput struct {
+// gcp-router-nat iac-input
+type GcpRouterNatIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpRouterNat `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpRouterNatStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpRouterNatStackInput) Reset() {
-	*x = GcpRouterNatStackInput{}
+func (x *GcpRouterNatIacInput) Reset() {
+	*x = GcpRouterNatIacInput{}
 	mi := &file_catalog_gcp_gcprouternat_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRouterNatStackInput) String() string {
+func (x *GcpRouterNatIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRouterNatStackInput) ProtoMessage() {}
+func (*GcpRouterNatIacInput) ProtoMessage() {}
 
-func (x *GcpRouterNatStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpRouterNatIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcprouternat_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpRouterNatStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRouterNatStackInput.ProtoReflect.Descriptor instead.
-func (*GcpRouterNatStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRouterNatIacInput.ProtoReflect.Descriptor instead.
+func (*GcpRouterNatIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcprouternat_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRouterNatStackInput) GetTarget() *GcpRouterNat {
+func (x *GcpRouterNatIacInput) GetTarget() *GcpRouterNat {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpRouterNatStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpRouterNatIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcprouternat_v1alpha1_input_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcprouternat_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcprouternat/v1alpha1/input.proto\x12%dev.planton.gcp.gcprouternat.v1alpha1\x1a+catalog/gcp/gcprouternat/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb2\x01\n" +
-	"\x16GcpRouterNatStackInput\x12K\n" +
+	"-catalog/gcp/gcprouternat/v1alpha1/input.proto\x12%dev.planton.gcp.gcprouternat.v1alpha1\x1a+catalog/gcp/gcprouternat/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb0\x01\n" +
+	"\x14GcpRouterNatIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xc5\x02\n" +
 	")com.dev.planton.gcp.gcprouternat.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcprouternat_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcprouternat_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcprouternat_v1alpha1_input_proto_goTypes = []any{
-	(*GcpRouterNatStackInput)(nil), // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackInput
-	(*GcpRouterNat)(nil),           // 1: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat
-	(*gcp.GcpProviderConfig)(nil),  // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpRouterNatIacInput)(nil),  // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatIacInput
+	(*GcpRouterNat)(nil),          // 1: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat
+	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcprouternat_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackInput.target:type_name -> dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat
-	2, // 1: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatIacInput.target:type_name -> dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat
+	2, // 1: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

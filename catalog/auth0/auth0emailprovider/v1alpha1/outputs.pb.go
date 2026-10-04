@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EmailProviderStackOutputs contains the email provider as applied.
+// Auth0EmailProviderOutputs contains the email provider as applied.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_provider#attributes-reference
-type Auth0EmailProviderStackOutputs struct {
+type Auth0EmailProviderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// name is the service the tenant sends through, as Auth0 names it (for
 	// example "smtp", "ses", "sendgrid").
@@ -35,20 +35,20 @@ type Auth0EmailProviderStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *Auth0EmailProviderStackOutputs) Reset() {
-	*x = Auth0EmailProviderStackOutputs{}
+func (x *Auth0EmailProviderOutputs) Reset() {
+	*x = Auth0EmailProviderOutputs{}
 	mi := &file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0EmailProviderStackOutputs) String() string {
+func (x *Auth0EmailProviderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0EmailProviderStackOutputs) ProtoMessage() {}
+func (*Auth0EmailProviderOutputs) ProtoMessage() {}
 
-func (x *Auth0EmailProviderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0EmailProviderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *Auth0EmailProviderStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0EmailProviderStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0EmailProviderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0EmailProviderOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0EmailProviderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0EmailProviderStackOutputs) GetName() string {
+func (x *Auth0EmailProviderOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0EmailProviderStackOutputs) GetDefaultFromAddress() string {
+func (x *Auth0EmailProviderOutputs) GetDefaultFromAddress() string {
 	if x != nil {
 		return x.DefaultFromAddress
 	}
@@ -83,8 +83,8 @@ var File_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/auth0/auth0emailprovider/v1alpha1/outputs.proto\x12-dev.planton.auth0.auth0emailprovider.v1alpha1\"f\n" +
-	"\x1eAuth0EmailProviderStackOutputs\x12\x12\n" +
+	"7catalog/auth0/auth0emailprovider/v1alpha1/outputs.proto\x12-dev.planton.auth0.auth0emailprovider.v1alpha1\"a\n" +
+	"\x19Auth0EmailProviderOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x120\n" +
 	"\x14default_from_address\x18\x02 \x01(\tR\x12defaultFromAddressB\xfd\x02\n" +
 	"1com.dev.planton.auth0.auth0emailprovider.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/auth0/auth0emailprovider/v1alpha1;auth0emailproviderv1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Auth0.Auth0emailprovider.V1alpha1\xca\x02-Dev\\Planton\\Auth0\\Auth0emailprovider\\V1alpha1\xe2\x029Dev\\Planton\\Auth0\\Auth0emailprovider\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Auth0::Auth0emailprovider::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0EmailProviderStackOutputs)(nil), // 0: dev.planton.auth0.auth0emailprovider.v1alpha1.Auth0EmailProviderStackOutputs
+	(*Auth0EmailProviderOutputs)(nil), // 0: dev.planton.auth0.auth0emailprovider.v1alpha1.Auth0EmailProviderOutputs
 }
 var file_catalog_auth0_auth0emailprovider_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

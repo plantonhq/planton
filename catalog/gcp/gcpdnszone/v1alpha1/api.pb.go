@@ -31,7 +31,7 @@ type GcpDnsZone struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpDnsZoneSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpDnsZone) GetKind() string {
 	return ""
 }
 
-func (x *GcpDnsZone) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpDnsZone) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *GcpDnsZone) GetStatus() *GcpDnsZoneStatus {
 // gcp-dns-zone status
 type GcpDnsZoneStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	stack outputs
-	Outputs       *GcpDnsZoneStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	outputs
+	Outputs       *GcpDnsZoneOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*GcpDnsZoneStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdnszone_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpDnsZoneStatus) GetOutputs() *GcpDnsZoneStackOutputs {
+func (x *GcpDnsZoneStatus) GetOutputs() *GcpDnsZoneOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_gcp_gcpdnszone_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\x11\xbaH\x0er\f\n" +
 	"\n" +
 	"GcpDnsZoneR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
 	"\x04spec\x18\x04 \x01(\v23.dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12M\n" +
-	"\x06status\x18\x05 \x01(\v25.dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStatusR\x06status\"i\n" +
-	"\x10GcpDnsZoneStatus\x12U\n" +
-	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStackOutputsR\aoutputsB\xb5\x02\n" +
+	"\x06status\x18\x05 \x01(\v25.dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStatusR\x06status\"d\n" +
+	"\x10GcpDnsZoneStatus\x12P\n" +
+	"\aoutputs\x18\x01 \x01(\v26.dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneOutputsR\aoutputsB\xb5\x02\n" +
 	"'com.dev.planton.gcp.gcpdnszone.v1alpha1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/catalog/gcp/gcpdnszone/v1alpha1;gcpdnszonev1alpha1\xa2\x02\x04DPGG\xaa\x02#Dev.Planton.Gcp.Gcpdnszone.V1alpha1\xca\x02#Dev\\Planton\\Gcp\\Gcpdnszone\\V1alpha1\xe2\x02/Dev\\Planton\\Gcp\\Gcpdnszone\\V1alpha1\\GPBMetadata\xea\x02'Dev::Planton::Gcp::Gcpdnszone::V1alpha1b\x06proto3"
 
 var (
@@ -189,15 +189,15 @@ var file_catalog_gcp_gcpdnszone_v1alpha1_api_proto_msgTypes = make([]protoimpl.M
 var file_catalog_gcp_gcpdnszone_v1alpha1_api_proto_goTypes = []any{
 	(*GcpDnsZone)(nil),                   // 0: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZone
 	(*GcpDnsZoneStatus)(nil),             // 1: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpDnsZoneSpec)(nil),               // 3: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneSpec
-	(*GcpDnsZoneStackOutputs)(nil),       // 4: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStackOutputs
+	(*GcpDnsZoneOutputs)(nil),            // 4: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneOutputs
 }
 var file_catalog_gcp_gcpdnszone_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZone.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZone.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZone.spec:type_name -> dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneSpec
 	1, // 2: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZone.status:type_name -> dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStatus
-	4, // 3: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStatus.outputs:type_name -> dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStackOutputs
+	4, // 3: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStatus.outputs:type_name -> dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

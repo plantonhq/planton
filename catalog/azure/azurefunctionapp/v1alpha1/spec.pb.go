@@ -1035,7 +1035,7 @@ type AzureFunctionAppSpec struct {
 	//
 	// When identity is configured with SYSTEM_ASSIGNED, the function app gets
 	// a system-assigned identity whose principal_id and tenant_id are exported
-	// as stack outputs.
+	// as outputs.
 	Identity *AzureFunctionAppIdentity `protobuf:"bytes,27,opt,name=identity,proto3" json:"identity,omitempty"`
 	// User Assigned Identity ID for accessing Key Vault references.
 	// When the Function App uses Key Vault references in app_settings

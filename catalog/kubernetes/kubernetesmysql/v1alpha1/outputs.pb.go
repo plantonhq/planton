@@ -26,7 +26,7 @@ const (
 // Outputs a KubernetesMysql cluster exports for composition —
 // everything a workload (or an exposure kind) needs to reach the
 // database.
-type KubernetesMysqlStackOutputs struct {
+type KubernetesMysqlOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the cluster runs in.
@@ -60,20 +60,20 @@ type KubernetesMysqlStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesMysqlStackOutputs) Reset() {
-	*x = KubernetesMysqlStackOutputs{}
+func (x *KubernetesMysqlOutputs) Reset() {
+	*x = KubernetesMysqlOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesMysqlStackOutputs) String() string {
+func (x *KubernetesMysqlOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesMysqlStackOutputs) ProtoMessage() {}
+func (*KubernetesMysqlOutputs) ProtoMessage() {}
 
-func (x *KubernetesMysqlStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesMysqlOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,54 +85,54 @@ func (x *KubernetesMysqlStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesMysqlStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesMysqlStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesMysqlOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesMysqlOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesMysqlStackOutputs) GetNamespace() string {
+func (x *KubernetesMysqlOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesMysqlStackOutputs) GetClusterName() string {
+func (x *KubernetesMysqlOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesMysqlStackOutputs) GetPrimaryService() string {
+func (x *KubernetesMysqlOutputs) GetPrimaryService() string {
 	if x != nil {
 		return x.PrimaryService
 	}
 	return ""
 }
 
-func (x *KubernetesMysqlStackOutputs) GetReplicasService() string {
+func (x *KubernetesMysqlOutputs) GetReplicasService() string {
 	if x != nil {
 		return x.ReplicasService
 	}
 	return ""
 }
 
-func (x *KubernetesMysqlStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesMysqlOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesMysqlStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesMysqlOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesMysqlStackOutputs) GetRootPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesMysqlOutputs) GetRootPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.RootPasswordSecret
 	}
@@ -143,8 +143,8 @@ var File_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesmysql/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetesmysql.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xe8\x02\n" +
-	"\x1bKubernetesMysqlStackOutputs\x12\x1c\n" +
+	"9catalog/kubernetes/kubernetesmysql/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetesmysql.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xe3\x02\n" +
+	"\x16KubernetesMysqlOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12'\n" +
 	"\x0fprimary_service\x18\x03 \x01(\tR\x0eprimaryService\x12)\n" +
@@ -168,11 +168,11 @@ func file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesMysqlStackOutputs)(nil),    // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStackOutputs
+	(*KubernetesMysqlOutputs)(nil),         // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesmysql_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlStackOutputs.root_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesmysql.v1alpha1.KubernetesMysqlOutputs.root_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

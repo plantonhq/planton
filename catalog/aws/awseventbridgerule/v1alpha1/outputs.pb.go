@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgeRuleStackOutputs captures observable identifiers from a
+// AwsEventBridgeRuleOutputs captures observable identifiers from a
 // provisioned EventBridge rule. These outputs are used by downstream
 // resources for IAM policies and cross-resource references.
-type AwsEventBridgeRuleStackOutputs struct {
+type AwsEventBridgeRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the rule. Used in IAM policies that
 	// grant or restrict access to manage this rule, and as a reference in
@@ -37,20 +37,20 @@ type AwsEventBridgeRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgeRuleStackOutputs) Reset() {
-	*x = AwsEventBridgeRuleStackOutputs{}
+func (x *AwsEventBridgeRuleOutputs) Reset() {
+	*x = AwsEventBridgeRuleOutputs{}
 	mi := &file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgeRuleStackOutputs) String() string {
+func (x *AwsEventBridgeRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgeRuleStackOutputs) ProtoMessage() {}
+func (*AwsEventBridgeRuleOutputs) ProtoMessage() {}
 
-func (x *AwsEventBridgeRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgeRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AwsEventBridgeRuleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgeRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgeRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgeRuleOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgeRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgeRuleStackOutputs) GetRuleArn() string {
+func (x *AwsEventBridgeRuleOutputs) GetRuleArn() string {
 	if x != nil {
 		return x.RuleArn
 	}
 	return ""
 }
 
-func (x *AwsEventBridgeRuleStackOutputs) GetRuleName() string {
+func (x *AwsEventBridgeRuleOutputs) GetRuleName() string {
 	if x != nil {
 		return x.RuleName
 	}
@@ -85,8 +85,8 @@ var File_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awseventbridgerule/v1alpha1/outputs.proto\x12+dev.planton.aws.awseventbridgerule.v1alpha1\"X\n" +
-	"\x1eAwsEventBridgeRuleStackOutputs\x12\x19\n" +
+	"5catalog/aws/awseventbridgerule/v1alpha1/outputs.proto\x12+dev.planton.aws.awseventbridgerule.v1alpha1\"S\n" +
+	"\x19AwsEventBridgeRuleOutputs\x12\x19\n" +
 	"\brule_arn\x18\x01 \x01(\tR\aruleArn\x12\x1b\n" +
 	"\trule_name\x18\x02 \x01(\tR\bruleNameB\xf1\x02\n" +
 	"/com.dev.planton.aws.awseventbridgerule.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awseventbridgerule/v1alpha1;awseventbridgerulev1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awseventbridgerule.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awseventbridgerule\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awseventbridgerule\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awseventbridgerule::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEventBridgeRuleStackOutputs)(nil), // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackOutputs
+	(*AwsEventBridgeRuleOutputs)(nil), // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleOutputs
 }
 var file_catalog_aws_awseventbridgerule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

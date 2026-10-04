@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpCloudIdentityGroupStackInput struct {
+type GcpCloudIdentityGroupIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpCloudIdentityGroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpCloudIdentityGroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudIdentityGroupStackInput) Reset() {
-	*x = GcpCloudIdentityGroupStackInput{}
+func (x *GcpCloudIdentityGroupIacInput) Reset() {
+	*x = GcpCloudIdentityGroupIacInput{}
 	mi := &file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudIdentityGroupStackInput) String() string {
+func (x *GcpCloudIdentityGroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudIdentityGroupStackInput) ProtoMessage() {}
+func (*GcpCloudIdentityGroupIacInput) ProtoMessage() {}
 
-func (x *GcpCloudIdentityGroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudIdentityGroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpCloudIdentityGroupStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudIdentityGroupStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudIdentityGroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudIdentityGroupIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudIdentityGroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudIdentityGroupStackInput) GetTarget() *GcpCloudIdentityGroup {
+func (x *GcpCloudIdentityGroupIacInput) GetTarget() *GcpCloudIdentityGroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudIdentityGroupStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudIdentityGroupIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpcloudidentitygroup/v1alpha1/input.proto\x12.dev.planton.gcp.gcpcloudidentitygroup.v1alpha1\x1a4catalog/gcp/gcpcloudidentitygroup/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcd\x01\n" +
-	"\x1fGcpCloudIdentityGroupStackInput\x12]\n" +
+	"6catalog/gcp/gcpcloudidentitygroup/v1alpha1/input.proto\x12.dev.planton.gcp.gcpcloudidentitygroup.v1alpha1\x1a4catalog/gcp/gcpcloudidentitygroup/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcb\x01\n" +
+	"\x1dGcpCloudIdentityGroupIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.gcp.gcpcloudidentitygroup.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudIdentityGroupStackInput)(nil), // 0: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupStackInput
-	(*GcpCloudIdentityGroup)(nil),           // 1: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroup
-	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCloudIdentityGroupIacInput)(nil), // 0: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupIacInput
+	(*GcpCloudIdentityGroup)(nil),         // 1: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroup
+	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupStackInput.target:type_name -> dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroup
-	2, // 1: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupIacInput.target:type_name -> dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroup
+	2, // 1: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

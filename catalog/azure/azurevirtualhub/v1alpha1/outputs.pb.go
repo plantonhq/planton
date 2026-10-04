@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualHubStackOutputs** captures the outputs of provisioning
+// **AzureVirtualHubOutputs** captures the outputs of provisioning
 // a Virtual Hub and its routing children.
-type AzureVirtualHubStackOutputs struct {
+type AzureVirtualHubOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the hub -- what connections,
 	// gateways, and firewalls reference as their virtual_hub_id.
@@ -62,20 +62,20 @@ type AzureVirtualHubStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureVirtualHubStackOutputs) Reset() {
-	*x = AzureVirtualHubStackOutputs{}
+func (x *AzureVirtualHubOutputs) Reset() {
+	*x = AzureVirtualHubOutputs{}
 	mi := &file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualHubStackOutputs) String() string {
+func (x *AzureVirtualHubOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualHubStackOutputs) ProtoMessage() {}
+func (*AzureVirtualHubOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualHubStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualHubOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -87,68 +87,68 @@ func (x *AzureVirtualHubStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualHubStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualHubStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualHubOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualHubOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualHubStackOutputs) GetVirtualHubId() string {
+func (x *AzureVirtualHubOutputs) GetVirtualHubId() string {
 	if x != nil {
 		return x.VirtualHubId
 	}
 	return ""
 }
 
-func (x *AzureVirtualHubStackOutputs) GetVirtualHubName() string {
+func (x *AzureVirtualHubOutputs) GetVirtualHubName() string {
 	if x != nil {
 		return x.VirtualHubName
 	}
 	return ""
 }
 
-func (x *AzureVirtualHubStackOutputs) GetDefaultRouteTableId() string {
+func (x *AzureVirtualHubOutputs) GetDefaultRouteTableId() string {
 	if x != nil {
 		return x.DefaultRouteTableId
 	}
 	return ""
 }
 
-func (x *AzureVirtualHubStackOutputs) GetVirtualRouterAsn() int64 {
+func (x *AzureVirtualHubOutputs) GetVirtualRouterAsn() int64 {
 	if x != nil {
 		return x.VirtualRouterAsn
 	}
 	return 0
 }
 
-func (x *AzureVirtualHubStackOutputs) GetVirtualRouterIps() []string {
+func (x *AzureVirtualHubOutputs) GetVirtualRouterIps() []string {
 	if x != nil {
 		return x.VirtualRouterIps
 	}
 	return nil
 }
 
-func (x *AzureVirtualHubStackOutputs) GetRouteTableIds() map[string]string {
+func (x *AzureVirtualHubOutputs) GetRouteTableIds() map[string]string {
 	if x != nil {
 		return x.RouteTableIds
 	}
 	return nil
 }
 
-func (x *AzureVirtualHubStackOutputs) GetRouteMapIds() map[string]string {
+func (x *AzureVirtualHubOutputs) GetRouteMapIds() map[string]string {
 	if x != nil {
 		return x.RouteMapIds
 	}
 	return nil
 }
 
-func (x *AzureVirtualHubStackOutputs) GetBgpConnectionIds() map[string]string {
+func (x *AzureVirtualHubOutputs) GetBgpConnectionIds() map[string]string {
 	if x != nil {
 		return x.BgpConnectionIds
 	}
 	return nil
 }
 
-func (x *AzureVirtualHubStackOutputs) GetRoutingIntentId() string {
+func (x *AzureVirtualHubOutputs) GetRoutingIntentId() string {
 	if x != nil {
 		return x.RoutingIntentId
 	}
@@ -159,16 +159,16 @@ var File_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurevirtualhub/v1alpha1/outputs.proto\x12*dev.planton.azure.azurevirtualhub.v1alpha1\"\x82\a\n" +
-	"\x1bAzureVirtualHubStackOutputs\x12$\n" +
+	"4catalog/azure/azurevirtualhub/v1alpha1/outputs.proto\x12*dev.planton.azure.azurevirtualhub.v1alpha1\"\xed\x06\n" +
+	"\x16AzureVirtualHubOutputs\x12$\n" +
 	"\x0evirtual_hub_id\x18\x01 \x01(\tR\fvirtualHubId\x12(\n" +
 	"\x10virtual_hub_name\x18\x02 \x01(\tR\x0evirtualHubName\x123\n" +
 	"\x16default_route_table_id\x18\x03 \x01(\tR\x13defaultRouteTableId\x12,\n" +
 	"\x12virtual_router_asn\x18\x04 \x01(\x03R\x10virtualRouterAsn\x12,\n" +
-	"\x12virtual_router_ips\x18\x05 \x03(\tR\x10virtualRouterIps\x12\x82\x01\n" +
-	"\x0froute_table_ids\x18\x06 \x03(\v2Z.dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.RouteTableIdsEntryR\rrouteTableIds\x12|\n" +
-	"\rroute_map_ids\x18\a \x03(\v2X.dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.RouteMapIdsEntryR\vrouteMapIds\x12\x8b\x01\n" +
-	"\x12bgp_connection_ids\x18\b \x03(\v2].dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.BgpConnectionIdsEntryR\x10bgpConnectionIds\x12*\n" +
+	"\x12virtual_router_ips\x18\x05 \x03(\tR\x10virtualRouterIps\x12}\n" +
+	"\x0froute_table_ids\x18\x06 \x03(\v2U.dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.RouteTableIdsEntryR\rrouteTableIds\x12w\n" +
+	"\rroute_map_ids\x18\a \x03(\v2S.dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.RouteMapIdsEntryR\vrouteMapIds\x12\x86\x01\n" +
+	"\x12bgp_connection_ids\x18\b \x03(\v2X.dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.BgpConnectionIdsEntryR\x10bgpConnectionIds\x12*\n" +
 	"\x11routing_intent_id\x18\t \x01(\tR\x0froutingIntentId\x1a@\n" +
 	"\x12RouteTableIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -195,15 +195,15 @@ func file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualHubStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs
-	nil,                                 // 1: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.RouteTableIdsEntry
-	nil,                                 // 2: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.RouteMapIdsEntry
-	nil,                                 // 3: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.BgpConnectionIdsEntry
+	(*AzureVirtualHubOutputs)(nil), // 0: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs
+	nil,                            // 1: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.RouteTableIdsEntry
+	nil,                            // 2: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.RouteMapIdsEntry
+	nil,                            // 3: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.BgpConnectionIdsEntry
 }
 var file_catalog_azure_azurevirtualhub_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.route_table_ids:type_name -> dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.RouteTableIdsEntry
-	2, // 1: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.route_map_ids:type_name -> dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.RouteMapIdsEntry
-	3, // 2: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.bgp_connection_ids:type_name -> dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubStackOutputs.BgpConnectionIdsEntry
+	1, // 0: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.route_table_ids:type_name -> dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.RouteTableIdsEntry
+	2, // 1: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.route_map_ids:type_name -> dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.RouteMapIdsEntry
+	3, // 2: dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.bgp_connection_ids:type_name -> dev.planton.azure.azurevirtualhub.v1alpha1.AzureVirtualHubOutputs.BgpConnectionIdsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

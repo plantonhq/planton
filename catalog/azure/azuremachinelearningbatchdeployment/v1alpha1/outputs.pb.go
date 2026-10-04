@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningBatchDeploymentStackOutputs** captures the
+// **AzureMachineLearningBatchDeploymentOutputs** captures the
 // outputs of provisioning a Machine Learning batch deployment.
-type AzureMachineLearningBatchDeploymentStackOutputs struct {
+type AzureMachineLearningBatchDeploymentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the batch deployment.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/batchEndpoints/{endpoint}/deployments/{name}
@@ -35,20 +35,20 @@ type AzureMachineLearningBatchDeploymentStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningBatchDeploymentStackOutputs) Reset() {
-	*x = AzureMachineLearningBatchDeploymentStackOutputs{}
+func (x *AzureMachineLearningBatchDeploymentOutputs) Reset() {
+	*x = AzureMachineLearningBatchDeploymentOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningBatchDeploymentStackOutputs) String() string {
+func (x *AzureMachineLearningBatchDeploymentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningBatchDeploymentStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningBatchDeploymentOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningBatchDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningBatchDeploymentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMachineLearningBatchDeploymentStackOutputs) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningBatchDeploymentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningBatchDeploymentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningBatchDeploymentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningBatchDeploymentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningBatchDeploymentStackOutputs) GetBatchDeploymentId() string {
+func (x *AzureMachineLearningBatchDeploymentOutputs) GetBatchDeploymentId() string {
 	if x != nil {
 		return x.BatchDeploymentId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningBatchDeploymentStackOutputs) GetBatchDeploymentName() string {
+func (x *AzureMachineLearningBatchDeploymentOutputs) GetBatchDeploymentName() string {
 	if x != nil {
 		return x.BatchDeploymentName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_prot
 
 const file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/azure/azuremachinelearningbatchdeployment/v1alpha1/outputs.proto\x12>dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1\"\x95\x01\n" +
-	"/AzureMachineLearningBatchDeploymentStackOutputs\x12.\n" +
+	"Hcatalog/azure/azuremachinelearningbatchdeployment/v1alpha1/outputs.proto\x12>dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1\"\x90\x01\n" +
+	"*AzureMachineLearningBatchDeploymentOutputs\x12.\n" +
 	"\x13batch_deployment_id\x18\x01 \x01(\tR\x11batchDeploymentId\x122\n" +
 	"\x15batch_deployment_name\x18\x02 \x01(\tR\x13batchDeploymentNameB\xf5\x03\n" +
 	"Bcom.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1B\fOutputsProtoP\x01Z\x83\x01github.com/plantonhq/planton/catalog/azure/azuremachinelearningbatchdeployment/v1alpha1;azuremachinelearningbatchdeploymentv1alpha1\xa2\x02\x04DPAA\xaa\x02>Dev.Planton.Azure.Azuremachinelearningbatchdeployment.V1alpha1\xca\x02>Dev\\Planton\\Azure\\Azuremachinelearningbatchdeployment\\V1alpha1\xe2\x02JDev\\Planton\\Azure\\Azuremachinelearningbatchdeployment\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Azure::Azuremachinelearningbatchdeployment::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_pro
 
 var file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningBatchDeploymentStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStackOutputs
+	(*AzureMachineLearningBatchDeploymentOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentOutputs
 }
 var file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

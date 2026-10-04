@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareHealthcheckStackOutputs captures the observable outputs after
+// CloudflareHealthcheckOutputs captures the observable outputs after
 // creating a health check.
-type CloudflareHealthcheckStackOutputs struct {
+type CloudflareHealthcheckOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the created health check.
 	HealthcheckId string `protobuf:"bytes,1,opt,name=healthcheck_id,json=healthcheckId,proto3" json:"healthcheck_id,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareHealthcheckStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareHealthcheckStackOutputs) Reset() {
-	*x = CloudflareHealthcheckStackOutputs{}
+func (x *CloudflareHealthcheckOutputs) Reset() {
+	*x = CloudflareHealthcheckOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareHealthcheckStackOutputs) String() string {
+func (x *CloudflareHealthcheckOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareHealthcheckStackOutputs) ProtoMessage() {}
+func (*CloudflareHealthcheckOutputs) ProtoMessage() {}
 
-func (x *CloudflareHealthcheckStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareHealthcheckOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareHealthcheckStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareHealthcheckStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareHealthcheckStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareHealthcheckOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareHealthcheckOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareHealthcheckStackOutputs) GetHealthcheckId() string {
+func (x *CloudflareHealthcheckOutputs) GetHealthcheckId() string {
 	if x != nil {
 		return x.HealthcheckId
 	}
 	return ""
 }
 
-func (x *CloudflareHealthcheckStackOutputs) GetZoneId() string {
+func (x *CloudflareHealthcheckOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto protore
 
 const file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/cloudflare/cloudflarehealthcheck/v1alpha1/outputs.proto\x125dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1\"c\n" +
-	"!CloudflareHealthcheckStackOutputs\x12%\n" +
+	"?catalog/cloudflare/cloudflarehealthcheck/v1alpha1/outputs.proto\x125dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1\"^\n" +
+	"\x1cCloudflareHealthcheckOutputs\x12%\n" +
 	"\x0ehealthcheck_id\x18\x01 \x01(\tR\rhealthcheckId\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneIdB\xb0\x03\n" +
 	"9com.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1B\fOutputsProtoP\x01Zlgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarehealthcheck/v1alpha1;cloudflarehealthcheckv1alpha1\xa2\x02\x04DPCC\xaa\x025Dev.Planton.Cloudflare.Cloudflarehealthcheck.V1alpha1\xca\x025Dev\\Planton\\Cloudflare\\Cloudflarehealthcheck\\V1alpha1\xe2\x02ADev\\Planton\\Cloudflare\\Cloudflarehealthcheck\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Cloudflare::Cloudflarehealthcheck::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareHealthcheckStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStackOutputs
+	(*CloudflareHealthcheckOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckOutputs
 }
 var file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

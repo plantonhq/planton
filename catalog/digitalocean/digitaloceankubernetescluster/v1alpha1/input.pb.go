@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-kubernetes-cluster stack-input
-type DigitalOceanKubernetesClusterStackInput struct {
+// digital-ocean-kubernetes-cluster iac-input
+type DigitalOceanKubernetesClusterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanKubernetesCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanKubernetesClusterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanKubernetesClusterStackInput) Reset() {
-	*x = DigitalOceanKubernetesClusterStackInput{}
+func (x *DigitalOceanKubernetesClusterIacInput) Reset() {
+	*x = DigitalOceanKubernetesClusterIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanKubernetesClusterStackInput) String() string {
+func (x *DigitalOceanKubernetesClusterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanKubernetesClusterStackInput) ProtoMessage() {}
+func (*DigitalOceanKubernetesClusterIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanKubernetesClusterStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanKubernetesClusterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanKubernetesClusterStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanKubernetesClusterStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanKubernetesClusterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanKubernetesClusterIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanKubernetesClusterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanKubernetesClusterStackInput) GetTarget() *DigitalOceanKubernetesCluster {
+func (x *DigitalOceanKubernetesClusterIacInput) GetTarget() *DigitalOceanKubernetesCluster {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanKubernetesClusterStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanKubernetesClusterIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto
 
 const file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/input.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\x1aEcatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x80\x02\n" +
-	"'DigitalOceanKubernetesClusterStackInput\x12v\n" +
+	"Gcatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/input.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\x1aEcatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xfe\x01\n" +
+	"%DigitalOceanKubernetesClusterIacInput\x12v\n" +
 	"\x06target\x18\x01 \x01(\v2^.dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xf2\x03\n" +
 	"Ccom.dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_prot
 
 var file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanKubernetesClusterStackInput)(nil), // 0: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterStackInput
+	(*DigitalOceanKubernetesClusterIacInput)(nil),   // 0: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterIacInput
 	(*DigitalOceanKubernetesCluster)(nil),           // 1: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesCluster
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterStackInput.target:type_name -> dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesCluster
-	2, // 1: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterIacInput.target:type_name -> dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesCluster
+	2, // 1: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

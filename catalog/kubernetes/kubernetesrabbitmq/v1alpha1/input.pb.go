@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-rabbit-mq stack-input
-type KubernetesRabbitMqStackInput struct {
+// kubernetes-rabbit-mq iac-input
+type KubernetesRabbitMqIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesRabbitMq `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesRabbitMqStackInput struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *KubernetesRabbitMqStackInput) Reset() {
-	*x = KubernetesRabbitMqStackInput{}
+func (x *KubernetesRabbitMqIacInput) Reset() {
+	*x = KubernetesRabbitMqIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRabbitMqStackInput) String() string {
+func (x *KubernetesRabbitMqIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRabbitMqStackInput) ProtoMessage() {}
+func (*KubernetesRabbitMqIacInput) ProtoMessage() {}
 
-func (x *KubernetesRabbitMqStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRabbitMqIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *KubernetesRabbitMqStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRabbitMqStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesRabbitMqStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRabbitMqIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesRabbitMqIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRabbitMqStackInput) GetTarget() *KubernetesRabbitMq {
+func (x *KubernetesRabbitMqIacInput) GetTarget() *KubernetesRabbitMq {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesRabbitMqStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesRabbitMqIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
 	return nil
 }
 
-func (x *KubernetesRabbitMqStackInput) GetKubernetesNamespace() string {
+func (x *KubernetesRabbitMqIacInput) GetKubernetesNamespace() string {
 	if x != nil {
 		return x.KubernetesNamespace
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesrabbitmq/v1alpha1/input.proto\x122dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1\x1a8catalog/kubernetes/kubernetesrabbitmq/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x8c\x02\n" +
-	"\x1cKubernetesRabbitMqStackInput\x12^\n" +
+	":catalog/kubernetes/kubernetesrabbitmq/v1alpha1/input.proto\x122dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1\x1a8catalog/kubernetes/kubernetesrabbitmq/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x8a\x02\n" +
+	"\x1aKubernetesRabbitMqIacInput\x12^\n" +
 	"\x06target\x18\x01 \x01(\v2F.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfig\x121\n" +
 	"\x14kubernetes_namespace\x18\x03 \x01(\tR\x13kubernetesNamespaceB\x99\x03\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesRabbitMqStackInput)(nil),        // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackInput
+	(*KubernetesRabbitMqIacInput)(nil),          // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqIacInput
 	(*KubernetesRabbitMq)(nil),                  // 1: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackInput.target:type_name -> dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq
-	2, // 1: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqIacInput.target:type_name -> dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq
+	2, // 1: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

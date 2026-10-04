@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRdsInstanceStackOutputs captures the observable identifiers and
+// AwsRdsInstanceOutputs captures the observable identifiers and
 // connection endpoint of the RDS DB instance after deployment.
-type AwsRdsInstanceStackOutputs struct {
+type AwsRdsInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The instance identifier (e.g. "orders-db").
 	InstanceIdentifier string `protobuf:"bytes,1,opt,name=instance_identifier,json=instanceIdentifier,proto3" json:"instance_identifier,omitempty"`
@@ -62,20 +62,20 @@ type AwsRdsInstanceStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsRdsInstanceStackOutputs) Reset() {
-	*x = AwsRdsInstanceStackOutputs{}
+func (x *AwsRdsInstanceOutputs) Reset() {
+	*x = AwsRdsInstanceOutputs{}
 	mi := &file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRdsInstanceStackOutputs) String() string {
+func (x *AwsRdsInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRdsInstanceStackOutputs) ProtoMessage() {}
+func (*AwsRdsInstanceOutputs) ProtoMessage() {}
 
-func (x *AwsRdsInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRdsInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -87,89 +87,89 @@ func (x *AwsRdsInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRdsInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRdsInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRdsInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRdsInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetInstanceIdentifier() string {
+func (x *AwsRdsInstanceOutputs) GetInstanceIdentifier() string {
 	if x != nil {
 		return x.InstanceIdentifier
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetArn() string {
+func (x *AwsRdsInstanceOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetResourceId() string {
+func (x *AwsRdsInstanceOutputs) GetResourceId() string {
 	if x != nil {
 		return x.ResourceId
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetEndpoint() string {
+func (x *AwsRdsInstanceOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetAddress() string {
+func (x *AwsRdsInstanceOutputs) GetAddress() string {
 	if x != nil {
 		return x.Address
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetPort() int32 {
+func (x *AwsRdsInstanceOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetHostedZoneId() string {
+func (x *AwsRdsInstanceOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetEngineVersionActual() string {
+func (x *AwsRdsInstanceOutputs) GetEngineVersionActual() string {
 	if x != nil {
 		return x.EngineVersionActual
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetMasterUserSecretArn() string {
+func (x *AwsRdsInstanceOutputs) GetMasterUserSecretArn() string {
 	if x != nil {
 		return x.MasterUserSecretArn
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetDbSubnetGroupName() string {
+func (x *AwsRdsInstanceOutputs) GetDbSubnetGroupName() string {
 	if x != nil {
 		return x.DbSubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetDbParameterGroupName() string {
+func (x *AwsRdsInstanceOutputs) GetDbParameterGroupName() string {
 	if x != nil {
 		return x.DbParameterGroupName
 	}
 	return ""
 }
 
-func (x *AwsRdsInstanceStackOutputs) GetOptionGroupName() string {
+func (x *AwsRdsInstanceOutputs) GetOptionGroupName() string {
 	if x != nil {
 		return x.OptionGroupName
 	}
@@ -180,8 +180,8 @@ var File_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsrdsinstance/v1alpha1/outputs.proto\x12'dev.planton.aws.awsrdsinstance.v1alpha1\"\xed\x03\n" +
-	"\x1aAwsRdsInstanceStackOutputs\x12/\n" +
+	"1catalog/aws/awsrdsinstance/v1alpha1/outputs.proto\x12'dev.planton.aws.awsrdsinstance.v1alpha1\"\xe8\x03\n" +
+	"\x15AwsRdsInstanceOutputs\x12/\n" +
 	"\x13instance_identifier\x18\x01 \x01(\tR\x12instanceIdentifier\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12\x1f\n" +
 	"\vresource_id\x18\x03 \x01(\tR\n" +
@@ -212,7 +212,7 @@ func file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRdsInstanceStackOutputs)(nil), // 0: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceStackOutputs
+	(*AwsRdsInstanceOutputs)(nil), // 0: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOutputs
 }
 var file_catalog_aws_awsrdsinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

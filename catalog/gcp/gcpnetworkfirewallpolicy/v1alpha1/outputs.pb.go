@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpNetworkFirewallPolicyStackOutputs captures the policy's identity after
+// GcpNetworkFirewallPolicyOutputs captures the policy's identity after
 // provisioning.
-type GcpNetworkFirewallPolicyStackOutputs struct {
+type GcpNetworkFirewallPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The policy's name in GCP, as declared (or defaulted from
 	// metadata.name) -- what `gcloud compute network-firewall-policies
@@ -50,20 +50,20 @@ type GcpNetworkFirewallPolicyStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) Reset() {
-	*x = GcpNetworkFirewallPolicyStackOutputs{}
+func (x *GcpNetworkFirewallPolicyOutputs) Reset() {
+	*x = GcpNetworkFirewallPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) String() string {
+func (x *GcpNetworkFirewallPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpNetworkFirewallPolicyStackOutputs) ProtoMessage() {}
+func (*GcpNetworkFirewallPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpNetworkFirewallPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *GcpNetworkFirewallPolicyStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpNetworkFirewallPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpNetworkFirewallPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpNetworkFirewallPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpNetworkFirewallPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) GetPolicyName() string {
+func (x *GcpNetworkFirewallPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
 	return ""
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) GetPolicyId() string {
+func (x *GcpNetworkFirewallPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) GetSelfLink() string {
+func (x *GcpNetworkFirewallPolicyOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) GetRegion() string {
+func (x *GcpNetworkFirewallPolicyOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) GetRuleTupleCount() int64 {
+func (x *GcpNetworkFirewallPolicyOutputs) GetRuleTupleCount() int64 {
 	if x != nil {
 		return x.RuleTupleCount
 	}
 	return 0
 }
 
-func (x *GcpNetworkFirewallPolicyStackOutputs) GetAssociationNames() []string {
+func (x *GcpNetworkFirewallPolicyOutputs) GetAssociationNames() []string {
 	if x != nil {
 		return x.AssociationNames
 	}
@@ -126,8 +126,8 @@ var File_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1\"\xf0\x01\n" +
-	"$GcpNetworkFirewallPolicyStackOutputs\x12\x1f\n" +
+	";catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1\"\xeb\x01\n" +
+	"\x1fGcpNetworkFirewallPolicyOutputs\x12\x1f\n" +
 	"\vpolicy_name\x18\x01 \x01(\tR\n" +
 	"policyName\x12\x1b\n" +
 	"\tpolicy_id\x18\x02 \x01(\tR\bpolicyId\x12\x1b\n" +
@@ -151,7 +151,7 @@ func file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpNetworkFirewallPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyStackOutputs
+	(*GcpNetworkFirewallPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyOutputs
 }
 var file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsHttpApiGatewayStackInput is the input envelope passed to IaC modules for provisioning.
-type AwsHttpApiGatewayStackInput struct {
+// AwsHttpApiGatewayIacInput is the input envelope passed to IaC modules for provisioning.
+type AwsHttpApiGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsHttpApiGateway resource to provision.
 	Target *AwsHttpApiGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsHttpApiGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsHttpApiGatewayStackInput) Reset() {
-	*x = AwsHttpApiGatewayStackInput{}
+func (x *AwsHttpApiGatewayIacInput) Reset() {
+	*x = AwsHttpApiGatewayIacInput{}
 	mi := &file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsHttpApiGatewayStackInput) String() string {
+func (x *AwsHttpApiGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsHttpApiGatewayStackInput) ProtoMessage() {}
+func (*AwsHttpApiGatewayIacInput) ProtoMessage() {}
 
-func (x *AwsHttpApiGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsHttpApiGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsHttpApiGatewayStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsHttpApiGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*AwsHttpApiGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsHttpApiGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*AwsHttpApiGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsHttpApiGatewayStackInput) GetTarget() *AwsHttpApiGateway {
+func (x *AwsHttpApiGatewayIacInput) GetTarget() *AwsHttpApiGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsHttpApiGatewayStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsHttpApiGatewayIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awshttpapigateway_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awshttpapigateway/v1alpha1/input.proto\x12*dev.planton.aws.awshttpapigateway.v1alpha1\x1a0catalog/aws/awshttpapigateway/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc1\x01\n" +
-	"\x1bAwsHttpApiGatewayStackInput\x12U\n" +
+	"2catalog/aws/awshttpapigateway/v1alpha1/input.proto\x12*dev.planton.aws.awshttpapigateway.v1alpha1\x1a0catalog/aws/awshttpapigateway/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbf\x01\n" +
+	"\x19AwsHttpApiGatewayIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.aws.awshttpapigateway.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_goTypes = []any{
-	(*AwsHttpApiGatewayStackInput)(nil), // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackInput
-	(*AwsHttpApiGateway)(nil),           // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway
-	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsHttpApiGatewayIacInput)(nil), // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayIacInput
+	(*AwsHttpApiGateway)(nil),         // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway
+	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awshttpapigateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackInput.target:type_name -> dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway
-	2, // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayIacInput.target:type_name -> dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGateway
+	2, // 1: dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMssqlElasticPoolStackOutputs** captures the outputs of
+// **AzureMssqlElasticPoolOutputs** captures the outputs of
 // provisioning an Azure SQL elastic pool.
 //
 // `elastic_pool_id` is the join seam databases attach through:
 // AzureMssqlDatabase.elastic_pool_id defaults to referencing it.
-type AzureMssqlElasticPoolStackOutputs struct {
+type AzureMssqlElasticPoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the elastic pool.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{server}/elasticPools/{name}
@@ -38,20 +38,20 @@ type AzureMssqlElasticPoolStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureMssqlElasticPoolStackOutputs) Reset() {
-	*x = AzureMssqlElasticPoolStackOutputs{}
+func (x *AzureMssqlElasticPoolOutputs) Reset() {
+	*x = AzureMssqlElasticPoolOutputs{}
 	mi := &file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMssqlElasticPoolStackOutputs) String() string {
+func (x *AzureMssqlElasticPoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMssqlElasticPoolStackOutputs) ProtoMessage() {}
+func (*AzureMssqlElasticPoolOutputs) ProtoMessage() {}
 
-func (x *AzureMssqlElasticPoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMssqlElasticPoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureMssqlElasticPoolStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMssqlElasticPoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMssqlElasticPoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMssqlElasticPoolOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMssqlElasticPoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMssqlElasticPoolStackOutputs) GetElasticPoolId() string {
+func (x *AzureMssqlElasticPoolOutputs) GetElasticPoolId() string {
 	if x != nil {
 		return x.ElasticPoolId
 	}
 	return ""
 }
 
-func (x *AzureMssqlElasticPoolStackOutputs) GetElasticPoolName() string {
+func (x *AzureMssqlElasticPoolOutputs) GetElasticPoolName() string {
 	if x != nil {
 		return x.ElasticPoolName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azuremssqlelasticpool/v1alpha1/outputs.proto\x120dev.planton.azure.azuremssqlelasticpool.v1alpha1\"w\n" +
-	"!AzureMssqlElasticPoolStackOutputs\x12&\n" +
+	":catalog/azure/azuremssqlelasticpool/v1alpha1/outputs.proto\x120dev.planton.azure.azuremssqlelasticpool.v1alpha1\"r\n" +
+	"\x1cAzureMssqlElasticPoolOutputs\x12&\n" +
 	"\x0felastic_pool_id\x18\x01 \x01(\tR\relasticPoolId\x12*\n" +
 	"\x11elastic_pool_name\x18\x02 \x01(\tR\x0felasticPoolNameB\x92\x03\n" +
 	"4com.dev.planton.azure.azuremssqlelasticpool.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azuremssqlelasticpool/v1alpha1;azuremssqlelasticpoolv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azuremssqlelasticpool.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azuremssqlelasticpool\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azuremssqlelasticpool\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azuremssqlelasticpool::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMssqlElasticPoolStackOutputs)(nil), // 0: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStackOutputs
+	(*AzureMssqlElasticPoolOutputs)(nil), // 0: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolOutputs
 }
 var file_catalog_azure_azuremssqlelasticpool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

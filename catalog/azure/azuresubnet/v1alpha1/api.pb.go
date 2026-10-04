@@ -34,7 +34,7 @@ type AzureSubnet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureSubnetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureSubnet) GetKind() string {
 	return ""
 }
 
-func (x *AzureSubnet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureSubnet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureSubnet) GetStatus() *AzureSubnetStatus {
 // AzureSubnetStatus holds the deployment status and outputs.
 type AzureSubnetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureSubnetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureSubnetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureSubnetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuresubnet_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureSubnetStatus) GetOutputs() *AzureSubnetStackOutputs {
+func (x *AzureSubnetStatus) GetOutputs() *AzureSubnetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azuresubnet_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAzureSubnetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStatusR\x06status\"n\n" +
-	"\x11AzureSubnetStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackOutputsR\aoutputsB\xc8\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStatusR\x06status\"i\n" +
+	"\x11AzureSubnetStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetOutputsR\aoutputsB\xc8\x02\n" +
 	"*com.dev.planton.azure.azuresubnet.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/azure/azuresubnet/v1alpha1;azuresubnetv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Azure.Azuresubnet.V1alpha1\xca\x02&Dev\\Planton\\Azure\\Azuresubnet\\V1alpha1\xe2\x022Dev\\Planton\\Azure\\Azuresubnet\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Azure::Azuresubnet::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_azure_azuresubnet_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_azure_azuresubnet_v1alpha1_api_proto_goTypes = []any{
 	(*AzureSubnet)(nil),                  // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet
 	(*AzureSubnetStatus)(nil),            // 1: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureSubnetSpec)(nil),              // 3: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetSpec
-	(*AzureSubnetStackOutputs)(nil),      // 4: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackOutputs
+	(*AzureSubnetOutputs)(nil),           // 4: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetOutputs
 }
 var file_catalog_azure_azuresubnet_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet.spec:type_name -> dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetSpec
 	1, // 2: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnet.status:type_name -> dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStatus
-	4, // 3: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStatus.outputs:type_name -> dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackOutputs
+	4, // 3: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStatus.outputs:type_name -> dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

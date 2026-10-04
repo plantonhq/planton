@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustAccessServiceTokenStackInput is the input to the IaC module.
+// CloudflareZeroTrustAccessServiceTokenIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareZeroTrustAccessServiceTokenStackInput struct {
+type CloudflareZeroTrustAccessServiceTokenIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *CloudflareZeroTrustAccessServiceToken `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareZeroTrustAccessServiceTokenStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackInput) Reset() {
-	*x = CloudflareZeroTrustAccessServiceTokenStackInput{}
+func (x *CloudflareZeroTrustAccessServiceTokenIacInput) Reset() {
+	*x = CloudflareZeroTrustAccessServiceTokenIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackInput) String() string {
+func (x *CloudflareZeroTrustAccessServiceTokenIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustAccessServiceTokenStackInput) ProtoMessage() {}
+func (*CloudflareZeroTrustAccessServiceTokenIacInput) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustAccessServiceTokenIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareZeroTrustAccessServiceTokenStackInput) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustAccessServiceTokenStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustAccessServiceTokenStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustAccessServiceTokenIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustAccessServiceTokenIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackInput) GetTarget() *CloudflareZeroTrustAccessServiceToken {
+func (x *CloudflareZeroTrustAccessServiceTokenIacInput) GetTarget() *CloudflareZeroTrustAccessServiceToken {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareZeroTrustAccessServiceTokenIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Mcatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/input.proto\x12Edev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1\x1aKcatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\x93\x02\n" +
-	"/CloudflareZeroTrustAccessServiceTokenStackInput\x12\x84\x01\n" +
+	"Mcatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/input.proto\x12Edev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1\x1aKcatalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\x91\x02\n" +
+	"-CloudflareZeroTrustAccessServiceTokenIacInput\x12\x84\x01\n" +
 	"\x06target\x18\x01 \x01(\v2l.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\x9f\x04\n" +
 	"Icom.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_inpu
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessServiceTokenStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackInput
-	(*CloudflareZeroTrustAccessServiceToken)(nil),           // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken
-	(*cloudflare.CloudflareProviderConfig)(nil),             // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareZeroTrustAccessServiceTokenIacInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenIacInput
+	(*CloudflareZeroTrustAccessServiceToken)(nil),         // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken
+	(*cloudflare.CloudflareProviderConfig)(nil),           // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken
-	2, // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenIacInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken
+	2, // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

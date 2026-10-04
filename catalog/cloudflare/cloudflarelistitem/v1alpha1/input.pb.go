@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-list-item stack-input
-type CloudflareListItemStackInput struct {
+// cloudflare-list-item iac-input
+type CloudflareListItemIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareListItem `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareListItemStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareListItemStackInput) Reset() {
-	*x = CloudflareListItemStackInput{}
+func (x *CloudflareListItemIacInput) Reset() {
+	*x = CloudflareListItemIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareListItemStackInput) String() string {
+func (x *CloudflareListItemIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareListItemStackInput) ProtoMessage() {}
+func (*CloudflareListItemIacInput) ProtoMessage() {}
 
-func (x *CloudflareListItemStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareListItemIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareListItemStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareListItemStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareListItemStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareListItemIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareListItemIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareListItemStackInput) GetTarget() *CloudflareListItem {
+func (x *CloudflareListItemIacInput) GetTarget() *CloudflareListItem {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareListItemStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareListItemIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto protoreflect
 
 const file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/cloudflare/cloudflarelistitem/v1alpha1/input.proto\x122dev.planton.cloudflare.cloudflarelistitem.v1alpha1\x1a8catalog/cloudflare/cloudflarelistitem/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xd9\x01\n" +
-	"\x1cCloudflareListItemStackInput\x12^\n" +
+	":catalog/cloudflare/cloudflarelistitem/v1alpha1/input.proto\x122dev.planton.cloudflare.cloudflarelistitem.v1alpha1\x1a8catalog/cloudflare/cloudflarelistitem/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xd7\x01\n" +
+	"\x1aCloudflareListItemIacInput\x12^\n" +
 	"\x06target\x18\x01 \x01(\v2F.dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"6com.dev.planton.cloudflare.cloudflarelistitem.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareListItemStackInput)(nil),        // 0: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemStackInput
+	(*CloudflareListItemIacInput)(nil),          // 0: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemIacInput
 	(*CloudflareListItem)(nil),                  // 1: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItem
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarelistitem_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemStackInput.target:type_name -> dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItem
-	2, // 1: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemIacInput.target:type_name -> dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItem
+	2, // 1: dev.planton.cloudflare.cloudflarelistitem.v1alpha1.CloudflareListItemIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

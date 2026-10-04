@@ -28,7 +28,7 @@ type GcpHaVpnConnection struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpHaVpnConnectionSpec       `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpHaVpnConnectionStatus     `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpHaVpnConnection) GetKind() string {
 	return ""
 }
 
-func (x *GcpHaVpnConnection) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpHaVpnConnection) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpHaVpnConnection) GetStatus() *GcpHaVpnConnectionStatus {
 }
 
 type GcpHaVpnConnectionStatus struct {
-	state         protoimpl.MessageState          `protogen:"open.v1"`
-	Outputs       *GcpHaVpnConnectionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Outputs       *GcpHaVpnConnectionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpHaVpnConnectionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcphavpnconnection_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpHaVpnConnectionStatus) GetOutputs() *GcpHaVpnConnectionStackOutputs {
+func (x *GcpHaVpnConnectionStatus) GetOutputs() *GcpHaVpnConnectionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12GcpHaVpnConnectionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatusR\x06status\"\x81\x01\n" +
-	"\x18GcpHaVpnConnectionStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatusR\x06status\"|\n" +
+	"\x18GcpHaVpnConnectionStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.gcp.gcphavpnconnection.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcphavpnconnection/v1alpha1;gcphavpnconnectionv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcphavpnconnection.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcphavpnconnection\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcphavpnconnection\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcphavpnconnection::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcphavpnconnection_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_api_proto_goTypes = []any{
-	(*GcpHaVpnConnection)(nil),             // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnection
-	(*GcpHaVpnConnectionStatus)(nil),       // 1: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpHaVpnConnectionSpec)(nil),         // 3: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec
-	(*GcpHaVpnConnectionStackOutputs)(nil), // 4: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStackOutputs
+	(*GcpHaVpnConnection)(nil),           // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnection
+	(*GcpHaVpnConnectionStatus)(nil),     // 1: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpHaVpnConnectionSpec)(nil),       // 3: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec
+	(*GcpHaVpnConnectionOutputs)(nil),    // 4: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionOutputs
 }
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnection.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnection.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnection.spec:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec
 	1, // 2: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnection.status:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatus
-	4, // 3: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatus.outputs:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStackOutputs
+	4, // 3: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionStatus.outputs:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

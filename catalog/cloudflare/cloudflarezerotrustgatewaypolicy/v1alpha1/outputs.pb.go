@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustGatewayPolicyStackOutputs captures the observable outputs
+// CloudflareZeroTrustGatewayPolicyOutputs captures the observable outputs
 // after creating a Gateway policy.
-type CloudflareZeroTrustGatewayPolicyStackOutputs struct {
+type CloudflareZeroTrustGatewayPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The UUID of the created policy.
 	PolicyId string `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareZeroTrustGatewayPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustGatewayPolicyStackOutputs) Reset() {
-	*x = CloudflareZeroTrustGatewayPolicyStackOutputs{}
+func (x *CloudflareZeroTrustGatewayPolicyOutputs) Reset() {
+	*x = CloudflareZeroTrustGatewayPolicyOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustGatewayPolicyStackOutputs) String() string {
+func (x *CloudflareZeroTrustGatewayPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustGatewayPolicyStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustGatewayPolicyOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustGatewayPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustGatewayPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareZeroTrustGatewayPolicyStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustGatewayPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustGatewayPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustGatewayPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustGatewayPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustGatewayPolicyStackOutputs) GetPolicyId() string {
+func (x *CloudflareZeroTrustGatewayPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustGatewayPolicyStackOutputs) GetPrecedence() string {
+func (x *CloudflareZeroTrustGatewayPolicyOutputs) GetPrecedence() string {
 	if x != nil {
 		return x.Precedence
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_pr
 
 const file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/cloudflare/cloudflarezerotrustgatewaypolicy/v1alpha1/outputs.proto\x12@dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1\"k\n" +
-	",CloudflareZeroTrustGatewayPolicyStackOutputs\x12\x1b\n" +
+	"Jcatalog/cloudflare/cloudflarezerotrustgatewaypolicy/v1alpha1/outputs.proto\x12@dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1\"f\n" +
+	"'CloudflareZeroTrustGatewayPolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x1e\n" +
 	"\n" +
 	"precedence\x18\x02 \x01(\tR\n" +
@@ -104,7 +104,7 @@ func file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_p
 
 var file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustGatewayPolicyStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStackOutputs
+	(*CloudflareZeroTrustGatewayPolicyOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFunctionAppStackOutputs** captures the outputs of provisioning an
+// **AzureFunctionAppOutputs** captures the outputs of provisioning an
 // Azure Linux Function App.
 //
 // The primary output is `function_app_id`, the ARM resource ID. The
@@ -40,7 +40,7 @@ const (
 // **Leaf resource**: Nothing references AzureFunctionApp outputs downstream.
 // These outputs are consumed by users, infra chart visibility, and external
 // DNS/domain configuration.
-type AzureFunctionAppStackOutputs struct {
+type AzureFunctionAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Function App.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/sites/{name}
@@ -98,20 +98,20 @@ type AzureFunctionAppStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *AzureFunctionAppStackOutputs) Reset() {
-	*x = AzureFunctionAppStackOutputs{}
+func (x *AzureFunctionAppOutputs) Reset() {
+	*x = AzureFunctionAppOutputs{}
 	mi := &file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFunctionAppStackOutputs) String() string {
+func (x *AzureFunctionAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFunctionAppStackOutputs) ProtoMessage() {}
+func (*AzureFunctionAppOutputs) ProtoMessage() {}
 
-func (x *AzureFunctionAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFunctionAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -123,82 +123,82 @@ func (x *AzureFunctionAppStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFunctionAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFunctionAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFunctionAppOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFunctionAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFunctionAppStackOutputs) GetFunctionAppId() string {
+func (x *AzureFunctionAppOutputs) GetFunctionAppId() string {
 	if x != nil {
 		return x.FunctionAppId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetDefaultHostname() string {
+func (x *AzureFunctionAppOutputs) GetDefaultHostname() string {
 	if x != nil {
 		return x.DefaultHostname
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetOutboundIpAddresses() []string {
+func (x *AzureFunctionAppOutputs) GetOutboundIpAddresses() []string {
 	if x != nil {
 		return x.OutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureFunctionAppStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureFunctionAppOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetIdentityTenantId() string {
+func (x *AzureFunctionAppOutputs) GetIdentityTenantId() string {
 	if x != nil {
 		return x.IdentityTenantId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetCustomDomainVerificationId() string {
+func (x *AzureFunctionAppOutputs) GetCustomDomainVerificationId() string {
 	if x != nil {
 		return x.CustomDomainVerificationId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetKind() string {
+func (x *AzureFunctionAppOutputs) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetPossibleOutboundIpAddresses() []string {
+func (x *AzureFunctionAppOutputs) GetPossibleOutboundIpAddresses() []string {
 	if x != nil {
 		return x.PossibleOutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureFunctionAppStackOutputs) GetHostingEnvironmentId() string {
+func (x *AzureFunctionAppOutputs) GetHostingEnvironmentId() string {
 	if x != nil {
 		return x.HostingEnvironmentId
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetSiteCredentialName() string {
+func (x *AzureFunctionAppOutputs) GetSiteCredentialName() string {
 	if x != nil {
 		return x.SiteCredentialName
 	}
 	return ""
 }
 
-func (x *AzureFunctionAppStackOutputs) GetSiteCredentialPassword() string {
+func (x *AzureFunctionAppOutputs) GetSiteCredentialPassword() string {
 	if x != nil {
 		return x.SiteCredentialPassword
 	}
@@ -209,8 +209,8 @@ var File_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azurefunctionapp/v1alpha1/outputs.proto\x12+dev.planton.azure.azurefunctionapp.v1alpha1\x1a\x1cshared/options/options.proto\"\xcb\x04\n" +
-	"\x1cAzureFunctionAppStackOutputs\x12&\n" +
+	"5catalog/azure/azurefunctionapp/v1alpha1/outputs.proto\x12+dev.planton.azure.azurefunctionapp.v1alpha1\x1a\x1cshared/options/options.proto\"\xc6\x04\n" +
+	"\x17AzureFunctionAppOutputs\x12&\n" +
 	"\x0ffunction_app_id\x18\x01 \x01(\tR\rfunctionAppId\x12)\n" +
 	"\x10default_hostname\x18\x02 \x01(\tR\x0fdefaultHostname\x122\n" +
 	"\x15outbound_ip_addresses\x18\x03 \x03(\tR\x13outboundIpAddresses\x122\n" +
@@ -239,7 +239,7 @@ func file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFunctionAppStackOutputs)(nil), // 0: dev.planton.azure.azurefunctionapp.v1alpha1.AzureFunctionAppStackOutputs
+	(*AzureFunctionAppOutputs)(nil), // 0: dev.planton.azure.azurefunctionapp.v1alpha1.AzureFunctionAppOutputs
 }
 var file_catalog_azure_azurefunctionapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

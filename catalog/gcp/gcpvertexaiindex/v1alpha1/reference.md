@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpVertexAiIndexSpec defines a Vertex AI Vector Search index — the
 data structure that holds embedding vectors and answers
@@ -155,7 +155,7 @@ never reports it back on read, so out-of-band loads show up as a
 one-field diff on the next plan.
 
 A plain string (not a reference) because the gs:// directory URI
-has no matching stack output shape on the GCS kinds; compose by
+has no matching output shape on the GCS kinds; compose by
 writing the bucket name into the URI.
 
 - rule: contents_delta_uri must be a Cloud Storage directory URI starting with gs://

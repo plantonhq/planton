@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupRestoreTestingPlanStackInput is the input for the IaC
+// AwsBackupRestoreTestingPlanIacInput is the input for the IaC
 // modules that manage an AWS Backup restore testing plan.
-type AwsBackupRestoreTestingPlanStackInput struct {
+type AwsBackupRestoreTestingPlanIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBackupRestoreTestingPlan resource to deploy.
 	Target *AwsBackupRestoreTestingPlan `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBackupRestoreTestingPlanStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBackupRestoreTestingPlanStackInput) Reset() {
-	*x = AwsBackupRestoreTestingPlanStackInput{}
+func (x *AwsBackupRestoreTestingPlanIacInput) Reset() {
+	*x = AwsBackupRestoreTestingPlanIacInput{}
 	mi := &file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupRestoreTestingPlanStackInput) String() string {
+func (x *AwsBackupRestoreTestingPlanIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupRestoreTestingPlanStackInput) ProtoMessage() {}
+func (*AwsBackupRestoreTestingPlanIacInput) ProtoMessage() {}
 
-func (x *AwsBackupRestoreTestingPlanStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupRestoreTestingPlanIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBackupRestoreTestingPlanStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupRestoreTestingPlanStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBackupRestoreTestingPlanStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupRestoreTestingPlanIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBackupRestoreTestingPlanIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupRestoreTestingPlanStackInput) GetTarget() *AwsBackupRestoreTestingPlan {
+func (x *AwsBackupRestoreTestingPlanIacInput) GetTarget() *AwsBackupRestoreTestingPlan {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBackupRestoreTestingPlanStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBackupRestoreTestingPlanIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto protorefle
 
 const file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/aws/awsbackuprestoretestingplan/v1alpha1/input.proto\x124dev.planton.aws.awsbackuprestoretestingplan.v1alpha1\x1a:catalog/aws/awsbackuprestoretestingplan/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdf\x01\n" +
-	"%AwsBackupRestoreTestingPlanStackInput\x12i\n" +
+	"<catalog/aws/awsbackuprestoretestingplan/v1alpha1/input.proto\x124dev.planton.aws.awsbackuprestoretestingplan.v1alpha1\x1a:catalog/aws/awsbackuprestoretestingplan/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdd\x01\n" +
+	"#AwsBackupRestoreTestingPlanIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"8com.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBackupRestoreTestingPlanStackInput)(nil), // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackInput
-	(*AwsBackupRestoreTestingPlan)(nil),           // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan
-	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBackupRestoreTestingPlanIacInput)(nil), // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanIacInput
+	(*AwsBackupRestoreTestingPlan)(nil),         // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan
+	(*aws.AwsProviderConfig)(nil),               // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackInput.target:type_name -> dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan
-	2, // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanIacInput.target:type_name -> dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan
+	2, // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

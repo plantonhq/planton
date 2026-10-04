@@ -36,7 +36,7 @@ type AzureEventgridNamespace struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventgridNamespaceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureEventgridNamespace) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventgridNamespace) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventgridNamespace) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,10 +114,10 @@ func (x *AzureEventgridNamespace) GetStatus() *AzureEventgridNamespaceStatus {
 // Event Grid namespace deployment.
 type AzureEventgridNamespaceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-eventgrid-namespace stack-outputs
-	Outputs       *AzureEventgridNamespaceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-eventgrid-namespace outputs
+	Outputs       *AzureEventgridNamespaceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +152,7 @@ func (*AzureEventgridNamespaceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgridnamespace_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventgridNamespaceStatus) GetOutputs() *AzureEventgridNamespaceStackOutputs {
+func (x *AzureEventgridNamespaceStatus) GetOutputs() *AzureEventgridNamespaceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -170,11 +170,11 @@ const file_catalog_azure_azureeventgridnamespace_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzureEventgridNamespaceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzureEventgridNamespaceStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzureEventgridNamespaceStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azureeventgridnamespace.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azureeventgridnamespace/v1alpha1;azureeventgridnamespacev1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azureeventgridnamespace.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azureeventgridnamespace\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azureeventgridnamespace\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azureeventgridnamespace::V1alpha1b\x06proto3"
 
 var (
@@ -191,17 +191,17 @@ func file_catalog_azure_azureeventgridnamespace_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azureeventgridnamespace_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventgridnamespace_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventgridNamespace)(nil),             // 0: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespace
-	(*AzureEventgridNamespaceStatus)(nil),       // 1: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventgridNamespaceSpec)(nil),         // 3: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceSpec
-	(*AzureEventgridNamespaceStackOutputs)(nil), // 4: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStackOutputs
+	(*AzureEventgridNamespace)(nil),        // 0: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespace
+	(*AzureEventgridNamespaceStatus)(nil),  // 1: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventgridNamespaceSpec)(nil),    // 3: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceSpec
+	(*AzureEventgridNamespaceOutputs)(nil), // 4: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceOutputs
 }
 var file_catalog_azure_azureeventgridnamespace_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespace.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespace.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespace.spec:type_name -> dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceSpec
 	1, // 2: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespace.status:type_name -> dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatus
-	4, // 3: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatus.outputs:type_name -> dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStackOutputs
+	4, // 3: dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceStatus.outputs:type_name -> dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -31,7 +31,7 @@ type AwsIamInstanceProfile struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsIamInstanceProfileSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsIamInstanceProfile) GetKind() string {
 	return ""
 }
 
-func (x *AwsIamInstanceProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsIamInstanceProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsIamInstanceProfile) GetStatus() *AwsIamInstanceProfileStatus {
 // aws-iam-instance-profile status
 type AwsIamInstanceProfileStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsIamInstanceProfileStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsIamInstanceProfileOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsIamInstanceProfileStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiaminstanceprofile_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsIamInstanceProfileStatus) GetOutputs() *AwsIamInstanceProfileStackOutputs {
+func (x *AwsIamInstanceProfileStatus) GetOutputs() *AwsIamInstanceProfileOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsiaminstanceprofile_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AwsIamInstanceProfileR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatusR\x06status\"\x8a\x01\n" +
-	"\x1bAwsIamInstanceProfileStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatusR\x06status\"\x85\x01\n" +
+	"\x1bAwsIamInstanceProfileStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.aws.awsiaminstanceprofile.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awsiaminstanceprofile/v1alpha1;awsiaminstanceprofilev1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awsiaminstanceprofile.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awsiaminstanceprofile\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awsiaminstanceprofile\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awsiaminstanceprofile::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsiaminstanceprofile_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsiaminstanceprofile_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsiaminstanceprofile_v1alpha1_api_proto_goTypes = []any{
-	(*AwsIamInstanceProfile)(nil),             // 0: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfile
-	(*AwsIamInstanceProfileStatus)(nil),       // 1: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsIamInstanceProfileSpec)(nil),         // 3: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileSpec
-	(*AwsIamInstanceProfileStackOutputs)(nil), // 4: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStackOutputs
+	(*AwsIamInstanceProfile)(nil),        // 0: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfile
+	(*AwsIamInstanceProfileStatus)(nil),  // 1: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsIamInstanceProfileSpec)(nil),    // 3: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileSpec
+	(*AwsIamInstanceProfileOutputs)(nil), // 4: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileOutputs
 }
 var file_catalog_aws_awsiaminstanceprofile_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfile.spec:type_name -> dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileSpec
 	1, // 2: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfile.status:type_name -> dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatus
-	4, // 3: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatus.outputs:type_name -> dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStackOutputs
+	4, // 3: dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileStatus.outputs:type_name -> dev.planton.aws.awsiaminstanceprofile.v1alpha1.AwsIamInstanceProfileOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

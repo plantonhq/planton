@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareIpAccessRuleStackOutputs captures the observable outputs after
+// CloudflareIpAccessRuleOutputs captures the observable outputs after
 // creating an IP Access rule.
-type CloudflareIpAccessRuleStackOutputs struct {
+type CloudflareIpAccessRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the created rule.
 	RuleId string `protobuf:"bytes,1,opt,name=rule_id,json=ruleId,proto3" json:"rule_id,omitempty"`
@@ -37,20 +37,20 @@ type CloudflareIpAccessRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareIpAccessRuleStackOutputs) Reset() {
-	*x = CloudflareIpAccessRuleStackOutputs{}
+func (x *CloudflareIpAccessRuleOutputs) Reset() {
+	*x = CloudflareIpAccessRuleOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareIpAccessRuleStackOutputs) String() string {
+func (x *CloudflareIpAccessRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareIpAccessRuleStackOutputs) ProtoMessage() {}
+func (*CloudflareIpAccessRuleOutputs) ProtoMessage() {}
 
-func (x *CloudflareIpAccessRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareIpAccessRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *CloudflareIpAccessRuleStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareIpAccessRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareIpAccessRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareIpAccessRuleOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareIpAccessRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareIpAccessRuleStackOutputs) GetRuleId() string {
+func (x *CloudflareIpAccessRuleOutputs) GetRuleId() string {
 	if x != nil {
 		return x.RuleId
 	}
 	return ""
 }
 
-func (x *CloudflareIpAccessRuleStackOutputs) GetZoneId() string {
+func (x *CloudflareIpAccessRuleOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareIpAccessRuleStackOutputs) GetAccountId() string {
+func (x *CloudflareIpAccessRuleOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
@@ -92,8 +92,8 @@ var File_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto protor
 
 const file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/cloudflare/cloudflareipaccessrule/v1alpha1/outputs.proto\x126dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1\"u\n" +
-	"\"CloudflareIpAccessRuleStackOutputs\x12\x17\n" +
+	"@catalog/cloudflare/cloudflareipaccessrule/v1alpha1/outputs.proto\x126dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1\"p\n" +
+	"\x1dCloudflareIpAccessRuleOutputs\x12\x17\n" +
 	"\arule_id\x18\x01 \x01(\tR\x06ruleId\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12\x1d\n" +
 	"\n" +
@@ -114,7 +114,7 @@ func file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareIpAccessRuleStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackOutputs
+	(*CloudflareIpAccessRuleOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleOutputs
 }
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsApiGatewayAccountSettingsStackInput is the input for the IaC
+// AwsApiGatewayAccountSettingsIacInput is the input for the IaC
 // modules that manage the region's API Gateway account settings.
-type AwsApiGatewayAccountSettingsStackInput struct {
+type AwsApiGatewayAccountSettingsIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsApiGatewayAccountSettings resource to deploy.
 	Target *AwsApiGatewayAccountSettings `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsApiGatewayAccountSettingsStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsApiGatewayAccountSettingsStackInput) Reset() {
-	*x = AwsApiGatewayAccountSettingsStackInput{}
+func (x *AwsApiGatewayAccountSettingsIacInput) Reset() {
+	*x = AwsApiGatewayAccountSettingsIacInput{}
 	mi := &file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsApiGatewayAccountSettingsStackInput) String() string {
+func (x *AwsApiGatewayAccountSettingsIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsApiGatewayAccountSettingsStackInput) ProtoMessage() {}
+func (*AwsApiGatewayAccountSettingsIacInput) ProtoMessage() {}
 
-func (x *AwsApiGatewayAccountSettingsStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsApiGatewayAccountSettingsIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsApiGatewayAccountSettingsStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsApiGatewayAccountSettingsStackInput.ProtoReflect.Descriptor instead.
-func (*AwsApiGatewayAccountSettingsStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsApiGatewayAccountSettingsIacInput.ProtoReflect.Descriptor instead.
+func (*AwsApiGatewayAccountSettingsIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsApiGatewayAccountSettingsStackInput) GetTarget() *AwsApiGatewayAccountSettings {
+func (x *AwsApiGatewayAccountSettingsIacInput) GetTarget() *AwsApiGatewayAccountSettings {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsApiGatewayAccountSettingsStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsApiGatewayAccountSettingsIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto protorefl
 
 const file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsapigatewayaccountsettings/v1alpha1/input.proto\x125dev.planton.aws.awsapigatewayaccountsettings.v1alpha1\x1a;catalog/aws/awsapigatewayaccountsettings/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe2\x01\n" +
-	"&AwsApiGatewayAccountSettingsStackInput\x12k\n" +
+	"=catalog/aws/awsapigatewayaccountsettings/v1alpha1/input.proto\x125dev.planton.aws.awsapigatewayaccountsettings.v1alpha1\x1a;catalog/aws/awsapigatewayaccountsettings/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe0\x01\n" +
+	"$AwsApiGatewayAccountSettingsIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	"9com.dev.planton.aws.awsapigatewayaccountsettings.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_rawDescG
 
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_goTypes = []any{
-	(*AwsApiGatewayAccountSettingsStackInput)(nil), // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackInput
-	(*AwsApiGatewayAccountSettings)(nil),           // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings
-	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsApiGatewayAccountSettingsIacInput)(nil), // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsIacInput
+	(*AwsApiGatewayAccountSettings)(nil),         // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings
+	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackInput.target:type_name -> dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings
-	2, // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsIacInput.target:type_name -> dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettings
+	2, // 1: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

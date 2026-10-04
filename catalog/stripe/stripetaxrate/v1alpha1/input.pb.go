@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeTaxRateStackInput is the input to the StripeTaxRate IaC module.
+// StripeTaxRateIacInput is the input to the StripeTaxRate IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeTaxRateStackInput struct {
+type StripeTaxRateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeTaxRate resource to be deployed.
 	Target *StripeTaxRate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeTaxRateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeTaxRateStackInput) Reset() {
-	*x = StripeTaxRateStackInput{}
+func (x *StripeTaxRateIacInput) Reset() {
+	*x = StripeTaxRateIacInput{}
 	mi := &file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeTaxRateStackInput) String() string {
+func (x *StripeTaxRateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeTaxRateStackInput) ProtoMessage() {}
+func (*StripeTaxRateIacInput) ProtoMessage() {}
 
-func (x *StripeTaxRateStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeTaxRateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeTaxRateStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeTaxRateStackInput.ProtoReflect.Descriptor instead.
-func (*StripeTaxRateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeTaxRateIacInput.ProtoReflect.Descriptor instead.
+func (*StripeTaxRateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeTaxRateStackInput) GetTarget() *StripeTaxRate {
+func (x *StripeTaxRateIacInput) GetTarget() *StripeTaxRate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeTaxRateStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeTaxRateIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripetaxrate_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/stripe/stripetaxrate/v1alpha1/input.proto\x12)dev.planton.stripe.stripetaxrate.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a/catalog/stripe/stripetaxrate/v1alpha1/api.proto\"\xbe\x01\n" +
-	"\x17StripeTaxRateStackInput\x12P\n" +
+	"1catalog/stripe/stripetaxrate/v1alpha1/input.proto\x12)dev.planton.stripe.stripetaxrate.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a/catalog/stripe/stripetaxrate/v1alpha1/api.proto\"\xbc\x01\n" +
+	"\x15StripeTaxRateIacInput\x12P\n" +
 	"\x06target\x18\x01 \x01(\v28.dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xde\x02\n" +
 	"-com.dev.planton.stripe.stripetaxrate.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_goTypes = []any{
-	(*StripeTaxRateStackInput)(nil),     // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStackInput
+	(*StripeTaxRateIacInput)(nil),       // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateIacInput
 	(*StripeTaxRate)(nil),               // 1: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate
 	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripetaxrate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStackInput.target:type_name -> dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate
-	2, // 1: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateIacInput.target:type_name -> dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate
+	2, // 1: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

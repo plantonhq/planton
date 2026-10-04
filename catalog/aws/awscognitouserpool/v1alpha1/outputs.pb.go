@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCognitoUserPoolStackOutputs captures observable identifiers and endpoints
+// AwsCognitoUserPoolOutputs captures observable identifiers and endpoints
 // from a provisioned Cognito User Pool. Downstream resources (app clients,
 // identity providers, resource servers, JWT authorizers, ALB authentication
 // actions) wire their dependencies from these values via StringValueOrRef.
-type AwsCognitoUserPoolStackOutputs struct {
+type AwsCognitoUserPoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The user pool identifier. Primary reference used in SDK calls, IAM policies,
 	// and as the user_pool_id input for app clients, identity providers, and
@@ -71,20 +71,20 @@ type AwsCognitoUserPoolStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) Reset() {
-	*x = AwsCognitoUserPoolStackOutputs{}
+func (x *AwsCognitoUserPoolOutputs) Reset() {
+	*x = AwsCognitoUserPoolOutputs{}
 	mi := &file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) String() string {
+func (x *AwsCognitoUserPoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCognitoUserPoolStackOutputs) ProtoMessage() {}
+func (*AwsCognitoUserPoolOutputs) ProtoMessage() {}
 
-func (x *AwsCognitoUserPoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCognitoUserPoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,68 +96,68 @@ func (x *AwsCognitoUserPoolStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCognitoUserPoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCognitoUserPoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCognitoUserPoolOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCognitoUserPoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetUserPoolId() string {
+func (x *AwsCognitoUserPoolOutputs) GetUserPoolId() string {
 	if x != nil {
 		return x.UserPoolId
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetUserPoolArn() string {
+func (x *AwsCognitoUserPoolOutputs) GetUserPoolArn() string {
 	if x != nil {
 		return x.UserPoolArn
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetUserPoolEndpoint() string {
+func (x *AwsCognitoUserPoolOutputs) GetUserPoolEndpoint() string {
 	if x != nil {
 		return x.UserPoolEndpoint
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetIssuer() string {
+func (x *AwsCognitoUserPoolOutputs) GetIssuer() string {
 	if x != nil {
 		return x.Issuer
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetUserPoolDomain() string {
+func (x *AwsCognitoUserPoolOutputs) GetUserPoolDomain() string {
 	if x != nil {
 		return x.UserPoolDomain
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetHostedUiUrl() string {
+func (x *AwsCognitoUserPoolOutputs) GetHostedUiUrl() string {
 	if x != nil {
 		return x.HostedUiUrl
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetCloudfrontDistribution() string {
+func (x *AwsCognitoUserPoolOutputs) GetCloudfrontDistribution() string {
 	if x != nil {
 		return x.CloudfrontDistribution
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetCloudfrontDistributionArn() string {
+func (x *AwsCognitoUserPoolOutputs) GetCloudfrontDistributionArn() string {
 	if x != nil {
 		return x.CloudfrontDistributionArn
 	}
 	return ""
 }
 
-func (x *AwsCognitoUserPoolStackOutputs) GetCloudfrontHostedZoneId() string {
+func (x *AwsCognitoUserPoolOutputs) GetCloudfrontHostedZoneId() string {
 	if x != nil {
 		return x.CloudfrontHostedZoneId
 	}
@@ -168,8 +168,8 @@ var File_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awscognitouserpool/v1alpha1/outputs.proto\x12+dev.planton.aws.awscognitouserpool.v1alpha1\"\xae\x03\n" +
-	"\x1eAwsCognitoUserPoolStackOutputs\x12 \n" +
+	"5catalog/aws/awscognitouserpool/v1alpha1/outputs.proto\x12+dev.planton.aws.awscognitouserpool.v1alpha1\"\xa9\x03\n" +
+	"\x19AwsCognitoUserPoolOutputs\x12 \n" +
 	"\fuser_pool_id\x18\x01 \x01(\tR\n" +
 	"userPoolId\x12\"\n" +
 	"\ruser_pool_arn\x18\x02 \x01(\tR\vuserPoolArn\x12,\n" +
@@ -196,7 +196,7 @@ func file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCognitoUserPoolStackOutputs)(nil), // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackOutputs
+	(*AwsCognitoUserPoolOutputs)(nil), // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolOutputs
 }
 var file_catalog_aws_awscognitouserpool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

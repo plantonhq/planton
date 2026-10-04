@@ -31,7 +31,7 @@ type AwsRedshiftServerlessWorkgroup struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsRedshiftServerlessWorkgroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsRedshiftServerlessWorkgroup) GetKind() string {
 	return ""
 }
 
-func (x *AwsRedshiftServerlessWorkgroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRedshiftServerlessWorkgroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsRedshiftServerlessWorkgroup) GetStatus() *AwsRedshiftServerlessWorkg
 // aws-redshift-serverless-workgroup status
 type AwsRedshiftServerlessWorkgroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsRedshiftServerlessWorkgroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsRedshiftServerlessWorkgroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsRedshiftServerlessWorkgroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStatus) GetOutputs() *AwsRedshiftServerlessWorkgroupStackOutputs {
+func (x *AwsRedshiftServerlessWorkgroupStatus) GetOutputs() *AwsRedshiftServerlessWorkgroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_api_proto_rawDesc
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eAwsRedshiftServerlessWorkgroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
 	"\x04spec\x18\x04 \x01(\v2[.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatusR\x06status\"\xa5\x01\n" +
-	"$AwsRedshiftServerlessWorkgroupStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2].dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatusR\x06status\"\xa0\x01\n" +
+	"$AwsRedshiftServerlessWorkgroupStatus\x12x\n" +
+	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputsR\aoutputsB\xc1\x03\n" +
 	";com.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1B\bApiProtoP\x01Zwgithub.com/plantonhq/planton/catalog/aws/awsredshiftserverlessworkgroup/v1alpha1;awsredshiftserverlessworkgroupv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Aws.Awsredshiftserverlessworkgroup.V1alpha1\xca\x027Dev\\Planton\\Aws\\Awsredshiftserverlessworkgroup\\V1alpha1\xe2\x02CDev\\Planton\\Aws\\Awsredshiftserverlessworkgroup\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Aws::Awsredshiftserverlessworkgroup::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_api_proto_rawDescG
 
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_api_proto_goTypes = []any{
-	(*AwsRedshiftServerlessWorkgroup)(nil),             // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup
-	(*AwsRedshiftServerlessWorkgroupStatus)(nil),       // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsRedshiftServerlessWorkgroupSpec)(nil),         // 3: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupSpec
-	(*AwsRedshiftServerlessWorkgroupStackOutputs)(nil), // 4: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs
+	(*AwsRedshiftServerlessWorkgroup)(nil),        // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup
+	(*AwsRedshiftServerlessWorkgroupStatus)(nil),  // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsRedshiftServerlessWorkgroupSpec)(nil),    // 3: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupSpec
+	(*AwsRedshiftServerlessWorkgroupOutputs)(nil), // 4: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs
 }
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup.spec:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupSpec
 	1, // 2: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroup.status:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatus
-	4, // 3: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatus.outputs:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs
+	4, // 3: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStatus.outputs:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

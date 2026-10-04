@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubClusterStackOutputs** captures the outputs of
+// **AzureEventHubClusterOutputs** captures the outputs of
 // provisioning a dedicated Event Hubs cluster.
-type AzureEventHubClusterStackOutputs struct {
+type AzureEventHubClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the cluster -- what an
 	// AzureEventHubNamespace's dedicated_cluster_id references to place
@@ -36,20 +36,20 @@ type AzureEventHubClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureEventHubClusterStackOutputs) Reset() {
-	*x = AzureEventHubClusterStackOutputs{}
+func (x *AzureEventHubClusterOutputs) Reset() {
+	*x = AzureEventHubClusterOutputs{}
 	mi := &file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubClusterStackOutputs) String() string {
+func (x *AzureEventHubClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubClusterStackOutputs) ProtoMessage() {}
+func (*AzureEventHubClusterOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureEventHubClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubClusterStackOutputs) GetClusterId() string {
+func (x *AzureEventHubClusterOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *AzureEventHubClusterStackOutputs) GetClusterName() string {
+func (x *AzureEventHubClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureeventhubcluster/v1alpha1/outputs.proto\x12/dev.planton.azure.azureeventhubcluster.v1alpha1\"d\n" +
-	" AzureEventHubClusterStackOutputs\x12\x1d\n" +
+	"9catalog/azure/azureeventhubcluster/v1alpha1/outputs.proto\x12/dev.planton.azure.azureeventhubcluster.v1alpha1\"_\n" +
+	"\x1bAzureEventHubClusterOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterNameB\x8b\x03\n" +
@@ -105,7 +105,7 @@ func file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubClusterStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubcluster.v1alpha1.AzureEventHubClusterStackOutputs
+	(*AzureEventHubClusterOutputs)(nil), // 0: dev.planton.azure.azureeventhubcluster.v1alpha1.AzureEventHubClusterOutputs
 }
 var file_catalog_azure_azureeventhubcluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

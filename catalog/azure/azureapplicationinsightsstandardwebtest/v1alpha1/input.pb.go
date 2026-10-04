@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureApplicationInsightsStandardWebTestStackInput is the input to the IaC
+// AzureApplicationInsightsStandardWebTestIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureApplicationInsightsStandardWebTestStackInput struct {
+type AzureApplicationInsightsStandardWebTestIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The standard web test resource to deploy.
 	Target *AzureApplicationInsightsStandardWebTest `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureApplicationInsightsStandardWebTestStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackInput) Reset() {
-	*x = AzureApplicationInsightsStandardWebTestStackInput{}
+func (x *AzureApplicationInsightsStandardWebTestIacInput) Reset() {
+	*x = AzureApplicationInsightsStandardWebTestIacInput{}
 	mi := &file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackInput) String() string {
+func (x *AzureApplicationInsightsStandardWebTestIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureApplicationInsightsStandardWebTestStackInput) ProtoMessage() {}
+func (*AzureApplicationInsightsStandardWebTestIacInput) ProtoMessage() {}
 
-func (x *AzureApplicationInsightsStandardWebTestStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureApplicationInsightsStandardWebTestIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureApplicationInsightsStandardWebTestStackInput) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureApplicationInsightsStandardWebTestStackInput.ProtoReflect.Descriptor instead.
-func (*AzureApplicationInsightsStandardWebTestStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureApplicationInsightsStandardWebTestIacInput.ProtoReflect.Descriptor instead.
+func (*AzureApplicationInsightsStandardWebTestIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackInput) GetTarget() *AzureApplicationInsightsStandardWebTest {
+func (x *AzureApplicationInsightsStandardWebTestIacInput) GetTarget() *AzureApplicationInsightsStandardWebTest {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureApplicationInsightsStandardWebTestIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_pr
 
 const file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/input.proto\x12Bdev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1\x1aHcatalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8a\x02\n" +
-	"1AzureApplicationInsightsStandardWebTestStackInput\x12\x83\x01\n" +
+	"Jcatalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/input.proto\x12Bdev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1\x1aHcatalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x88\x02\n" +
+	"/AzureApplicationInsightsStandardWebTestIacInput\x12\x83\x01\n" +
 	"\x06target\x18\x01 \x01(\v2k.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x8f\x04\n" +
 	"Fcom.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_p
 
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_goTypes = []any{
-	(*AzureApplicationInsightsStandardWebTestStackInput)(nil), // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackInput
-	(*AzureApplicationInsightsStandardWebTest)(nil),           // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest
-	(*azure.AzureProviderConfig)(nil),                         // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureApplicationInsightsStandardWebTestIacInput)(nil), // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestIacInput
+	(*AzureApplicationInsightsStandardWebTest)(nil),         // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest
+	(*azure.AzureProviderConfig)(nil),                       // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackInput.target:type_name -> dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest
-	2, // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestIacInput.target:type_name -> dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest
+	2, // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

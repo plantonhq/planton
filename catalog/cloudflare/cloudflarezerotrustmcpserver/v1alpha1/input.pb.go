@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustMcpServerStackInput is the input to the IaC module.
+// CloudflareZeroTrustMcpServerIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareZeroTrustMcpServerStackInput struct {
+type CloudflareZeroTrustMcpServerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *CloudflareZeroTrustMcpServer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareZeroTrustMcpServerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustMcpServerStackInput) Reset() {
-	*x = CloudflareZeroTrustMcpServerStackInput{}
+func (x *CloudflareZeroTrustMcpServerIacInput) Reset() {
+	*x = CloudflareZeroTrustMcpServerIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustMcpServerStackInput) String() string {
+func (x *CloudflareZeroTrustMcpServerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustMcpServerStackInput) ProtoMessage() {}
+func (*CloudflareZeroTrustMcpServerIacInput) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustMcpServerStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustMcpServerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareZeroTrustMcpServerStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustMcpServerStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustMcpServerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustMcpServerIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustMcpServerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustMcpServerStackInput) GetTarget() *CloudflareZeroTrustMcpServer {
+func (x *CloudflareZeroTrustMcpServerIacInput) GetTarget() *CloudflareZeroTrustMcpServer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareZeroTrustMcpServerStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareZeroTrustMcpServerIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto pr
 
 const file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1/input.proto\x12<dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1\x1aBcatalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf7\x01\n" +
-	"&CloudflareZeroTrustMcpServerStackInput\x12r\n" +
+	"Dcatalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1/input.proto\x12<dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1\x1aBcatalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf5\x01\n" +
+	"$CloudflareZeroTrustMcpServerIacInput\x12r\n" +
 	"\x06target\x18\x01 \x01(\v2Z.dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xdf\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_r
 
 var file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareZeroTrustMcpServerStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerStackInput
-	(*CloudflareZeroTrustMcpServer)(nil),           // 1: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServer
-	(*cloudflare.CloudflareProviderConfig)(nil),    // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareZeroTrustMcpServerIacInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerIacInput
+	(*CloudflareZeroTrustMcpServer)(nil),         // 1: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServer
+	(*cloudflare.CloudflareProviderConfig)(nil),  // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerStackInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServer
-	2, // 1: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerIacInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServer
+	2, // 1: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

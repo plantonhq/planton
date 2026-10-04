@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azuremachinelearningcomputeinstance
 spec:
@@ -32,7 +32,7 @@ spec:
       exclusions:
         - hours while the instance is stopped bill no VM hours -- the spec carries no schedule or idle-shutdown field, so the estimate assumes 24x7 running and stopping is the out-of-band savings lever
         - network egress follows what the workstation's code moves
-        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components
+        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own kinds
       notes: The instance runs in its workspace's region -- a reference these rules cannot read, so prices assume eastus.
     - preset: 02-private-instance
       region_assumption: eastus
@@ -52,5 +52,5 @@ spec:
       exclusions:
         - hours while the instance is stopped bill no VM hours -- the spec carries no schedule or idle-shutdown field, so the estimate assumes 24x7 running and stopping is the out-of-band savings lever
         - network egress follows what the workstation's code moves
-        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components
+        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own kinds
       notes: The instance runs in its workspace's region -- a reference these rules cannot read, so prices assume eastus.

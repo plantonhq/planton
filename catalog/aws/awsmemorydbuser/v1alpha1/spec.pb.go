@@ -49,7 +49,7 @@ const (
 //   - `access_string` and the authentication mode update in place — tightening
 //     permissions or rotating passwords never recreates the user.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsMemorydbUserSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the user is created. MemoryDB users are regional

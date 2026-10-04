@@ -37,7 +37,7 @@ type AzureManagedRedisAccessPolicyAssignment struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureManagedRedisAccessPolicyAssignmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureManagedRedisAccessPolicyAssignment) GetKind() string {
 	return ""
 }
 
-func (x *AzureManagedRedisAccessPolicyAssignment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureManagedRedisAccessPolicyAssignment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,8 +115,8 @@ func (x *AzureManagedRedisAccessPolicyAssignment) GetStatus() *AzureManagedRedis
 // status and outputs.
 type AzureManagedRedisAccessPolicyAssignmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureManagedRedisAccessPolicyAssignmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureManagedRedisAccessPolicyAssignmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*AzureManagedRedisAccessPolicyAssignmentStatus) Descriptor() ([]byte, []in
 	return file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureManagedRedisAccessPolicyAssignmentStatus) GetOutputs() *AzureManagedRedisAccessPolicyAssignmentStackOutputs {
+func (x *AzureManagedRedisAccessPolicyAssignmentStatus) GetOutputs() *AzureManagedRedisAccessPolicyAssignmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_api_pr
 	"apiVersion\x12B\n" +
 	"\x04kind\x18\x02 \x01(\tB.\xbaH+r)\n" +
 	"'AzureManagedRedisAccessPolicyAssignmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8b\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8b\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2o.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x89\x01\n" +
-	"\x06status\x18\x05 \x01(\v2q.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatusR\x06status\"\xc3\x01\n" +
-	"-AzureManagedRedisAccessPolicyAssignmentStatus\x12\x91\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2w.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStackOutputsR\aoutputsB\x8d\x04\n" +
+	"\x06status\x18\x05 \x01(\v2q.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatusR\x06status\"\xbe\x01\n" +
+	"-AzureManagedRedisAccessPolicyAssignmentStatus\x12\x8c\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2r.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentOutputsR\aoutputsB\x8d\x04\n" +
 	"Fcom.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1B\bApiProtoP\x01Z\x8b\x01github.com/plantonhq/planton/catalog/azure/azuremanagedredisaccesspolicyassignment/v1alpha1;azuremanagedredisaccesspolicyassignmentv1alpha1\xa2\x02\x04DPAA\xaa\x02BDev.Planton.Azure.Azuremanagedredisaccesspolicyassignment.V1alpha1\xca\x02BDev\\Planton\\Azure\\Azuremanagedredisaccesspolicyassignment\\V1alpha1\xe2\x02NDev\\Planton\\Azure\\Azuremanagedredisaccesspolicyassignment\\V1alpha1\\GPBMetadata\xea\x02FDev::Planton::Azure::Azuremanagedredisaccesspolicyassignment::V1alpha1b\x06proto3"
 
 var (
@@ -190,17 +190,17 @@ func file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_api_pro
 
 var file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_api_proto_goTypes = []any{
-	(*AzureManagedRedisAccessPolicyAssignment)(nil),             // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment
-	(*AzureManagedRedisAccessPolicyAssignmentStatus)(nil),       // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatus
-	(*shared.CloudResourceMetadata)(nil),                        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureManagedRedisAccessPolicyAssignmentSpec)(nil),         // 3: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentSpec
-	(*AzureManagedRedisAccessPolicyAssignmentStackOutputs)(nil), // 4: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStackOutputs
+	(*AzureManagedRedisAccessPolicyAssignment)(nil),        // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment
+	(*AzureManagedRedisAccessPolicyAssignmentStatus)(nil),  // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatus
+	(*shared.CatalogObjectMetadata)(nil),                   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureManagedRedisAccessPolicyAssignmentSpec)(nil),    // 3: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentSpec
+	(*AzureManagedRedisAccessPolicyAssignmentOutputs)(nil), // 4: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentOutputs
 }
 var file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment.spec:type_name -> dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentSpec
 	1, // 2: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment.status:type_name -> dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatus
-	4, // 3: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatus.outputs:type_name -> dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStackOutputs
+	4, // 3: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStatus.outputs:type_name -> dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

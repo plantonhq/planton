@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-eks-fargate-profile stack-input
-type AwsEksFargateProfileStackInput struct {
+// aws-eks-fargate-profile iac-input
+type AwsEksFargateProfileIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsEksFargateProfile `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsEksFargateProfileStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsEksFargateProfileStackInput) Reset() {
-	*x = AwsEksFargateProfileStackInput{}
+func (x *AwsEksFargateProfileIacInput) Reset() {
+	*x = AwsEksFargateProfileIacInput{}
 	mi := &file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEksFargateProfileStackInput) String() string {
+func (x *AwsEksFargateProfileIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEksFargateProfileStackInput) ProtoMessage() {}
+func (*AwsEksFargateProfileIacInput) ProtoMessage() {}
 
-func (x *AwsEksFargateProfileStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsEksFargateProfileIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsEksFargateProfileStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEksFargateProfileStackInput.ProtoReflect.Descriptor instead.
-func (*AwsEksFargateProfileStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEksFargateProfileIacInput.ProtoReflect.Descriptor instead.
+func (*AwsEksFargateProfileIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEksFargateProfileStackInput) GetTarget() *AwsEksFargateProfile {
+func (x *AwsEksFargateProfileIacInput) GetTarget() *AwsEksFargateProfile {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsEksFargateProfileStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsEksFargateProfileIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awseksfargateprofile_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awseksfargateprofile/v1alpha1/input.proto\x12-dev.planton.aws.awseksfargateprofile.v1alpha1\x1a3catalog/aws/awseksfargateprofile/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsEksFargateProfileStackInput\x12[\n" +
+	"5catalog/aws/awseksfargateprofile/v1alpha1/input.proto\x12-dev.planton.aws.awseksfargateprofile.v1alpha1\x1a3catalog/aws/awseksfargateprofile/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsEksFargateProfileIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awseksfargateprofile.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_goTypes = []any{
-	(*AwsEksFargateProfileStackInput)(nil), // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackInput
-	(*AwsEksFargateProfile)(nil),           // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsEksFargateProfileIacInput)(nil), // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileIacInput
+	(*AwsEksFargateProfile)(nil),         // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awseksfargateprofile_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackInput.target:type_name -> dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile
-	2, // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileIacInput.target:type_name -> dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile
+	2, // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

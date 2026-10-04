@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CostClass classifies a provider or component by its E2E testing cost profile.
-// Used by the CI scheduler to determine which test lane a component runs in
+// CostClass classifies a provider or kind by its E2E testing cost profile.
+// Used by the CI scheduler to determine which test lane a kind runs in
 // and by budget controls to cap cloud spend.
 type CostClass int32
 

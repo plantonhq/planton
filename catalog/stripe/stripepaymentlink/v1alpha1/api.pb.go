@@ -61,12 +61,12 @@ type StripePaymentLink struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripePaymentLink" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the prices sold, what the page collects, and what follows payment.
 	Spec *StripePaymentLinkSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the link as created, populated after deployment.
@@ -119,7 +119,7 @@ func (x *StripePaymentLink) GetKind() string {
 	return ""
 }
 
-func (x *StripePaymentLink) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripePaymentLink) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -144,8 +144,8 @@ func (x *StripePaymentLink) GetStatus() *StripePaymentLinkStatus {
 // Populated by the deployment system.
 type StripePaymentLinkStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the link's id, public address, and whether it is active.
-	Outputs       *StripePaymentLinkStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the link's id, public address, and whether it is active.
+	Outputs       *StripePaymentLinkOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -180,7 +180,7 @@ func (*StripePaymentLinkStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentlink_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripePaymentLinkStatus) GetOutputs() *StripePaymentLinkStackOutputs {
+func (x *StripePaymentLinkStatus) GetOutputs() *StripePaymentLinkOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -198,11 +198,11 @@ const file_catalog_stripe_stripepaymentlink_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11StripePaymentLinkR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12^\n" +
-	"\x06status\x18\x05 \x01(\v2F.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatusR\x06status\"\x81\x01\n" +
-	"\x17StripePaymentLinkStatus\x12f\n" +
-	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackOutputsR\aoutputsB\xf8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2F.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatusR\x06status\"|\n" +
+	"\x17StripePaymentLinkStatus\x12a\n" +
+	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkOutputsR\aoutputsB\xf8\x02\n" +
 	"1com.dev.planton.stripe.stripepaymentlink.v1alpha1B\bApiProtoP\x01Z`github.com/plantonhq/planton/catalog/stripe/stripepaymentlink/v1alpha1;stripepaymentlinkv1alpha1\xa2\x02\x04DPSS\xaa\x02-Dev.Planton.Stripe.Stripepaymentlink.V1alpha1\xca\x02-Dev\\Planton\\Stripe\\Stripepaymentlink\\V1alpha1\xe2\x029Dev\\Planton\\Stripe\\Stripepaymentlink\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Stripe::Stripepaymentlink::V1alpha1b\x06proto3"
 
 var (
@@ -219,17 +219,17 @@ func file_catalog_stripe_stripepaymentlink_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_stripe_stripepaymentlink_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripepaymentlink_v1alpha1_api_proto_goTypes = []any{
-	(*StripePaymentLink)(nil),             // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink
-	(*StripePaymentLinkStatus)(nil),       // 1: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripePaymentLinkSpec)(nil),         // 3: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkSpec
-	(*StripePaymentLinkStackOutputs)(nil), // 4: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackOutputs
+	(*StripePaymentLink)(nil),            // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink
+	(*StripePaymentLinkStatus)(nil),      // 1: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripePaymentLinkSpec)(nil),        // 3: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkSpec
+	(*StripePaymentLinkOutputs)(nil),     // 4: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkOutputs
 }
 var file_catalog_stripe_stripepaymentlink_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink.spec:type_name -> dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkSpec
 	1, // 2: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink.status:type_name -> dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatus
-	4, // 3: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatus.outputs:type_name -> dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackOutputs
+	4, // 3: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStatus.outputs:type_name -> dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

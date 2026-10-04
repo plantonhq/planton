@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudComposerEnvironmentStackOutputs captures observable identifiers and
+// GcpCloudComposerEnvironmentOutputs captures observable identifiers and
 // endpoints from a provisioned Cloud Composer environment.
-type GcpCloudComposerEnvironmentStackOutputs struct {
+type GcpCloudComposerEnvironmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified resource ID of the Composer environment.
 	// Format: projects/{project}/locations/{region}/environments/{name}
@@ -44,20 +44,20 @@ type GcpCloudComposerEnvironmentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) Reset() {
-	*x = GcpCloudComposerEnvironmentStackOutputs{}
+func (x *GcpCloudComposerEnvironmentOutputs) Reset() {
+	*x = GcpCloudComposerEnvironmentOutputs{}
 	mi := &file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) String() string {
+func (x *GcpCloudComposerEnvironmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudComposerEnvironmentStackOutputs) ProtoMessage() {}
+func (*GcpCloudComposerEnvironmentOutputs) ProtoMessage() {}
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudComposerEnvironmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *GcpCloudComposerEnvironmentStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudComposerEnvironmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudComposerEnvironmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudComposerEnvironmentOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudComposerEnvironmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) GetEnvironmentId() string {
+func (x *GcpCloudComposerEnvironmentOutputs) GetEnvironmentId() string {
 	if x != nil {
 		return x.EnvironmentId
 	}
 	return ""
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) GetEnvironmentName() string {
+func (x *GcpCloudComposerEnvironmentOutputs) GetEnvironmentName() string {
 	if x != nil {
 		return x.EnvironmentName
 	}
 	return ""
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) GetAirflowUri() string {
+func (x *GcpCloudComposerEnvironmentOutputs) GetAirflowUri() string {
 	if x != nil {
 		return x.AirflowUri
 	}
 	return ""
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) GetDagGcsPrefix() string {
+func (x *GcpCloudComposerEnvironmentOutputs) GetDagGcsPrefix() string {
 	if x != nil {
 		return x.DagGcsPrefix
 	}
 	return ""
 }
 
-func (x *GcpCloudComposerEnvironmentStackOutputs) GetGkeCluster() string {
+func (x *GcpCloudComposerEnvironmentOutputs) GetGkeCluster() string {
 	if x != nil {
 		return x.GkeCluster
 	}
@@ -113,8 +113,8 @@ var File_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto protoref
 
 const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/gcp/gcpcloudcomposerenvironment/v1alpha1/outputs.proto\x124dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1\"\xe3\x01\n" +
-	"'GcpCloudComposerEnvironmentStackOutputs\x12%\n" +
+	">catalog/gcp/gcpcloudcomposerenvironment/v1alpha1/outputs.proto\x124dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1\"\xde\x01\n" +
+	"\"GcpCloudComposerEnvironmentOutputs\x12%\n" +
 	"\x0eenvironment_id\x18\x01 \x01(\tR\renvironmentId\x12)\n" +
 	"\x10environment_name\x18\x02 \x01(\tR\x0fenvironmentName\x12\x1f\n" +
 	"\vairflow_uri\x18\x03 \x01(\tR\n" +
@@ -138,7 +138,7 @@ func file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudComposerEnvironmentStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentStackOutputs
+	(*GcpCloudComposerEnvironmentOutputs)(nil), // 0: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentOutputs
 }
 var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

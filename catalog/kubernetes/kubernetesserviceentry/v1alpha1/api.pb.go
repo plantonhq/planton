@@ -33,7 +33,7 @@ type KubernetesServiceEntry struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesServiceEntrySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesServiceEntry) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesServiceEntry) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesServiceEntry) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesServiceEntry) GetStatus() *KubernetesServiceEntryStatus {
 // KubernetesServiceEntryStatus holds the deployment status and outputs.
 type KubernetesServiceEntryStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesServiceEntryStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesServiceEntryOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesServiceEntryStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesServiceEntryStatus) GetOutputs() *KubernetesServiceEntryStackOutputs {
+func (x *KubernetesServiceEntryStatus) GetOutputs() *KubernetesServiceEntryOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16KubernetesServiceEntryR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntrySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatusR\x06status\"\x94\x01\n" +
-	"\x1cKubernetesServiceEntryStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatusR\x06status\"\x8f\x01\n" +
+	"\x1cKubernetesServiceEntryStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesserviceentry.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kubernetesserviceentry/v1alpha1;kubernetesserviceentryv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kubernetesserviceentry.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kubernetesserviceentry\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kubernetesserviceentry\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kubernetesserviceentry::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesServiceEntry)(nil),             // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry
-	(*KubernetesServiceEntryStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesServiceEntrySpec)(nil),         // 3: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntrySpec
-	(*KubernetesServiceEntryStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackOutputs
+	(*KubernetesServiceEntry)(nil),        // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry
+	(*KubernetesServiceEntryStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesServiceEntrySpec)(nil),    // 3: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntrySpec
+	(*KubernetesServiceEntryOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryOutputs
 }
 var file_catalog_kubernetes_kubernetesserviceentry_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry.spec:type_name -> dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntrySpec
 	1, // 2: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntry.status:type_name -> dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatus
-	4, // 3: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntryOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

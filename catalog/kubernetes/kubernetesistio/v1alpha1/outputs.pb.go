@@ -22,14 +22,14 @@ const (
 )
 
 // *
-// KubernetesIstioStackOutputs captures the handles downstream resources compose
+// KubernetesIstioOutputs captures the handles downstream resources compose
 // against once the Istio control plane is installed:
 //   - Gateway API Gateways select the mesh through `gateway_class_name`,
 //   - mesh policy kinds (PeerAuthentication, AuthorizationPolicy, ...) target
 //     workloads whose proxies this control plane programs,
 //   - multi-revision setups discover the control-plane identity through
 //     `revision` and `istiod_service_name`.
-type KubernetesIstioStackOutputs struct {
+type KubernetesIstioOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the control plane is installed in (e.g. "istio-system").
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -56,20 +56,20 @@ type KubernetesIstioStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesIstioStackOutputs) Reset() {
-	*x = KubernetesIstioStackOutputs{}
+func (x *KubernetesIstioOutputs) Reset() {
+	*x = KubernetesIstioOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIstioStackOutputs) String() string {
+func (x *KubernetesIstioOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIstioStackOutputs) ProtoMessage() {}
+func (*KubernetesIstioOutputs) ProtoMessage() {}
 
-func (x *KubernetesIstioStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIstioOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *KubernetesIstioStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIstioStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesIstioStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIstioOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesIstioOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIstioStackOutputs) GetNamespace() string {
+func (x *KubernetesIstioOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesIstioStackOutputs) GetIstiodServiceName() string {
+func (x *KubernetesIstioOutputs) GetIstiodServiceName() string {
 	if x != nil {
 		return x.IstiodServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesIstioStackOutputs) GetRevision() string {
+func (x *KubernetesIstioOutputs) GetRevision() string {
 	if x != nil {
 		return x.Revision
 	}
 	return ""
 }
 
-func (x *KubernetesIstioStackOutputs) GetGatewayClassName() string {
+func (x *KubernetesIstioOutputs) GetGatewayClassName() string {
 	if x != nil {
 		return x.GatewayClassName
 	}
 	return ""
 }
 
-func (x *KubernetesIstioStackOutputs) GetTrustDomain() string {
+func (x *KubernetesIstioOutputs) GetTrustDomain() string {
 	if x != nil {
 		return x.TrustDomain
 	}
 	return ""
 }
 
-func (x *KubernetesIstioStackOutputs) GetDataplaneMode() string {
+func (x *KubernetesIstioOutputs) GetDataplaneMode() string {
 	if x != nil {
 		return x.DataplaneMode
 	}
@@ -132,8 +132,8 @@ var File_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesistio/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetesistio.v1alpha1\"\xff\x01\n" +
-	"\x1bKubernetesIstioStackOutputs\x12\x1c\n" +
+	"9catalog/kubernetes/kubernetesistio/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetesistio.v1alpha1\"\xfa\x01\n" +
+	"\x16KubernetesIstioOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12.\n" +
 	"\x13istiod_service_name\x18\x02 \x01(\tR\x11istiodServiceName\x12\x1a\n" +
 	"\brevision\x18\x03 \x01(\tR\brevision\x12,\n" +
@@ -156,7 +156,7 @@ func file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesIstioStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioStackOutputs
+	(*KubernetesIstioOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesistio.v1alpha1.KubernetesIstioOutputs
 }
 var file_catalog_kubernetes_kubernetesistio_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

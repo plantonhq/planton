@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcostestimate/v1/api.proto
+// source: finops/catalogkindcostestimate/v1/api.proto
 
-package componentcostestimatev1
+package catalogkindcostestimatev1
 
 import (
 	shared "github.com/plantonhq/planton/shared"
@@ -22,13 +22,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentCostEstimate carries a component's per-preset monthly cost
+// CatalogKindCostEstimate carries a kind's per-preset monthly cost
 // estimates at published list prices. It is the VOLATILE half of cost
-// knowledge: the component's cost.yaml declares WHAT bills (the stable
+// knowledge: the kind's cost.yaml declares WHAT bills (the stable
 // shape); this document declares what those meters cost TODAY, priced from
 // the providers' published list prices. Prices churn, so these documents
-// live centrally under catalog/_pricing/estimates/ (one file per component,
-// filename = component directory name) rather than beside the component.
+// live centrally under catalog/_pricing/estimates/ (one file per kind,
+// filename = kind directory name) rather than beside the kind.
 // Follows the KRM pattern (apiVersion + kind + metadata + spec).
 //
 // Honesty contract: every priced line carries the source URL and retrieval
@@ -42,7 +42,7 @@ const (
 // Example:
 //
 //	apiVersion: finops.planton.dev/v1
-//	kind: ComponentCostEstimate
+//	kind: CatalogKindCostEstimate
 //	metadata:
 //	  name: awsalb
 //	spec:
@@ -64,31 +64,31 @@ const (
 //	      total_list_cost: "16.4250"
 //	      exclusions:
 //	        - LCU usage (traffic-dependent)
-type ComponentCostEstimate struct {
+type CatalogKindCostEstimate struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Spec          *ComponentCostEstimateSpec    `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Spec          *CatalogKindCostEstimateSpec  `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCostEstimate) Reset() {
-	*x = ComponentCostEstimate{}
-	mi := &file_finops_componentcostestimate_v1_api_proto_msgTypes[0]
+func (x *CatalogKindCostEstimate) Reset() {
+	*x = CatalogKindCostEstimate{}
+	mi := &file_finops_catalogkindcostestimate_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCostEstimate) String() string {
+func (x *CatalogKindCostEstimate) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCostEstimate) ProtoMessage() {}
+func (*CatalogKindCostEstimate) ProtoMessage() {}
 
-func (x *ComponentCostEstimate) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimate_v1_api_proto_msgTypes[0]
+func (x *CatalogKindCostEstimate) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcostestimate_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,73 +99,73 @@ func (x *ComponentCostEstimate) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCostEstimate.ProtoReflect.Descriptor instead.
-func (*ComponentCostEstimate) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimate_v1_api_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCostEstimate.ProtoReflect.Descriptor instead.
+func (*CatalogKindCostEstimate) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcostestimate_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCostEstimate) GetApiVersion() string {
+func (x *CatalogKindCostEstimate) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *ComponentCostEstimate) GetKind() string {
+func (x *CatalogKindCostEstimate) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *ComponentCostEstimate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CatalogKindCostEstimate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *ComponentCostEstimate) GetSpec() *ComponentCostEstimateSpec {
+func (x *CatalogKindCostEstimate) GetSpec() *CatalogKindCostEstimateSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-var File_finops_componentcostestimate_v1_api_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcostestimate_v1_api_proto protoreflect.FileDescriptor
 
-const file_finops_componentcostestimate_v1_api_proto_rawDesc = "" +
+const file_finops_catalogkindcostestimate_v1_api_proto_rawDesc = "" +
 	"\n" +
-	")finops/componentcostestimate/v1/api.proto\x12+dev.planton.finops.componentcostestimate.v1\x1a*finops/componentcostestimate/v1/spec.proto\x1a\x15shared/metadata.proto\"\xef\x01\n" +
-	"\x15ComponentCostEstimate\x12\x1f\n" +
+	"+finops/catalogkindcostestimate/v1/api.proto\x12-dev.planton.finops.catalogkindcostestimate.v1\x1a,finops/catalogkindcostestimate/v1/spec.proto\x1a\x15shared/metadata.proto\"\xf5\x01\n" +
+	"\x17CatalogKindCostEstimate\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12Z\n" +
-	"\x04spec\x18\x04 \x01(\v2F.dev.planton.finops.componentcostestimate.v1.ComponentCostEstimateSpecR\x04specB\xe2\x02\n" +
-	"/com.dev.planton.finops.componentcostestimate.v1B\bApiProtoP\x01ZTgithub.com/plantonhq/planton/finops/componentcostestimate/v1;componentcostestimatev1\xa2\x02\x04DPFC\xaa\x02+Dev.Planton.Finops.Componentcostestimate.V1\xca\x02+Dev\\Planton\\Finops\\Componentcostestimate\\V1\xe2\x027Dev\\Planton\\Finops\\Componentcostestimate\\V1\\GPBMetadata\xea\x02/Dev::Planton::Finops::Componentcostestimate::V1b\x06proto3"
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12^\n" +
+	"\x04spec\x18\x04 \x01(\v2J.dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimateSpecR\x04specB\xf0\x02\n" +
+	"1com.dev.planton.finops.catalogkindcostestimate.v1B\bApiProtoP\x01ZXgithub.com/plantonhq/planton/finops/catalogkindcostestimate/v1;catalogkindcostestimatev1\xa2\x02\x04DPFC\xaa\x02-Dev.Planton.Finops.Catalogkindcostestimate.V1\xca\x02-Dev\\Planton\\Finops\\Catalogkindcostestimate\\V1\xe2\x029Dev\\Planton\\Finops\\Catalogkindcostestimate\\V1\\GPBMetadata\xea\x021Dev::Planton::Finops::Catalogkindcostestimate::V1b\x06proto3"
 
 var (
-	file_finops_componentcostestimate_v1_api_proto_rawDescOnce sync.Once
-	file_finops_componentcostestimate_v1_api_proto_rawDescData []byte
+	file_finops_catalogkindcostestimate_v1_api_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcostestimate_v1_api_proto_rawDescData []byte
 )
 
-func file_finops_componentcostestimate_v1_api_proto_rawDescGZIP() []byte {
-	file_finops_componentcostestimate_v1_api_proto_rawDescOnce.Do(func() {
-		file_finops_componentcostestimate_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcostestimate_v1_api_proto_rawDesc), len(file_finops_componentcostestimate_v1_api_proto_rawDesc)))
+func file_finops_catalogkindcostestimate_v1_api_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcostestimate_v1_api_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcostestimate_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostestimate_v1_api_proto_rawDesc), len(file_finops_catalogkindcostestimate_v1_api_proto_rawDesc)))
 	})
-	return file_finops_componentcostestimate_v1_api_proto_rawDescData
+	return file_finops_catalogkindcostestimate_v1_api_proto_rawDescData
 }
 
-var file_finops_componentcostestimate_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_finops_componentcostestimate_v1_api_proto_goTypes = []any{
-	(*ComponentCostEstimate)(nil),        // 0: dev.planton.finops.componentcostestimate.v1.ComponentCostEstimate
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
-	(*ComponentCostEstimateSpec)(nil),    // 2: dev.planton.finops.componentcostestimate.v1.ComponentCostEstimateSpec
+var file_finops_catalogkindcostestimate_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_finops_catalogkindcostestimate_v1_api_proto_goTypes = []any{
+	(*CatalogKindCostEstimate)(nil),      // 0: dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimate
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
+	(*CatalogKindCostEstimateSpec)(nil),  // 2: dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimateSpec
 }
-var file_finops_componentcostestimate_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.finops.componentcostestimate.v1.ComponentCostEstimate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
-	2, // 1: dev.planton.finops.componentcostestimate.v1.ComponentCostEstimate.spec:type_name -> dev.planton.finops.componentcostestimate.v1.ComponentCostEstimateSpec
+var file_finops_catalogkindcostestimate_v1_api_proto_depIdxs = []int32{
+	1, // 0: dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
+	2, // 1: dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimate.spec:type_name -> dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimateSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -173,27 +173,27 @@ var file_finops_componentcostestimate_v1_api_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcostestimate_v1_api_proto_init() }
-func file_finops_componentcostestimate_v1_api_proto_init() {
-	if File_finops_componentcostestimate_v1_api_proto != nil {
+func init() { file_finops_catalogkindcostestimate_v1_api_proto_init() }
+func file_finops_catalogkindcostestimate_v1_api_proto_init() {
+	if File_finops_catalogkindcostestimate_v1_api_proto != nil {
 		return
 	}
-	file_finops_componentcostestimate_v1_spec_proto_init()
+	file_finops_catalogkindcostestimate_v1_spec_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcostestimate_v1_api_proto_rawDesc), len(file_finops_componentcostestimate_v1_api_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostestimate_v1_api_proto_rawDesc), len(file_finops_catalogkindcostestimate_v1_api_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcostestimate_v1_api_proto_goTypes,
-		DependencyIndexes: file_finops_componentcostestimate_v1_api_proto_depIdxs,
-		MessageInfos:      file_finops_componentcostestimate_v1_api_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcostestimate_v1_api_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcostestimate_v1_api_proto_depIdxs,
+		MessageInfos:      file_finops_catalogkindcostestimate_v1_api_proto_msgTypes,
 	}.Build()
-	File_finops_componentcostestimate_v1_api_proto = out.File
-	file_finops_componentcostestimate_v1_api_proto_goTypes = nil
-	file_finops_componentcostestimate_v1_api_proto_depIdxs = nil
+	File_finops_catalogkindcostestimate_v1_api_proto = out.File
+	file_finops_catalogkindcostestimate_v1_api_proto_goTypes = nil
+	file_finops_catalogkindcostestimate_v1_api_proto_depIdxs = nil
 }

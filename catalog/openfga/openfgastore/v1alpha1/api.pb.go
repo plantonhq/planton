@@ -61,12 +61,12 @@ type OpenFgaStore struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "OpenFgaStore" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the store within Planton
 	// - org: Organization that owns this store
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the OpenFGA store.
 	// Currently only the store name is configurable.
 	Spec *OpenFgaStoreSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -122,7 +122,7 @@ func (x *OpenFgaStore) GetKind() string {
 	return ""
 }
 
-func (x *OpenFgaStore) GetMetadata() *shared.CloudResourceMetadata {
+func (x *OpenFgaStore) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -147,10 +147,10 @@ func (x *OpenFgaStore) GetStatus() *OpenFgaStoreStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type OpenFgaStoreStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the OpenFGA store deployment.
+	// outputs contains the outputs from the OpenFGA store deployment.
 	// These values are populated after successful deployment and include
 	// the store identifier.
-	Outputs       *OpenFgaStoreStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *OpenFgaStoreOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -185,7 +185,7 @@ func (*OpenFgaStoreStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgastore_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *OpenFgaStoreStatus) GetOutputs() *OpenFgaStoreStackOutputs {
+func (x *OpenFgaStoreStatus) GetOutputs() *OpenFgaStoreOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -203,11 +203,11 @@ const file_catalog_openfga_openfgastore_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fOpenFgaStoreR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStatusR\x06status\"s\n" +
-	"\x12OpenFgaStoreStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackOutputsR\aoutputsB\xdb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStatusR\x06status\"n\n" +
+	"\x12OpenFgaStoreStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreOutputsR\aoutputsB\xdb\x02\n" +
 	"-com.dev.planton.openfga.openfgastore.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/openfga/openfgastore/v1alpha1;openfgastorev1alpha1\xa2\x02\x04DPOO\xaa\x02)Dev.Planton.Openfga.Openfgastore.V1alpha1\xca\x02)Dev\\Planton\\Openfga\\Openfgastore\\V1alpha1\xe2\x025Dev\\Planton\\Openfga\\Openfgastore\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Openfga::Openfgastore::V1alpha1b\x06proto3"
 
 var (
@@ -226,15 +226,15 @@ var file_catalog_openfga_openfgastore_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_openfga_openfgastore_v1alpha1_api_proto_goTypes = []any{
 	(*OpenFgaStore)(nil),                 // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore
 	(*OpenFgaStoreStatus)(nil),           // 1: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*OpenFgaStoreSpec)(nil),             // 3: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreSpec
-	(*OpenFgaStoreStackOutputs)(nil),     // 4: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackOutputs
+	(*OpenFgaStoreOutputs)(nil),          // 4: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreOutputs
 }
 var file_catalog_openfga_openfgastore_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore.spec:type_name -> dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreSpec
 	1, // 2: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStore.status:type_name -> dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStatus
-	4, // 3: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStatus.outputs:type_name -> dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackOutputs
+	4, // 3: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStatus.outputs:type_name -> dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

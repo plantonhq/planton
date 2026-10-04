@@ -31,7 +31,7 @@ type KubernetesClickHouse struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesClickHouseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesClickHouse) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesClickHouse) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesClickHouse) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesClickHouse) GetStatus() *KubernetesClickHouseStatus {
 // kubernetes-click-house status
 type KubernetesClickHouseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesClickHouseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesClickHouseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesClickHouseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesClickHouseStatus) GetOutputs() *KubernetesClickHouseStackOutputs {
+func (x *KubernetesClickHouseStatus) GetOutputs() *KubernetesClickHouseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14KubernetesClickHouseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatusR\x06status\"\x8e\x01\n" +
-	"\x1aKubernetesClickHouseStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatusR\x06status\"\x89\x01\n" +
+	"\x1aKubernetesClickHouseStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetesclickhouse.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesclickhouse/v1alpha1;kubernetesclickhousev1alpha1\xa2\x02\x04DPKK\xaa\x024Dev.Planton.Kubernetes.Kubernetesclickhouse.V1alpha1\xca\x024Dev\\Planton\\Kubernetes\\Kubernetesclickhouse\\V1alpha1\xe2\x02@Dev\\Planton\\Kubernetes\\Kubernetesclickhouse\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Kubernetes::Kubernetesclickhouse::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesClickHouse)(nil),             // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse
-	(*KubernetesClickHouseStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesClickHouseSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseSpec
-	(*KubernetesClickHouseStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackOutputs
+	(*KubernetesClickHouse)(nil),         // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse
+	(*KubernetesClickHouseStatus)(nil),   // 1: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesClickHouseSpec)(nil),     // 3: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseSpec
+	(*KubernetesClickHouseOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseOutputs
 }
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse.spec:type_name -> dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseSpec
 	1, // 2: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouse.status:type_name -> dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatus
-	4, // 3: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

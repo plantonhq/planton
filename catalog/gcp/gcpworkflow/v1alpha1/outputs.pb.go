@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Workflows workflow.
-type GcpWorkflowStackOutputs struct {
+type GcpWorkflowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full workflow resource name
 	// (projects/{project}/locations/{region}/workflows/{name}) — the value
@@ -43,20 +43,20 @@ type GcpWorkflowStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpWorkflowStackOutputs) Reset() {
-	*x = GcpWorkflowStackOutputs{}
+func (x *GcpWorkflowOutputs) Reset() {
+	*x = GcpWorkflowOutputs{}
 	mi := &file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpWorkflowStackOutputs) String() string {
+func (x *GcpWorkflowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpWorkflowStackOutputs) ProtoMessage() {}
+func (*GcpWorkflowOutputs) ProtoMessage() {}
 
-func (x *GcpWorkflowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpWorkflowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *GcpWorkflowStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpWorkflowStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpWorkflowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpWorkflowOutputs.ProtoReflect.Descriptor instead.
+func (*GcpWorkflowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpWorkflowStackOutputs) GetWorkflowId() string {
+func (x *GcpWorkflowOutputs) GetWorkflowId() string {
 	if x != nil {
 		return x.WorkflowId
 	}
 	return ""
 }
 
-func (x *GcpWorkflowStackOutputs) GetWorkflowName() string {
+func (x *GcpWorkflowOutputs) GetWorkflowName() string {
 	if x != nil {
 		return x.WorkflowName
 	}
 	return ""
 }
 
-func (x *GcpWorkflowStackOutputs) GetRevisionId() string {
+func (x *GcpWorkflowOutputs) GetRevisionId() string {
 	if x != nil {
 		return x.RevisionId
 	}
 	return ""
 }
 
-func (x *GcpWorkflowStackOutputs) GetState() string {
+func (x *GcpWorkflowOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -105,8 +105,8 @@ var File_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpworkflow/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpworkflow.v1alpha1\"\x96\x01\n" +
-	"\x17GcpWorkflowStackOutputs\x12\x1f\n" +
+	".catalog/gcp/gcpworkflow/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpworkflow.v1alpha1\"\x91\x01\n" +
+	"\x12GcpWorkflowOutputs\x12\x1f\n" +
 	"\vworkflow_id\x18\x01 \x01(\tR\n" +
 	"workflowId\x12#\n" +
 	"\rworkflow_name\x18\x02 \x01(\tR\fworkflowName\x12\x1f\n" +
@@ -129,7 +129,7 @@ func file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpWorkflowStackOutputs)(nil), // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStackOutputs
+	(*GcpWorkflowOutputs)(nil), // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowOutputs
 }
 var file_catalog_gcp_gcpworkflow_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureIpGroupStackOutputs** captures the outputs of provisioning an
+// **AzureIpGroupOutputs** captures the outputs of provisioning an
 // Azure IP Group.
-type AzureIpGroupStackOutputs struct {
+type AzureIpGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the IP Group. This is the composition
 	// seam: firewall policy rules (source_ip_groups / destination_ip_groups)
@@ -37,20 +37,20 @@ type AzureIpGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureIpGroupStackOutputs) Reset() {
-	*x = AzureIpGroupStackOutputs{}
+func (x *AzureIpGroupOutputs) Reset() {
+	*x = AzureIpGroupOutputs{}
 	mi := &file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureIpGroupStackOutputs) String() string {
+func (x *AzureIpGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureIpGroupStackOutputs) ProtoMessage() {}
+func (*AzureIpGroupOutputs) ProtoMessage() {}
 
-func (x *AzureIpGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureIpGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AzureIpGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureIpGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureIpGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureIpGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureIpGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureIpGroupStackOutputs) GetIpGroupId() string {
+func (x *AzureIpGroupOutputs) GetIpGroupId() string {
 	if x != nil {
 		return x.IpGroupId
 	}
 	return ""
 }
 
-func (x *AzureIpGroupStackOutputs) GetIpGroupName() string {
+func (x *AzureIpGroupOutputs) GetIpGroupName() string {
 	if x != nil {
 		return x.IpGroupName
 	}
@@ -85,8 +85,8 @@ var File_catalog_azure_azureipgroup_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/azure/azureipgroup/v1alpha1/outputs.proto\x12'dev.planton.azure.azureipgroup.v1alpha1\"^\n" +
-	"\x18AzureIpGroupStackOutputs\x12\x1e\n" +
+	"1catalog/azure/azureipgroup/v1alpha1/outputs.proto\x12'dev.planton.azure.azureipgroup.v1alpha1\"Y\n" +
+	"\x13AzureIpGroupOutputs\x12\x1e\n" +
 	"\vip_group_id\x18\x01 \x01(\tR\tipGroupId\x12\"\n" +
 	"\rip_group_name\x18\x02 \x01(\tR\vipGroupNameB\xd3\x02\n" +
 	"+com.dev.planton.azure.azureipgroup.v1alpha1B\fOutputsProtoP\x01ZUgithub.com/plantonhq/planton/catalog/azure/azureipgroup/v1alpha1;azureipgroupv1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Azure.Azureipgroup.V1alpha1\xca\x02'Dev\\Planton\\Azure\\Azureipgroup\\V1alpha1\xe2\x023Dev\\Planton\\Azure\\Azureipgroup\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Azure::Azureipgroup::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureIpGroupStackOutputs)(nil), // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackOutputs
+	(*AzureIpGroupOutputs)(nil), // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupOutputs
 }
 var file_catalog_azure_azureipgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

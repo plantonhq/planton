@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpApiKeyStackOutputs captures the key's identity after provisioning.
-type GcpApiKeyStackOutputs struct {
+// GcpApiKeyOutputs captures the key's identity after provisioning.
+type GcpApiKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The key's full resource name:
 	// projects/{project}/locations/global/keys/{key_id}. What the API Keys
@@ -46,20 +46,20 @@ type GcpApiKeyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpApiKeyStackOutputs) Reset() {
-	*x = GcpApiKeyStackOutputs{}
+func (x *GcpApiKeyOutputs) Reset() {
+	*x = GcpApiKeyOutputs{}
 	mi := &file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpApiKeyStackOutputs) String() string {
+func (x *GcpApiKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpApiKeyStackOutputs) ProtoMessage() {}
+func (*GcpApiKeyOutputs) ProtoMessage() {}
 
-func (x *GcpApiKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpApiKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,26 +71,26 @@ func (x *GcpApiKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpApiKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpApiKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpApiKeyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpApiKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpApiKeyStackOutputs) GetName() string {
+func (x *GcpApiKeyOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpApiKeyStackOutputs) GetUid() string {
+func (x *GcpApiKeyOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
 	return ""
 }
 
-func (x *GcpApiKeyStackOutputs) GetKeyString() string {
+func (x *GcpApiKeyOutputs) GetKeyString() string {
 	if x != nil {
 		return x.KeyString
 	}
@@ -101,8 +101,8 @@ var File_catalog_gcp_gcpapikey_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpapikey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpapikey.v1alpha1\x1a\x1cshared/options/options.proto\"b\n" +
-	"\x15GcpApiKeyStackOutputs\x12\x12\n" +
+	",catalog/gcp/gcpapikey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpapikey.v1alpha1\x1a\x1cshared/options/options.proto\"]\n" +
+	"\x10GcpApiKeyOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\tR\x03uid\x12#\n" +
 	"\n" +
@@ -123,7 +123,7 @@ func file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpApiKeyStackOutputs)(nil), // 0: dev.planton.gcp.gcpapikey.v1alpha1.GcpApiKeyStackOutputs
+	(*GcpApiKeyOutputs)(nil), // 0: dev.planton.gcp.gcpapikey.v1alpha1.GcpApiKeyOutputs
 }
 var file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

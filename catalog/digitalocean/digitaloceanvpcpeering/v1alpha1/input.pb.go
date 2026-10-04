@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-vpc-peering stack-input
-type DigitalOceanVpcPeeringStackInput struct {
+// digital-ocean-vpc-peering iac-input
+type DigitalOceanVpcPeeringIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanVpcPeering `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanVpcPeeringStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanVpcPeeringStackInput) Reset() {
-	*x = DigitalOceanVpcPeeringStackInput{}
+func (x *DigitalOceanVpcPeeringIacInput) Reset() {
+	*x = DigitalOceanVpcPeeringIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanVpcPeeringStackInput) String() string {
+func (x *DigitalOceanVpcPeeringIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanVpcPeeringStackInput) ProtoMessage() {}
+func (*DigitalOceanVpcPeeringIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanVpcPeeringStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanVpcPeeringIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanVpcPeeringStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanVpcPeeringStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanVpcPeeringStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanVpcPeeringIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanVpcPeeringIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanVpcPeeringStackInput) GetTarget() *DigitalOceanVpcPeering {
+func (x *DigitalOceanVpcPeeringIacInput) GetTarget() *DigitalOceanVpcPeering {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanVpcPeeringStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanVpcPeeringIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto protor
 
 const file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/digitalocean/digitaloceanvpcpeering/v1alpha1/input.proto\x128dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1\x1a>catalog/digitalocean/digitaloceanvpcpeering/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xeb\x01\n" +
-	" DigitalOceanVpcPeeringStackInput\x12h\n" +
+	"@catalog/digitalocean/digitaloceanvpcpeering/v1alpha1/input.proto\x128dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1\x1a>catalog/digitalocean/digitaloceanvpcpeering/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xe9\x01\n" +
+	"\x1eDigitalOceanVpcPeeringIacInput\x12h\n" +
 	"\x06target\x18\x01 \x01(\v2P.dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xc1\x03\n" +
 	"<com.dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_rawDe
 
 var file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanVpcPeeringStackInput)(nil),        // 0: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringStackInput
+	(*DigitalOceanVpcPeeringIacInput)(nil),          // 0: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringIacInput
 	(*DigitalOceanVpcPeering)(nil),                  // 1: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeering
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringStackInput.target:type_name -> dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeering
-	2, // 1: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringIacInput.target:type_name -> dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeering
+	2, // 1: dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1.DigitalOceanVpcPeeringIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpFilestoreInstanceStackOutputs captures observable values produced after
+// GcpFilestoreInstanceOutputs captures observable values produced after
 // provisioning a Filestore instance.
-type GcpFilestoreInstanceStackOutputs struct {
+type GcpFilestoreInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified resource ID of the Filestore instance.
 	// Format: projects/{project}/locations/{location}/instances/{instance}
@@ -46,20 +46,20 @@ type GcpFilestoreInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) Reset() {
-	*x = GcpFilestoreInstanceStackOutputs{}
+func (x *GcpFilestoreInstanceOutputs) Reset() {
+	*x = GcpFilestoreInstanceOutputs{}
 	mi := &file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) String() string {
+func (x *GcpFilestoreInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFilestoreInstanceStackOutputs) ProtoMessage() {}
+func (*GcpFilestoreInstanceOutputs) ProtoMessage() {}
 
-func (x *GcpFilestoreInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFilestoreInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,54 +71,54 @@ func (x *GcpFilestoreInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFilestoreInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFilestoreInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFilestoreInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFilestoreInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetInstanceId() string {
+func (x *GcpFilestoreInstanceOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetInstanceName() string {
+func (x *GcpFilestoreInstanceOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetIpAddresses() []string {
+func (x *GcpFilestoreInstanceOutputs) GetIpAddresses() []string {
 	if x != nil {
 		return x.IpAddresses
 	}
 	return nil
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetFileShareName() string {
+func (x *GcpFilestoreInstanceOutputs) GetFileShareName() string {
 	if x != nil {
 		return x.FileShareName
 	}
 	return ""
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetCreateTime() string {
+func (x *GcpFilestoreInstanceOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetReservedIpRange() string {
+func (x *GcpFilestoreInstanceOutputs) GetReservedIpRange() string {
 	if x != nil {
 		return x.ReservedIpRange
 	}
 	return ""
 }
 
-func (x *GcpFilestoreInstanceStackOutputs) GetEtag() string {
+func (x *GcpFilestoreInstanceOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -129,8 +129,8 @@ var File_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpfilestoreinstance/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpfilestoreinstance.v1alpha1\"\x94\x02\n" +
-	" GcpFilestoreInstanceStackOutputs\x12\x1f\n" +
+	"7catalog/gcp/gcpfilestoreinstance/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpfilestoreinstance.v1alpha1\"\x8f\x02\n" +
+	"\x1bGcpFilestoreInstanceOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12#\n" +
 	"\rinstance_name\x18\x02 \x01(\tR\finstanceName\x12!\n" +
@@ -156,7 +156,7 @@ func file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFilestoreInstanceStackOutputs)(nil), // 0: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceStackOutputs
+	(*GcpFilestoreInstanceOutputs)(nil), // 0: dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceOutputs
 }
 var file_catalog_gcp_gcpfilestoreinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

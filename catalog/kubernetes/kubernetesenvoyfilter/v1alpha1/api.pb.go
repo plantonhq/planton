@@ -33,7 +33,7 @@ type KubernetesEnvoyFilter struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesEnvoyFilterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesEnvoyFilter) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesEnvoyFilter) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesEnvoyFilter) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesEnvoyFilter) GetStatus() *KubernetesEnvoyFilterStatus {
 // KubernetesEnvoyFilterStatus holds the deployment status and outputs.
 type KubernetesEnvoyFilterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesEnvoyFilterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesEnvoyFilterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesEnvoyFilterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesEnvoyFilterStatus) GetOutputs() *KubernetesEnvoyFilterStackOutputs {
+func (x *KubernetesEnvoyFilterStatus) GetOutputs() *KubernetesEnvoyFilterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15KubernetesEnvoyFilterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatusR\x06status\"\x91\x01\n" +
-	"\x1bKubernetesEnvoyFilterStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatusR\x06status\"\x8c\x01\n" +
+	"\x1bKubernetesEnvoyFilterStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesenvoyfilter/v1alpha1;kubernetesenvoyfilterv1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kubernetesenvoyfilter.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kubernetesenvoyfilter\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kubernetesenvoyfilter\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kubernetesenvoyfilter::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesEnvoyFilter)(nil),             // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter
-	(*KubernetesEnvoyFilterStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesEnvoyFilterSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterSpec
-	(*KubernetesEnvoyFilterStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackOutputs
+	(*KubernetesEnvoyFilter)(nil),        // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter
+	(*KubernetesEnvoyFilterStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesEnvoyFilterSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterSpec
+	(*KubernetesEnvoyFilterOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterOutputs
 }
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter.spec:type_name -> dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterSpec
 	1, // 2: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter.status:type_name -> dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatus
-	4, // 3: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

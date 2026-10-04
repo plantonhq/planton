@@ -27,7 +27,7 @@ type AwsLambdaLayer struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsLambdaLayerSpec           `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsLambdaLayerStatus         `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsLambdaLayer) GetKind() string {
 	return ""
 }
 
-func (x *AwsLambdaLayer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsLambdaLayer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsLambdaLayer) GetStatus() *AwsLambdaLayerStatus {
 }
 
 type AwsLambdaLayerStatus struct {
-	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Outputs       *AwsLambdaLayerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *AwsLambdaLayerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsLambdaLayerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslambdalayer_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsLambdaLayerStatus) GetOutputs() *AwsLambdaLayerStackOutputs {
+func (x *AwsLambdaLayerStatus) GetOutputs() *AwsLambdaLayerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awslambdalayer_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eAwsLambdaLayerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStatusR\x06status\"u\n" +
-	"\x14AwsLambdaLayerStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStatusR\x06status\"p\n" +
+	"\x14AwsLambdaLayerStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.aws.awslambdalayer.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/aws/awslambdalayer/v1alpha1;awslambdalayerv1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Aws.Awslambdalayer.V1alpha1\xca\x02'Dev\\Planton\\Aws\\Awslambdalayer\\V1alpha1\xe2\x023Dev\\Planton\\Aws\\Awslambdalayer\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Aws::Awslambdalayer::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awslambdalayer_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_aws_awslambdalayer_v1alpha1_api_proto_goTypes = []any{
 	(*AwsLambdaLayer)(nil),               // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayer
 	(*AwsLambdaLayerStatus)(nil),         // 1: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsLambdaLayerSpec)(nil),           // 3: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerSpec
-	(*AwsLambdaLayerStackOutputs)(nil),   // 4: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs
+	(*AwsLambdaLayerOutputs)(nil),        // 4: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs
 }
 var file_catalog_aws_awslambdalayer_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayer.spec:type_name -> dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerSpec
 	1, // 2: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayer.status:type_name -> dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStatus
-	4, // 3: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStatus.outputs:type_name -> dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStackOutputs
+	4, // 3: dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerStatus.outputs:type_name -> dev.planton.aws.awslambdalayer.v1alpha1.AwsLambdaLayerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

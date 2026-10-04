@@ -32,7 +32,7 @@ type AwsEventBridgeRule struct {
 	// resource-kind for this EventBridge rule resource, must be "AwsEventBridgeRule".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the EventBridge rule and its targets.
 	Spec *AwsEventBridgeRuleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -85,7 +85,7 @@ func (x *AwsEventBridgeRule) GetKind() string {
 	return ""
 }
 
-func (x *AwsEventBridgeRule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEventBridgeRule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AwsEventBridgeRule) GetStatus() *AwsEventBridgeRuleStatus {
 // observable outputs.
 type AwsEventBridgeRuleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsEventBridgeRuleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsEventBridgeRuleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AwsEventBridgeRuleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgerule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEventBridgeRuleStatus) GetOutputs() *AwsEventBridgeRuleStackOutputs {
+func (x *AwsEventBridgeRuleStatus) GetOutputs() *AwsEventBridgeRuleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_aws_awseventbridgerule_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsEventBridgeRuleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsEventBridgeRuleStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatusR\x06status\"|\n" +
+	"\x18AwsEventBridgeRuleStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awseventbridgerule.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awseventbridgerule/v1alpha1;awseventbridgerulev1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awseventbridgerule.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awseventbridgerule\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awseventbridgerule\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awseventbridgerule::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_aws_awseventbridgerule_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awseventbridgerule_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awseventbridgerule_v1alpha1_api_proto_goTypes = []any{
-	(*AwsEventBridgeRule)(nil),             // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule
-	(*AwsEventBridgeRuleStatus)(nil),       // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsEventBridgeRuleSpec)(nil),         // 3: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleSpec
-	(*AwsEventBridgeRuleStackOutputs)(nil), // 4: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackOutputs
+	(*AwsEventBridgeRule)(nil),           // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule
+	(*AwsEventBridgeRuleStatus)(nil),     // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsEventBridgeRuleSpec)(nil),       // 3: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleSpec
+	(*AwsEventBridgeRuleOutputs)(nil),    // 4: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleOutputs
 }
 var file_catalog_aws_awseventbridgerule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule.spec:type_name -> dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleSpec
 	1, // 2: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule.status:type_name -> dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatus
-	4, // 3: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatus.outputs:type_name -> dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackOutputs
+	4, // 3: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStatus.outputs:type_name -> dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

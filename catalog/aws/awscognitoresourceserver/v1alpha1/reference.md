@@ -25,7 +25,7 @@ Key design notes:
   tokens; already-issued tokens carry it until they expire.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

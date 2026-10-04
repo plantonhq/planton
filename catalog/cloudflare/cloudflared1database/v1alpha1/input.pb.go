@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-d1-database stack-input
-type CloudflareD1DatabaseStackInput struct {
+// cloudflare-d1-database iac-input
+type CloudflareD1DatabaseIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareD1Database `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareD1DatabaseStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareD1DatabaseStackInput) Reset() {
-	*x = CloudflareD1DatabaseStackInput{}
+func (x *CloudflareD1DatabaseIacInput) Reset() {
+	*x = CloudflareD1DatabaseIacInput{}
 	mi := &file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareD1DatabaseStackInput) String() string {
+func (x *CloudflareD1DatabaseIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareD1DatabaseStackInput) ProtoMessage() {}
+func (*CloudflareD1DatabaseIacInput) ProtoMessage() {}
 
-func (x *CloudflareD1DatabaseStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareD1DatabaseIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareD1DatabaseStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareD1DatabaseStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareD1DatabaseStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareD1DatabaseIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareD1DatabaseIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareD1DatabaseStackInput) GetTarget() *CloudflareD1Database {
+func (x *CloudflareD1DatabaseIacInput) GetTarget() *CloudflareD1Database {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareD1DatabaseStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareD1DatabaseIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto protorefle
 
 const file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/cloudflare/cloudflared1database/v1alpha1/input.proto\x124dev.planton.cloudflare.cloudflared1database.v1alpha1\x1a:catalog/cloudflare/cloudflared1database/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xdf\x01\n" +
-	"\x1eCloudflareD1DatabaseStackInput\x12b\n" +
+	"<catalog/cloudflare/cloudflared1database/v1alpha1/input.proto\x124dev.planton.cloudflare.cloudflared1database.v1alpha1\x1a:catalog/cloudflare/cloudflared1database/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xdd\x01\n" +
+	"\x1cCloudflareD1DatabaseIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"8com.dev.planton.cloudflare.cloudflared1database.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareD1DatabaseStackInput)(nil),      // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackInput
+	(*CloudflareD1DatabaseIacInput)(nil),        // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseIacInput
 	(*CloudflareD1Database)(nil),                // 1: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackInput.target:type_name -> dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database
-	2, // 1: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseIacInput.target:type_name -> dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database
+	2, // 1: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

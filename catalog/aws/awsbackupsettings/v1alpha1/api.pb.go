@@ -27,7 +27,7 @@ type AwsBackupSettings struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsBackupSettingsSpec        `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsBackupSettingsStatus      `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsBackupSettings) GetKind() string {
 	return ""
 }
 
-func (x *AwsBackupSettings) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBackupSettings) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsBackupSettings) GetStatus() *AwsBackupSettingsStatus {
 }
 
 type AwsBackupSettingsStatus struct {
-	state         protoimpl.MessageState         `protogen:"open.v1"`
-	Outputs       *AwsBackupSettingsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState    `protogen:"open.v1"`
+	Outputs       *AwsBackupSettingsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsBackupSettingsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupsettings_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBackupSettingsStatus) GetOutputs() *AwsBackupSettingsStackOutputs {
+func (x *AwsBackupSettingsStatus) GetOutputs() *AwsBackupSettingsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsbackupsettings_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsBackupSettingsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatusR\x06status\"~\n" +
-	"\x17AwsBackupSettingsStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatusR\x06status\"y\n" +
+	"\x17AwsBackupSettingsStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awsbackupsettings.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awsbackupsettings/v1alpha1;awsbackupsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awsbackupsettings.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awsbackupsettings\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awsbackupsettings\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awsbackupsettings::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsbackupsettings_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsbackupsettings_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbackupsettings_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBackupSettings)(nil),             // 0: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettings
-	(*AwsBackupSettingsStatus)(nil),       // 1: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBackupSettingsSpec)(nil),         // 3: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsSpec
-	(*AwsBackupSettingsStackOutputs)(nil), // 4: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStackOutputs
+	(*AwsBackupSettings)(nil),            // 0: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettings
+	(*AwsBackupSettingsStatus)(nil),      // 1: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBackupSettingsSpec)(nil),        // 3: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsSpec
+	(*AwsBackupSettingsOutputs)(nil),     // 4: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsOutputs
 }
 var file_catalog_aws_awsbackupsettings_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettings.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettings.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettings.spec:type_name -> dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsSpec
 	1, // 2: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettings.status:type_name -> dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatus
-	4, // 3: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatus.outputs:type_name -> dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStackOutputs
+	4, // 3: dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsStatus.outputs:type_name -> dev.planton.aws.awsbackupsettings.v1alpha1.AwsBackupSettingsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -33,10 +33,10 @@ type AzureDataProtectionResourceGuard struct {
 	// Resource kind. Must be "AzureDataProtectionResourceGuard".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Data Protection Resource Guard specification.
 	Spec *AzureDataProtectionResourceGuardSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureDataProtectionResourceGuardStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -86,7 +86,7 @@ func (x *AzureDataProtectionResourceGuard) GetKind() string {
 	return ""
 }
 
-func (x *AzureDataProtectionResourceGuard) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDataProtectionResourceGuard) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzureDataProtectionResourceGuard) GetStatus() *AzureDataProtectionResou
 // AzureDataProtectionResourceGuardStatus holds the deployment outputs.
 type AzureDataProtectionResourceGuardStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureDataProtectionResourceGuardStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureDataProtectionResourceGuardOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureDataProtectionResourceGuardStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDataProtectionResourceGuardStatus) GetOutputs() *AzureDataProtectionResourceGuardStackOutputs {
+func (x *AzureDataProtectionResourceGuardStatus) GetOutputs() *AzureDataProtectionResourceGuardOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_api_proto_raw
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" AzureDataProtectionResourceGuardR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
 	"\x04spec\x18\x04 \x01(\v2a.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12{\n" +
-	"\x06status\x18\x05 \x01(\v2c.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatusR\x06status\"\xae\x01\n" +
-	"&AzureDataProtectionResourceGuardStatus\x12\x83\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2i.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackOutputsR\aoutputsB\xdb\x03\n" +
+	"\x06status\x18\x05 \x01(\v2c.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatusR\x06status\"\xa8\x01\n" +
+	"&AzureDataProtectionResourceGuardStatus\x12~\n" +
+	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardOutputsR\aoutputsB\xdb\x03\n" +
 	"?com.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1B\bApiProtoP\x01Z}github.com/plantonhq/planton/catalog/azure/azuredataprotectionresourceguard/v1alpha1;azuredataprotectionresourceguardv1alpha1\xa2\x02\x04DPAA\xaa\x02;Dev.Planton.Azure.Azuredataprotectionresourceguard.V1alpha1\xca\x02;Dev\\Planton\\Azure\\Azuredataprotectionresourceguard\\V1alpha1\xe2\x02GDev\\Planton\\Azure\\Azuredataprotectionresourceguard\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Azure::Azuredataprotectionresourceguard::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_api_proto_rawD
 
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_api_proto_goTypes = []any{
-	(*AzureDataProtectionResourceGuard)(nil),             // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard
-	(*AzureDataProtectionResourceGuardStatus)(nil),       // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureDataProtectionResourceGuardSpec)(nil),         // 3: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardSpec
-	(*AzureDataProtectionResourceGuardStackOutputs)(nil), // 4: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackOutputs
+	(*AzureDataProtectionResourceGuard)(nil),        // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard
+	(*AzureDataProtectionResourceGuardStatus)(nil),  // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureDataProtectionResourceGuardSpec)(nil),    // 3: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardSpec
+	(*AzureDataProtectionResourceGuardOutputs)(nil), // 4: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardOutputs
 }
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard.spec:type_name -> dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardSpec
 	1, // 2: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard.status:type_name -> dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatus
-	4, // 3: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatus.outputs:type_name -> dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackOutputs
+	4, // 3: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStatus.outputs:type_name -> dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

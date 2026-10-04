@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsConfigConformancePackStackInput is the input for the IaC
+// AwsConfigConformancePackIacInput is the input for the IaC
 // modules that manage a Config conformance pack.
-type AwsConfigConformancePackStackInput struct {
+type AwsConfigConformancePackIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsConfigConformancePack resource to deploy.
 	Target *AwsConfigConformancePack `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsConfigConformancePackStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsConfigConformancePackStackInput) Reset() {
-	*x = AwsConfigConformancePackStackInput{}
+func (x *AwsConfigConformancePackIacInput) Reset() {
+	*x = AwsConfigConformancePackIacInput{}
 	mi := &file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsConfigConformancePackStackInput) String() string {
+func (x *AwsConfigConformancePackIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsConfigConformancePackStackInput) ProtoMessage() {}
+func (*AwsConfigConformancePackIacInput) ProtoMessage() {}
 
-func (x *AwsConfigConformancePackStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsConfigConformancePackIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsConfigConformancePackStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsConfigConformancePackStackInput.ProtoReflect.Descriptor instead.
-func (*AwsConfigConformancePackStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsConfigConformancePackIacInput.ProtoReflect.Descriptor instead.
+func (*AwsConfigConformancePackIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsConfigConformancePackStackInput) GetTarget() *AwsConfigConformancePack {
+func (x *AwsConfigConformancePackIacInput) GetTarget() *AwsConfigConformancePack {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsConfigConformancePackStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsConfigConformancePackIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto protoreflect.
 
 const file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awsconfigconformancepack/v1alpha1/input.proto\x121dev.planton.aws.awsconfigconformancepack.v1alpha1\x1a7catalog/aws/awsconfigconformancepack/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd6\x01\n" +
-	"\"AwsConfigConformancePackStackInput\x12c\n" +
+	"9catalog/aws/awsconfigconformancepack/v1alpha1/input.proto\x121dev.planton.aws.awsconfigconformancepack.v1alpha1\x1a7catalog/aws/awsconfigconformancepack/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd4\x01\n" +
+	" AwsConfigConformancePackIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"5com.dev.planton.aws.awsconfigconformancepack.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_goTypes = []any{
-	(*AwsConfigConformancePackStackInput)(nil), // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackInput
-	(*AwsConfigConformancePack)(nil),           // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack
-	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsConfigConformancePackIacInput)(nil), // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackIacInput
+	(*AwsConfigConformancePack)(nil),         // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack
+	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackInput.target:type_name -> dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack
-	2, // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackIacInput.target:type_name -> dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack
+	2, // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

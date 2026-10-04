@@ -28,7 +28,7 @@ type GcpFirestoreIndex struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpFirestoreIndexSpec        `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpFirestoreIndexStatus      `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpFirestoreIndex) GetKind() string {
 	return ""
 }
 
-func (x *GcpFirestoreIndex) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpFirestoreIndex) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpFirestoreIndex) GetStatus() *GcpFirestoreIndexStatus {
 }
 
 type GcpFirestoreIndexStatus struct {
-	state         protoimpl.MessageState         `protogen:"open.v1"`
-	Outputs       *GcpFirestoreIndexStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState    `protogen:"open.v1"`
+	Outputs       *GcpFirestoreIndexOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpFirestoreIndexStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirestoreindex_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpFirestoreIndexStatus) GetOutputs() *GcpFirestoreIndexStackOutputs {
+func (x *GcpFirestoreIndexStatus) GetOutputs() *GcpFirestoreIndexOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpfirestoreindex_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11GcpFirestoreIndexR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatusR\x06status\"~\n" +
-	"\x17GcpFirestoreIndexStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatusR\x06status\"y\n" +
+	"\x17GcpFirestoreIndexStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.gcp.gcpfirestoreindex.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpfirestoreindex/v1alpha1;gcpfirestoreindexv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpfirestoreindex.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpfirestoreindex\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpfirestoreindex\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpfirestoreindex::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpfirestoreindex_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpfirestoreindex_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpfirestoreindex_v1alpha1_api_proto_goTypes = []any{
-	(*GcpFirestoreIndex)(nil),             // 0: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndex
-	(*GcpFirestoreIndexStatus)(nil),       // 1: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpFirestoreIndexSpec)(nil),         // 3: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexSpec
-	(*GcpFirestoreIndexStackOutputs)(nil), // 4: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStackOutputs
+	(*GcpFirestoreIndex)(nil),            // 0: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndex
+	(*GcpFirestoreIndexStatus)(nil),      // 1: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpFirestoreIndexSpec)(nil),        // 3: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexSpec
+	(*GcpFirestoreIndexOutputs)(nil),     // 4: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexOutputs
 }
 var file_catalog_gcp_gcpfirestoreindex_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndex.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndex.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndex.spec:type_name -> dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexSpec
 	1, // 2: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndex.status:type_name -> dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatus
-	4, // 3: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatus.outputs:type_name -> dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStackOutputs
+	4, // 3: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStatus.outputs:type_name -> dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

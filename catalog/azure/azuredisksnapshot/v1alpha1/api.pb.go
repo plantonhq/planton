@@ -33,7 +33,7 @@ type AzureDiskSnapshot struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureDiskSnapshotSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AzureDiskSnapshot) GetKind() string {
 	return ""
 }
 
-func (x *AzureDiskSnapshot) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDiskSnapshot) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,10 +111,10 @@ func (x *AzureDiskSnapshot) GetStatus() *AzureDiskSnapshotStatus {
 // deployment.
 type AzureDiskSnapshotStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-disk-snapshot stack-outputs
-	Outputs       *AzureDiskSnapshotStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-disk-snapshot outputs
+	Outputs       *AzureDiskSnapshotOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureDiskSnapshotStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredisksnapshot_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDiskSnapshotStatus) GetOutputs() *AzureDiskSnapshotStackOutputs {
+func (x *AzureDiskSnapshotStatus) GetOutputs() *AzureDiskSnapshotOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azuredisksnapshot_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AzureDiskSnapshotR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatusR\x06status\"\x80\x01\n" +
-	"\x17AzureDiskSnapshotStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackOutputsR\aoutputsB\xf2\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatusR\x06status\"{\n" +
+	"\x17AzureDiskSnapshotStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotOutputsR\aoutputsB\xf2\x02\n" +
 	"0com.dev.planton.azure.azuredisksnapshot.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/azure/azuredisksnapshot/v1alpha1;azuredisksnapshotv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Azure.Azuredisksnapshot.V1alpha1\xca\x02,Dev\\Planton\\Azure\\Azuredisksnapshot\\V1alpha1\xe2\x028Dev\\Planton\\Azure\\Azuredisksnapshot\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Azure::Azuredisksnapshot::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azuredisksnapshot_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azuredisksnapshot_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuredisksnapshot_v1alpha1_api_proto_goTypes = []any{
-	(*AzureDiskSnapshot)(nil),             // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot
-	(*AzureDiskSnapshotStatus)(nil),       // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureDiskSnapshotSpec)(nil),         // 3: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotSpec
-	(*AzureDiskSnapshotStackOutputs)(nil), // 4: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackOutputs
+	(*AzureDiskSnapshot)(nil),            // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot
+	(*AzureDiskSnapshotStatus)(nil),      // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureDiskSnapshotSpec)(nil),        // 3: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotSpec
+	(*AzureDiskSnapshotOutputs)(nil),     // 4: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotOutputs
 }
 var file_catalog_azure_azuredisksnapshot_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot.spec:type_name -> dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotSpec
 	1, // 2: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshot.status:type_name -> dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatus
-	4, // 3: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatus.outputs:type_name -> dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackOutputs
+	4, // 3: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStatus.outputs:type_name -> dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

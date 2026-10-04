@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerRegistryStackOutputs** captures the outputs of
+// **AzureContainerRegistryOutputs** captures the outputs of
 // provisioning an Azure Container Registry.
-type AzureContainerRegistryStackOutputs struct {
+type AzureContainerRegistryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the registry. This is the primary
 	// output: AzureAksCluster's container_registry_id references it to wire
@@ -55,20 +55,20 @@ type AzureContainerRegistryStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AzureContainerRegistryStackOutputs) Reset() {
-	*x = AzureContainerRegistryStackOutputs{}
+func (x *AzureContainerRegistryOutputs) Reset() {
+	*x = AzureContainerRegistryOutputs{}
 	mi := &file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerRegistryStackOutputs) String() string {
+func (x *AzureContainerRegistryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerRegistryStackOutputs) ProtoMessage() {}
+func (*AzureContainerRegistryOutputs) ProtoMessage() {}
 
-func (x *AzureContainerRegistryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerRegistryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,54 +80,54 @@ func (x *AzureContainerRegistryStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerRegistryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerRegistryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerRegistryOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerRegistryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetContainerRegistryId() string {
+func (x *AzureContainerRegistryOutputs) GetContainerRegistryId() string {
 	if x != nil {
 		return x.ContainerRegistryId
 	}
 	return ""
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetContainerRegistryName() string {
+func (x *AzureContainerRegistryOutputs) GetContainerRegistryName() string {
 	if x != nil {
 		return x.ContainerRegistryName
 	}
 	return ""
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetLoginServer() string {
+func (x *AzureContainerRegistryOutputs) GetLoginServer() string {
 	if x != nil {
 		return x.LoginServer
 	}
 	return ""
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetAdminUsername() string {
+func (x *AzureContainerRegistryOutputs) GetAdminUsername() string {
 	if x != nil {
 		return x.AdminUsername
 	}
 	return ""
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetAdminPassword() string {
+func (x *AzureContainerRegistryOutputs) GetAdminPassword() string {
 	if x != nil {
 		return x.AdminPassword
 	}
 	return ""
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureContainerRegistryOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureContainerRegistryStackOutputs) GetDataEndpointHostNames() []string {
+func (x *AzureContainerRegistryOutputs) GetDataEndpointHostNames() []string {
 	if x != nil {
 		return x.DataEndpointHostNames
 	}
@@ -138,8 +138,8 @@ var File_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azurecontainerregistry/v1alpha1/outputs.proto\x121dev.planton.azure.azurecontainerregistry.v1alpha1\x1a\x1cshared/options/options.proto\"\x92\x03\n" +
-	"\"AzureContainerRegistryStackOutputs\x122\n" +
+	";catalog/azure/azurecontainerregistry/v1alpha1/outputs.proto\x121dev.planton.azure.azurecontainerregistry.v1alpha1\x1a\x1cshared/options/options.proto\"\x8d\x03\n" +
+	"\x1dAzureContainerRegistryOutputs\x122\n" +
 	"\x15container_registry_id\x18\x01 \x01(\tR\x13containerRegistryId\x126\n" +
 	"\x17container_registry_name\x18\x02 \x01(\tR\x15containerRegistryName\x12!\n" +
 	"\flogin_server\x18\x03 \x01(\tR\vloginServer\x12%\n" +
@@ -163,7 +163,7 @@ func file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerRegistryStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerregistry.v1alpha1.AzureContainerRegistryStackOutputs
+	(*AzureContainerRegistryOutputs)(nil), // 0: dev.planton.azure.azurecontainerregistry.v1alpha1.AzureContainerRegistryOutputs
 }
 var file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureNatGatewayStackOutputs** captures the outputs of provisioning an
+// **AzureNatGatewayOutputs** captures the outputs of provisioning an
 // Azure NAT Gateway.
-type AzureNatGatewayStackOutputs struct {
+type AzureNatGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the NAT gateway. This is the primary
 	// output: AzureSubnet's nat_gateway_id references it to attach the
@@ -40,20 +40,20 @@ type AzureNatGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureNatGatewayStackOutputs) Reset() {
-	*x = AzureNatGatewayStackOutputs{}
+func (x *AzureNatGatewayOutputs) Reset() {
+	*x = AzureNatGatewayOutputs{}
 	mi := &file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureNatGatewayStackOutputs) String() string {
+func (x *AzureNatGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureNatGatewayStackOutputs) ProtoMessage() {}
+func (*AzureNatGatewayOutputs) ProtoMessage() {}
 
-func (x *AzureNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureNatGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureNatGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureNatGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureNatGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzureNatGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureNatGatewayStackOutputs) GetNatGatewayId() string {
+func (x *AzureNatGatewayOutputs) GetNatGatewayId() string {
 	if x != nil {
 		return x.NatGatewayId
 	}
 	return ""
 }
 
-func (x *AzureNatGatewayStackOutputs) GetNatGatewayName() string {
+func (x *AzureNatGatewayOutputs) GetNatGatewayName() string {
 	if x != nil {
 		return x.NatGatewayName
 	}
 	return ""
 }
 
-func (x *AzureNatGatewayStackOutputs) GetResourceGuid() string {
+func (x *AzureNatGatewayOutputs) GetResourceGuid() string {
 	if x != nil {
 		return x.ResourceGuid
 	}
@@ -95,8 +95,8 @@ var File_catalog_azure_azurenatgateway_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurenatgateway/v1alpha1/outputs.proto\x12*dev.planton.azure.azurenatgateway.v1alpha1\"\x92\x01\n" +
-	"\x1bAzureNatGatewayStackOutputs\x12$\n" +
+	"4catalog/azure/azurenatgateway/v1alpha1/outputs.proto\x12*dev.planton.azure.azurenatgateway.v1alpha1\"\x8d\x01\n" +
+	"\x16AzureNatGatewayOutputs\x12$\n" +
 	"\x0enat_gateway_id\x18\x01 \x01(\tR\fnatGatewayId\x12(\n" +
 	"\x10nat_gateway_name\x18\x02 \x01(\tR\x0enatGatewayName\x12#\n" +
 	"\rresource_guid\x18\x03 \x01(\tR\fresourceGuidB\xe8\x02\n" +
@@ -116,7 +116,7 @@ func file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureNatGatewayStackOutputs)(nil), // 0: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayStackOutputs
+	(*AzureNatGatewayOutputs)(nil), // 0: dev.planton.azure.azurenatgateway.v1alpha1.AzureNatGatewayOutputs
 }
 var file_catalog_azure_azurenatgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

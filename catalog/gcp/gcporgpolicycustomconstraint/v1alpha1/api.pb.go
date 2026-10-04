@@ -28,7 +28,7 @@ type GcpOrgPolicyCustomConstraint struct {
 	state         protoimpl.MessageState              `protogen:"open.v1"`
 	ApiVersion    string                              `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                              `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata       `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata       `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpOrgPolicyCustomConstraintSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpOrgPolicyCustomConstraintStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpOrgPolicyCustomConstraint) GetKind() string {
 	return ""
 }
 
-func (x *GcpOrgPolicyCustomConstraint) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpOrgPolicyCustomConstraint) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpOrgPolicyCustomConstraint) GetStatus() *GcpOrgPolicyCustomConstraint
 }
 
 type GcpOrgPolicyCustomConstraintStatus struct {
-	state         protoimpl.MessageState                    `protogen:"open.v1"`
-	Outputs       *GcpOrgPolicyCustomConstraintStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState               `protogen:"open.v1"`
+	Outputs       *GcpOrgPolicyCustomConstraintOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpOrgPolicyCustomConstraintStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcporgpolicycustomconstraint_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpOrgPolicyCustomConstraintStatus) GetOutputs() *GcpOrgPolicyCustomConstraintStackOutputs {
+func (x *GcpOrgPolicyCustomConstraintStatus) GetOutputs() *GcpOrgPolicyCustomConstraintOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcporgpolicycustomconstraint_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cGcpOrgPolicyCustomConstraintR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatusR\x06status\"\x9f\x01\n" +
-	"\"GcpOrgPolicyCustomConstraintStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatusR\x06status\"\x9a\x01\n" +
+	"\"GcpOrgPolicyCustomConstraintStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintOutputsR\aoutputsB\xb3\x03\n" +
 	"9com.dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/gcp/gcporgpolicycustomconstraint/v1alpha1;gcporgpolicycustomconstraintv1alpha1\xa2\x02\x04DPGG\xaa\x025Dev.Planton.Gcp.Gcporgpolicycustomconstraint.V1alpha1\xca\x025Dev\\Planton\\Gcp\\Gcporgpolicycustomconstraint\\V1alpha1\xe2\x02ADev\\Planton\\Gcp\\Gcporgpolicycustomconstraint\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Gcp::Gcporgpolicycustomconstraint::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcporgpolicycustomconstraint_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_gcp_gcporgpolicycustomconstraint_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcporgpolicycustomconstraint_v1alpha1_api_proto_goTypes = []any{
-	(*GcpOrgPolicyCustomConstraint)(nil),             // 0: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraint
-	(*GcpOrgPolicyCustomConstraintStatus)(nil),       // 1: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpOrgPolicyCustomConstraintSpec)(nil),         // 3: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintSpec
-	(*GcpOrgPolicyCustomConstraintStackOutputs)(nil), // 4: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStackOutputs
+	(*GcpOrgPolicyCustomConstraint)(nil),        // 0: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraint
+	(*GcpOrgPolicyCustomConstraintStatus)(nil),  // 1: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpOrgPolicyCustomConstraintSpec)(nil),    // 3: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintSpec
+	(*GcpOrgPolicyCustomConstraintOutputs)(nil), // 4: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintOutputs
 }
 var file_catalog_gcp_gcporgpolicycustomconstraint_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraint.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraint.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraint.spec:type_name -> dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintSpec
 	1, // 2: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraint.status:type_name -> dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatus
-	4, // 3: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatus.outputs:type_name -> dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStackOutputs
+	4, // 3: dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintStatus.outputs:type_name -> dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1.GcpOrgPolicyCustomConstraintOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

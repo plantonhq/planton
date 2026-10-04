@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpSubnetworkSpec defines a subnetwork in a custom-mode VPC — the regional
 address space workloads actually live in. Subnets carry the IP plan:
@@ -484,7 +484,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpSubnetwork, n
 | `status.outputs.subnetwork_self_link` | `string` | Self-link URI of the subnetwork — the value GKE clusters, compute instances, and other subnet consumers reference. |
 | `status.outputs.region` | `string` | The region the subnetwork lives in. |
 | `status.outputs.ip_cidr_range` | `string` | The primary IPv4 CIDR range (empty for IPV6_ONLY subnets). |
-| `status.outputs.secondary_ranges` | `[]GcpSubnetworkSecondaryRangeStackOutput` | Secondary (alias) ranges on this subnet, with their names and CIDRs. GKE clusters select their pod/service ranges by range_name. |
+| `status.outputs.secondary_ranges` | `[]GcpSubnetworkSecondaryRangeOutput` | Secondary (alias) ranges on this subnet, with their names and CIDRs. GKE clusters select their pod/service ranges by range_name. |
 | `status.outputs.secondary_ranges[].range_name` | `string` | Name of the secondary range (unique within the subnet). |
 | `status.outputs.secondary_ranges[].ip_cidr_range` | `string` | IPv4 CIDR of the secondary range. |
 | `status.outputs.subnetwork_name` | `string` | Name of the subnetwork as it exists in GCP. Referenced by consumers that address subnets by name (e.g. Cloud Run Direct VPC egress). |

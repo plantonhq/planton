@@ -34,7 +34,7 @@ type AwsCodeBuildProject struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the CodeBuild project.
 	Spec *AwsCodeBuildProjectSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -87,7 +87,7 @@ func (x *AwsCodeBuildProject) GetKind() string {
 	return ""
 }
 
-func (x *AwsCodeBuildProject) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCodeBuildProject) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ func (x *AwsCodeBuildProject) GetStatus() *AwsCodeBuildProjectStatus {
 type AwsCodeBuildProjectStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsCodeBuildProjectStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsCodeBuildProjectOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsCodeBuildProjectStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscodebuildproject_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCodeBuildProjectStatus) GetOutputs() *AwsCodeBuildProjectStackOutputs {
+func (x *AwsCodeBuildProjectStatus) GetOutputs() *AwsCodeBuildProjectOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awscodebuildproject_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AwsCodeBuildProjectR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatusR\x06status\"\x84\x01\n" +
-	"\x19AwsCodeBuildProjectStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatusR\x06status\"\x7f\n" +
+	"\x19AwsCodeBuildProjectStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.aws.awscodebuildproject.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awscodebuildproject/v1alpha1;awscodebuildprojectv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awscodebuildproject.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awscodebuildproject\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awscodebuildproject\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awscodebuildproject::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awscodebuildproject_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awscodebuildproject_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscodebuildproject_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCodeBuildProject)(nil),             // 0: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProject
-	(*AwsCodeBuildProjectStatus)(nil),       // 1: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCodeBuildProjectSpec)(nil),         // 3: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectSpec
-	(*AwsCodeBuildProjectStackOutputs)(nil), // 4: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStackOutputs
+	(*AwsCodeBuildProject)(nil),          // 0: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProject
+	(*AwsCodeBuildProjectStatus)(nil),    // 1: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCodeBuildProjectSpec)(nil),      // 3: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectSpec
+	(*AwsCodeBuildProjectOutputs)(nil),   // 4: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectOutputs
 }
 var file_catalog_aws_awscodebuildproject_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProject.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProject.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProject.spec:type_name -> dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectSpec
 	1, // 2: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProject.status:type_name -> dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatus
-	4, // 3: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatus.outputs:type_name -> dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStackOutputs
+	4, // 3: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStatus.outputs:type_name -> dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

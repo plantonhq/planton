@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP regional address.
-type GcpAddressStackOutputs struct {
+type GcpAddressOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The reserved IP address or the start of the reserved CIDR range.
 	// For EXTERNAL addresses this is a public IP. For INTERNAL addresses
@@ -42,20 +42,20 @@ type GcpAddressStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpAddressStackOutputs) Reset() {
-	*x = GcpAddressStackOutputs{}
+func (x *GcpAddressOutputs) Reset() {
+	*x = GcpAddressOutputs{}
 	mi := &file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpAddressStackOutputs) String() string {
+func (x *GcpAddressOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpAddressStackOutputs) ProtoMessage() {}
+func (*GcpAddressOutputs) ProtoMessage() {}
 
-func (x *GcpAddressStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpAddressOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *GcpAddressStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpAddressStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpAddressStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpAddressOutputs.ProtoReflect.Descriptor instead.
+func (*GcpAddressOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpAddressStackOutputs) GetAddress() string {
+func (x *GcpAddressOutputs) GetAddress() string {
 	if x != nil {
 		return x.Address
 	}
 	return ""
 }
 
-func (x *GcpAddressStackOutputs) GetSelfLink() string {
+func (x *GcpAddressOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpAddressStackOutputs) GetName() string {
+func (x *GcpAddressOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpAddressStackOutputs) GetRegion() string {
+func (x *GcpAddressOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -104,8 +104,8 @@ var File_catalog_gcp_gcpaddress_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcpaddress/v1alpha1/outputs.proto\x12#dev.planton.gcp.gcpaddress.v1alpha1\"{\n" +
-	"\x16GcpAddressStackOutputs\x12\x18\n" +
+	"-catalog/gcp/gcpaddress/v1alpha1/outputs.proto\x12#dev.planton.gcp.gcpaddress.v1alpha1\"v\n" +
+	"\x11GcpAddressOutputs\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x16\n" +
@@ -126,7 +126,7 @@ func file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpAddressStackOutputs)(nil), // 0: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressStackOutputs
+	(*GcpAddressOutputs)(nil), // 0: dev.planton.gcp.gcpaddress.v1alpha1.GcpAddressOutputs
 }
 var file_catalog_gcp_gcpaddress_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

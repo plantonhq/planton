@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesServiceAccountStackInput** defines the input structure for deploying a
+// **KubernetesServiceAccountIacInput** defines the input structure for deploying a
 // Kubernetes ServiceAccount. It carries the target ServiceAccount specification and the
 // Kubernetes cluster configuration the IaC modules (Pulumi and Terraform) need to reach
 // the cluster.
-type KubernetesServiceAccountStackInput struct {
+type KubernetesServiceAccountIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target ServiceAccount resource to be created.
@@ -43,20 +43,20 @@ type KubernetesServiceAccountStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceAccountStackInput) Reset() {
-	*x = KubernetesServiceAccountStackInput{}
+func (x *KubernetesServiceAccountIacInput) Reset() {
+	*x = KubernetesServiceAccountIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceAccountStackInput) String() string {
+func (x *KubernetesServiceAccountIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceAccountStackInput) ProtoMessage() {}
+func (*KubernetesServiceAccountIacInput) ProtoMessage() {}
 
-func (x *KubernetesServiceAccountStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceAccountIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,19 +68,19 @@ func (x *KubernetesServiceAccountStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceAccountStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceAccountStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceAccountIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceAccountIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceAccountStackInput) GetTarget() *KubernetesServiceAccount {
+func (x *KubernetesServiceAccountIacInput) GetTarget() *KubernetesServiceAccount {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesServiceAccountStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesServiceAccountIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -91,8 +91,8 @@ var File_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto protor
 
 const file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesserviceaccount/v1alpha1/input.proto\x128dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1\x1a>catalog/kubernetes/kubernetesserviceaccount/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xeb\x01\n" +
-	"\"KubernetesServiceAccountStackInput\x12j\n" +
+	"@catalog/kubernetes/kubernetesserviceaccount/v1alpha1/input.proto\x128dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1\x1a>catalog/kubernetes/kubernetesserviceaccount/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe9\x01\n" +
+	" KubernetesServiceAccountIacInput\x12j\n" +
 	"\x06target\x18\x01 \x01(\v2R.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1B\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesServiceAccountStackInput)(nil),  // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackInput
+	(*KubernetesServiceAccountIacInput)(nil),    // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountIacInput
 	(*KubernetesServiceAccount)(nil),            // 1: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackInput.target:type_name -> dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount
-	2, // 1: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountIacInput.target:type_name -> dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccount
+	2, // 1: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

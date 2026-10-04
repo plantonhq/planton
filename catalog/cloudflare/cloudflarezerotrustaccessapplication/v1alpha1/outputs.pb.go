@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustAccessApplicationStackOutputs captures the outputs after
+// CloudflareZeroTrustAccessApplicationOutputs captures the outputs after
 // provisioning a Cloudflare Zero Trust Access application.
-type CloudflareZeroTrustAccessApplicationStackOutputs struct {
+type CloudflareZeroTrustAccessApplicationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique ID of the Access application.
 	ApplicationId string `protobuf:"bytes,1,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
@@ -48,20 +48,20 @@ type CloudflareZeroTrustAccessApplicationStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) Reset() {
-	*x = CloudflareZeroTrustAccessApplicationStackOutputs{}
+func (x *CloudflareZeroTrustAccessApplicationOutputs) Reset() {
+	*x = CloudflareZeroTrustAccessApplicationOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) String() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustAccessApplicationStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustAccessApplicationOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,61 +73,61 @@ func (x *CloudflareZeroTrustAccessApplicationStackOutputs) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustAccessApplicationStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustAccessApplicationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustAccessApplicationOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustAccessApplicationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetApplicationId() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetApplicationId() string {
 	if x != nil {
 		return x.ApplicationId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetAud() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetAud() string {
 	if x != nil {
 		return x.Aud
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetDomain() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetDomain() string {
 	if x != nil {
 		return x.Domain
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasClientId() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetSaasClientId() string {
 	if x != nil {
 		return x.SaasClientId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasClientSecret() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetSaasClientSecret() string {
 	if x != nil {
 		return x.SaasClientSecret
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasPublicKey() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetSaasPublicKey() string {
 	if x != nil {
 		return x.SaasPublicKey
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasSsoEndpoint() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetSaasSsoEndpoint() string {
 	if x != nil {
 		return x.SaasSsoEndpoint
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasIdpEntityId() string {
+func (x *CloudflareZeroTrustAccessApplicationOutputs) GetSaasIdpEntityId() string {
 	if x != nil {
 		return x.SaasIdpEntityId
 	}
@@ -138,8 +138,8 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_output
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/cloudflare/cloudflarezerotrustaccessapplication/v1alpha1/outputs.proto\x12Ddev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1\x1a\x1cshared/options/options.proto\"\xde\x02\n" +
-	"0CloudflareZeroTrustAccessApplicationStackOutputs\x12%\n" +
+	"Ncatalog/cloudflare/cloudflarezerotrustaccessapplication/v1alpha1/outputs.proto\x12Ddev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1\x1a\x1cshared/options/options.proto\"\xd9\x02\n" +
+	"+CloudflareZeroTrustAccessApplicationOutputs\x12%\n" +
 	"\x0eapplication_id\x18\x01 \x01(\tR\rapplicationId\x12\x10\n" +
 	"\x03aud\x18\x02 \x01(\tR\x03aud\x12\x16\n" +
 	"\x06domain\x18\x03 \x01(\tR\x06domain\x12$\n" +
@@ -164,7 +164,7 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outpu
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessApplicationStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationStackOutputs
+	(*CloudflareZeroTrustAccessApplicationOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1.CloudflareZeroTrustAccessApplicationOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

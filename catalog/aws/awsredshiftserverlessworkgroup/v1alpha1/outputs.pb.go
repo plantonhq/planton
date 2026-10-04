@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRedshiftServerlessWorkgroupStackOutputs captures the observable
+// AwsRedshiftServerlessWorkgroupOutputs captures the observable
 // identifiers and connection endpoint of the workgroup after deployment.
-type AwsRedshiftServerlessWorkgroupStackOutputs struct {
+type AwsRedshiftServerlessWorkgroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The workgroup name -- the handle the Redshift Serverless APIs, the
 	// credentials API (GetCredentials), and custom domain associations
@@ -56,20 +56,20 @@ type AwsRedshiftServerlessWorkgroupStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) Reset() {
-	*x = AwsRedshiftServerlessWorkgroupStackOutputs{}
+func (x *AwsRedshiftServerlessWorkgroupOutputs) Reset() {
+	*x = AwsRedshiftServerlessWorkgroupOutputs{}
 	mi := &file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) String() string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRedshiftServerlessWorkgroupStackOutputs) ProtoMessage() {}
+func (*AwsRedshiftServerlessWorkgroupOutputs) ProtoMessage() {}
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,61 +81,61 @@ func (x *AwsRedshiftServerlessWorkgroupStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRedshiftServerlessWorkgroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRedshiftServerlessWorkgroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRedshiftServerlessWorkgroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRedshiftServerlessWorkgroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetWorkgroupName() string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetWorkgroupName() string {
 	if x != nil {
 		return x.WorkgroupName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetWorkgroupId() string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetWorkgroupId() string {
 	if x != nil {
 		return x.WorkgroupId
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetArn() string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetEndpointAddress() string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetEndpointAddress() string {
 	if x != nil {
 		return x.EndpointAddress
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetPort() int32 {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetEndpointAccessAddresses() map[string]string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetEndpointAccessAddresses() map[string]string {
 	if x != nil {
 		return x.EndpointAccessAddresses
 	}
 	return nil
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetUsageLimitIds() map[string]string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetUsageLimitIds() map[string]string {
 	if x != nil {
 		return x.UsageLimitIds
 	}
 	return nil
 }
 
-func (x *AwsRedshiftServerlessWorkgroupStackOutputs) GetCustomDomainCertificateExpiryTime() string {
+func (x *AwsRedshiftServerlessWorkgroupOutputs) GetCustomDomainCertificateExpiryTime() string {
 	if x != nil {
 		return x.CustomDomainCertificateExpiryTime
 	}
@@ -146,15 +146,15 @@ var File_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto proto
 
 const file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/aws/awsredshiftserverlessworkgroup/v1alpha1/outputs.proto\x127dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1\"\x88\x06\n" +
-	"*AwsRedshiftServerlessWorkgroupStackOutputs\x12%\n" +
+	"Acatalog/aws/awsredshiftserverlessworkgroup/v1alpha1/outputs.proto\x127dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1\"\xf8\x05\n" +
+	"%AwsRedshiftServerlessWorkgroupOutputs\x12%\n" +
 	"\x0eworkgroup_name\x18\x01 \x01(\tR\rworkgroupName\x12!\n" +
 	"\fworkgroup_id\x18\x02 \x01(\tR\vworkgroupId\x12\x10\n" +
 	"\x03arn\x18\x03 \x01(\tR\x03arn\x12)\n" +
 	"\x10endpoint_address\x18\x04 \x01(\tR\x0fendpointAddress\x12\x12\n" +
-	"\x04port\x18\x05 \x01(\x05R\x04port\x12\xbd\x01\n" +
-	"\x19endpoint_access_addresses\x18\x06 \x03(\v2\x80\x01.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.EndpointAccessAddressesEntryR\x17endpointAccessAddresses\x12\x9e\x01\n" +
-	"\x0fusage_limit_ids\x18\a \x03(\v2v.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.UsageLimitIdsEntryR\rusageLimitIds\x12P\n" +
+	"\x04port\x18\x05 \x01(\x05R\x04port\x12\xb7\x01\n" +
+	"\x19endpoint_access_addresses\x18\x06 \x03(\v2{.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.EndpointAccessAddressesEntryR\x17endpointAccessAddresses\x12\x99\x01\n" +
+	"\x0fusage_limit_ids\x18\a \x03(\v2q.dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.UsageLimitIdsEntryR\rusageLimitIds\x12P\n" +
 	"%custom_domain_certificate_expiry_time\x18\b \x01(\tR!customDomainCertificateExpiryTime\x1aJ\n" +
 	"\x1cEndpointAccessAddressesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -178,13 +178,13 @@ func file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_rawD
 
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRedshiftServerlessWorkgroupStackOutputs)(nil), // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs
-	nil, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.EndpointAccessAddressesEntry
-	nil, // 2: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.UsageLimitIdsEntry
+	(*AwsRedshiftServerlessWorkgroupOutputs)(nil), // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs
+	nil, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.EndpointAccessAddressesEntry
+	nil, // 2: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.UsageLimitIdsEntry
 }
 var file_catalog_aws_awsredshiftserverlessworkgroup_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.endpoint_access_addresses:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.EndpointAccessAddressesEntry
-	2, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.usage_limit_ids:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupStackOutputs.UsageLimitIdsEntry
+	1, // 0: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.endpoint_access_addresses:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.EndpointAccessAddressesEntry
+	2, // 1: dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.usage_limit_ids:type_name -> dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupOutputs.UsageLimitIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

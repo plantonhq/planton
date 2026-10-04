@@ -31,7 +31,7 @@ type KubernetesPerconaMysqlOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesPerconaMysqlOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesPerconaMysqlOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPerconaMysqlOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPerconaMysqlOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesPerconaMysqlOperator) GetStatus() *KubernetesPerconaMysqlOper
 // kubernetes-percona-mysql-operator-kubernetes status
 type KubernetesPerconaMysqlOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesPerconaMysqlOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesPerconaMysqlOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesPerconaMysqlOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPerconaMysqlOperatorStatus) GetOutputs() *KubernetesPerconaMysqlOperatorStackOutputs {
+func (x *KubernetesPerconaMysqlOperatorStatus) GetOutputs() *KubernetesPerconaMysqlOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_api_proto_
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eKubernetesPerconaMysqlOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
 	"\x04spec\x18\x04 \x01(\v2b.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12|\n" +
-	"\x06status\x18\x05 \x01(\v2d.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatusR\x06status\"\xad\x01\n" +
-	"$KubernetesPerconaMysqlOperatorStatus\x12\x84\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2j.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStackOutputsR\aoutputsB\xeb\x03\n" +
+	"\x06status\x18\x05 \x01(\v2d.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatusR\x06status\"\xa7\x01\n" +
+	"$KubernetesPerconaMysqlOperatorStatus\x12\x7f\n" +
+	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorOutputsR\aoutputsB\xeb\x03\n" +
 	"Bcom.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1B\bApiProtoP\x01Z~github.com/plantonhq/planton/catalog/kubernetes/kubernetesperconamysqloperator/v1alpha1;kubernetesperconamysqloperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02>Dev.Planton.Kubernetes.Kubernetesperconamysqloperator.V1alpha1\xca\x02>Dev\\Planton\\Kubernetes\\Kubernetesperconamysqloperator\\V1alpha1\xe2\x02JDev\\Planton\\Kubernetes\\Kubernetesperconamysqloperator\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Kubernetes::Kubernetesperconamysqloperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_api_proto_r
 
 var file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPerconaMysqlOperator)(nil),             // 0: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperator
-	(*KubernetesPerconaMysqlOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPerconaMysqlOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorSpec
-	(*KubernetesPerconaMysqlOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStackOutputs
+	(*KubernetesPerconaMysqlOperator)(nil),        // 0: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperator
+	(*KubernetesPerconaMysqlOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPerconaMysqlOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorSpec
+	(*KubernetesPerconaMysqlOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperator.spec:type_name -> dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperator.status:type_name -> dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

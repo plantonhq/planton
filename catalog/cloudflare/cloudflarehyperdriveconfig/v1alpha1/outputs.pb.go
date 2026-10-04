@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareHyperdriveConfigStackOutputs captures the outputs after deploying a
+// CloudflareHyperdriveConfigOutputs captures the outputs after deploying a
 // Cloudflare Hyperdrive config.
-type CloudflareHyperdriveConfigStackOutputs struct {
+type CloudflareHyperdriveConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the Hyperdrive config. A Worker's
 	// `hyperdrive` binding references this value.
@@ -34,20 +34,20 @@ type CloudflareHyperdriveConfigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareHyperdriveConfigStackOutputs) Reset() {
-	*x = CloudflareHyperdriveConfigStackOutputs{}
+func (x *CloudflareHyperdriveConfigOutputs) Reset() {
+	*x = CloudflareHyperdriveConfigOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareHyperdriveConfigStackOutputs) String() string {
+func (x *CloudflareHyperdriveConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareHyperdriveConfigStackOutputs) ProtoMessage() {}
+func (*CloudflareHyperdriveConfigOutputs) ProtoMessage() {}
 
-func (x *CloudflareHyperdriveConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareHyperdriveConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareHyperdriveConfigStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareHyperdriveConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareHyperdriveConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareHyperdriveConfigOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareHyperdriveConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareHyperdriveConfigStackOutputs) GetHyperdriveId() string {
+func (x *CloudflareHyperdriveConfigOutputs) GetHyperdriveId() string {
 	if x != nil {
 		return x.HyperdriveId
 	}
 	return ""
 }
 
-func (x *CloudflareHyperdriveConfigStackOutputs) GetName() string {
+func (x *CloudflareHyperdriveConfigOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto pr
 
 const file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflarehyperdriveconfig/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1\"a\n" +
-	"&CloudflareHyperdriveConfigStackOutputs\x12#\n" +
+	"Dcatalog/cloudflare/cloudflarehyperdriveconfig/v1alpha1/outputs.proto\x12:dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1\"\\\n" +
+	"!CloudflareHyperdriveConfigOutputs\x12#\n" +
 	"\rhyperdrive_id\x18\x01 \x01(\tR\fhyperdriveId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04nameB\xd3\x03\n" +
 	">com.dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1B\fOutputsProtoP\x01Zvgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarehyperdriveconfig/v1alpha1;cloudflarehyperdriveconfigv1alpha1\xa2\x02\x04DPCC\xaa\x02:Dev.Planton.Cloudflare.Cloudflarehyperdriveconfig.V1alpha1\xca\x02:Dev\\Planton\\Cloudflare\\Cloudflarehyperdriveconfig\\V1alpha1\xe2\x02FDev\\Planton\\Cloudflare\\Cloudflarehyperdriveconfig\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Cloudflare::Cloudflarehyperdriveconfig::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_r
 
 var file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareHyperdriveConfigStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1.CloudflareHyperdriveConfigStackOutputs
+	(*CloudflareHyperdriveConfigOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1.CloudflareHyperdriveConfigOutputs
 }
 var file_catalog_cloudflare_cloudflarehyperdriveconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

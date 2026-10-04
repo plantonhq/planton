@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanCdnStackOutputs captures the key outputs after provisioning a
+// DigitalOceanCdnOutputs captures the key outputs after provisioning a
 // CDN endpoint.
-type DigitalOceanCdnStackOutputs struct {
+type DigitalOceanCdnOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the CDN endpoint (the resource's API identity and its import
 	// id).
@@ -36,20 +36,20 @@ type DigitalOceanCdnStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanCdnStackOutputs) Reset() {
-	*x = DigitalOceanCdnStackOutputs{}
+func (x *DigitalOceanCdnOutputs) Reset() {
+	*x = DigitalOceanCdnOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanCdnStackOutputs) String() string {
+func (x *DigitalOceanCdnOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanCdnStackOutputs) ProtoMessage() {}
+func (*DigitalOceanCdnOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanCdnStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanCdnOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *DigitalOceanCdnStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanCdnStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanCdnStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanCdnOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanCdnOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanCdnStackOutputs) GetCdnId() string {
+func (x *DigitalOceanCdnOutputs) GetCdnId() string {
 	if x != nil {
 		return x.CdnId
 	}
 	return ""
 }
 
-func (x *DigitalOceanCdnStackOutputs) GetEndpoint() string {
+func (x *DigitalOceanCdnOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
@@ -84,8 +84,8 @@ var File_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/digitalocean/digitaloceancdn/v1alpha1/outputs.proto\x121dev.planton.digitalocean.digitaloceancdn.v1alpha1\"P\n" +
-	"\x1bDigitalOceanCdnStackOutputs\x12\x15\n" +
+	";catalog/digitalocean/digitaloceancdn/v1alpha1/outputs.proto\x121dev.planton.digitalocean.digitaloceancdn.v1alpha1\"K\n" +
+	"\x16DigitalOceanCdnOutputs\x12\x15\n" +
 	"\x06cdn_id\x18\x01 \x01(\tR\x05cdnId\x12\x1a\n" +
 	"\bendpoint\x18\x02 \x01(\tR\bendpointB\x92\x03\n" +
 	"5com.dev.planton.digitalocean.digitaloceancdn.v1alpha1B\fOutputsProtoP\x01Zbgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceancdn/v1alpha1;digitaloceancdnv1alpha1\xa2\x02\x04DPDD\xaa\x021Dev.Planton.Digitalocean.Digitaloceancdn.V1alpha1\xca\x021Dev\\Planton\\Digitalocean\\Digitaloceancdn\\V1alpha1\xe2\x02=Dev\\Planton\\Digitalocean\\Digitaloceancdn\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Digitalocean::Digitaloceancdn::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanCdnStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceancdn.v1alpha1.DigitalOceanCdnStackOutputs
+	(*DigitalOceanCdnOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceancdn.v1alpha1.DigitalOceanCdnOutputs
 }
 var file_catalog_digitalocean_digitaloceancdn_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -27,7 +27,7 @@ type AwsBedrockInvocationLogging struct {
 	state         protoimpl.MessageState             `protogen:"open.v1"`
 	ApiVersion    string                             `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                             `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata      `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata      `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsBedrockInvocationLoggingSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsBedrockInvocationLoggingStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsBedrockInvocationLogging) GetKind() string {
 	return ""
 }
 
-func (x *AwsBedrockInvocationLogging) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBedrockInvocationLogging) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsBedrockInvocationLogging) GetStatus() *AwsBedrockInvocationLoggingSt
 }
 
 type AwsBedrockInvocationLoggingStatus struct {
-	state         protoimpl.MessageState                   `protogen:"open.v1"`
-	Outputs       *AwsBedrockInvocationLoggingStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState              `protogen:"open.v1"`
+	Outputs       *AwsBedrockInvocationLoggingOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsBedrockInvocationLoggingStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBedrockInvocationLoggingStatus) GetOutputs() *AwsBedrockInvocationLoggingStackOutputs {
+func (x *AwsBedrockInvocationLoggingStatus) GetOutputs() *AwsBedrockInvocationLoggingOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAwsBedrockInvocationLoggingR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatusR\x06status\"\x9c\x01\n" +
-	"!AwsBedrockInvocationLoggingStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatusR\x06status\"\x97\x01\n" +
+	"!AwsBedrockInvocationLoggingStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingOutputsR\aoutputsB\xac\x03\n" +
 	"8com.dev.planton.aws.awsbedrockinvocationlogging.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awsbedrockinvocationlogging/v1alpha1;awsbedrockinvocationloggingv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awsbedrockinvocationlogging.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awsbedrockinvocationlogging\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awsbedrockinvocationlogging\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awsbedrockinvocationlogging::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBedrockInvocationLogging)(nil),             // 0: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLogging
-	(*AwsBedrockInvocationLoggingStatus)(nil),       // 1: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBedrockInvocationLoggingSpec)(nil),         // 3: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingSpec
-	(*AwsBedrockInvocationLoggingStackOutputs)(nil), // 4: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStackOutputs
+	(*AwsBedrockInvocationLogging)(nil),        // 0: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLogging
+	(*AwsBedrockInvocationLoggingStatus)(nil),  // 1: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBedrockInvocationLoggingSpec)(nil),    // 3: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingSpec
+	(*AwsBedrockInvocationLoggingOutputs)(nil), // 4: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingOutputs
 }
 var file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLogging.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLogging.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLogging.spec:type_name -> dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingSpec
 	1, // 2: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLogging.status:type_name -> dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatus
-	4, // 3: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatus.outputs:type_name -> dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStackOutputs
+	4, // 3: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStatus.outputs:type_name -> dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

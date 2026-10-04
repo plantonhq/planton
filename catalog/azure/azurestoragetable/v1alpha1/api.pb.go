@@ -35,7 +35,7 @@ type AzureStorageTable struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureStorageTableSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureStorageTable) GetKind() string {
 	return ""
 }
 
-func (x *AzureStorageTable) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureStorageTable) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureStorageTable) GetStatus() *AzureStorageTableStatus {
 // AzureStorageTableStatus holds the deployment status and outputs.
 type AzureStorageTableStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureStorageTableStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureStorageTableOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureStorageTableStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragetable_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureStorageTableStatus) GetOutputs() *AzureStorageTableStackOutputs {
+func (x *AzureStorageTableStatus) GetOutputs() *AzureStorageTableOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurestoragetable_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AzureStorageTableR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatusR\x06status\"\x80\x01\n" +
-	"\x17AzureStorageTableStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackOutputsR\aoutputsB\xf2\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatusR\x06status\"{\n" +
+	"\x17AzureStorageTableStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableOutputsR\aoutputsB\xf2\x02\n" +
 	"0com.dev.planton.azure.azurestoragetable.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/azure/azurestoragetable/v1alpha1;azurestoragetablev1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Azure.Azurestoragetable.V1alpha1\xca\x02,Dev\\Planton\\Azure\\Azurestoragetable\\V1alpha1\xe2\x028Dev\\Planton\\Azure\\Azurestoragetable\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Azure::Azurestoragetable::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurestoragetable_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azurestoragetable_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurestoragetable_v1alpha1_api_proto_goTypes = []any{
-	(*AzureStorageTable)(nil),             // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable
-	(*AzureStorageTableStatus)(nil),       // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureStorageTableSpec)(nil),         // 3: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableSpec
-	(*AzureStorageTableStackOutputs)(nil), // 4: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackOutputs
+	(*AzureStorageTable)(nil),            // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable
+	(*AzureStorageTableStatus)(nil),      // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureStorageTableSpec)(nil),        // 3: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableSpec
+	(*AzureStorageTableOutputs)(nil),     // 4: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableOutputs
 }
 var file_catalog_azure_azurestoragetable_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable.spec:type_name -> dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableSpec
 	1, // 2: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable.status:type_name -> dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatus
-	4, // 3: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatus.outputs:type_name -> dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackOutputs
+	4, // 3: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStatus.outputs:type_name -> dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

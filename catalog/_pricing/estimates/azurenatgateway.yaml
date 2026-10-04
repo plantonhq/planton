@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurenatgateway
 spec:
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "32.8500"
       exclusions:
         - data processing bills every GB translated, in both directions
-        - the one attached public IP bills hourly on its own referenced component
+        - the one attached public IP bills hourly on its own referenced kind
       notes: The gateway-hour line is the whole committed spend; traffic and the referenced address are the variables that live elsewhere.
     - preset: 02-prefix-snat-range
       region_assumption: eastus
@@ -47,5 +47,5 @@ spec:
       total_list_cost: "32.8500"
       exclusions:
         - data processing bills every GB translated, in both directions
-        - the attached public IP prefix bills every address it contains, hourly, on its own referenced component -- the prefix size lives on that component, not this manifest
-      notes: The prefix buys a contiguous, allowlistable SNAT range; its cost follows the prefix component.
+        - the attached public IP prefix bills every address it contains, hourly, on its own referenced kind -- the prefix size lives on that kind, not this manifest
+      notes: The prefix buys a contiguous, allowlistable SNAT range; its cost follows the prefix kind.

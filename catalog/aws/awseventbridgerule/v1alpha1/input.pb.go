@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgeRuleStackInput is the input envelope passed to IaC modules
+// AwsEventBridgeRuleIacInput is the input envelope passed to IaC modules
 // for provisioning.
-type AwsEventBridgeRuleStackInput struct {
+type AwsEventBridgeRuleIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsEventBridgeRule resource to provision.
 	Target *AwsEventBridgeRule `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -36,20 +36,20 @@ type AwsEventBridgeRuleStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgeRuleStackInput) Reset() {
-	*x = AwsEventBridgeRuleStackInput{}
+func (x *AwsEventBridgeRuleIacInput) Reset() {
+	*x = AwsEventBridgeRuleIacInput{}
 	mi := &file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgeRuleStackInput) String() string {
+func (x *AwsEventBridgeRuleIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgeRuleStackInput) ProtoMessage() {}
+func (*AwsEventBridgeRuleIacInput) ProtoMessage() {}
 
-func (x *AwsEventBridgeRuleStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgeRuleIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsEventBridgeRuleStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgeRuleStackInput.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgeRuleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgeRuleIacInput.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgeRuleIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgeRuleStackInput) GetTarget() *AwsEventBridgeRule {
+func (x *AwsEventBridgeRuleIacInput) GetTarget() *AwsEventBridgeRule {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsEventBridgeRuleStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsEventBridgeRuleIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awseventbridgerule_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awseventbridgerule/v1alpha1/input.proto\x12+dev.planton.aws.awseventbridgerule.v1alpha1\x1a1catalog/aws/awseventbridgerule/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsEventBridgeRuleStackInput\x12W\n" +
+	"3catalog/aws/awseventbridgerule/v1alpha1/input.proto\x12+dev.planton.aws.awseventbridgerule.v1alpha1\x1a1catalog/aws/awseventbridgerule/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsEventBridgeRuleIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awseventbridgerule.v1alpha1B\n" +
@@ -105,13 +105,13 @@ func file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_goTypes = []any{
-	(*AwsEventBridgeRuleStackInput)(nil), // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackInput
-	(*AwsEventBridgeRule)(nil),           // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsEventBridgeRuleIacInput)(nil), // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleIacInput
+	(*AwsEventBridgeRule)(nil),         // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awseventbridgerule_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackInput.target:type_name -> dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule
-	2, // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleIacInput.target:type_name -> dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRule
+	2, // 1: dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

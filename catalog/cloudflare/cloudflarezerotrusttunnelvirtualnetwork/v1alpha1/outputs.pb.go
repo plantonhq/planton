@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustTunnelVirtualNetworkStackOutputs captures the outputs after
+// CloudflareZeroTrustTunnelVirtualNetworkOutputs captures the outputs after
 // provisioning a Cloudflare Tunnel virtual network.
-type CloudflareZeroTrustTunnelVirtualNetworkStackOutputs struct {
+type CloudflareZeroTrustTunnelVirtualNetworkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned UUID of the virtual network. A route
 	// (CloudflareZeroTrustTunnelRoute) references this value to bind a private network
@@ -35,20 +35,20 @@ type CloudflareZeroTrustTunnelVirtualNetworkStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) Reset() {
-	*x = CloudflareZeroTrustTunnelVirtualNetworkStackOutputs{}
+func (x *CloudflareZeroTrustTunnelVirtualNetworkOutputs) Reset() {
+	*x = CloudflareZeroTrustTunnelVirtualNetworkOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) String() string {
+func (x *CloudflareZeroTrustTunnelVirtualNetworkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustTunnelVirtualNetworkOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustTunnelVirtualNetworkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) ProtoReflect() pro
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustTunnelVirtualNetworkStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustTunnelVirtualNetworkOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustTunnelVirtualNetworkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) GetVirtualNetworkId() string {
+func (x *CloudflareZeroTrustTunnelVirtualNetworkOutputs) GetVirtualNetworkId() string {
 	if x != nil {
 		return x.VirtualNetworkId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs) GetVirtualNetworkName() string {
+func (x *CloudflareZeroTrustTunnelVirtualNetworkOutputs) GetVirtualNetworkName() string {
 	if x != nil {
 		return x.VirtualNetworkName
 	}
@@ -83,8 +83,8 @@ var File_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_out
 
 const file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Qcatalog/cloudflare/cloudflarezerotrusttunnelvirtualnetwork/v1alpha1/outputs.proto\x12Gdev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1\"\x95\x01\n" +
-	"3CloudflareZeroTrustTunnelVirtualNetworkStackOutputs\x12,\n" +
+	"Qcatalog/cloudflare/cloudflarezerotrusttunnelvirtualnetwork/v1alpha1/outputs.proto\x12Gdev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1\"\x90\x01\n" +
+	".CloudflareZeroTrustTunnelVirtualNetworkOutputs\x12,\n" +
 	"\x12virtual_network_id\x18\x01 \x01(\tR\x10virtualNetworkId\x120\n" +
 	"\x14virtual_network_name\x18\x02 \x01(\tR\x12virtualNetworkNameB\xaf\x04\n" +
 	"Kcom.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1B\fOutputsProtoP\x01Z\x90\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrusttunnelvirtualnetwork/v1alpha1;cloudflarezerotrusttunnelvirtualnetworkv1alpha1\xa2\x02\x04DPCC\xaa\x02GDev.Planton.Cloudflare.Cloudflarezerotrusttunnelvirtualnetwork.V1alpha1\xca\x02GDev\\Planton\\Cloudflare\\Cloudflarezerotrusttunnelvirtualnetwork\\V1alpha1\xe2\x02SDev\\Planton\\Cloudflare\\Cloudflarezerotrusttunnelvirtualnetwork\\V1alpha1\\GPBMetadata\xea\x02KDev::Planton::Cloudflare::Cloudflarezerotrusttunnelvirtualnetwork::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_ou
 
 var file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustTunnelVirtualNetworkStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStackOutputs
+	(*CloudflareZeroTrustTunnelVirtualNetworkOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

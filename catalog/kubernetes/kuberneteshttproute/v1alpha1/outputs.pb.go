@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesHttpRouteStackOutputs captures observable outputs after the
+// KubernetesHttpRouteOutputs captures observable outputs after the
 // HTTPRoute is created on the target cluster. Controller-managed status (the
 // per-parent Accepted/ResolvedRefs conditions) is reconciled asynchronously by
 // the Gateway implementation and read via kubectl, so it is intentionally not
 // stored here.
-type KubernetesHttpRouteStackOutputs struct {
+type KubernetesHttpRouteOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created HTTPRoute (equals metadata.name). In InfraCharts this
 	// orders the route after the Gateway and backends it references.
@@ -46,20 +46,20 @@ type KubernetesHttpRouteStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesHttpRouteStackOutputs) Reset() {
-	*x = KubernetesHttpRouteStackOutputs{}
+func (x *KubernetesHttpRouteOutputs) Reset() {
+	*x = KubernetesHttpRouteOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesHttpRouteStackOutputs) String() string {
+func (x *KubernetesHttpRouteOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesHttpRouteStackOutputs) ProtoMessage() {}
+func (*KubernetesHttpRouteOutputs) ProtoMessage() {}
 
-func (x *KubernetesHttpRouteStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesHttpRouteOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,26 +71,26 @@ func (x *KubernetesHttpRouteStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesHttpRouteStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesHttpRouteStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesHttpRouteOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesHttpRouteOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesHttpRouteStackOutputs) GetRouteName() string {
+func (x *KubernetesHttpRouteOutputs) GetRouteName() string {
 	if x != nil {
 		return x.RouteName
 	}
 	return ""
 }
 
-func (x *KubernetesHttpRouteStackOutputs) GetNamespace() string {
+func (x *KubernetesHttpRouteOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesHttpRouteStackOutputs) GetFirstHost() string {
+func (x *KubernetesHttpRouteOutputs) GetFirstHost() string {
 	if x != nil {
 		return x.FirstHost
 	}
@@ -101,8 +101,8 @@ var File_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kuberneteshttproute/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kuberneteshttproute.v1alpha1\"}\n" +
-	"\x1fKubernetesHttpRouteStackOutputs\x12\x1d\n" +
+	"=catalog/kubernetes/kuberneteshttproute/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kuberneteshttproute.v1alpha1\"x\n" +
+	"\x1aKubernetesHttpRouteOutputs\x12\x1d\n" +
 	"\n" +
 	"route_name\x18\x01 \x01(\tR\trouteName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1d\n" +
@@ -124,7 +124,7 @@ func file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesHttpRouteStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteshttproute.v1alpha1.KubernetesHttpRouteStackOutputs
+	(*KubernetesHttpRouteOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteshttproute.v1alpha1.KubernetesHttpRouteOutputs
 }
 var file_catalog_kubernetes_kuberneteshttproute_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

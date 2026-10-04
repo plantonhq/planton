@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAutoScalingGroupStackOutputs captures the observable outputs of a
+// AwsAutoScalingGroupOutputs captures the observable outputs of a
 // provisioned auto-scaling group.
-type AwsAutoScalingGroupStackOutputs struct {
+type AwsAutoScalingGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the auto-scaling group (metadata.name). The handle the
 	// AWS CLI, CloudWatch dimensions (AutoScalingGroupName), and ECS
@@ -36,20 +36,20 @@ type AwsAutoScalingGroupStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsAutoScalingGroupStackOutputs) Reset() {
-	*x = AwsAutoScalingGroupStackOutputs{}
+func (x *AwsAutoScalingGroupOutputs) Reset() {
+	*x = AwsAutoScalingGroupOutputs{}
 	mi := &file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAutoScalingGroupStackOutputs) String() string {
+func (x *AwsAutoScalingGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAutoScalingGroupStackOutputs) ProtoMessage() {}
+func (*AwsAutoScalingGroupOutputs) ProtoMessage() {}
 
-func (x *AwsAutoScalingGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAutoScalingGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsAutoScalingGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAutoScalingGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAutoScalingGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAutoScalingGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAutoScalingGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAutoScalingGroupStackOutputs) GetAutoscalingGroupName() string {
+func (x *AwsAutoScalingGroupOutputs) GetAutoscalingGroupName() string {
 	if x != nil {
 		return x.AutoscalingGroupName
 	}
 	return ""
 }
 
-func (x *AwsAutoScalingGroupStackOutputs) GetAutoscalingGroupArn() string {
+func (x *AwsAutoScalingGroupOutputs) GetAutoscalingGroupArn() string {
 	if x != nil {
 		return x.AutoscalingGroupArn
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsautoscalinggroup/v1alpha1/outputs.proto\x12,dev.planton.aws.awsautoscalinggroup.v1alpha1\"\x8b\x01\n" +
-	"\x1fAwsAutoScalingGroupStackOutputs\x124\n" +
+	"6catalog/aws/awsautoscalinggroup/v1alpha1/outputs.proto\x12,dev.planton.aws.awsautoscalinggroup.v1alpha1\"\x86\x01\n" +
+	"\x1aAwsAutoScalingGroupOutputs\x124\n" +
 	"\x16autoscaling_group_name\x18\x01 \x01(\tR\x14autoscalingGroupName\x122\n" +
 	"\x15autoscaling_group_arn\x18\x02 \x01(\tR\x13autoscalingGroupArnB\xf8\x02\n" +
 	"0com.dev.planton.aws.awsautoscalinggroup.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsautoscalinggroup/v1alpha1;awsautoscalinggroupv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsautoscalinggroup.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsautoscalinggroup\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsautoscalinggroup\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsautoscalinggroup::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAutoScalingGroupStackOutputs)(nil), // 0: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupStackOutputs
+	(*AwsAutoScalingGroupOutputs)(nil), // 0: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupOutputs
 }
 var file_catalog_aws_awsautoscalinggroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

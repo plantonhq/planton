@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanVolumeSpec defines the specification required to create a DigitalOcean block
 storage volume, modeling the provider's full argument surface. A block storage volume provides

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Monitoring dashboard.
-type GcpMonitoringDashboardStackOutputs struct {
+type GcpMonitoringDashboardOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-assigned resource name of the dashboard.
 	// Format: projects/{project}/dashboards/{dashboard_id}
@@ -33,20 +33,20 @@ type GcpMonitoringDashboardStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpMonitoringDashboardStackOutputs) Reset() {
-	*x = GcpMonitoringDashboardStackOutputs{}
+func (x *GcpMonitoringDashboardOutputs) Reset() {
+	*x = GcpMonitoringDashboardOutputs{}
 	mi := &file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMonitoringDashboardStackOutputs) String() string {
+func (x *GcpMonitoringDashboardOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMonitoringDashboardStackOutputs) ProtoMessage() {}
+func (*GcpMonitoringDashboardOutputs) ProtoMessage() {}
 
-func (x *GcpMonitoringDashboardStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpMonitoringDashboardOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *GcpMonitoringDashboardStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMonitoringDashboardStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpMonitoringDashboardStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMonitoringDashboardOutputs.ProtoReflect.Descriptor instead.
+func (*GcpMonitoringDashboardOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMonitoringDashboardStackOutputs) GetDashboardName() string {
+func (x *GcpMonitoringDashboardOutputs) GetDashboardName() string {
 	if x != nil {
 		return x.DashboardName
 	}
@@ -74,8 +74,8 @@ var File_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpmonitoringdashboard/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpmonitoringdashboard.v1alpha1\"K\n" +
-	"\"GcpMonitoringDashboardStackOutputs\x12%\n" +
+	"9catalog/gcp/gcpmonitoringdashboard/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpmonitoringdashboard.v1alpha1\"F\n" +
+	"\x1dGcpMonitoringDashboardOutputs\x12%\n" +
 	"\x0edashboard_name\x18\x01 \x01(\tR\rdashboardNameB\x8d\x03\n" +
 	"3com.dev.planton.gcp.gcpmonitoringdashboard.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpmonitoringdashboard/v1alpha1;gcpmonitoringdashboardv1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpmonitoringdashboard.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpmonitoringdashboard\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpmonitoringdashboard\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpmonitoringdashboard::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpMonitoringDashboardStackOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardStackOutputs
+	(*GcpMonitoringDashboardOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardOutputs
 }
 var file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

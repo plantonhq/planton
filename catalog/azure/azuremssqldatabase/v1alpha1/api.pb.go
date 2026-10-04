@@ -36,7 +36,7 @@ type AzureMssqlDatabase struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMssqlDatabaseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureMssqlDatabase) GetKind() string {
 	return ""
 }
 
-func (x *AzureMssqlDatabase) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMssqlDatabase) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureMssqlDatabase) GetStatus() *AzureMssqlDatabaseStatus {
 // AzureMssqlDatabaseStatus holds the deployment status and outputs.
 type AzureMssqlDatabaseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureMssqlDatabaseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureMssqlDatabaseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureMssqlDatabaseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqldatabase_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMssqlDatabaseStatus) GetOutputs() *AzureMssqlDatabaseStackOutputs {
+func (x *AzureMssqlDatabaseStatus) GetOutputs() *AzureMssqlDatabaseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azuremssqldatabase_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AzureMssqlDatabaseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatusR\x06status\"\x83\x01\n" +
-	"\x18AzureMssqlDatabaseStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackOutputsR\aoutputsB\xf9\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatusR\x06status\"~\n" +
+	"\x18AzureMssqlDatabaseStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseOutputsR\aoutputsB\xf9\x02\n" +
 	"1com.dev.planton.azure.azuremssqldatabase.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/azure/azuremssqldatabase/v1alpha1;azuremssqldatabasev1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Azure.Azuremssqldatabase.V1alpha1\xca\x02-Dev\\Planton\\Azure\\Azuremssqldatabase\\V1alpha1\xe2\x029Dev\\Planton\\Azure\\Azuremssqldatabase\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Azure::Azuremssqldatabase::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azuremssqldatabase_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azuremssqldatabase_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremssqldatabase_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMssqlDatabase)(nil),             // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase
-	(*AzureMssqlDatabaseStatus)(nil),       // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMssqlDatabaseSpec)(nil),         // 3: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseSpec
-	(*AzureMssqlDatabaseStackOutputs)(nil), // 4: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackOutputs
+	(*AzureMssqlDatabase)(nil),           // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase
+	(*AzureMssqlDatabaseStatus)(nil),     // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMssqlDatabaseSpec)(nil),       // 3: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseSpec
+	(*AzureMssqlDatabaseOutputs)(nil),    // 4: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseOutputs
 }
 var file_catalog_azure_azuremssqldatabase_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase.spec:type_name -> dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseSpec
 	1, // 2: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabase.status:type_name -> dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatus
-	4, // 3: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatus.outputs:type_name -> dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackOutputs
+	4, // 3: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStatus.outputs:type_name -> dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

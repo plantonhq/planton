@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpServiceAccountSpec defines the configuration for a Google Cloud service account —
 the identity that workloads (GKE pods, Cloud Run services, Cloud Functions, Compute
@@ -153,7 +153,7 @@ Create a user-managed key for this service account. Omit for keyless
 federation wherever the workload supports it). When present, a key is
 created with the configured algorithm and formats, and the private key
 (unless public_key_data supplies your own public key) is exported in
-stack outputs as `key_base64` — treat that output as a live credential.
+outputs as `key_base64` — treat that output as a live credential.
 
 - rule: public_key_data (upload flow) cannot be combined with private_key_type or public_key_type (generate flow)
 
@@ -201,7 +201,7 @@ Output format of the public key:
 
 Your own public key (base64-encoded X.509 PEM) — the UPLOAD flow: the
 matching private key never leaves your custody and GCP returns no
-private key material (the key_base64 stack output stays empty).
+private key material (the key_base64 output stays empty).
 The strongest key posture when a user-managed key is unavoidable.
 
 ### spec.userManagedKey.keepers

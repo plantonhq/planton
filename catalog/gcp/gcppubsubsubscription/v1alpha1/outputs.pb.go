@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Pub/Sub subscription.
-type GcpPubSubSubscriptionStackOutputs struct {
+type GcpPubSubSubscriptionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified subscription ID.
 	// Format: projects/{project}/subscriptions/{name}
@@ -34,20 +34,20 @@ type GcpPubSubSubscriptionStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *GcpPubSubSubscriptionStackOutputs) Reset() {
-	*x = GcpPubSubSubscriptionStackOutputs{}
+func (x *GcpPubSubSubscriptionOutputs) Reset() {
+	*x = GcpPubSubSubscriptionOutputs{}
 	mi := &file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPubSubSubscriptionStackOutputs) String() string {
+func (x *GcpPubSubSubscriptionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPubSubSubscriptionStackOutputs) ProtoMessage() {}
+func (*GcpPubSubSubscriptionOutputs) ProtoMessage() {}
 
-func (x *GcpPubSubSubscriptionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPubSubSubscriptionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *GcpPubSubSubscriptionStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPubSubSubscriptionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPubSubSubscriptionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPubSubSubscriptionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPubSubSubscriptionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPubSubSubscriptionStackOutputs) GetSubscriptionId() string {
+func (x *GcpPubSubSubscriptionOutputs) GetSubscriptionId() string {
 	if x != nil {
 		return x.SubscriptionId
 	}
 	return ""
 }
 
-func (x *GcpPubSubSubscriptionStackOutputs) GetSubscriptionName() string {
+func (x *GcpPubSubSubscriptionOutputs) GetSubscriptionName() string {
 	if x != nil {
 		return x.SubscriptionName
 	}
@@ -82,8 +82,8 @@ var File_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcppubsubsubscription/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcppubsubsubscription.v1alpha1\"y\n" +
-	"!GcpPubSubSubscriptionStackOutputs\x12'\n" +
+	"8catalog/gcp/gcppubsubsubscription/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcppubsubsubscription.v1alpha1\"t\n" +
+	"\x1cGcpPubSubSubscriptionOutputs\x12'\n" +
 	"\x0fsubscription_id\x18\x01 \x01(\tR\x0esubscriptionId\x12+\n" +
 	"\x11subscription_name\x18\x02 \x01(\tR\x10subscriptionNameB\x86\x03\n" +
 	"2com.dev.planton.gcp.gcppubsubsubscription.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/gcp/gcppubsubsubscription/v1alpha1;gcppubsubsubscriptionv1alpha1\xa2\x02\x04DPGG\xaa\x02.Dev.Planton.Gcp.Gcppubsubsubscription.V1alpha1\xca\x02.Dev\\Planton\\Gcp\\Gcppubsubsubscription\\V1alpha1\xe2\x02:Dev\\Planton\\Gcp\\Gcppubsubsubscription\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Gcp::Gcppubsubsubscription::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPubSubSubscriptionStackOutputs)(nil), // 0: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionStackOutputs
+	(*GcpPubSubSubscriptionOutputs)(nil), // 0: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionOutputs
 }
 var file_catalog_gcp_gcppubsubsubscription_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

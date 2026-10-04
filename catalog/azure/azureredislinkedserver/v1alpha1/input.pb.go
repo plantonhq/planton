@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-redis-linked-server stack-input
-type AzureRedisLinkedServerStackInput struct {
+// azure-redis-linked-server iac-input
+type AzureRedisLinkedServerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureRedisLinkedServer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureRedisLinkedServerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureRedisLinkedServerStackInput) Reset() {
-	*x = AzureRedisLinkedServerStackInput{}
+func (x *AzureRedisLinkedServerIacInput) Reset() {
+	*x = AzureRedisLinkedServerIacInput{}
 	mi := &file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRedisLinkedServerStackInput) String() string {
+func (x *AzureRedisLinkedServerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRedisLinkedServerStackInput) ProtoMessage() {}
+func (*AzureRedisLinkedServerIacInput) ProtoMessage() {}
 
-func (x *AzureRedisLinkedServerStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureRedisLinkedServerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureRedisLinkedServerStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRedisLinkedServerStackInput.ProtoReflect.Descriptor instead.
-func (*AzureRedisLinkedServerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRedisLinkedServerIacInput.ProtoReflect.Descriptor instead.
+func (*AzureRedisLinkedServerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRedisLinkedServerStackInput) GetTarget() *AzureRedisLinkedServer {
+func (x *AzureRedisLinkedServerIacInput) GetTarget() *AzureRedisLinkedServer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureRedisLinkedServerStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureRedisLinkedServerIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azureredislinkedserver_v1alpha1_input_proto protoreflect.
 
 const file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureredislinkedserver/v1alpha1/input.proto\x121dev.planton.azure.azureredislinkedserver.v1alpha1\x1a7catalog/azure/azureredislinkedserver/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd6\x01\n" +
-	" AzureRedisLinkedServerStackInput\x12a\n" +
+	"9catalog/azure/azureredislinkedserver/v1alpha1/input.proto\x121dev.planton.azure.azureredislinkedserver.v1alpha1\x1a7catalog/azure/azureredislinkedserver/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd4\x01\n" +
+	"\x1eAzureRedisLinkedServerIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x97\x03\n" +
 	"5com.dev.planton.azure.azureredislinkedserver.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_goTypes = []any{
-	(*AzureRedisLinkedServerStackInput)(nil), // 0: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerStackInput
-	(*AzureRedisLinkedServer)(nil),           // 1: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServer
-	(*azure.AzureProviderConfig)(nil),        // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureRedisLinkedServerIacInput)(nil), // 0: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerIacInput
+	(*AzureRedisLinkedServer)(nil),         // 1: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServer
+	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureredislinkedserver_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerStackInput.target:type_name -> dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServer
-	2, // 1: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerIacInput.target:type_name -> dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServer
+	2, // 1: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

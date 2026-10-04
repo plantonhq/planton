@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-gcs-bucket stack outputs
-type GcpGcsBucketStackOutputs struct {
+// gcp-gcs-bucket outputs
+type GcpGcsBucketOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ID of the bucket. For GCS this equals the globally unique bucket name —
 	// the value every consumer (backend buckets, function sources, Dataproc
@@ -45,20 +45,20 @@ type GcpGcsBucketStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGcsBucketStackOutputs) Reset() {
-	*x = GcpGcsBucketStackOutputs{}
+func (x *GcpGcsBucketOutputs) Reset() {
+	*x = GcpGcsBucketOutputs{}
 	mi := &file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGcsBucketStackOutputs) String() string {
+func (x *GcpGcsBucketOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGcsBucketStackOutputs) ProtoMessage() {}
+func (*GcpGcsBucketOutputs) ProtoMessage() {}
 
-func (x *GcpGcsBucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGcsBucketOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,47 +70,47 @@ func (x *GcpGcsBucketStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGcsBucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGcsBucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGcsBucketOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGcsBucketOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGcsBucketStackOutputs) GetBucketId() string {
+func (x *GcpGcsBucketOutputs) GetBucketId() string {
 	if x != nil {
 		return x.BucketId
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketStackOutputs) GetBucketName() string {
+func (x *GcpGcsBucketOutputs) GetBucketName() string {
 	if x != nil {
 		return x.BucketName
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketStackOutputs) GetUrl() string {
+func (x *GcpGcsBucketOutputs) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketStackOutputs) GetSelfLink() string {
+func (x *GcpGcsBucketOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketStackOutputs) GetLocation() string {
+func (x *GcpGcsBucketOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketStackOutputs) GetProjectNumber() int64 {
+func (x *GcpGcsBucketOutputs) GetProjectNumber() int64 {
 	if x != nil {
 		return x.ProjectNumber
 	}
@@ -121,8 +121,8 @@ var File_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpgcsbucket/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcpgcsbucket.v1alpha1\"\xca\x01\n" +
-	"\x18GcpGcsBucketStackOutputs\x12\x1b\n" +
+	"/catalog/gcp/gcpgcsbucket/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcpgcsbucket.v1alpha1\"\xc5\x01\n" +
+	"\x13GcpGcsBucketOutputs\x12\x1b\n" +
 	"\tbucket_id\x18\x01 \x01(\tR\bbucketId\x12\x1f\n" +
 	"\vbucket_name\x18\x02 \x01(\tR\n" +
 	"bucketName\x12\x10\n" +
@@ -146,7 +146,7 @@ func file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGcsBucketStackOutputs)(nil), // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackOutputs
+	(*GcpGcsBucketOutputs)(nil), // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketOutputs
 }
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

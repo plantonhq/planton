@@ -27,7 +27,7 @@ type AwsOrganization struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsOrganizationSpec          `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsOrganizationStatus        `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsOrganization) GetKind() string {
 	return ""
 }
 
-func (x *AwsOrganization) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsOrganization) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsOrganization) GetStatus() *AwsOrganizationStatus {
 }
 
 type AwsOrganizationStatus struct {
-	state         protoimpl.MessageState       `protogen:"open.v1"`
-	Outputs       *AwsOrganizationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Outputs       *AwsOrganizationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsOrganizationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsorganization_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsOrganizationStatus) GetOutputs() *AwsOrganizationStackOutputs {
+func (x *AwsOrganizationStatus) GetOutputs() *AwsOrganizationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsorganization_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAwsOrganizationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
 	"\x04spec\x18\x04 \x01(\v2=.dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12W\n" +
-	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStatusR\x06status\"x\n" +
-	"\x15AwsOrganizationStatus\x12_\n" +
-	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStackOutputsR\aoutputsB\xd8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStatusR\x06status\"s\n" +
+	"\x15AwsOrganizationStatus\x12Z\n" +
+	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationOutputsR\aoutputsB\xd8\x02\n" +
 	",com.dev.planton.aws.awsorganization.v1alpha1B\bApiProtoP\x01ZYgithub.com/plantonhq/planton/catalog/aws/awsorganization/v1alpha1;awsorganizationv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Aws.Awsorganization.V1alpha1\xca\x02(Dev\\Planton\\Aws\\Awsorganization\\V1alpha1\xe2\x024Dev\\Planton\\Aws\\Awsorganization\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Aws::Awsorganization::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awsorganization_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_aws_awsorganization_v1alpha1_api_proto_goTypes = []any{
 	(*AwsOrganization)(nil),              // 0: dev.planton.aws.awsorganization.v1alpha1.AwsOrganization
 	(*AwsOrganizationStatus)(nil),        // 1: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsOrganizationSpec)(nil),          // 3: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationSpec
-	(*AwsOrganizationStackOutputs)(nil),  // 4: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStackOutputs
+	(*AwsOrganizationOutputs)(nil),       // 4: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationOutputs
 }
 var file_catalog_aws_awsorganization_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsorganization.v1alpha1.AwsOrganization.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsorganization.v1alpha1.AwsOrganization.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsorganization.v1alpha1.AwsOrganization.spec:type_name -> dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationSpec
 	1, // 2: dev.planton.aws.awsorganization.v1alpha1.AwsOrganization.status:type_name -> dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStatus
-	4, // 3: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStatus.outputs:type_name -> dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStackOutputs
+	4, // 3: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStatus.outputs:type_name -> dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

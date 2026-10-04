@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// otel-collector-kubernetes stack outputs
-type KubernetesOtelCollectorStackOutputs struct {
+// otel-collector-kubernetes outputs
+type KubernetesOtelCollectorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the collector runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -53,20 +53,20 @@ type KubernetesOtelCollectorStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) Reset() {
-	*x = KubernetesOtelCollectorStackOutputs{}
+func (x *KubernetesOtelCollectorOutputs) Reset() {
+	*x = KubernetesOtelCollectorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) String() string {
+func (x *KubernetesOtelCollectorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOtelCollectorStackOutputs) ProtoMessage() {}
+func (*KubernetesOtelCollectorOutputs) ProtoMessage() {}
 
-func (x *KubernetesOtelCollectorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOtelCollectorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,54 +78,54 @@ func (x *KubernetesOtelCollectorStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOtelCollectorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesOtelCollectorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOtelCollectorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesOtelCollectorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetNamespace() string {
+func (x *KubernetesOtelCollectorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetCollectorName() string {
+func (x *KubernetesOtelCollectorOutputs) GetCollectorName() string {
 	if x != nil {
 		return x.CollectorName
 	}
 	return ""
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetService() string {
+func (x *KubernetesOtelCollectorOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetOtlpGrpcEndpoint() string {
+func (x *KubernetesOtelCollectorOutputs) GetOtlpGrpcEndpoint() string {
 	if x != nil {
 		return x.OtlpGrpcEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetOtlpHttpEndpoint() string {
+func (x *KubernetesOtelCollectorOutputs) GetOtlpHttpEndpoint() string {
 	if x != nil {
 		return x.OtlpHttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetHeadlessService() string {
+func (x *KubernetesOtelCollectorOutputs) GetHeadlessService() string {
 	if x != nil {
 		return x.HeadlessService
 	}
 	return ""
 }
 
-func (x *KubernetesOtelCollectorStackOutputs) GetMonitoringService() string {
+func (x *KubernetesOtelCollectorOutputs) GetMonitoringService() string {
 	if x != nil {
 		return x.MonitoringService
 	}
@@ -136,8 +136,8 @@ var File_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesotelcollector/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesotelcollector.v1alpha1\"\xba\x02\n" +
-	"#KubernetesOtelCollectorStackOutputs\x12\x1c\n" +
+	"Acatalog/kubernetes/kubernetesotelcollector/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesotelcollector.v1alpha1\"\xb5\x02\n" +
+	"\x1eKubernetesOtelCollectorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
 	"\x0ecollector_name\x18\x02 \x01(\tR\rcollectorName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12,\n" +
@@ -161,7 +161,7 @@ func file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesOtelCollectorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStackOutputs
+	(*KubernetesOtelCollectorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorOutputs
 }
 var file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

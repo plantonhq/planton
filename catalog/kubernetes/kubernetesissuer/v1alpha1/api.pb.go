@@ -31,7 +31,7 @@ type KubernetesIssuer struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesIssuerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesIssuer) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesIssuer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesIssuer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesIssuer) GetStatus() *KubernetesIssuerStatus {
 // KubernetesIssuerStatus holds the deployment status and outputs.
 type KubernetesIssuerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesIssuerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesIssuerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesIssuerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesissuer_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesIssuerStatus) GetOutputs() *KubernetesIssuerStackOutputs {
+func (x *KubernetesIssuerStatus) GetOutputs() *KubernetesIssuerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesissuer_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10KubernetesIssuerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStatusR\x06status\"\x82\x01\n" +
-	"\x16KubernetesIssuerStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStatusR\x06status\"}\n" +
+	"\x16KubernetesIssuerStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerOutputsR\aoutputsB\x89\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetesissuer.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesissuer/v1alpha1;kubernetesissuerv1alpha1\xa2\x02\x04DPKK\xaa\x020Dev.Planton.Kubernetes.Kubernetesissuer.V1alpha1\xca\x020Dev\\Planton\\Kubernetes\\Kubernetesissuer\\V1alpha1\xe2\x02<Dev\\Planton\\Kubernetes\\Kubernetesissuer\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Kubernetes::Kubernetesissuer::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetesissuer_v1alpha1_api_proto_msgTypes = make(
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesIssuer)(nil),             // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer
 	(*KubernetesIssuerStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesIssuerSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerSpec
-	(*KubernetesIssuerStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackOutputs
+	(*KubernetesIssuerOutputs)(nil),      // 4: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerOutputs
 }
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer.spec:type_name -> dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerSpec
 	1, // 2: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuer.status:type_name -> dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStatus
-	4, // 3: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

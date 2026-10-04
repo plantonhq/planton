@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockPromptStackOutputs captures observable identifiers from a
+// AwsBedrockPromptOutputs captures observable identifiers from a
 // provisioned Bedrock prompt. These outputs are used by downstream
 // resources (flows) to wire dependencies via StringValueOrRef.
-type AwsBedrockPromptStackOutputs struct {
+type AwsBedrockPromptOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique prompt identifier (e.g. "1A2BC3DEFG").
 	PromptId string `protobuf:"bytes,1,opt,name=prompt_id,json=promptId,proto3" json:"prompt_id,omitempty"`
@@ -37,20 +37,20 @@ type AwsBedrockPromptStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockPromptStackOutputs) Reset() {
-	*x = AwsBedrockPromptStackOutputs{}
+func (x *AwsBedrockPromptOutputs) Reset() {
+	*x = AwsBedrockPromptOutputs{}
 	mi := &file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockPromptStackOutputs) String() string {
+func (x *AwsBedrockPromptOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockPromptStackOutputs) ProtoMessage() {}
+func (*AwsBedrockPromptOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockPromptStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockPromptOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AwsBedrockPromptStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockPromptStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockPromptStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockPromptOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockPromptOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockPromptStackOutputs) GetPromptId() string {
+func (x *AwsBedrockPromptOutputs) GetPromptId() string {
 	if x != nil {
 		return x.PromptId
 	}
 	return ""
 }
 
-func (x *AwsBedrockPromptStackOutputs) GetPromptArn() string {
+func (x *AwsBedrockPromptOutputs) GetPromptArn() string {
 	if x != nil {
 		return x.PromptArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockPromptStackOutputs) GetDraftVersion() string {
+func (x *AwsBedrockPromptOutputs) GetDraftVersion() string {
 	if x != nil {
 		return x.DraftVersion
 	}
@@ -92,8 +92,8 @@ var File_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsbedrockprompt/v1alpha1/outputs.proto\x12)dev.planton.aws.awsbedrockprompt.v1alpha1\"\x7f\n" +
-	"\x1cAwsBedrockPromptStackOutputs\x12\x1b\n" +
+	"3catalog/aws/awsbedrockprompt/v1alpha1/outputs.proto\x12)dev.planton.aws.awsbedrockprompt.v1alpha1\"z\n" +
+	"\x17AwsBedrockPromptOutputs\x12\x1b\n" +
 	"\tprompt_id\x18\x01 \x01(\tR\bpromptId\x12\x1d\n" +
 	"\n" +
 	"prompt_arn\x18\x02 \x01(\tR\tpromptArn\x12#\n" +
@@ -114,7 +114,7 @@ func file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockPromptStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptStackOutputs
+	(*AwsBedrockPromptOutputs)(nil), // 0: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptOutputs
 }
 var file_catalog_aws_awsbedrockprompt_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

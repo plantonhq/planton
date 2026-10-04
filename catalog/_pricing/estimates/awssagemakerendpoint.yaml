@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awssagemakerendpoint
 spec:
@@ -20,7 +20,7 @@ spec:
         - invocations bill per second of compute duration at the 2 GB memory tier (memory_size_mb 2048) -- workload-driven, zero when idle
         - endpoint data processing bills per GB in and per GB out of the endpoint, following payload volume
         - CloudWatch ingestion for container logs follows model output volume
-        - the referenced SageMaker model and its S3 artifacts bill on their own components
+        - the referenced SageMaker model and its S3 artifacts bill on their own kinds
       notes: The single variant is serverless with no provisioned_concurrency -- the committed monthly cost of this endpoint existing is exactly zero. Configuring provisioned concurrency is the one serverless setting that would create a standing per-second charge.
     - preset: 02-production-canary-endpoint
       region_assumption: us-west-2
@@ -43,4 +43,4 @@ spec:
         - each blue/green update runs a full parallel fleet through the canary shift, bake, and termination wait -- roughly double the hourly rate for the deployment window
         - endpoint ML storage bills per GB-month at the instance family's AWS-default volume size (the preset sets no volume_size_gb)
         - CloudWatch ingestion for container logs follows model output volume
-      notes: Both variants run ml.m5.large, so one hosting rate covers all three instances; the 0.9/0.1 traffic weights split invocations, never the hourly charge. The referenced models bill on their own components.
+      notes: Both variants run ml.m5.large, so one hosting rate covers all three instances; the 0.9/0.1 traffic weights split invocations, never the hourly charge. The referenced models bill on their own kinds.

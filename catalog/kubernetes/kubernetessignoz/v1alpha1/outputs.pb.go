@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// signoz-kubernetes stack outputs
-type KubernetesSignozStackOutputs struct {
+// signoz-kubernetes outputs
+type KubernetesSignozOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace SigNoz runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -63,20 +63,20 @@ type KubernetesSignozStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *KubernetesSignozStackOutputs) Reset() {
-	*x = KubernetesSignozStackOutputs{}
+func (x *KubernetesSignozOutputs) Reset() {
+	*x = KubernetesSignozOutputs{}
 	mi := &file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSignozStackOutputs) String() string {
+func (x *KubernetesSignozOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSignozStackOutputs) ProtoMessage() {}
+func (*KubernetesSignozOutputs) ProtoMessage() {}
 
-func (x *KubernetesSignozStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSignozOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,75 +88,75 @@ func (x *KubernetesSignozStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSignozStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesSignozStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSignozOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesSignozOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSignozStackOutputs) GetNamespace() string {
+func (x *KubernetesSignozOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetService() string {
+func (x *KubernetesSignozOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesSignozOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesSignozOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetOtelCollectorService() string {
+func (x *KubernetesSignozOutputs) GetOtelCollectorService() string {
 	if x != nil {
 		return x.OtelCollectorService
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetOtlpGrpcEndpoint() string {
+func (x *KubernetesSignozOutputs) GetOtlpGrpcEndpoint() string {
 	if x != nil {
 		return x.OtlpGrpcEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetOtlpHttpEndpoint() string {
+func (x *KubernetesSignozOutputs) GetOtlpHttpEndpoint() string {
 	if x != nil {
 		return x.OtlpHttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetClickhouseEndpoint() string {
+func (x *KubernetesSignozOutputs) GetClickhouseEndpoint() string {
 	if x != nil {
 		return x.ClickhouseEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetClickhouseUsername() string {
+func (x *KubernetesSignozOutputs) GetClickhouseUsername() string {
 	if x != nil {
 		return x.ClickhouseUsername
 	}
 	return ""
 }
 
-func (x *KubernetesSignozStackOutputs) GetClickhousePasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesSignozOutputs) GetClickhousePasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.ClickhousePasswordSecret
 	}
@@ -167,8 +167,8 @@ var File_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetessignoz/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetessignoz.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x8c\x04\n" +
-	"\x1cKubernetesSignozStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetessignoz/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetessignoz.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x87\x04\n" +
+	"\x17KubernetesSignozOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12#\n" +
 	"\rkube_endpoint\x18\x03 \x01(\tR\fkubeEndpoint\x120\n" +
@@ -196,11 +196,11 @@ func file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesSignozStackOutputs)(nil),   // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozStackOutputs
+	(*KubernetesSignozOutputs)(nil),        // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetessignoz_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozStackOutputs.clickhouse_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozOutputs.clickhouse_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

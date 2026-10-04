@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureBastionHostStackInput is the input to the IaC modules
+// AzureBastionHostIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureBastionHostStackInput struct {
+type AzureBastionHostIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Bastion host resource to deploy.
 	Target *AzureBastionHost `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureBastionHostStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureBastionHostStackInput) Reset() {
-	*x = AzureBastionHostStackInput{}
+func (x *AzureBastionHostIacInput) Reset() {
+	*x = AzureBastionHostIacInput{}
 	mi := &file_catalog_azure_azurebastionhost_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBastionHostStackInput) String() string {
+func (x *AzureBastionHostIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBastionHostStackInput) ProtoMessage() {}
+func (*AzureBastionHostIacInput) ProtoMessage() {}
 
-func (x *AzureBastionHostStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureBastionHostIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebastionhost_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureBastionHostStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBastionHostStackInput.ProtoReflect.Descriptor instead.
-func (*AzureBastionHostStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBastionHostIacInput.ProtoReflect.Descriptor instead.
+func (*AzureBastionHostIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebastionhost_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBastionHostStackInput) GetTarget() *AzureBastionHost {
+func (x *AzureBastionHostIacInput) GetTarget() *AzureBastionHost {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureBastionHostStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureBastionHostIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurebastionhost_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_azure_azurebastionhost_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/azure/azurebastionhost/v1alpha1/input.proto\x12+dev.planton.azure.azurebastionhost.v1alpha1\x1a1catalog/azure/azurebastionhost/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc4\x01\n" +
-	"\x1aAzureBastionHostStackInput\x12U\n" +
+	"3catalog/azure/azurebastionhost/v1alpha1/input.proto\x12+dev.planton.azure.azurebastionhost.v1alpha1\x1a1catalog/azure/azurebastionhost/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc2\x01\n" +
+	"\x18AzureBastionHostIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xed\x02\n" +
 	"/com.dev.planton.azure.azurebastionhost.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurebastionhost_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azurebastionhost_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebastionhost_v1alpha1_input_proto_goTypes = []any{
-	(*AzureBastionHostStackInput)(nil), // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackInput
-	(*AzureBastionHost)(nil),           // 1: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost
-	(*azure.AzureProviderConfig)(nil),  // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureBastionHostIacInput)(nil),  // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostIacInput
+	(*AzureBastionHost)(nil),          // 1: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurebastionhost_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackInput.target:type_name -> dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost
-	2, // 1: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostIacInput.target:type_name -> dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHost
+	2, // 1: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

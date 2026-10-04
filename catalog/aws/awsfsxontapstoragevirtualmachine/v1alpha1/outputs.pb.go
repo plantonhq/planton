@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxOntapStorageVirtualMachineStackOutputs captures observable identifiers
+// AwsFsxOntapStorageVirtualMachineOutputs captures observable identifiers
 // and endpoints from a provisioned FSx for ONTAP Storage Virtual Machine. These
 // outputs are used by downstream resources to wire dependencies via
 // StringValueOrRef.
@@ -33,7 +33,7 @@ const (
 // - SMB clients: needs `smb_dns_name` for UNC paths (requires AD)
 // - iSCSI initiators: needs `iscsi_dns_name` for target discovery
 // - SVM administration: needs `management_dns_name` for ONTAP CLI access
-type AwsFsxOntapStorageVirtualMachineStackOutputs struct {
+type AwsFsxOntapStorageVirtualMachineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the SVM (e.g., "svm-0123456789abcdef0"). Primary identifier
 	// used by ONTAP volumes and other AWS services referencing this SVM.
@@ -76,20 +76,20 @@ type AwsFsxOntapStorageVirtualMachineStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) Reset() {
-	*x = AwsFsxOntapStorageVirtualMachineStackOutputs{}
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) Reset() {
+	*x = AwsFsxOntapStorageVirtualMachineOutputs{}
 	mi := &file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) String() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxOntapStorageVirtualMachineStackOutputs) ProtoMessage() {}
+func (*AwsFsxOntapStorageVirtualMachineOutputs) ProtoMessage() {}
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -101,89 +101,89 @@ func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxOntapStorageVirtualMachineStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxOntapStorageVirtualMachineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxOntapStorageVirtualMachineOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxOntapStorageVirtualMachineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetSvmId() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetSvmId() string {
 	if x != nil {
 		return x.SvmId
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetArn() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetUuid() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetUuid() string {
 	if x != nil {
 		return x.Uuid
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetSubtype() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetSubtype() string {
 	if x != nil {
 		return x.Subtype
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetIscsiDnsName() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetIscsiDnsName() string {
 	if x != nil {
 		return x.IscsiDnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetIscsiIpAddresses() []string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetIscsiIpAddresses() []string {
 	if x != nil {
 		return x.IscsiIpAddresses
 	}
 	return nil
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetManagementDnsName() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetManagementDnsName() string {
 	if x != nil {
 		return x.ManagementDnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetManagementIpAddresses() []string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetManagementIpAddresses() []string {
 	if x != nil {
 		return x.ManagementIpAddresses
 	}
 	return nil
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetNfsDnsName() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetNfsDnsName() string {
 	if x != nil {
 		return x.NfsDnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetNfsIpAddresses() []string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetNfsIpAddresses() []string {
 	if x != nil {
 		return x.NfsIpAddresses
 	}
 	return nil
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetSmbDnsName() string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetSmbDnsName() string {
 	if x != nil {
 		return x.SmbDnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStackOutputs) GetSmbIpAddresses() []string {
+func (x *AwsFsxOntapStorageVirtualMachineOutputs) GetSmbIpAddresses() []string {
 	if x != nil {
 		return x.SmbIpAddresses
 	}
@@ -194,8 +194,8 @@ var File_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto pro
 
 const file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/aws/awsfsxontapstoragevirtualmachine/v1alpha1/outputs.proto\x129dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1\"\xd9\x03\n" +
-	",AwsFsxOntapStorageVirtualMachineStackOutputs\x12\x15\n" +
+	"Ccatalog/aws/awsfsxontapstoragevirtualmachine/v1alpha1/outputs.proto\x129dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1\"\xd4\x03\n" +
+	"'AwsFsxOntapStorageVirtualMachineOutputs\x12\x15\n" +
 	"\x06svm_id\x18\x01 \x01(\tR\x05svmId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12\x12\n" +
 	"\x04uuid\x18\x03 \x01(\tR\x04uuid\x12\x18\n" +
@@ -227,7 +227,7 @@ func file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_ra
 
 var file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxOntapStorageVirtualMachineStackOutputs)(nil), // 0: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStackOutputs
+	(*AwsFsxOntapStorageVirtualMachineOutputs)(nil), // 0: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineOutputs
 }
 var file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

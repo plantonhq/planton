@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsbackupframework
 spec:
@@ -19,8 +19,8 @@ spec:
       exclusions:
         - each of the two coverage controls evaluates every in-scope backup resource on an AWS-managed cadence, and each check bills as one Backup Audit Manager evaluation -- volume is fleet-driven, scaling with the plans, vaults, and recovery points that exist in the region
         - every evaluation also records one AWS Config configuration item, billed separately at Config's per-item rate
-        - the ACTIVE AWS Config recorder the framework requires bills its own recording charges on the AwsConfigRecorder component
-        - the backup activity being audited (storage, copies, restores) bills on the AwsBackupPlan and vault components
+        - the ACTIVE AWS Config recorder the framework requires bills its own recording charges on the AwsConfigRecorder kind
+        - the backup activity being audited (storage, copies, restores) bills on the AwsBackupPlan and vault kinds
       notes: Zero committed cost -- the framework is free to exist, and with no controls scoped, both meters (evaluations and Config items) follow the size of the backup fleet, which is zero until backup resources exist.
     - preset: 02-immutable-backup-posture
       region_assumption: us-east-1
@@ -30,5 +30,5 @@ spec:
       exclusions:
         - each of the three immutability controls evaluates every in-scope recovery point and vault on an AWS-managed cadence, one billed evaluation per check -- three controls is a straight 3x multiplier on the fleet's evaluation volume versus a single-control framework
         - every evaluation records one AWS Config configuration item billed at Config's per-item rate, plus additional items whenever the underlying backup resources change
-        - the ACTIVE AWS Config recorder prerequisite bills on the AwsConfigRecorder component
+        - the ACTIVE AWS Config recorder prerequisite bills on the AwsConfigRecorder kind
       notes: Zero committed cost -- the zero is commitment-absence, not freeness; the evaluation meter starts the moment recovery points exist for these controls to check, and the cadence itself carries no dial in this spec.

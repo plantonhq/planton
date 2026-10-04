@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMskClusterStackOutputs captures observable identifiers and endpoints from a deployed
+// AwsMskClusterOutputs captures observable identifiers and endpoints from a deployed
 // Amazon MSK cluster. These outputs enable downstream resources (Lambda event source mappings,
 // ECS/EKS consumer services, Firehose delivery streams) to connect to the cluster and
 // integrate with monitoring, security, and data pipeline workflows.
-type AwsMskClusterStackOutputs struct {
+type AwsMskClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// cluster_arn is the Amazon Resource Name of the MSK cluster,
 	// used in IAM policies, event source mappings, and cross-service references.
@@ -83,20 +83,20 @@ type AwsMskClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsMskClusterStackOutputs) Reset() {
-	*x = AwsMskClusterStackOutputs{}
+func (x *AwsMskClusterOutputs) Reset() {
+	*x = AwsMskClusterOutputs{}
 	mi := &file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMskClusterStackOutputs) String() string {
+func (x *AwsMskClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMskClusterStackOutputs) ProtoMessage() {}
+func (*AwsMskClusterOutputs) ProtoMessage() {}
 
-func (x *AwsMskClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMskClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -108,131 +108,131 @@ func (x *AwsMskClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMskClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMskClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMskClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMskClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMskClusterStackOutputs) GetClusterArn() string {
+func (x *AwsMskClusterOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetClusterName() string {
+func (x *AwsMskClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetClusterUuid() string {
+func (x *AwsMskClusterOutputs) GetClusterUuid() string {
 	if x != nil {
 		return x.ClusterUuid
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetCurrentVersion() string {
+func (x *AwsMskClusterOutputs) GetCurrentVersion() string {
 	if x != nil {
 		return x.CurrentVersion
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokers() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokers() string {
 	if x != nil {
 		return x.BootstrapBrokers
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersTls() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersTls() string {
 	if x != nil {
 		return x.BootstrapBrokersTls
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersSaslIam() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersSaslIam() string {
 	if x != nil {
 		return x.BootstrapBrokersSaslIam
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersSaslScram() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersSaslScram() string {
 	if x != nil {
 		return x.BootstrapBrokersSaslScram
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersPublicTls() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersPublicTls() string {
 	if x != nil {
 		return x.BootstrapBrokersPublicTls
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersPublicSaslIam() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersPublicSaslIam() string {
 	if x != nil {
 		return x.BootstrapBrokersPublicSaslIam
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersPublicSaslScram() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersPublicSaslScram() string {
 	if x != nil {
 		return x.BootstrapBrokersPublicSaslScram
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersVpcConnectivityTls() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersVpcConnectivityTls() string {
 	if x != nil {
 		return x.BootstrapBrokersVpcConnectivityTls
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersVpcConnectivitySaslIam() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersVpcConnectivitySaslIam() string {
 	if x != nil {
 		return x.BootstrapBrokersVpcConnectivitySaslIam
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetBootstrapBrokersVpcConnectivitySaslScram() string {
+func (x *AwsMskClusterOutputs) GetBootstrapBrokersVpcConnectivitySaslScram() string {
 	if x != nil {
 		return x.BootstrapBrokersVpcConnectivitySaslScram
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetZookeeperConnectString() string {
+func (x *AwsMskClusterOutputs) GetZookeeperConnectString() string {
 	if x != nil {
 		return x.ZookeeperConnectString
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetZookeeperConnectStringTls() string {
+func (x *AwsMskClusterOutputs) GetZookeeperConnectStringTls() string {
 	if x != nil {
 		return x.ZookeeperConnectStringTls
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetConfigurationArn() string {
+func (x *AwsMskClusterOutputs) GetConfigurationArn() string {
 	if x != nil {
 		return x.ConfigurationArn
 	}
 	return ""
 }
 
-func (x *AwsMskClusterStackOutputs) GetTopicArns() map[string]string {
+func (x *AwsMskClusterOutputs) GetTopicArns() map[string]string {
 	if x != nil {
 		return x.TopicArns
 	}
@@ -243,8 +243,8 @@ var File_catalog_aws_awsmskcluster_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsmskcluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsmskcluster.v1alpha1\"\xcc\t\n" +
-	"\x19AwsMskClusterStackOutputs\x12\x1f\n" +
+	"0catalog/aws/awsmskcluster/v1alpha1/outputs.proto\x12&dev.planton.aws.awsmskcluster.v1alpha1\"\xc2\t\n" +
+	"\x14AwsMskClusterOutputs\x12\x1f\n" +
 	"\vcluster_arn\x18\x01 \x01(\tR\n" +
 	"clusterArn\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12!\n" +
@@ -263,9 +263,9 @@ const file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"-bootstrap_brokers_vpc_connectivity_sasl_scram\x18\x0e \x01(\tR(bootstrapBrokersVpcConnectivitySaslScram\x128\n" +
 	"\x18zookeeper_connect_string\x18\x0f \x01(\tR\x16zookeeperConnectString\x12?\n" +
 	"\x1czookeeper_connect_string_tls\x18\x10 \x01(\tR\x19zookeeperConnectStringTls\x12+\n" +
-	"\x11configuration_arn\x18\x11 \x01(\tR\x10configurationArn\x12o\n" +
+	"\x11configuration_arn\x18\x11 \x01(\tR\x10configurationArn\x12j\n" +
 	"\n" +
-	"topic_arns\x18\x12 \x03(\v2P.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs.TopicArnsEntryR\ttopicArns\x1a<\n" +
+	"topic_arns\x18\x12 \x03(\v2K.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs.TopicArnsEntryR\ttopicArns\x1a<\n" +
 	"\x0eTopicArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xce\x02\n" +
@@ -285,11 +285,11 @@ func file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMskClusterStackOutputs)(nil), // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs
-	nil,                               // 1: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs.TopicArnsEntry
+	(*AwsMskClusterOutputs)(nil), // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs
+	nil,                          // 1: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs.TopicArnsEntry
 }
 var file_catalog_aws_awsmskcluster_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs.topic_arns:type_name -> dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs.TopicArnsEntry
+	1, // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs.topic_arns:type_name -> dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs.TopicArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

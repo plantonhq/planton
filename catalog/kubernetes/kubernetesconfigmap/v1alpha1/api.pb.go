@@ -38,7 +38,7 @@ type KubernetesConfigMap struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the ConfigMap resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the ConfigMap.
 	// Defines the target namespace, data entries, and immutability.
 	Spec *KubernetesConfigMapSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -93,7 +93,7 @@ func (x *KubernetesConfigMap) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesConfigMap) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesConfigMap) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -121,7 +121,7 @@ type KubernetesConfigMapStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the ConfigMap deployment.
 	// Contains the ConfigMap name and namespace for downstream composition.
-	Outputs       *KubernetesConfigMapStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesConfigMapOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -156,7 +156,7 @@ func (*KubernetesConfigMapStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesConfigMapStatus) GetOutputs() *KubernetesConfigMapStackOutputs {
+func (x *KubernetesConfigMapStatus) GetOutputs() *KubernetesConfigMapOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -174,11 +174,11 @@ const file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13KubernetesConfigMapR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatusR\x06status\"\x8b\x01\n" +
-	"\x19KubernetesConfigMapStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatusR\x06status\"\x86\x01\n" +
+	"\x19KubernetesConfigMapStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesconfigmap/v1alpha1;kubernetesconfigmapv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetesconfigmap.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetesconfigmap\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetesconfigmap\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetesconfigmap::V1alpha1b\x06proto3"
 
 var (
@@ -195,17 +195,17 @@ func file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesConfigMap)(nil),             // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap
-	(*KubernetesConfigMapStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesConfigMapSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapSpec
-	(*KubernetesConfigMapStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackOutputs
+	(*KubernetesConfigMap)(nil),          // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap
+	(*KubernetesConfigMapStatus)(nil),    // 1: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesConfigMapSpec)(nil),      // 3: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapSpec
+	(*KubernetesConfigMapOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapOutputs
 }
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap.spec:type_name -> dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapSpec
 	1, // 2: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap.status:type_name -> dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatus
-	4, // 3: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

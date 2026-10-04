@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeBillingMeterStackInput is the input to the StripeBillingMeter IaC module.
+// StripeBillingMeterIacInput is the input to the StripeBillingMeter IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeBillingMeterStackInput struct {
+type StripeBillingMeterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeBillingMeter resource to be deployed.
 	Target *StripeBillingMeter `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeBillingMeterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeBillingMeterStackInput) Reset() {
-	*x = StripeBillingMeterStackInput{}
+func (x *StripeBillingMeterIacInput) Reset() {
+	*x = StripeBillingMeterIacInput{}
 	mi := &file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeBillingMeterStackInput) String() string {
+func (x *StripeBillingMeterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeBillingMeterStackInput) ProtoMessage() {}
+func (*StripeBillingMeterIacInput) ProtoMessage() {}
 
-func (x *StripeBillingMeterStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeBillingMeterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeBillingMeterStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeBillingMeterStackInput.ProtoReflect.Descriptor instead.
-func (*StripeBillingMeterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeBillingMeterIacInput.ProtoReflect.Descriptor instead.
+func (*StripeBillingMeterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeBillingMeterStackInput) GetTarget() *StripeBillingMeter {
+func (x *StripeBillingMeterIacInput) GetTarget() *StripeBillingMeter {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeBillingMeterStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeBillingMeterIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripebillingmeter_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/stripe/stripebillingmeter/v1alpha1/input.proto\x12.dev.planton.stripe.stripebillingmeter.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a4catalog/stripe/stripebillingmeter/v1alpha1/api.proto\"\xcd\x01\n" +
-	"\x1cStripeBillingMeterStackInput\x12Z\n" +
+	"6catalog/stripe/stripebillingmeter/v1alpha1/input.proto\x12.dev.planton.stripe.stripebillingmeter.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a4catalog/stripe/stripebillingmeter/v1alpha1/api.proto\"\xcb\x01\n" +
+	"\x1aStripeBillingMeterIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x81\x03\n" +
 	"2com.dev.planton.stripe.stripebillingmeter.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_goTypes = []any{
-	(*StripeBillingMeterStackInput)(nil), // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackInput
-	(*StripeBillingMeter)(nil),           // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter
-	(*stripe.StripeProviderConfig)(nil),  // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeBillingMeterIacInput)(nil),  // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterIacInput
+	(*StripeBillingMeter)(nil),          // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter
+	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripebillingmeter_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackInput.target:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter
-	2, // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterIacInput.target:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeter
+	2, // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

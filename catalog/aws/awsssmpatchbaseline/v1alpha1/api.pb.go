@@ -27,7 +27,7 @@ type AwsSsmPatchBaseline struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsSsmPatchBaselineSpec      `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsSsmPatchBaselineStatus    `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsSsmPatchBaseline) GetKind() string {
 	return ""
 }
 
-func (x *AwsSsmPatchBaseline) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSsmPatchBaseline) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsSsmPatchBaseline) GetStatus() *AwsSsmPatchBaselineStatus {
 }
 
 type AwsSsmPatchBaselineStatus struct {
-	state         protoimpl.MessageState           `protogen:"open.v1"`
-	Outputs       *AwsSsmPatchBaselineStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Outputs       *AwsSsmPatchBaselineOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsSsmPatchBaselineStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmpatchbaseline_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSsmPatchBaselineStatus) GetOutputs() *AwsSsmPatchBaselineStackOutputs {
+func (x *AwsSsmPatchBaselineStatus) GetOutputs() *AwsSsmPatchBaselineOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsssmpatchbaseline_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AwsSsmPatchBaselineR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatusR\x06status\"\x84\x01\n" +
-	"\x19AwsSsmPatchBaselineStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatusR\x06status\"\x7f\n" +
+	"\x19AwsSsmPatchBaselineStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.aws.awsssmpatchbaseline.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsssmpatchbaseline/v1alpha1;awsssmpatchbaselinev1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsssmpatchbaseline.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsssmpatchbaseline\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsssmpatchbaseline\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsssmpatchbaseline::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsssmpatchbaseline_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSsmPatchBaseline)(nil),             // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline
-	(*AwsSsmPatchBaselineStatus)(nil),       // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSsmPatchBaselineSpec)(nil),         // 3: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineSpec
-	(*AwsSsmPatchBaselineStackOutputs)(nil), // 4: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackOutputs
+	(*AwsSsmPatchBaseline)(nil),          // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline
+	(*AwsSsmPatchBaselineStatus)(nil),    // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSsmPatchBaselineSpec)(nil),      // 3: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineSpec
+	(*AwsSsmPatchBaselineOutputs)(nil),   // 4: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineOutputs
 }
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline.spec:type_name -> dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineSpec
 	1, // 2: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaseline.status:type_name -> dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatus
-	4, // 3: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatus.outputs:type_name -> dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackOutputs
+	4, // 3: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStatus.outputs:type_name -> dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -3,9 +3,9 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "catalogkind",
     srcs = [
-        "catalog_provider_service_group.pb.go",
         "catalog_kind.pb.go",
         "catalog_provider.pb.go",
+        "catalog_provider_service_group.pb.go",
         "kubernetes.pb.go",
     ],
     importpath = "github.com/plantonhq/planton/shared/catalogkind",

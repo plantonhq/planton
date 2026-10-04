@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP global forwarding rule.
-type GcpGlobalForwardingRuleStackOutputs struct {
+type GcpGlobalForwardingRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The IP address this frontend accepts traffic on — the load balancer's
 	// VIP, and the value DNS records point at. The API always reports the
@@ -57,20 +57,20 @@ type GcpGlobalForwardingRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) Reset() {
-	*x = GcpGlobalForwardingRuleStackOutputs{}
+func (x *GcpGlobalForwardingRuleOutputs) Reset() {
+	*x = GcpGlobalForwardingRuleOutputs{}
 	mi := &file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) String() string {
+func (x *GcpGlobalForwardingRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGlobalForwardingRuleStackOutputs) ProtoMessage() {}
+func (*GcpGlobalForwardingRuleOutputs) ProtoMessage() {}
 
-func (x *GcpGlobalForwardingRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGlobalForwardingRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,61 +82,61 @@ func (x *GcpGlobalForwardingRuleStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGlobalForwardingRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGlobalForwardingRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGlobalForwardingRuleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGlobalForwardingRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetIpAddress() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetIpAddress() string {
 	if x != nil {
 		return x.IpAddress
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetSelfLink() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetForwardingRuleName() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetForwardingRuleName() string {
 	if x != nil {
 		return x.ForwardingRuleName
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetForwardingRuleId() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetForwardingRuleId() string {
 	if x != nil {
 		return x.ForwardingRuleId
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetPscConnectionId() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetPscConnectionId() string {
 	if x != nil {
 		return x.PscConnectionId
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetPscConnectionStatus() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetPscConnectionStatus() string {
 	if x != nil {
 		return x.PscConnectionStatus
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetRegion() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpGlobalForwardingRuleStackOutputs) GetServiceName() string {
+func (x *GcpGlobalForwardingRuleOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
@@ -147,8 +147,8 @@ var File_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpglobalforwardingrule/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\"\xdc\x02\n" +
-	"#GcpGlobalForwardingRuleStackOutputs\x12\x1d\n" +
+	":catalog/gcp/gcpglobalforwardingrule/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\"\xd7\x02\n" +
+	"\x1eGcpGlobalForwardingRuleOutputs\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18\x01 \x01(\tR\tipAddress\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x120\n" +
@@ -174,7 +174,7 @@ func file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGlobalForwardingRuleStackOutputs)(nil), // 0: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleStackOutputs
+	(*GcpGlobalForwardingRuleOutputs)(nil), // 0: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleOutputs
 }
 var file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

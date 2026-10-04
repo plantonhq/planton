@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azureprivateendpoint
 spec:
@@ -31,7 +31,7 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter
+        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter
     - preset: 02-storage-account
       region_assumption: eastus
       currency: USD
@@ -49,7 +49,7 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter
+        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter
     - preset: 03-key-vault
       region_assumption: eastus
       currency: USD
@@ -67,4 +67,4 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter
+        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter

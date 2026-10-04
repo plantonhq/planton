@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpRedisInstanceStackOutputs captures observable values produced after
+// GcpRedisInstanceOutputs captures observable values produced after
 // provisioning a Memorystore for Redis instance.
-type GcpRedisInstanceStackOutputs struct {
+type GcpRedisInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Hostname or IP address of the primary Redis endpoint.
 	// Clients connect to this address for read and write operations.
@@ -70,20 +70,20 @@ type GcpRedisInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpRedisInstanceStackOutputs) Reset() {
-	*x = GcpRedisInstanceStackOutputs{}
+func (x *GcpRedisInstanceOutputs) Reset() {
+	*x = GcpRedisInstanceOutputs{}
 	mi := &file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRedisInstanceStackOutputs) String() string {
+func (x *GcpRedisInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRedisInstanceStackOutputs) ProtoMessage() {}
+func (*GcpRedisInstanceOutputs) ProtoMessage() {}
 
-func (x *GcpRedisInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpRedisInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -95,82 +95,82 @@ func (x *GcpRedisInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRedisInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpRedisInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRedisInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpRedisInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetHost() string {
+func (x *GcpRedisInstanceOutputs) GetHost() string {
 	if x != nil {
 		return x.Host
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetPort() int32 {
+func (x *GcpRedisInstanceOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetReadEndpoint() string {
+func (x *GcpRedisInstanceOutputs) GetReadEndpoint() string {
 	if x != nil {
 		return x.ReadEndpoint
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetReadEndpointPort() int32 {
+func (x *GcpRedisInstanceOutputs) GetReadEndpointPort() int32 {
 	if x != nil {
 		return x.ReadEndpointPort
 	}
 	return 0
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetCurrentLocationId() string {
+func (x *GcpRedisInstanceOutputs) GetCurrentLocationId() string {
 	if x != nil {
 		return x.CurrentLocationId
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetAuthString() string {
+func (x *GcpRedisInstanceOutputs) GetAuthString() string {
 	if x != nil {
 		return x.AuthString
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetServerCaCerts() []string {
+func (x *GcpRedisInstanceOutputs) GetServerCaCerts() []string {
 	if x != nil {
 		return x.ServerCaCerts
 	}
 	return nil
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetPersistenceIamIdentity() string {
+func (x *GcpRedisInstanceOutputs) GetPersistenceIamIdentity() string {
 	if x != nil {
 		return x.PersistenceIamIdentity
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetEffectiveReservedIpRange() string {
+func (x *GcpRedisInstanceOutputs) GetEffectiveReservedIpRange() string {
 	if x != nil {
 		return x.EffectiveReservedIpRange
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetInstanceName() string {
+func (x *GcpRedisInstanceOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpRedisInstanceStackOutputs) GetRegion() string {
+func (x *GcpRedisInstanceOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -181,8 +181,8 @@ var File_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpredisinstance/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpredisinstance.v1alpha1\x1a\x1cshared/options/options.proto\"\xce\x03\n" +
-	"\x1cGcpRedisInstanceStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpredisinstance/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpredisinstance.v1alpha1\x1a\x1cshared/options/options.proto\"\xc9\x03\n" +
+	"\x17GcpRedisInstanceOutputs\x12\x12\n" +
 	"\x04host\x18\x01 \x01(\tR\x04host\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x05R\x04port\x12#\n" +
 	"\rread_endpoint\x18\x03 \x01(\tR\freadEndpoint\x12,\n" +
@@ -212,7 +212,7 @@ func file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpRedisInstanceStackOutputs)(nil), // 0: dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceStackOutputs
+	(*GcpRedisInstanceOutputs)(nil), // 0: dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceOutputs
 }
 var file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -28,7 +28,7 @@ type GcpWorkloadIdentityPoolProvider struct {
 	state         protoimpl.MessageState                 `protogen:"open.v1"`
 	ApiVersion    string                                 `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                                 `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata          `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata          `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpWorkloadIdentityPoolProviderSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpWorkloadIdentityPoolProviderStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpWorkloadIdentityPoolProvider) GetKind() string {
 	return ""
 }
 
-func (x *GcpWorkloadIdentityPoolProvider) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpWorkloadIdentityPoolProvider) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpWorkloadIdentityPoolProvider) GetStatus() *GcpWorkloadIdentityPoolPr
 }
 
 type GcpWorkloadIdentityPoolProviderStatus struct {
-	state         protoimpl.MessageState                       `protogen:"open.v1"`
-	Outputs       *GcpWorkloadIdentityPoolProviderStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState                  `protogen:"open.v1"`
+	Outputs       *GcpWorkloadIdentityPoolProviderOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpWorkloadIdentityPoolProviderStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStatus) GetOutputs() *GcpWorkloadIdentityPoolProviderStackOutputs {
+func (x *GcpWorkloadIdentityPoolProviderStatus) GetOutputs() *GcpWorkloadIdentityPoolProviderOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_api_proto_rawDes
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fGcpWorkloadIdentityPoolProviderR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatusR\x06status\"\xa8\x01\n" +
-	"%GcpWorkloadIdentityPoolProviderStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatusR\x06status\"\xa3\x01\n" +
+	"%GcpWorkloadIdentityPoolProviderStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderOutputsR\aoutputsB\xc8\x03\n" +
 	"<com.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1;gcpworkloadidentitypoolproviderv1alpha1\xa2\x02\x04DPGG\xaa\x028Dev.Planton.Gcp.Gcpworkloadidentitypoolprovider.V1alpha1\xca\x028Dev\\Planton\\Gcp\\Gcpworkloadidentitypoolprovider\\V1alpha1\xe2\x02DDev\\Planton\\Gcp\\Gcpworkloadidentitypoolprovider\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Gcp::Gcpworkloadidentitypoolprovider::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_api_proto_rawDesc
 
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_api_proto_goTypes = []any{
-	(*GcpWorkloadIdentityPoolProvider)(nil),             // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider
-	(*GcpWorkloadIdentityPoolProviderStatus)(nil),       // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpWorkloadIdentityPoolProviderSpec)(nil),         // 3: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpec
-	(*GcpWorkloadIdentityPoolProviderStackOutputs)(nil), // 4: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackOutputs
+	(*GcpWorkloadIdentityPoolProvider)(nil),        // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider
+	(*GcpWorkloadIdentityPoolProviderStatus)(nil),  // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpWorkloadIdentityPoolProviderSpec)(nil),    // 3: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpec
+	(*GcpWorkloadIdentityPoolProviderOutputs)(nil), // 4: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderOutputs
 }
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider.spec:type_name -> dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpec
 	1, // 2: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider.status:type_name -> dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatus
-	4, // 3: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatus.outputs:type_name -> dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackOutputs
+	4, // 3: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStatus.outputs:type_name -> dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

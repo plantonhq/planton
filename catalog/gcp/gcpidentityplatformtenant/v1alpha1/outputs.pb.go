@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning an Identity Platform tenant.
-type GcpIdentityPlatformTenantStackOutputs struct {
+type GcpIdentityPlatformTenantOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-generated tenant ID (the last segment of tenant_name) —
 	// what client SDKs set as the tenantId to scope sign-in to this
@@ -35,20 +35,20 @@ type GcpIdentityPlatformTenantStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpIdentityPlatformTenantStackOutputs) Reset() {
-	*x = GcpIdentityPlatformTenantStackOutputs{}
+func (x *GcpIdentityPlatformTenantOutputs) Reset() {
+	*x = GcpIdentityPlatformTenantOutputs{}
 	mi := &file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIdentityPlatformTenantStackOutputs) String() string {
+func (x *GcpIdentityPlatformTenantOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIdentityPlatformTenantStackOutputs) ProtoMessage() {}
+func (*GcpIdentityPlatformTenantOutputs) ProtoMessage() {}
 
-func (x *GcpIdentityPlatformTenantStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpIdentityPlatformTenantOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpIdentityPlatformTenantStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIdentityPlatformTenantStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpIdentityPlatformTenantStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIdentityPlatformTenantOutputs.ProtoReflect.Descriptor instead.
+func (*GcpIdentityPlatformTenantOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIdentityPlatformTenantStackOutputs) GetTenantId() string {
+func (x *GcpIdentityPlatformTenantOutputs) GetTenantId() string {
 	if x != nil {
 		return x.TenantId
 	}
 	return ""
 }
 
-func (x *GcpIdentityPlatformTenantStackOutputs) GetTenantName() string {
+func (x *GcpIdentityPlatformTenantOutputs) GetTenantName() string {
 	if x != nil {
 		return x.TenantName
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpidentityplatformtenant/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpidentityplatformtenant.v1alpha1\"e\n" +
-	"%GcpIdentityPlatformTenantStackOutputs\x12\x1b\n" +
+	"<catalog/gcp/gcpidentityplatformtenant/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpidentityplatformtenant.v1alpha1\"`\n" +
+	" GcpIdentityPlatformTenantOutputs\x12\x1b\n" +
 	"\ttenant_id\x18\x01 \x01(\tR\btenantId\x12\x1f\n" +
 	"\vtenant_name\x18\x02 \x01(\tR\n" +
 	"tenantNameB\xa2\x03\n" +
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpIdentityPlatformTenantStackOutputs)(nil), // 0: dev.planton.gcp.gcpidentityplatformtenant.v1alpha1.GcpIdentityPlatformTenantStackOutputs
+	(*GcpIdentityPlatformTenantOutputs)(nil), // 0: dev.planton.gcp.gcpidentityplatformtenant.v1alpha1.GcpIdentityPlatformTenantOutputs
 }
 var file_catalog_gcp_gcpidentityplatformtenant_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

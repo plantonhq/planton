@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningBatchEndpointStackOutputs** captures the
+// **AzureMachineLearningBatchEndpointOutputs** captures the
 // outputs of provisioning a Machine Learning batch endpoint.
 //
 // No key outputs exist here BY THE SERVICE'S OWN CONTRACT: batch
@@ -29,7 +29,7 @@ const (
 // rejects Key mode outright), so there are no static keys to mint,
 // set, or read -- the listKeys ARM action exists on the surface but
 // answers for a mode the service never enables.
-type AzureMachineLearningBatchEndpointStackOutputs struct {
+type AzureMachineLearningBatchEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the batch endpoint.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/batchEndpoints/{name}
@@ -54,20 +54,20 @@ type AzureMachineLearningBatchEndpointStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) Reset() {
-	*x = AzureMachineLearningBatchEndpointStackOutputs{}
+func (x *AzureMachineLearningBatchEndpointOutputs) Reset() {
+	*x = AzureMachineLearningBatchEndpointOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) String() string {
+func (x *AzureMachineLearningBatchEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningBatchEndpointStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningBatchEndpointOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningBatchEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,40 +79,40 @@ func (x *AzureMachineLearningBatchEndpointStackOutputs) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningBatchEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningBatchEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningBatchEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningBatchEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) GetBatchEndpointId() string {
+func (x *AzureMachineLearningBatchEndpointOutputs) GetBatchEndpointId() string {
 	if x != nil {
 		return x.BatchEndpointId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) GetBatchEndpointName() string {
+func (x *AzureMachineLearningBatchEndpointOutputs) GetBatchEndpointName() string {
 	if x != nil {
 		return x.BatchEndpointName
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) GetScoringUri() string {
+func (x *AzureMachineLearningBatchEndpointOutputs) GetScoringUri() string {
 	if x != nil {
 		return x.ScoringUri
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) GetSwaggerUri() string {
+func (x *AzureMachineLearningBatchEndpointOutputs) GetSwaggerUri() string {
 	if x != nil {
 		return x.SwaggerUri
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningBatchEndpointStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureMachineLearningBatchEndpointOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -123,8 +123,8 @@ var File_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto 
 
 const file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/azure/azuremachinelearningbatchendpoint/v1alpha1/outputs.proto\x12<dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1\"\x9f\x02\n" +
-	"-AzureMachineLearningBatchEndpointStackOutputs\x12*\n" +
+	"Fcatalog/azure/azuremachinelearningbatchendpoint/v1alpha1/outputs.proto\x12<dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1\"\x9a\x02\n" +
+	"(AzureMachineLearningBatchEndpointOutputs\x12*\n" +
 	"\x11batch_endpoint_id\x18\x01 \x01(\tR\x0fbatchEndpointId\x12.\n" +
 	"\x13batch_endpoint_name\x18\x02 \x01(\tR\x11batchEndpointName\x12\x1f\n" +
 	"\vscoring_uri\x18\x03 \x01(\tR\n" +
@@ -148,7 +148,7 @@ func file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto
 
 var file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningBatchEndpointStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointStackOutputs
+	(*AzureMachineLearningBatchEndpointOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointOutputs
 }
 var file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

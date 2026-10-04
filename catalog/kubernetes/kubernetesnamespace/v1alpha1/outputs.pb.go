@@ -22,9 +22,9 @@ const (
 )
 
 // *
-// **KubernetesNamespaceStackOutputs** captures observable outputs from a Kubernetes namespace deployment.
+// **KubernetesNamespaceOutputs** captures observable outputs from a Kubernetes namespace deployment.
 // These outputs provide essential information for referencing the namespace and understanding its configuration.
-type KubernetesNamespaceStackOutputs struct {
+type KubernetesNamespaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The name of the created Kubernetes namespace.
@@ -72,20 +72,20 @@ type KubernetesNamespaceStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *KubernetesNamespaceStackOutputs) Reset() {
-	*x = KubernetesNamespaceStackOutputs{}
+func (x *KubernetesNamespaceOutputs) Reset() {
+	*x = KubernetesNamespaceOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesNamespaceStackOutputs) String() string {
+func (x *KubernetesNamespaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesNamespaceStackOutputs) ProtoMessage() {}
+func (*KubernetesNamespaceOutputs) ProtoMessage() {}
 
-func (x *KubernetesNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesNamespaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,75 +97,75 @@ func (x *KubernetesNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesNamespaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesNamespaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesNamespaceOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesNamespaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetNamespace() string {
+func (x *KubernetesNamespaceOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetNamespaceId() string {
+func (x *KubernetesNamespaceOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetResourceQuotasApplied() string {
+func (x *KubernetesNamespaceOutputs) GetResourceQuotasApplied() string {
 	if x != nil {
 		return x.ResourceQuotasApplied
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetLimitRangesApplied() string {
+func (x *KubernetesNamespaceOutputs) GetLimitRangesApplied() string {
 	if x != nil {
 		return x.LimitRangesApplied
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetNetworkPoliciesApplied() string {
+func (x *KubernetesNamespaceOutputs) GetNetworkPoliciesApplied() string {
 	if x != nil {
 		return x.NetworkPoliciesApplied
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetServiceMeshEnabled() string {
+func (x *KubernetesNamespaceOutputs) GetServiceMeshEnabled() string {
 	if x != nil {
 		return x.ServiceMeshEnabled
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetServiceMeshType() string {
+func (x *KubernetesNamespaceOutputs) GetServiceMeshType() string {
 	if x != nil {
 		return x.ServiceMeshType
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetPodSecurityStandard() string {
+func (x *KubernetesNamespaceOutputs) GetPodSecurityStandard() string {
 	if x != nil {
 		return x.PodSecurityStandard
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetLabelsJson() string {
+func (x *KubernetesNamespaceOutputs) GetLabelsJson() string {
 	if x != nil {
 		return x.LabelsJson
 	}
 	return ""
 }
 
-func (x *KubernetesNamespaceStackOutputs) GetAnnotationsJson() string {
+func (x *KubernetesNamespaceOutputs) GetAnnotationsJson() string {
 	if x != nil {
 		return x.AnnotationsJson
 	}
@@ -176,8 +176,8 @@ var File_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetesnamespace/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesnamespace.v1alpha1\"\xe4\x03\n" +
-	"\x1fKubernetesNamespaceStackOutputs\x12\x1c\n" +
+	"=catalog/kubernetes/kubernetesnamespace/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesnamespace.v1alpha1\"\xdf\x03\n" +
+	"\x1aKubernetesNamespaceOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fnamespace_id\x18\x02 \x01(\tR\vnamespaceId\x126\n" +
 	"\x17resource_quotas_applied\x18\x03 \x01(\tR\x15resourceQuotasApplied\x120\n" +
@@ -206,7 +206,7 @@ func file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesNamespaceStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackOutputs
+	(*KubernetesNamespaceOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceOutputs
 }
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

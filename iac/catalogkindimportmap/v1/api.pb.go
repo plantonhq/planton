@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: iac/componentimportmap/v1/api.proto
+// source: iac/catalogkindimportmap/v1/api.proto
 
-package componentimportmapv1
+package catalogkindimportmapv1
 
 import (
 	shared "github.com/plantonhq/planton/shared"
@@ -22,16 +22,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentImportMap declares a single component's import-value sources --
-// the thin, per-component half of the import knowledge (the shared half is
+// CatalogKindImportMap declares a single kind's import-value sources --
+// the thin, per-kind half of the import knowledge (the shared half is
 // the provider's ProviderImportCatalog). Follows the KRM pattern
 // (apiVersion + kind + metadata + spec).
-// Lives at {component}/v1/iac/import-map.yaml, next to the module it maps.
+// Lives at {kind}/v1/iac/import-map.yaml, next to the module it maps.
 //
 // Example:
 //
 //	apiVersion: iac.planton.dev/v1
-//	kind: ComponentImportMap
+//	kind: CatalogKindImportMap
 //	metadata:
 //	  name: awss3bucket
 //	spec:
@@ -39,31 +39,31 @@ const (
 //	    - name: bucket
 //	      derivations:
 //	        - from_metadata_name: true
-type ComponentImportMap struct {
+type CatalogKindImportMap struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Spec          *ComponentImportMapSpec       `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Spec          *CatalogKindImportMapSpec     `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentImportMap) Reset() {
-	*x = ComponentImportMap{}
-	mi := &file_iac_componentimportmap_v1_api_proto_msgTypes[0]
+func (x *CatalogKindImportMap) Reset() {
+	*x = CatalogKindImportMap{}
+	mi := &file_iac_catalogkindimportmap_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentImportMap) String() string {
+func (x *CatalogKindImportMap) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentImportMap) ProtoMessage() {}
+func (*CatalogKindImportMap) ProtoMessage() {}
 
-func (x *ComponentImportMap) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentimportmap_v1_api_proto_msgTypes[0]
+func (x *CatalogKindImportMap) ProtoReflect() protoreflect.Message {
+	mi := &file_iac_catalogkindimportmap_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -74,73 +74,73 @@ func (x *ComponentImportMap) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentImportMap.ProtoReflect.Descriptor instead.
-func (*ComponentImportMap) Descriptor() ([]byte, []int) {
-	return file_iac_componentimportmap_v1_api_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindImportMap.ProtoReflect.Descriptor instead.
+func (*CatalogKindImportMap) Descriptor() ([]byte, []int) {
+	return file_iac_catalogkindimportmap_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentImportMap) GetApiVersion() string {
+func (x *CatalogKindImportMap) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *ComponentImportMap) GetKind() string {
+func (x *CatalogKindImportMap) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *ComponentImportMap) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CatalogKindImportMap) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *ComponentImportMap) GetSpec() *ComponentImportMapSpec {
+func (x *CatalogKindImportMap) GetSpec() *CatalogKindImportMapSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-var File_iac_componentimportmap_v1_api_proto protoreflect.FileDescriptor
+var File_iac_catalogkindimportmap_v1_api_proto protoreflect.FileDescriptor
 
-const file_iac_componentimportmap_v1_api_proto_rawDesc = "" +
+const file_iac_catalogkindimportmap_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"#iac/componentimportmap/v1/api.proto\x12%dev.planton.iac.componentimportmap.v1\x1a$iac/componentimportmap/v1/spec.proto\x1a\x15shared/metadata.proto\"\xe3\x01\n" +
-	"\x12ComponentImportMap\x12\x1f\n" +
+	"%iac/catalogkindimportmap/v1/api.proto\x12'dev.planton.iac.catalogkindimportmap.v1\x1a&iac/catalogkindimportmap/v1/spec.proto\x1a\x15shared/metadata.proto\"\xe9\x01\n" +
+	"\x14CatalogKindImportMap\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12Q\n" +
-	"\x04spec\x18\x04 \x01(\v2=.dev.planton.iac.componentimportmap.v1.ComponentImportMapSpecR\x04specB\xbb\x02\n" +
-	")com.dev.planton.iac.componentimportmap.v1B\bApiProtoP\x01ZKgithub.com/plantonhq/planton/iac/componentimportmap/v1;componentimportmapv1\xa2\x02\x04DPIC\xaa\x02%Dev.Planton.Iac.Componentimportmap.V1\xca\x02%Dev\\Planton\\Iac\\Componentimportmap\\V1\xe2\x021Dev\\Planton\\Iac\\Componentimportmap\\V1\\GPBMetadata\xea\x02)Dev::Planton::Iac::Componentimportmap::V1b\x06proto3"
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12U\n" +
+	"\x04spec\x18\x04 \x01(\v2A.dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMapSpecR\x04specB\xc9\x02\n" +
+	"+com.dev.planton.iac.catalogkindimportmap.v1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/iac/catalogkindimportmap/v1;catalogkindimportmapv1\xa2\x02\x04DPIC\xaa\x02'Dev.Planton.Iac.Catalogkindimportmap.V1\xca\x02'Dev\\Planton\\Iac\\Catalogkindimportmap\\V1\xe2\x023Dev\\Planton\\Iac\\Catalogkindimportmap\\V1\\GPBMetadata\xea\x02+Dev::Planton::Iac::Catalogkindimportmap::V1b\x06proto3"
 
 var (
-	file_iac_componentimportmap_v1_api_proto_rawDescOnce sync.Once
-	file_iac_componentimportmap_v1_api_proto_rawDescData []byte
+	file_iac_catalogkindimportmap_v1_api_proto_rawDescOnce sync.Once
+	file_iac_catalogkindimportmap_v1_api_proto_rawDescData []byte
 )
 
-func file_iac_componentimportmap_v1_api_proto_rawDescGZIP() []byte {
-	file_iac_componentimportmap_v1_api_proto_rawDescOnce.Do(func() {
-		file_iac_componentimportmap_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_iac_componentimportmap_v1_api_proto_rawDesc), len(file_iac_componentimportmap_v1_api_proto_rawDesc)))
+func file_iac_catalogkindimportmap_v1_api_proto_rawDescGZIP() []byte {
+	file_iac_catalogkindimportmap_v1_api_proto_rawDescOnce.Do(func() {
+		file_iac_catalogkindimportmap_v1_api_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_iac_catalogkindimportmap_v1_api_proto_rawDesc), len(file_iac_catalogkindimportmap_v1_api_proto_rawDesc)))
 	})
-	return file_iac_componentimportmap_v1_api_proto_rawDescData
+	return file_iac_catalogkindimportmap_v1_api_proto_rawDescData
 }
 
-var file_iac_componentimportmap_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_iac_componentimportmap_v1_api_proto_goTypes = []any{
-	(*ComponentImportMap)(nil),           // 0: dev.planton.iac.componentimportmap.v1.ComponentImportMap
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
-	(*ComponentImportMapSpec)(nil),       // 2: dev.planton.iac.componentimportmap.v1.ComponentImportMapSpec
+var file_iac_catalogkindimportmap_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_iac_catalogkindimportmap_v1_api_proto_goTypes = []any{
+	(*CatalogKindImportMap)(nil),         // 0: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMap
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
+	(*CatalogKindImportMapSpec)(nil),     // 2: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMapSpec
 }
-var file_iac_componentimportmap_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.iac.componentimportmap.v1.ComponentImportMap.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
-	2, // 1: dev.planton.iac.componentimportmap.v1.ComponentImportMap.spec:type_name -> dev.planton.iac.componentimportmap.v1.ComponentImportMapSpec
+var file_iac_catalogkindimportmap_v1_api_proto_depIdxs = []int32{
+	1, // 0: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMap.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
+	2, // 1: dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMap.spec:type_name -> dev.planton.iac.catalogkindimportmap.v1.CatalogKindImportMapSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -148,27 +148,27 @@ var file_iac_componentimportmap_v1_api_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_iac_componentimportmap_v1_api_proto_init() }
-func file_iac_componentimportmap_v1_api_proto_init() {
-	if File_iac_componentimportmap_v1_api_proto != nil {
+func init() { file_iac_catalogkindimportmap_v1_api_proto_init() }
+func file_iac_catalogkindimportmap_v1_api_proto_init() {
+	if File_iac_catalogkindimportmap_v1_api_proto != nil {
 		return
 	}
-	file_iac_componentimportmap_v1_spec_proto_init()
+	file_iac_catalogkindimportmap_v1_spec_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_componentimportmap_v1_api_proto_rawDesc), len(file_iac_componentimportmap_v1_api_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_catalogkindimportmap_v1_api_proto_rawDesc), len(file_iac_catalogkindimportmap_v1_api_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_iac_componentimportmap_v1_api_proto_goTypes,
-		DependencyIndexes: file_iac_componentimportmap_v1_api_proto_depIdxs,
-		MessageInfos:      file_iac_componentimportmap_v1_api_proto_msgTypes,
+		GoTypes:           file_iac_catalogkindimportmap_v1_api_proto_goTypes,
+		DependencyIndexes: file_iac_catalogkindimportmap_v1_api_proto_depIdxs,
+		MessageInfos:      file_iac_catalogkindimportmap_v1_api_proto_msgTypes,
 	}.Build()
-	File_iac_componentimportmap_v1_api_proto = out.File
-	file_iac_componentimportmap_v1_api_proto_goTypes = nil
-	file_iac_componentimportmap_v1_api_proto_depIdxs = nil
+	File_iac_catalogkindimportmap_v1_api_proto = out.File
+	file_iac_catalogkindimportmap_v1_api_proto_goTypes = nil
+	file_iac_catalogkindimportmap_v1_api_proto_depIdxs = nil
 }

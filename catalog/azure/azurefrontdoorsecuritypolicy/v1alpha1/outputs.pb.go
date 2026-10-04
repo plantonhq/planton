@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorSecurityPolicyStackOutputs** captures the outputs of
+// **AzureFrontDoorSecurityPolicyOutputs** captures the outputs of
 // provisioning an Azure Front Door security policy.
-type AzureFrontDoorSecurityPolicyStackOutputs struct {
+type AzureFrontDoorSecurityPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the security policy. Nothing
 	// composes on a security policy (it is itself the association), so
@@ -37,20 +37,20 @@ type AzureFrontDoorSecurityPolicyStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorSecurityPolicyStackOutputs) Reset() {
-	*x = AzureFrontDoorSecurityPolicyStackOutputs{}
+func (x *AzureFrontDoorSecurityPolicyOutputs) Reset() {
+	*x = AzureFrontDoorSecurityPolicyOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorSecurityPolicyStackOutputs) String() string {
+func (x *AzureFrontDoorSecurityPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorSecurityPolicyStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorSecurityPolicyOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorSecurityPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorSecurityPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AzureFrontDoorSecurityPolicyStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorSecurityPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorSecurityPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorSecurityPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorSecurityPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorSecurityPolicyStackOutputs) GetSecurityPolicyId() string {
+func (x *AzureFrontDoorSecurityPolicyOutputs) GetSecurityPolicyId() string {
 	if x != nil {
 		return x.SecurityPolicyId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorSecurityPolicyStackOutputs) GetSecurityPolicyName() string {
+func (x *AzureFrontDoorSecurityPolicyOutputs) GetSecurityPolicyName() string {
 	if x != nil {
 		return x.SecurityPolicyName
 	}
@@ -85,8 +85,8 @@ var File_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azurefrontdoorsecuritypolicy/v1alpha1/outputs.proto\x127dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1\"\x8a\x01\n" +
-	"(AzureFrontDoorSecurityPolicyStackOutputs\x12,\n" +
+	"Acatalog/azure/azurefrontdoorsecuritypolicy/v1alpha1/outputs.proto\x127dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1\"\x85\x01\n" +
+	"#AzureFrontDoorSecurityPolicyOutputs\x12,\n" +
 	"\x12security_policy_id\x18\x01 \x01(\tR\x10securityPolicyId\x120\n" +
 	"\x14security_policy_name\x18\x02 \x01(\tR\x12securityPolicyNameB\xc3\x03\n" +
 	";com.dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azurefrontdoorsecuritypolicy/v1alpha1;azurefrontdoorsecuritypolicyv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azurefrontdoorsecuritypolicy.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azurefrontdoorsecuritypolicy\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azurefrontdoorsecuritypolicy\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azurefrontdoorsecuritypolicy::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorSecurityPolicyStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1.AzureFrontDoorSecurityPolicyStackOutputs
+	(*AzureFrontDoorSecurityPolicyOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1.AzureFrontDoorSecurityPolicyOutputs
 }
 var file_catalog_azure_azurefrontdoorsecuritypolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

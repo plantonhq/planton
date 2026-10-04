@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeClusterStackOutputs captures key info after provisioning a GKE
+// GcpGkeClusterOutputs captures key info after provisioning a GKE
 // cluster.
-type GcpGkeClusterStackOutputs struct {
+type GcpGkeClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Kubernetes API server endpoint (IP address). For a cluster with a
 	// private-only control plane this is the private endpoint.
@@ -63,20 +63,20 @@ type GcpGkeClusterStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *GcpGkeClusterStackOutputs) Reset() {
-	*x = GcpGkeClusterStackOutputs{}
+func (x *GcpGkeClusterOutputs) Reset() {
+	*x = GcpGkeClusterOutputs{}
 	mi := &file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeClusterStackOutputs) String() string {
+func (x *GcpGkeClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeClusterStackOutputs) ProtoMessage() {}
+func (*GcpGkeClusterOutputs) ProtoMessage() {}
 
-func (x *GcpGkeClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,68 +88,68 @@ func (x *GcpGkeClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGkeClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeClusterOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGkeClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeClusterStackOutputs) GetEndpoint() string {
+func (x *GcpGkeClusterOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetClusterCaCertificate() string {
+func (x *GcpGkeClusterOutputs) GetClusterCaCertificate() string {
 	if x != nil {
 		return x.ClusterCaCertificate
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetWorkloadIdentityPool() string {
+func (x *GcpGkeClusterOutputs) GetWorkloadIdentityPool() string {
 	if x != nil {
 		return x.WorkloadIdentityPool
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetClusterId() string {
+func (x *GcpGkeClusterOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetName() string {
+func (x *GcpGkeClusterOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetLocation() string {
+func (x *GcpGkeClusterOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetSelfLink() string {
+func (x *GcpGkeClusterOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetMasterVersion() string {
+func (x *GcpGkeClusterOutputs) GetMasterVersion() string {
 	if x != nil {
 		return x.MasterVersion
 	}
 	return ""
 }
 
-func (x *GcpGkeClusterStackOutputs) GetFleetMembership() string {
+func (x *GcpGkeClusterOutputs) GetFleetMembership() string {
 	if x != nil {
 		return x.FleetMembership
 	}
@@ -160,8 +160,8 @@ var File_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpgkecluster/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpgkecluster.v1alpha1\"\xe1\x02\n" +
-	"\x19GcpGkeClusterStackOutputs\x12\x1a\n" +
+	"0catalog/gcp/gcpgkecluster/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpgkecluster.v1alpha1\"\xdc\x02\n" +
+	"\x14GcpGkeClusterOutputs\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x124\n" +
 	"\x16cluster_ca_certificate\x18\x02 \x01(\tR\x14clusterCaCertificate\x124\n" +
 	"\x16workload_identity_pool\x18\x03 \x01(\tR\x14workloadIdentityPool\x12\x1d\n" +
@@ -188,7 +188,7 @@ func file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGkeClusterStackOutputs)(nil), // 0: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterStackOutputs
+	(*GcpGkeClusterOutputs)(nil), // 0: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterOutputs
 }
 var file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeFleetScopeStackOutputs carries the scope's identity.
-type GcpGkeFleetScopeStackOutputs struct {
+// GcpGkeFleetScopeOutputs carries the scope's identity.
+type GcpGkeFleetScopeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name: projects/{project}/locations/global/scopes/{scope_id}.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -34,20 +34,20 @@ type GcpGkeFleetScopeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGkeFleetScopeStackOutputs) Reset() {
-	*x = GcpGkeFleetScopeStackOutputs{}
+func (x *GcpGkeFleetScopeOutputs) Reset() {
+	*x = GcpGkeFleetScopeOutputs{}
 	mi := &file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeFleetScopeStackOutputs) String() string {
+func (x *GcpGkeFleetScopeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeFleetScopeStackOutputs) ProtoMessage() {}
+func (*GcpGkeFleetScopeOutputs) ProtoMessage() {}
 
-func (x *GcpGkeFleetScopeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeFleetScopeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,26 +59,26 @@ func (x *GcpGkeFleetScopeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeFleetScopeStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGkeFleetScopeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeFleetScopeOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGkeFleetScopeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeFleetScopeStackOutputs) GetName() string {
+func (x *GcpGkeFleetScopeOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpGkeFleetScopeStackOutputs) GetScopeId() string {
+func (x *GcpGkeFleetScopeOutputs) GetScopeId() string {
 	if x != nil {
 		return x.ScopeId
 	}
 	return ""
 }
 
-func (x *GcpGkeFleetScopeStackOutputs) GetUid() string {
+func (x *GcpGkeFleetScopeOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
@@ -89,8 +89,8 @@ var File_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpgkefleetscope/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpgkefleetscope.v1alpha1\"_\n" +
-	"\x1cGcpGkeFleetScopeStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpgkefleetscope/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpgkefleetscope.v1alpha1\"Z\n" +
+	"\x17GcpGkeFleetScopeOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x19\n" +
 	"\bscope_id\x18\x02 \x01(\tR\ascopeId\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uidB\xe3\x02\n" +
@@ -110,7 +110,7 @@ func file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGkeFleetScopeStackOutputs)(nil), // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackOutputs
+	(*GcpGkeFleetScopeOutputs)(nil), // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeOutputs
 }
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

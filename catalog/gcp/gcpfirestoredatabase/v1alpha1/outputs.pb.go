@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpFirestoreDatabaseStackOutputs captures observable values produced after
+// GcpFirestoreDatabaseOutputs captures observable values produced after
 // provisioning a Cloud Firestore database.
-type GcpFirestoreDatabaseStackOutputs struct {
+type GcpFirestoreDatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified database ID.
 	// Format: projects/{project}/databases/{database}
@@ -58,20 +58,20 @@ type GcpFirestoreDatabaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) Reset() {
-	*x = GcpFirestoreDatabaseStackOutputs{}
+func (x *GcpFirestoreDatabaseOutputs) Reset() {
+	*x = GcpFirestoreDatabaseOutputs{}
 	mi := &file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) String() string {
+func (x *GcpFirestoreDatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirestoreDatabaseStackOutputs) ProtoMessage() {}
+func (*GcpFirestoreDatabaseOutputs) ProtoMessage() {}
 
-func (x *GcpFirestoreDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirestoreDatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,61 +83,61 @@ func (x *GcpFirestoreDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirestoreDatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirestoreDatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirestoreDatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirestoreDatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetDatabaseId() string {
+func (x *GcpFirestoreDatabaseOutputs) GetDatabaseId() string {
 	if x != nil {
 		return x.DatabaseId
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetDatabaseName() string {
+func (x *GcpFirestoreDatabaseOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetUid() string {
+func (x *GcpFirestoreDatabaseOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetCreateTime() string {
+func (x *GcpFirestoreDatabaseOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetEarliestVersionTime() string {
+func (x *GcpFirestoreDatabaseOutputs) GetEarliestVersionTime() string {
 	if x != nil {
 		return x.EarliestVersionTime
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetVersionRetentionPeriod() string {
+func (x *GcpFirestoreDatabaseOutputs) GetVersionRetentionPeriod() string {
 	if x != nil {
 		return x.VersionRetentionPeriod
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetKeyPrefix() string {
+func (x *GcpFirestoreDatabaseOutputs) GetKeyPrefix() string {
 	if x != nil {
 		return x.KeyPrefix
 	}
 	return ""
 }
 
-func (x *GcpFirestoreDatabaseStackOutputs) GetUpdateTime() string {
+func (x *GcpFirestoreDatabaseOutputs) GetUpdateTime() string {
 	if x != nil {
 		return x.UpdateTime
 	}
@@ -148,8 +148,8 @@ var File_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpfirestoredatabase/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpfirestoredatabase.v1alpha1\"\xc9\x02\n" +
-	" GcpFirestoreDatabaseStackOutputs\x12\x1f\n" +
+	"7catalog/gcp/gcpfirestoredatabase/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpfirestoredatabase.v1alpha1\"\xc4\x02\n" +
+	"\x1bGcpFirestoreDatabaseOutputs\x12\x1f\n" +
 	"\vdatabase_id\x18\x01 \x01(\tR\n" +
 	"databaseId\x12#\n" +
 	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseName\x12\x10\n" +
@@ -178,7 +178,7 @@ func file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirestoreDatabaseStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirestoredatabase.v1alpha1.GcpFirestoreDatabaseStackOutputs
+	(*GcpFirestoreDatabaseOutputs)(nil), // 0: dev.planton.gcp.gcpfirestoredatabase.v1alpha1.GcpFirestoreDatabaseOutputs
 }
 var file_catalog_gcp_gcpfirestoredatabase_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

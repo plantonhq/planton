@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgeBusStackOutputs captures observable identifiers from a
+// AwsEventBridgeBusOutputs captures observable identifiers from a
 // provisioned EventBridge custom event bus. These outputs are used by
 // downstream resources — primarily AwsEventBridgeRule — to wire
 // dependencies via StringValueOrRef.
-type AwsEventBridgeBusStackOutputs struct {
+type AwsEventBridgeBusOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the event bus. This is the primary identifier used in
 	// EventBridge API calls and in rule configurations that target this bus.
@@ -41,20 +41,20 @@ type AwsEventBridgeBusStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgeBusStackOutputs) Reset() {
-	*x = AwsEventBridgeBusStackOutputs{}
+func (x *AwsEventBridgeBusOutputs) Reset() {
+	*x = AwsEventBridgeBusOutputs{}
 	mi := &file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgeBusStackOutputs) String() string {
+func (x *AwsEventBridgeBusOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgeBusStackOutputs) ProtoMessage() {}
+func (*AwsEventBridgeBusOutputs) ProtoMessage() {}
 
-func (x *AwsEventBridgeBusStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgeBusOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AwsEventBridgeBusStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgeBusStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgeBusStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgeBusOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgeBusOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgeBusStackOutputs) GetBusName() string {
+func (x *AwsEventBridgeBusOutputs) GetBusName() string {
 	if x != nil {
 		return x.BusName
 	}
 	return ""
 }
 
-func (x *AwsEventBridgeBusStackOutputs) GetBusArn() string {
+func (x *AwsEventBridgeBusOutputs) GetBusArn() string {
 	if x != nil {
 		return x.BusArn
 	}
 	return ""
 }
 
-func (x *AwsEventBridgeBusStackOutputs) GetArchives() []*AwsEventBridgeBusArchiveOutput {
+func (x *AwsEventBridgeBusOutputs) GetArchives() []*AwsEventBridgeBusArchiveOutput {
 	if x != nil {
 		return x.Archives
 	}
@@ -152,8 +152,8 @@ var File_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awseventbridgebus/v1alpha1/outputs.proto\x12*dev.planton.aws.awseventbridgebus.v1alpha1\"\xbb\x01\n" +
-	"\x1dAwsEventBridgeBusStackOutputs\x12\x19\n" +
+	"4catalog/aws/awseventbridgebus/v1alpha1/outputs.proto\x12*dev.planton.aws.awseventbridgebus.v1alpha1\"\xb6\x01\n" +
+	"\x18AwsEventBridgeBusOutputs\x12\x19\n" +
 	"\bbus_name\x18\x01 \x01(\tR\abusName\x12\x17\n" +
 	"\abus_arn\x18\x02 \x01(\tR\x06busArn\x12f\n" +
 	"\barchives\x18\x03 \x03(\v2J.dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusArchiveOutputR\barchives\"F\n" +
@@ -176,11 +176,11 @@ func file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEventBridgeBusStackOutputs)(nil),  // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStackOutputs
+	(*AwsEventBridgeBusOutputs)(nil),       // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusOutputs
 	(*AwsEventBridgeBusArchiveOutput)(nil), // 1: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusArchiveOutput
 }
 var file_catalog_aws_awseventbridgebus_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStackOutputs.archives:type_name -> dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusArchiveOutput
+	1, // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusOutputs.archives:type_name -> dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusArchiveOutput
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareDnsRecordStackOutputs captures the outputs after provisioning a Cloudflare DNS record.
+// CloudflareDnsRecordOutputs captures the outputs after provisioning a Cloudflare DNS record.
 // It includes the record's unique identifier and name for reference.
-type CloudflareDnsRecordStackOutputs struct {
+type CloudflareDnsRecordOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier of the created DNS record in Cloudflare.
 	RecordId string `protobuf:"bytes,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
@@ -45,20 +45,20 @@ type CloudflareDnsRecordStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareDnsRecordStackOutputs) Reset() {
-	*x = CloudflareDnsRecordStackOutputs{}
+func (x *CloudflareDnsRecordOutputs) Reset() {
+	*x = CloudflareDnsRecordOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareDnsRecordStackOutputs) String() string {
+func (x *CloudflareDnsRecordOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareDnsRecordStackOutputs) ProtoMessage() {}
+func (*CloudflareDnsRecordOutputs) ProtoMessage() {}
 
-func (x *CloudflareDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareDnsRecordOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *CloudflareDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareDnsRecordStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareDnsRecordStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareDnsRecordOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareDnsRecordOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareDnsRecordStackOutputs) GetRecordId() string {
+func (x *CloudflareDnsRecordOutputs) GetRecordId() string {
 	if x != nil {
 		return x.RecordId
 	}
 	return ""
 }
 
-func (x *CloudflareDnsRecordStackOutputs) GetRecordName() string {
+func (x *CloudflareDnsRecordOutputs) GetRecordName() string {
 	if x != nil {
 		return x.RecordName
 	}
 	return ""
 }
 
-func (x *CloudflareDnsRecordStackOutputs) GetRecordType() string {
+func (x *CloudflareDnsRecordOutputs) GetRecordType() string {
 	if x != nil {
 		return x.RecordType
 	}
 	return ""
 }
 
-func (x *CloudflareDnsRecordStackOutputs) GetProxied() bool {
+func (x *CloudflareDnsRecordOutputs) GetProxied() bool {
 	if x != nil {
 		return x.Proxied
 	}
 	return false
 }
 
-func (x *CloudflareDnsRecordStackOutputs) GetZoneId() string {
+func (x *CloudflareDnsRecordOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -114,8 +114,8 @@ var File_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto protorefl
 
 const file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/cloudflare/cloudflarednsrecord/v1alpha1/outputs.proto\x123dev.planton.cloudflare.cloudflarednsrecord.v1alpha1\"\xb3\x01\n" +
-	"\x1fCloudflareDnsRecordStackOutputs\x12\x1b\n" +
+	"=catalog/cloudflare/cloudflarednsrecord/v1alpha1/outputs.proto\x123dev.planton.cloudflare.cloudflarednsrecord.v1alpha1\"\xae\x01\n" +
+	"\x1aCloudflareDnsRecordOutputs\x12\x1b\n" +
 	"\trecord_id\x18\x01 \x01(\tR\brecordId\x12\x1f\n" +
 	"\vrecord_name\x18\x02 \x01(\tR\n" +
 	"recordName\x12\x1f\n" +
@@ -139,7 +139,7 @@ func file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareDnsRecordStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStackOutputs
+	(*CloudflareDnsRecordOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordOutputs
 }
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

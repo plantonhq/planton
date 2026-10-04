@@ -23,9 +23,9 @@ const (
 )
 
 // input for kubernetes-metrics-server stack
-type KubernetesMetricsServerStackInput struct {
+type KubernetesMetricsServerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesMetricsServer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesMetricsServerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesMetricsServerStackInput) Reset() {
-	*x = KubernetesMetricsServerStackInput{}
+func (x *KubernetesMetricsServerIacInput) Reset() {
+	*x = KubernetesMetricsServerIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesMetricsServerStackInput) String() string {
+func (x *KubernetesMetricsServerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesMetricsServerStackInput) ProtoMessage() {}
+func (*KubernetesMetricsServerIacInput) ProtoMessage() {}
 
-func (x *KubernetesMetricsServerStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesMetricsServerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesMetricsServerStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesMetricsServerStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesMetricsServerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesMetricsServerIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesMetricsServerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesMetricsServerStackInput) GetTarget() *KubernetesMetricsServer {
+func (x *KubernetesMetricsServerIacInput) GetTarget() *KubernetesMetricsServer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesMetricsServerStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesMetricsServerIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto protore
 
 const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetesmetricsserver/v1alpha1/input.proto\x127dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1\x1a=catalog/kubernetes/kubernetesmetricsserver/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe8\x01\n" +
-	"!KubernetesMetricsServerStackInput\x12h\n" +
+	"?catalog/kubernetes/kubernetesmetricsserver/v1alpha1/input.proto\x127dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1\x1a=catalog/kubernetes/kubernetesmetricsserver/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe6\x01\n" +
+	"\x1fKubernetesMetricsServerIacInput\x12h\n" +
 	"\x06target\x18\x01 \x01(\v2P.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_rawDes
 
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesMetricsServerStackInput)(nil),   // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackInput
+	(*KubernetesMetricsServerIacInput)(nil),     // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIacInput
 	(*KubernetesMetricsServer)(nil),             // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackInput.target:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer
-	2, // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIacInput.target:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer
+	2, // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

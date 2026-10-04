@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureAiFoundryStackOutputs** captures the outputs of provisioning
+// **AzureAiFoundryOutputs** captures the outputs of provisioning
 // an Azure AI Foundry hub.
-type AzureAiFoundryStackOutputs struct {
+type AzureAiFoundryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the hub -- what
 	// AzureAiFoundryProject resources reference as their
@@ -46,20 +46,20 @@ type AzureAiFoundryStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureAiFoundryStackOutputs) Reset() {
-	*x = AzureAiFoundryStackOutputs{}
+func (x *AzureAiFoundryOutputs) Reset() {
+	*x = AzureAiFoundryOutputs{}
 	mi := &file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureAiFoundryStackOutputs) String() string {
+func (x *AzureAiFoundryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureAiFoundryStackOutputs) ProtoMessage() {}
+func (*AzureAiFoundryOutputs) ProtoMessage() {}
 
-func (x *AzureAiFoundryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureAiFoundryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,40 +71,40 @@ func (x *AzureAiFoundryStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureAiFoundryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureAiFoundryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureAiFoundryOutputs.ProtoReflect.Descriptor instead.
+func (*AzureAiFoundryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureAiFoundryStackOutputs) GetAiFoundryId() string {
+func (x *AzureAiFoundryOutputs) GetAiFoundryId() string {
 	if x != nil {
 		return x.AiFoundryId
 	}
 	return ""
 }
 
-func (x *AzureAiFoundryStackOutputs) GetAiFoundryName() string {
+func (x *AzureAiFoundryOutputs) GetAiFoundryName() string {
 	if x != nil {
 		return x.AiFoundryName
 	}
 	return ""
 }
 
-func (x *AzureAiFoundryStackOutputs) GetWorkspaceGuid() string {
+func (x *AzureAiFoundryOutputs) GetWorkspaceGuid() string {
 	if x != nil {
 		return x.WorkspaceGuid
 	}
 	return ""
 }
 
-func (x *AzureAiFoundryStackOutputs) GetDiscoveryUrl() string {
+func (x *AzureAiFoundryOutputs) GetDiscoveryUrl() string {
 	if x != nil {
 		return x.DiscoveryUrl
 	}
 	return ""
 }
 
-func (x *AzureAiFoundryStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureAiFoundryOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -115,8 +115,8 @@ var File_catalog_azure_azureaifoundry_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/azure/azureaifoundry/v1alpha1/outputs.proto\x12)dev.planton.azure.azureaifoundry.v1alpha1\"\x86\x02\n" +
-	"\x1aAzureAiFoundryStackOutputs\x12\"\n" +
+	"3catalog/azure/azureaifoundry/v1alpha1/outputs.proto\x12)dev.planton.azure.azureaifoundry.v1alpha1\"\x81\x02\n" +
+	"\x15AzureAiFoundryOutputs\x12\"\n" +
 	"\rai_foundry_id\x18\x01 \x01(\tR\vaiFoundryId\x12&\n" +
 	"\x0fai_foundry_name\x18\x02 \x01(\tR\raiFoundryName\x12%\n" +
 	"\x0eworkspace_guid\x18\x03 \x01(\tR\rworkspaceGuid\x12#\n" +
@@ -138,7 +138,7 @@ func file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureAiFoundryStackOutputs)(nil), // 0: dev.planton.azure.azureaifoundry.v1alpha1.AzureAiFoundryStackOutputs
+	(*AzureAiFoundryOutputs)(nil), // 0: dev.planton.azure.azureaifoundry.v1alpha1.AzureAiFoundryOutputs
 }
 var file_catalog_azure_azureaifoundry_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

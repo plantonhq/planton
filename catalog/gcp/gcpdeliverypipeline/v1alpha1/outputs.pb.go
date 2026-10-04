@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDeliveryPipelineStackOutputs carries the pipeline's identity: what
+// GcpDeliveryPipelineOutputs carries the pipeline's identity: what
 // releases are created against, and what a GcpDeployPolicy selector names.
-type GcpDeliveryPipelineStackOutputs struct {
+type GcpDeliveryPipelineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline_id}.
@@ -37,20 +37,20 @@ type GcpDeliveryPipelineStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDeliveryPipelineStackOutputs) Reset() {
-	*x = GcpDeliveryPipelineStackOutputs{}
+func (x *GcpDeliveryPipelineOutputs) Reset() {
+	*x = GcpDeliveryPipelineOutputs{}
 	mi := &file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDeliveryPipelineStackOutputs) String() string {
+func (x *GcpDeliveryPipelineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDeliveryPipelineStackOutputs) ProtoMessage() {}
+func (*GcpDeliveryPipelineOutputs) ProtoMessage() {}
 
-func (x *GcpDeliveryPipelineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDeliveryPipelineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *GcpDeliveryPipelineStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDeliveryPipelineStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDeliveryPipelineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDeliveryPipelineOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDeliveryPipelineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDeliveryPipelineStackOutputs) GetName() string {
+func (x *GcpDeliveryPipelineOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDeliveryPipelineStackOutputs) GetDeliveryPipelineId() string {
+func (x *GcpDeliveryPipelineOutputs) GetDeliveryPipelineId() string {
 	if x != nil {
 		return x.DeliveryPipelineId
 	}
 	return ""
 }
 
-func (x *GcpDeliveryPipelineStackOutputs) GetUid() string {
+func (x *GcpDeliveryPipelineOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
@@ -92,8 +92,8 @@ var File_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpdeliverypipeline/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpdeliverypipeline.v1alpha1\"y\n" +
-	"\x1fGcpDeliveryPipelineStackOutputs\x12\x12\n" +
+	"6catalog/gcp/gcpdeliverypipeline/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpdeliverypipeline.v1alpha1\"t\n" +
+	"\x1aGcpDeliveryPipelineOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x120\n" +
 	"\x14delivery_pipeline_id\x18\x02 \x01(\tR\x12deliveryPipelineId\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uidB\xf8\x02\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDeliveryPipelineStackOutputs)(nil), // 0: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineStackOutputs
+	(*GcpDeliveryPipelineOutputs)(nil), // 0: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineOutputs
 }
 var file_catalog_gcp_gcpdeliverypipeline_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

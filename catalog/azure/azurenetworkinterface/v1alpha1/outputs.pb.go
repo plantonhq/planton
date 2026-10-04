@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureNetworkInterfaceStackOutputs** captures the outputs of
+// **AzureNetworkInterfaceOutputs** captures the outputs of
 // provisioning an Azure Network Interface.
-type AzureNetworkInterfaceStackOutputs struct {
+type AzureNetworkInterfaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the NIC. This is the primary output:
 	// AzureVirtualMachine's network_interface_ids references it to attach
@@ -50,20 +50,20 @@ type AzureNetworkInterfaceStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) Reset() {
-	*x = AzureNetworkInterfaceStackOutputs{}
+func (x *AzureNetworkInterfaceOutputs) Reset() {
+	*x = AzureNetworkInterfaceOutputs{}
 	mi := &file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) String() string {
+func (x *AzureNetworkInterfaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureNetworkInterfaceStackOutputs) ProtoMessage() {}
+func (*AzureNetworkInterfaceOutputs) ProtoMessage() {}
 
-func (x *AzureNetworkInterfaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureNetworkInterfaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *AzureNetworkInterfaceStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureNetworkInterfaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureNetworkInterfaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureNetworkInterfaceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureNetworkInterfaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) GetNetworkInterfaceId() string {
+func (x *AzureNetworkInterfaceOutputs) GetNetworkInterfaceId() string {
 	if x != nil {
 		return x.NetworkInterfaceId
 	}
 	return ""
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) GetNetworkInterfaceName() string {
+func (x *AzureNetworkInterfaceOutputs) GetNetworkInterfaceName() string {
 	if x != nil {
 		return x.NetworkInterfaceName
 	}
 	return ""
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) GetPrivateIpAddress() string {
+func (x *AzureNetworkInterfaceOutputs) GetPrivateIpAddress() string {
 	if x != nil {
 		return x.PrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) GetPrivateIpAddresses() []string {
+func (x *AzureNetworkInterfaceOutputs) GetPrivateIpAddresses() []string {
 	if x != nil {
 		return x.PrivateIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) GetMacAddress() string {
+func (x *AzureNetworkInterfaceOutputs) GetMacAddress() string {
 	if x != nil {
 		return x.MacAddress
 	}
 	return ""
 }
 
-func (x *AzureNetworkInterfaceStackOutputs) GetInternalDomainNameSuffix() string {
+func (x *AzureNetworkInterfaceOutputs) GetInternalDomainNameSuffix() string {
 	if x != nil {
 		return x.InternalDomainNameSuffix
 	}
@@ -126,8 +126,8 @@ var File_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurenetworkinterface/v1alpha1/outputs.proto\x120dev.planton.azure.azurenetworkinterface.v1alpha1\"\xcb\x02\n" +
-	"!AzureNetworkInterfaceStackOutputs\x120\n" +
+	":catalog/azure/azurenetworkinterface/v1alpha1/outputs.proto\x120dev.planton.azure.azurenetworkinterface.v1alpha1\"\xc6\x02\n" +
+	"\x1cAzureNetworkInterfaceOutputs\x120\n" +
 	"\x14network_interface_id\x18\x01 \x01(\tR\x12networkInterfaceId\x124\n" +
 	"\x16network_interface_name\x18\x02 \x01(\tR\x14networkInterfaceName\x12,\n" +
 	"\x12private_ip_address\x18\x03 \x01(\tR\x10privateIpAddress\x120\n" +
@@ -151,7 +151,7 @@ func file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureNetworkInterfaceStackOutputs)(nil), // 0: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStackOutputs
+	(*AzureNetworkInterfaceOutputs)(nil), // 0: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceOutputs
 }
 var file_catalog_azure_azurenetworkinterface_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

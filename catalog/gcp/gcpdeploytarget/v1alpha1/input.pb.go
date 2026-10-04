@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-deploy-target stack-input
-type GcpDeployTargetStackInput struct {
+// gcp-deploy-target iac-input
+type GcpDeployTargetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpDeployTarget `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpDeployTargetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpDeployTargetStackInput) Reset() {
-	*x = GcpDeployTargetStackInput{}
+func (x *GcpDeployTargetIacInput) Reset() {
+	*x = GcpDeployTargetIacInput{}
 	mi := &file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDeployTargetStackInput) String() string {
+func (x *GcpDeployTargetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDeployTargetStackInput) ProtoMessage() {}
+func (*GcpDeployTargetIacInput) ProtoMessage() {}
 
-func (x *GcpDeployTargetStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpDeployTargetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpDeployTargetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDeployTargetStackInput.ProtoReflect.Descriptor instead.
-func (*GcpDeployTargetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDeployTargetIacInput.ProtoReflect.Descriptor instead.
+func (*GcpDeployTargetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDeployTargetStackInput) GetTarget() *GcpDeployTarget {
+func (x *GcpDeployTargetIacInput) GetTarget() *GcpDeployTarget {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpDeployTargetStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpDeployTargetIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpdeploytarget/v1alpha1/input.proto\x12(dev.planton.gcp.gcpdeploytarget.v1alpha1\x1a.catalog/gcp/gcpdeploytarget/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbb\x01\n" +
-	"\x19GcpDeployTargetStackInput\x12Q\n" +
+	"0catalog/gcp/gcpdeploytarget/v1alpha1/input.proto\x12(dev.planton.gcp.gcpdeploytarget.v1alpha1\x1a.catalog/gcp/gcpdeploytarget/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb9\x01\n" +
+	"\x17GcpDeployTargetIacInput\x12Q\n" +
 	"\x06target\x18\x01 \x01(\v29.dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xda\x02\n" +
 	",com.dev.planton.gcp.gcpdeploytarget.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_goTypes = []any{
-	(*GcpDeployTargetStackInput)(nil), // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackInput
-	(*GcpDeployTarget)(nil),           // 1: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget
-	(*gcp.GcpProviderConfig)(nil),     // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpDeployTargetIacInput)(nil), // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetIacInput
+	(*GcpDeployTarget)(nil),         // 1: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget
+	(*gcp.GcpProviderConfig)(nil),   // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackInput.target:type_name -> dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget
-	2, // 1: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetIacInput.target:type_name -> dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget
+	2, // 1: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0BrandingStackInput is the input to the Auth0Branding IaC module.
+// Auth0BrandingIacInput is the input to the Auth0Branding IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0BrandingStackInput struct {
+type Auth0BrandingIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0Branding resource to be deployed.
 	Target *Auth0Branding `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -37,20 +37,20 @@ type Auth0BrandingStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0BrandingStackInput) Reset() {
-	*x = Auth0BrandingStackInput{}
+func (x *Auth0BrandingIacInput) Reset() {
+	*x = Auth0BrandingIacInput{}
 	mi := &file_catalog_auth0_auth0branding_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0BrandingStackInput) String() string {
+func (x *Auth0BrandingIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0BrandingStackInput) ProtoMessage() {}
+func (*Auth0BrandingIacInput) ProtoMessage() {}
 
-func (x *Auth0BrandingStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0BrandingIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0branding_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *Auth0BrandingStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0BrandingStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0BrandingStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0BrandingIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0BrandingIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0branding_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0BrandingStackInput) GetTarget() *Auth0Branding {
+func (x *Auth0BrandingIacInput) GetTarget() *Auth0Branding {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0BrandingStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0BrandingIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -85,8 +85,8 @@ var File_catalog_auth0_auth0branding_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_auth0_auth0branding_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/auth0/auth0branding/v1alpha1/input.proto\x12(dev.planton.auth0.auth0branding.v1alpha1\x1a.catalog/auth0/auth0branding/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xbb\x01\n" +
-	"\x17Auth0BrandingStackInput\x12O\n" +
+	"0catalog/auth0/auth0branding/v1alpha1/input.proto\x12(dev.planton.auth0.auth0branding.v1alpha1\x1a.catalog/auth0/auth0branding/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xb9\x01\n" +
+	"\x15Auth0BrandingIacInput\x12O\n" +
 	"\x06target\x18\x01 \x01(\v27.dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xd8\x02\n" +
 	",com.dev.planton.auth0.auth0branding.v1alpha1B\n" +
@@ -106,13 +106,13 @@ func file_catalog_auth0_auth0branding_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_auth0_auth0branding_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0branding_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0BrandingStackInput)(nil),   // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackInput
+	(*Auth0BrandingIacInput)(nil),     // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingIacInput
 	(*Auth0Branding)(nil),             // 1: dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding
 	(*auth0.Auth0ProviderConfig)(nil), // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0branding_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackInput.target:type_name -> dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding
-	2, // 1: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingIacInput.target:type_name -> dev.planton.auth0.auth0branding.v1alpha1.Auth0Branding
+	2, // 1: dev.planton.auth0.auth0branding.v1alpha1.Auth0BrandingIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

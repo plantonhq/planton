@@ -31,7 +31,7 @@ type AwsLambda struct {
 	// resource-kind for this Lambda resource, must be "AwsLambda".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the Lambda function.
 	Spec *AwsLambdaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -84,7 +84,7 @@ func (x *AwsLambda) GetKind() string {
 	return ""
 }
 
-func (x *AwsLambda) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsLambda) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,7 +109,7 @@ func (x *AwsLambda) GetStatus() *AwsLambdaStatus {
 type AwsLambdaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsLambdaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsLambdaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsLambdaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslambda_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsLambdaStatus) GetOutputs() *AwsLambdaStackOutputs {
+func (x *AwsLambdaStatus) GetOutputs() *AwsLambdaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awslambda_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12$\n" +
 	"\x04kind\x18\x02 \x01(\tB\x10\xbaH\rr\v\n" +
 	"\tAwsLambdaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12M\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12M\n" +
 	"\x04spec\x18\x04 \x01(\v21.dev.planton.aws.awslambda.v1alpha1.AwsLambdaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12K\n" +
-	"\x06status\x18\x05 \x01(\v23.dev.planton.aws.awslambda.v1alpha1.AwsLambdaStatusR\x06status\"f\n" +
-	"\x0fAwsLambdaStatus\x12S\n" +
-	"\aoutputs\x18\x01 \x01(\v29.dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputsR\aoutputsB\xae\x02\n" +
+	"\x06status\x18\x05 \x01(\v23.dev.planton.aws.awslambda.v1alpha1.AwsLambdaStatusR\x06status\"a\n" +
+	"\x0fAwsLambdaStatus\x12N\n" +
+	"\aoutputs\x18\x01 \x01(\v24.dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputsR\aoutputsB\xae\x02\n" +
 	"&com.dev.planton.aws.awslambda.v1alpha1B\bApiProtoP\x01ZMgithub.com/plantonhq/planton/catalog/aws/awslambda/v1alpha1;awslambdav1alpha1\xa2\x02\x04DPAA\xaa\x02\"Dev.Planton.Aws.Awslambda.V1alpha1\xca\x02\"Dev\\Planton\\Aws\\Awslambda\\V1alpha1\xe2\x02.Dev\\Planton\\Aws\\Awslambda\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Aws::Awslambda::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awslambda_v1alpha1_api_proto_msgTypes = make([]protoimpl.Me
 var file_catalog_aws_awslambda_v1alpha1_api_proto_goTypes = []any{
 	(*AwsLambda)(nil),                    // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambda
 	(*AwsLambdaStatus)(nil),              // 1: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsLambdaSpec)(nil),                // 3: dev.planton.aws.awslambda.v1alpha1.AwsLambdaSpec
-	(*AwsLambdaStackOutputs)(nil),        // 4: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs
+	(*AwsLambdaOutputs)(nil),             // 4: dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs
 }
 var file_catalog_aws_awslambda_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambda.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambda.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awslambda.v1alpha1.AwsLambda.spec:type_name -> dev.planton.aws.awslambda.v1alpha1.AwsLambdaSpec
 	1, // 2: dev.planton.aws.awslambda.v1alpha1.AwsLambda.status:type_name -> dev.planton.aws.awslambda.v1alpha1.AwsLambdaStatus
-	4, // 3: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStatus.outputs:type_name -> dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs
+	4, // 3: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStatus.outputs:type_name -> dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

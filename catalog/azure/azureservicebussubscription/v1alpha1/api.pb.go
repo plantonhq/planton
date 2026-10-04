@@ -37,7 +37,7 @@ type AzureServiceBusSubscription struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureServiceBusSubscriptionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureServiceBusSubscription) GetKind() string {
 	return ""
 }
 
-func (x *AzureServiceBusSubscription) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureServiceBusSubscription) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureServiceBusSubscription) GetStatus() *AzureServiceBusSubscriptionSt
 // AzureServiceBusSubscriptionStatus holds the deployment status and outputs.
 type AzureServiceBusSubscriptionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureServiceBusSubscriptionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureServiceBusSubscriptionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureServiceBusSubscriptionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebussubscription_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureServiceBusSubscriptionStatus) GetOutputs() *AzureServiceBusSubscriptionStackOutputs {
+func (x *AzureServiceBusSubscriptionStatus) GetOutputs() *AzureServiceBusSubscriptionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azureservicebussubscription_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAzureServiceBusSubscriptionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatusR\x06status\"\x9e\x01\n" +
-	"!AzureServiceBusSubscriptionStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatusR\x06status\"\x99\x01\n" +
+	"!AzureServiceBusSubscriptionStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionOutputsR\aoutputsB\xb8\x03\n" +
 	":com.dev.planton.azure.azureservicebussubscription.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/azure/azureservicebussubscription/v1alpha1;azureservicebussubscriptionv1alpha1\xa2\x02\x04DPAA\xaa\x026Dev.Planton.Azure.Azureservicebussubscription.V1alpha1\xca\x026Dev\\Planton\\Azure\\Azureservicebussubscription\\V1alpha1\xe2\x02BDev\\Planton\\Azure\\Azureservicebussubscription\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Azure::Azureservicebussubscription::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azureservicebussubscription_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_azure_azureservicebussubscription_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureservicebussubscription_v1alpha1_api_proto_goTypes = []any{
-	(*AzureServiceBusSubscription)(nil),             // 0: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscription
-	(*AzureServiceBusSubscriptionStatus)(nil),       // 1: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureServiceBusSubscriptionSpec)(nil),         // 3: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionSpec
-	(*AzureServiceBusSubscriptionStackOutputs)(nil), // 4: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStackOutputs
+	(*AzureServiceBusSubscription)(nil),        // 0: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscription
+	(*AzureServiceBusSubscriptionStatus)(nil),  // 1: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureServiceBusSubscriptionSpec)(nil),    // 3: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionSpec
+	(*AzureServiceBusSubscriptionOutputs)(nil), // 4: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionOutputs
 }
 var file_catalog_azure_azureservicebussubscription_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscription.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscription.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscription.spec:type_name -> dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionSpec
 	1, // 2: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscription.status:type_name -> dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatus
-	4, // 3: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatus.outputs:type_name -> dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStackOutputs
+	4, // 3: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatus.outputs:type_name -> dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

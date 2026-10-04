@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0ConnectionSpec defines the configuration for an Auth0 Connection.
 A connection in Auth0 represents an identity provider - either a user database,
@@ -35,7 +35,7 @@ metadata:
   env: development
   labels:
     purpose: testing
-    component: auth0connection
+    catalog-kind: auth0connection
 spec:
   strategy: auth0
   display_name: Test Database Connection

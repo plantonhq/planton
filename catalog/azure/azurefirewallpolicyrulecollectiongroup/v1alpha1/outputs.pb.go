@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFirewallPolicyRuleCollectionGroupStackOutputs** captures the
+// **AzureFirewallPolicyRuleCollectionGroupOutputs** captures the
 // outputs of provisioning a firewall policy rule collection group.
-type AzureFirewallPolicyRuleCollectionGroupStackOutputs struct {
+type AzureFirewallPolicyRuleCollectionGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the rule collection group.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/firewallPolicies/{policy}/ruleCollectionGroups/{name}
@@ -34,20 +34,20 @@ type AzureFirewallPolicyRuleCollectionGroupStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AzureFirewallPolicyRuleCollectionGroupStackOutputs) Reset() {
-	*x = AzureFirewallPolicyRuleCollectionGroupStackOutputs{}
+func (x *AzureFirewallPolicyRuleCollectionGroupOutputs) Reset() {
+	*x = AzureFirewallPolicyRuleCollectionGroupOutputs{}
 	mi := &file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFirewallPolicyRuleCollectionGroupStackOutputs) String() string {
+func (x *AzureFirewallPolicyRuleCollectionGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFirewallPolicyRuleCollectionGroupStackOutputs) ProtoMessage() {}
+func (*AzureFirewallPolicyRuleCollectionGroupOutputs) ProtoMessage() {}
 
-func (x *AzureFirewallPolicyRuleCollectionGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFirewallPolicyRuleCollectionGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureFirewallPolicyRuleCollectionGroupStackOutputs) ProtoReflect() prot
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFirewallPolicyRuleCollectionGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFirewallPolicyRuleCollectionGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFirewallPolicyRuleCollectionGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFirewallPolicyRuleCollectionGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFirewallPolicyRuleCollectionGroupStackOutputs) GetRuleCollectionGroupId() string {
+func (x *AzureFirewallPolicyRuleCollectionGroupOutputs) GetRuleCollectionGroupId() string {
 	if x != nil {
 		return x.RuleCollectionGroupId
 	}
 	return ""
 }
 
-func (x *AzureFirewallPolicyRuleCollectionGroupStackOutputs) GetRuleCollectionGroupName() string {
+func (x *AzureFirewallPolicyRuleCollectionGroupOutputs) GetRuleCollectionGroupName() string {
 	if x != nil {
 		return x.RuleCollectionGroupName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_p
 
 const file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Kcatalog/azure/azurefirewallpolicyrulecollectiongroup/v1alpha1/outputs.proto\x12Adev.planton.azure.azurefirewallpolicyrulecollectiongroup.v1alpha1\"\xaa\x01\n" +
-	"2AzureFirewallPolicyRuleCollectionGroupStackOutputs\x127\n" +
+	"Kcatalog/azure/azurefirewallpolicyrulecollectiongroup/v1alpha1/outputs.proto\x12Adev.planton.azure.azurefirewallpolicyrulecollectiongroup.v1alpha1\"\xa5\x01\n" +
+	"-AzureFirewallPolicyRuleCollectionGroupOutputs\x127\n" +
 	"\x18rule_collection_group_id\x18\x01 \x01(\tR\x15ruleCollectionGroupId\x12;\n" +
 	"\x1arule_collection_group_name\x18\x02 \x01(\tR\x17ruleCollectionGroupNameB\x8a\x04\n" +
 	"Ecom.dev.planton.azure.azurefirewallpolicyrulecollectiongroup.v1alpha1B\fOutputsProtoP\x01Z\x89\x01github.com/plantonhq/planton/catalog/azure/azurefirewallpolicyrulecollectiongroup/v1alpha1;azurefirewallpolicyrulecollectiongroupv1alpha1\xa2\x02\x04DPAA\xaa\x02ADev.Planton.Azure.Azurefirewallpolicyrulecollectiongroup.V1alpha1\xca\x02ADev\\Planton\\Azure\\Azurefirewallpolicyrulecollectiongroup\\V1alpha1\xe2\x02MDev\\Planton\\Azure\\Azurefirewallpolicyrulecollectiongroup\\V1alpha1\\GPBMetadata\xea\x02EDev::Planton::Azure::Azurefirewallpolicyrulecollectiongroup::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_
 
 var file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFirewallPolicyRuleCollectionGroupStackOutputs)(nil), // 0: dev.planton.azure.azurefirewallpolicyrulecollectiongroup.v1alpha1.AzureFirewallPolicyRuleCollectionGroupStackOutputs
+	(*AzureFirewallPolicyRuleCollectionGroupOutputs)(nil), // 0: dev.planton.azure.azurefirewallpolicyrulecollectiongroup.v1alpha1.AzureFirewallPolicyRuleCollectionGroupOutputs
 }
 var file_catalog_azure_azurefirewallpolicyrulecollectiongroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

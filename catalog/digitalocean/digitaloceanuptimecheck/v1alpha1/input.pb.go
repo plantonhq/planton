@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-uptime-check stack-input
-type DigitalOceanUptimeCheckStackInput struct {
+// digital-ocean-uptime-check iac-input
+type DigitalOceanUptimeCheckIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanUptimeCheck `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanUptimeCheckStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanUptimeCheckStackInput) Reset() {
-	*x = DigitalOceanUptimeCheckStackInput{}
+func (x *DigitalOceanUptimeCheckIacInput) Reset() {
+	*x = DigitalOceanUptimeCheckIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanUptimeCheckStackInput) String() string {
+func (x *DigitalOceanUptimeCheckIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanUptimeCheckStackInput) ProtoMessage() {}
+func (*DigitalOceanUptimeCheckIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanUptimeCheckStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanUptimeCheckIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanUptimeCheckStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanUptimeCheckStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanUptimeCheckStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanUptimeCheckIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanUptimeCheckIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanUptimeCheckStackInput) GetTarget() *DigitalOceanUptimeCheck {
+func (x *DigitalOceanUptimeCheckIacInput) GetTarget() *DigitalOceanUptimeCheck {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanUptimeCheckStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanUptimeCheckIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto proto
 
 const file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceanuptimecheck/v1alpha1/input.proto\x129dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1\x1a?catalog/digitalocean/digitaloceanuptimecheck/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xee\x01\n" +
-	"!DigitalOceanUptimeCheckStackInput\x12j\n" +
+	"Acatalog/digitalocean/digitaloceanuptimecheck/v1alpha1/input.proto\x129dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1\x1a?catalog/digitalocean/digitaloceanuptimecheck/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xec\x01\n" +
+	"\x1fDigitalOceanUptimeCheckIacInput\x12j\n" +
 	"\x06target\x18\x01 \x01(\v2R.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xc8\x03\n" +
 	"=com.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_rawD
 
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanUptimeCheckStackInput)(nil),       // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackInput
+	(*DigitalOceanUptimeCheckIacInput)(nil),         // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckIacInput
 	(*DigitalOceanUptimeCheck)(nil),                 // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackInput.target:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck
-	2, // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckIacInput.target:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck
+	2, // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

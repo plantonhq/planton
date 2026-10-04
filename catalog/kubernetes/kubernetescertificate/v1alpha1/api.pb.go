@@ -31,7 +31,7 @@ type KubernetesCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesCertificate) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesCertificate) GetStatus() *KubernetesCertificateStatus {
 // KubernetesCertificateStatus holds the deployment status and outputs.
 type KubernetesCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesCertificateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesCertificateStatus) GetOutputs() *KubernetesCertificateStackOutputs {
+func (x *KubernetesCertificateStatus) GetOutputs() *KubernetesCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetescertificate_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15KubernetesCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatusR\x06status\"\x91\x01\n" +
-	"\x1bKubernetesCertificateStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatusR\x06status\"\x8c\x01\n" +
+	"\x1bKubernetesCertificateStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetescertificate.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kubernetescertificate/v1alpha1;kubernetescertificatev1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kubernetescertificate.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kubernetescertificate\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kubernetescertificate\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kubernetescertificate::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetescertificate_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetescertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetescertificate_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesCertificate)(nil),             // 0: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificate
-	(*KubernetesCertificateStatus)(nil),       // 1: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesCertificateSpec)(nil),         // 3: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateSpec
-	(*KubernetesCertificateStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStackOutputs
+	(*KubernetesCertificate)(nil),        // 0: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificate
+	(*KubernetesCertificateStatus)(nil),  // 1: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesCertificateSpec)(nil),    // 3: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateSpec
+	(*KubernetesCertificateOutputs)(nil), // 4: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateOutputs
 }
 var file_catalog_kubernetes_kubernetescertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificate.spec:type_name -> dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateSpec
 	1, // 2: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificate.status:type_name -> dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatus
-	4, // 3: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatus.outputs:type_name -> dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateStatus.outputs:type_name -> dev.planton.kubernetes.kubernetescertificate.v1alpha1.KubernetesCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

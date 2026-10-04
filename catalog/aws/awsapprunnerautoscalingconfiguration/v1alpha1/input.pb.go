@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppRunnerAutoScalingConfigurationStackInput is the input for the
+// AwsAppRunnerAutoScalingConfigurationIacInput is the input for the
 // aws-app-runner-auto-scaling-configuration IaC modules.
-type AwsAppRunnerAutoScalingConfigurationStackInput struct {
+type AwsAppRunnerAutoScalingConfigurationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsAppRunnerAutoScalingConfiguration `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsAppRunnerAutoScalingConfigurationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackInput) Reset() {
-	*x = AwsAppRunnerAutoScalingConfigurationStackInput{}
+func (x *AwsAppRunnerAutoScalingConfigurationIacInput) Reset() {
+	*x = AwsAppRunnerAutoScalingConfigurationIacInput{}
 	mi := &file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackInput) String() string {
+func (x *AwsAppRunnerAutoScalingConfigurationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppRunnerAutoScalingConfigurationStackInput) ProtoMessage() {}
+func (*AwsAppRunnerAutoScalingConfigurationIacInput) ProtoMessage() {}
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsAppRunnerAutoScalingConfigurationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsAppRunnerAutoScalingConfigurationStackInput) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppRunnerAutoScalingConfigurationStackInput.ProtoReflect.Descriptor instead.
-func (*AwsAppRunnerAutoScalingConfigurationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppRunnerAutoScalingConfigurationIacInput.ProtoReflect.Descriptor instead.
+func (*AwsAppRunnerAutoScalingConfigurationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackInput) GetTarget() *AwsAppRunnerAutoScalingConfiguration {
+func (x *AwsAppRunnerAutoScalingConfigurationIacInput) GetTarget() *AwsAppRunnerAutoScalingConfiguration {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsAppRunnerAutoScalingConfigurationIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto p
 
 const file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/input.proto\x12=dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1\x1aCcatalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xfa\x01\n" +
-	".AwsAppRunnerAutoScalingConfigurationStackInput\x12{\n" +
+	"Ecatalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/input.proto\x12=dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1\x1aCcatalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xf8\x01\n" +
+	",AwsAppRunnerAutoScalingConfigurationIacInput\x12{\n" +
 	"\x06target\x18\x01 \x01(\v2c.dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xee\x03\n" +
 	"Acom.dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_
 
 var file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_goTypes = []any{
-	(*AwsAppRunnerAutoScalingConfigurationStackInput)(nil), // 0: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationStackInput
-	(*AwsAppRunnerAutoScalingConfiguration)(nil),           // 1: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfiguration
-	(*aws.AwsProviderConfig)(nil),                          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsAppRunnerAutoScalingConfigurationIacInput)(nil), // 0: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationIacInput
+	(*AwsAppRunnerAutoScalingConfiguration)(nil),         // 1: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfiguration
+	(*aws.AwsProviderConfig)(nil),                        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationStackInput.target:type_name -> dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfiguration
-	2, // 1: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationIacInput.target:type_name -> dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfiguration
+	2, // 1: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

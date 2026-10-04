@@ -102,12 +102,12 @@ type Auth0Action struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0Action" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the action within Planton (becomes the Auth0 action name)
 	// - org: Organization that owns this action
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the Auth0 action.
 	// This includes the trigger, source code, runtime, dependencies, secrets,
 	// and optional trigger binding.
@@ -164,7 +164,7 @@ func (x *Auth0Action) GetKind() string {
 	return ""
 }
 
-func (x *Auth0Action) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0Action) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -189,10 +189,10 @@ func (x *Auth0Action) GetStatus() *Auth0ActionStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type Auth0ActionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the Auth0 action deployment.
+	// outputs contains the outputs from the Auth0 action deployment.
 	// These values are populated after successful deployment and include
 	// the action ID, version ID, and resolved runtime.
-	Outputs       *Auth0ActionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0ActionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -227,7 +227,7 @@ func (*Auth0ActionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0action_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0ActionStatus) GetOutputs() *Auth0ActionStackOutputs {
+func (x *Auth0ActionStatus) GetOutputs() *Auth0ActionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -245,11 +245,11 @@ const file_catalog_auth0_auth0action_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAuth0ActionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.auth0.auth0action.v1alpha1.Auth0ActionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStatusR\x06status\"n\n" +
-	"\x11Auth0ActionStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStackOutputsR\aoutputsB\xc8\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStatusR\x06status\"i\n" +
+	"\x11Auth0ActionStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.auth0.auth0action.v1alpha1.Auth0ActionOutputsR\aoutputsB\xc8\x02\n" +
 	"*com.dev.planton.auth0.auth0action.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/auth0/auth0action/v1alpha1;auth0actionv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Auth0.Auth0action.V1alpha1\xca\x02&Dev\\Planton\\Auth0\\Auth0action\\V1alpha1\xe2\x022Dev\\Planton\\Auth0\\Auth0action\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Auth0::Auth0action::V1alpha1b\x06proto3"
 
 var (
@@ -268,15 +268,15 @@ var file_catalog_auth0_auth0action_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_auth0_auth0action_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0Action)(nil),                  // 0: dev.planton.auth0.auth0action.v1alpha1.Auth0Action
 	(*Auth0ActionStatus)(nil),            // 1: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0ActionSpec)(nil),              // 3: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionSpec
-	(*Auth0ActionStackOutputs)(nil),      // 4: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStackOutputs
+	(*Auth0ActionOutputs)(nil),           // 4: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionOutputs
 }
 var file_catalog_auth0_auth0action_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0action.v1alpha1.Auth0Action.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0action.v1alpha1.Auth0Action.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0action.v1alpha1.Auth0Action.spec:type_name -> dev.planton.auth0.auth0action.v1alpha1.Auth0ActionSpec
 	1, // 2: dev.planton.auth0.auth0action.v1alpha1.Auth0Action.status:type_name -> dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStatus
-	4, // 3: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStatus.outputs:type_name -> dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStackOutputs
+	4, // 3: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStatus.outputs:type_name -> dev.planton.auth0.auth0action.v1alpha1.Auth0ActionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

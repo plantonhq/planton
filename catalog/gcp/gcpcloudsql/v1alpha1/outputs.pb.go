@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudSqlStackOutputs captures values returned after provisioning a Cloud
+// GcpCloudSqlOutputs captures values returned after provisioning a Cloud
 // SQL instance.
-type GcpCloudSqlStackOutputs struct {
+type GcpCloudSqlOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the Cloud SQL instance. The composition key: GcpCloudSqlDatabase
 	// and GcpCloudSqlUser reference an instance by this name, and a read
@@ -51,20 +51,20 @@ type GcpCloudSqlStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *GcpCloudSqlStackOutputs) Reset() {
-	*x = GcpCloudSqlStackOutputs{}
+func (x *GcpCloudSqlOutputs) Reset() {
+	*x = GcpCloudSqlOutputs{}
 	mi := &file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudSqlStackOutputs) String() string {
+func (x *GcpCloudSqlOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudSqlStackOutputs) ProtoMessage() {}
+func (*GcpCloudSqlOutputs) ProtoMessage() {}
 
-func (x *GcpCloudSqlStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudSqlOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,61 +76,61 @@ func (x *GcpCloudSqlStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudSqlStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudSqlStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudSqlOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudSqlOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudSqlStackOutputs) GetInstanceName() string {
+func (x *GcpCloudSqlOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetConnectionName() string {
+func (x *GcpCloudSqlOutputs) GetConnectionName() string {
 	if x != nil {
 		return x.ConnectionName
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetPrivateIp() string {
+func (x *GcpCloudSqlOutputs) GetPrivateIp() string {
 	if x != nil {
 		return x.PrivateIp
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetPublicIp() string {
+func (x *GcpCloudSqlOutputs) GetPublicIp() string {
 	if x != nil {
 		return x.PublicIp
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetSelfLink() string {
+func (x *GcpCloudSqlOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetServiceAccountEmail() string {
+func (x *GcpCloudSqlOutputs) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetDnsName() string {
+func (x *GcpCloudSqlOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlStackOutputs) GetPscServiceAttachmentLink() string {
+func (x *GcpCloudSqlOutputs) GetPscServiceAttachmentLink() string {
 	if x != nil {
 		return x.PscServiceAttachmentLink
 	}
@@ -141,8 +141,8 @@ var File_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpcloudsql/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\"\xce\x02\n" +
-	"\x17GcpCloudSqlStackOutputs\x12#\n" +
+	".catalog/gcp/gcpcloudsql/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\"\xc9\x02\n" +
+	"\x12GcpCloudSqlOutputs\x12#\n" +
 	"\rinstance_name\x18\x01 \x01(\tR\finstanceName\x12'\n" +
 	"\x0fconnection_name\x18\x02 \x01(\tR\x0econnectionName\x12\x1d\n" +
 	"\n" +
@@ -168,7 +168,7 @@ func file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudSqlStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlStackOutputs
+	(*GcpCloudSqlOutputs)(nil), // 0: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlOutputs
 }
 var file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

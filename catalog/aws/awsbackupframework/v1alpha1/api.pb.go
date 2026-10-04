@@ -27,7 +27,7 @@ type AwsBackupFramework struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsBackupFrameworkSpec       `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsBackupFrameworkStatus     `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsBackupFramework) GetKind() string {
 	return ""
 }
 
-func (x *AwsBackupFramework) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBackupFramework) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsBackupFramework) GetStatus() *AwsBackupFrameworkStatus {
 }
 
 type AwsBackupFrameworkStatus struct {
-	state         protoimpl.MessageState          `protogen:"open.v1"`
-	Outputs       *AwsBackupFrameworkStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Outputs       *AwsBackupFrameworkOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsBackupFrameworkStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupframework_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBackupFrameworkStatus) GetOutputs() *AwsBackupFrameworkStackOutputs {
+func (x *AwsBackupFrameworkStatus) GetOutputs() *AwsBackupFrameworkOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsbackupframework_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsBackupFrameworkR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsBackupFrameworkStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatusR\x06status\"|\n" +
+	"\x18AwsBackupFrameworkStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awsbackupframework.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsbackupframework/v1alpha1;awsbackupframeworkv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsbackupframework.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsbackupframework\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsbackupframework\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsbackupframework::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsbackupframework_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsbackupframework_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbackupframework_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBackupFramework)(nil),             // 0: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFramework
-	(*AwsBackupFrameworkStatus)(nil),       // 1: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBackupFrameworkSpec)(nil),         // 3: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkSpec
-	(*AwsBackupFrameworkStackOutputs)(nil), // 4: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStackOutputs
+	(*AwsBackupFramework)(nil),           // 0: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFramework
+	(*AwsBackupFrameworkStatus)(nil),     // 1: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBackupFrameworkSpec)(nil),       // 3: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkSpec
+	(*AwsBackupFrameworkOutputs)(nil),    // 4: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkOutputs
 }
 var file_catalog_aws_awsbackupframework_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFramework.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFramework.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFramework.spec:type_name -> dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkSpec
 	1, // 2: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFramework.status:type_name -> dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatus
-	4, // 3: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatus.outputs:type_name -> dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStackOutputs
+	4, // 3: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStatus.outputs:type_name -> dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

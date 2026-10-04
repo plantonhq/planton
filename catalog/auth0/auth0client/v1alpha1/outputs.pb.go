@@ -22,13 +22,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ClientStackOutputs contains the outputs from an Auth0 Client deployment.
+// Auth0ClientOutputs contains the outputs from an Auth0 Client deployment.
 // These outputs provide essential identifiers and credentials for integrating
 // the application with your services and Auth0 features.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/client/#outputs
-type Auth0ClientStackOutputs struct {
+type Auth0ClientOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the Auth0 client.
 	// This is used internally by Auth0 to identify the application.
@@ -74,20 +74,20 @@ type Auth0ClientStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *Auth0ClientStackOutputs) Reset() {
-	*x = Auth0ClientStackOutputs{}
+func (x *Auth0ClientOutputs) Reset() {
+	*x = Auth0ClientOutputs{}
 	mi := &file_catalog_auth0_auth0client_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ClientStackOutputs) String() string {
+func (x *Auth0ClientOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ClientStackOutputs) ProtoMessage() {}
+func (*Auth0ClientOutputs) ProtoMessage() {}
 
-func (x *Auth0ClientStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0ClientOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0client_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -99,75 +99,75 @@ func (x *Auth0ClientStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ClientStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0ClientStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ClientOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0ClientOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0client_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ClientStackOutputs) GetId() string {
+func (x *Auth0ClientOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetClientId() string {
+func (x *Auth0ClientOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetClientSecret() string {
+func (x *Auth0ClientOutputs) GetClientSecret() string {
 	if x != nil {
 		return x.ClientSecret
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetName() string {
+func (x *Auth0ClientOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetApplicationType() string {
+func (x *Auth0ClientOutputs) GetApplicationType() string {
 	if x != nil {
 		return x.ApplicationType
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetSigningKeys() []*Auth0SigningKey {
+func (x *Auth0ClientOutputs) GetSigningKeys() []*Auth0SigningKey {
 	if x != nil {
 		return x.SigningKeys
 	}
 	return nil
 }
 
-func (x *Auth0ClientStackOutputs) GetCallbackUrlTemplate() string {
+func (x *Auth0ClientOutputs) GetCallbackUrlTemplate() string {
 	if x != nil {
 		return x.CallbackUrlTemplate
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetAllowedClients() []string {
+func (x *Auth0ClientOutputs) GetAllowedClients() []string {
 	if x != nil {
 		return x.AllowedClients
 	}
 	return nil
 }
 
-func (x *Auth0ClientStackOutputs) GetGlobal() string {
+func (x *Auth0ClientOutputs) GetGlobal() string {
 	if x != nil {
 		return x.Global
 	}
 	return ""
 }
 
-func (x *Auth0ClientStackOutputs) GetTokenEndpointAuthMethod() string {
+func (x *Auth0ClientOutputs) GetTokenEndpointAuthMethod() string {
 	if x != nil {
 		return x.TokenEndpointAuthMethod
 	}
@@ -251,8 +251,8 @@ var File_catalog_auth0_auth0client_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_auth0_auth0client_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/auth0/auth0client/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a\x1cshared/options/options.proto\"\xbe\x03\n" +
-	"\x17Auth0ClientStackOutputs\x12\x0e\n" +
+	"0catalog/auth0/auth0client/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a\x1cshared/options/options.proto\"\xb9\x03\n" +
+	"\x12Auth0ClientOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12)\n" +
 	"\rclient_secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12\x12\n" +
@@ -287,11 +287,11 @@ func file_catalog_auth0_auth0client_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_auth0_auth0client_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0client_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0ClientStackOutputs)(nil), // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackOutputs
-	(*Auth0SigningKey)(nil),         // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0SigningKey
+	(*Auth0ClientOutputs)(nil), // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientOutputs
+	(*Auth0SigningKey)(nil),    // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0SigningKey
 }
 var file_catalog_auth0_auth0client_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackOutputs.signing_keys:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0SigningKey
+	1, // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientOutputs.signing_keys:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0SigningKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

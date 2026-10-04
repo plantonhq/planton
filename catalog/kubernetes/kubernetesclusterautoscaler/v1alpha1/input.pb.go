@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesClusterAutoscaler IaC stack. The platform
 // resolves all StringValueOrRef references (namespace) to literal strings
 // before passing this to the IaC engine.
-type KubernetesClusterAutoscalerStackInput struct {
+type KubernetesClusterAutoscalerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// Target infra-component.
 	Target *KubernetesClusterAutoscaler `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesClusterAutoscalerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesClusterAutoscalerStackInput) Reset() {
-	*x = KubernetesClusterAutoscalerStackInput{}
+func (x *KubernetesClusterAutoscalerIacInput) Reset() {
+	*x = KubernetesClusterAutoscalerIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesClusterAutoscalerStackInput) String() string {
+func (x *KubernetesClusterAutoscalerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesClusterAutoscalerStackInput) ProtoMessage() {}
+func (*KubernetesClusterAutoscalerIacInput) ProtoMessage() {}
 
-func (x *KubernetesClusterAutoscalerStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesClusterAutoscalerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesClusterAutoscalerStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesClusterAutoscalerStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesClusterAutoscalerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesClusterAutoscalerIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesClusterAutoscalerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesClusterAutoscalerStackInput) GetTarget() *KubernetesClusterAutoscaler {
+func (x *KubernetesClusterAutoscalerIacInput) GetTarget() *KubernetesClusterAutoscaler {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesClusterAutoscalerStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesClusterAutoscalerIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto pro
 
 const file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kubernetesclusterautoscaler/v1alpha1/input.proto\x12;dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1\x1aAcatalog/kubernetes/kubernetesclusterautoscaler/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf4\x01\n" +
-	"%KubernetesClusterAutoscalerStackInput\x12p\n" +
+	"Ccatalog/kubernetes/kubernetesclusterautoscaler/v1alpha1/input.proto\x12;dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1\x1aAcatalog/kubernetes/kubernetesclusterautoscaler/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf2\x01\n" +
+	"#KubernetesClusterAutoscalerIacInput\x12p\n" +
 	"\x06target\x18\x01 \x01(\v2X.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xd8\x03\n" +
 	"?com.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_ra
 
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesClusterAutoscalerStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackInput
-	(*KubernetesClusterAutoscaler)(nil),           // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler
-	(*kubernetes.KubernetesProviderConfig)(nil),   // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesClusterAutoscalerIacInput)(nil), // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerIacInput
+	(*KubernetesClusterAutoscaler)(nil),         // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler
+	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackInput.target:type_name -> dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler
-	2, // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerIacInput.target:type_name -> dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler
+	2, // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -37,9 +37,9 @@ const (
 //	  name: network-staples
 //	spec:
 //	  members:
-//	    - component: awsvpc
+//	    - kind_dir: awsvpc
 //	      manifest_path: catalog/aws/awsvpc/v1alpha1/e2e/prerequisite.yaml
-//	    - component: awssubnet
+//	    - kind_dir: awssubnet
 //	      manifest_path: catalog/aws/awssubnet/v1alpha1/e2e/scenarios/routed.yaml
 //	  scan_scope:
 //	    region: us-west-2
@@ -47,7 +47,7 @@ type MappingEvalSuite struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *MappingEvalSuiteSpec         `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -97,7 +97,7 @@ func (x *MappingEvalSuite) GetKind() string {
 	return ""
 }
 
-func (x *MappingEvalSuite) GetMetadata() *shared.CloudResourceMetadata {
+func (x *MappingEvalSuite) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -120,7 +120,7 @@ const file_qa_mappingevalsuite_v1_api_proto_rawDesc = "" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12L\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12L\n" +
 	"\x04spec\x18\x04 \x01(\v28.dev.planton.qa.mappingevalsuite.v1.MappingEvalSuiteSpecR\x04specB\xa7\x02\n" +
 	"&com.dev.planton.qa.mappingevalsuite.v1B\bApiProtoP\x01ZFgithub.com/plantonhq/planton/qa/mappingevalsuite/v1;mappingevalsuitev1\xa2\x02\x04DPQM\xaa\x02\"Dev.Planton.Qa.Mappingevalsuite.V1\xca\x02\"Dev\\Planton\\Qa\\Mappingevalsuite\\V1\xe2\x02.Dev\\Planton\\Qa\\Mappingevalsuite\\V1\\GPBMetadata\xea\x02&Dev::Planton::Qa::Mappingevalsuite::V1b\x06proto3"
 
@@ -139,11 +139,11 @@ func file_qa_mappingevalsuite_v1_api_proto_rawDescGZIP() []byte {
 var file_qa_mappingevalsuite_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_qa_mappingevalsuite_v1_api_proto_goTypes = []any{
 	(*MappingEvalSuite)(nil),             // 0: dev.planton.qa.mappingevalsuite.v1.MappingEvalSuite
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
 	(*MappingEvalSuiteSpec)(nil),         // 2: dev.planton.qa.mappingevalsuite.v1.MappingEvalSuiteSpec
 }
 var file_qa_mappingevalsuite_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.qa.mappingevalsuite.v1.MappingEvalSuite.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	1, // 0: dev.planton.qa.mappingevalsuite.v1.MappingEvalSuite.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	2, // 1: dev.planton.qa.mappingevalsuite.v1.MappingEvalSuite.spec:type_name -> dev.planton.qa.mappingevalsuite.v1.MappingEvalSuiteSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type

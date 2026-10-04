@@ -28,7 +28,7 @@ type GcpMonitoringNotificationChannel struct {
 	state         protoimpl.MessageState                  `protogen:"open.v1"`
 	ApiVersion    string                                  `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                                  `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata           `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata           `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpMonitoringNotificationChannelSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpMonitoringNotificationChannelStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpMonitoringNotificationChannel) GetKind() string {
 	return ""
 }
 
-func (x *GcpMonitoringNotificationChannel) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpMonitoringNotificationChannel) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpMonitoringNotificationChannel) GetStatus() *GcpMonitoringNotificatio
 }
 
 type GcpMonitoringNotificationChannelStatus struct {
-	state         protoimpl.MessageState                        `protogen:"open.v1"`
-	Outputs       *GcpMonitoringNotificationChannelStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState                   `protogen:"open.v1"`
+	Outputs       *GcpMonitoringNotificationChannelOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpMonitoringNotificationChannelStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpMonitoringNotificationChannelStatus) GetOutputs() *GcpMonitoringNotificationChannelStackOutputs {
+func (x *GcpMonitoringNotificationChannelStatus) GetOutputs() *GcpMonitoringNotificationChannelOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_api_proto_rawDe
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" GcpMonitoringNotificationChannelR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatusR\x06status\"\xac\x01\n" +
-	"&GcpMonitoringNotificationChannelStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatusR\x06status\"\xa6\x01\n" +
+	"&GcpMonitoringNotificationChannelStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelOutputsR\aoutputsB\xcf\x03\n" +
 	"=com.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1;gcpmonitoringnotificationchannelv1alpha1\xa2\x02\x04DPGG\xaa\x029Dev.Planton.Gcp.Gcpmonitoringnotificationchannel.V1alpha1\xca\x029Dev\\Planton\\Gcp\\Gcpmonitoringnotificationchannel\\V1alpha1\xe2\x02EDev\\Planton\\Gcp\\Gcpmonitoringnotificationchannel\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Gcp::Gcpmonitoringnotificationchannel::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_api_proto_rawDes
 
 var file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_api_proto_goTypes = []any{
-	(*GcpMonitoringNotificationChannel)(nil),             // 0: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannel
-	(*GcpMonitoringNotificationChannelStatus)(nil),       // 1: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpMonitoringNotificationChannelSpec)(nil),         // 3: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec
-	(*GcpMonitoringNotificationChannelStackOutputs)(nil), // 4: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStackOutputs
+	(*GcpMonitoringNotificationChannel)(nil),        // 0: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannel
+	(*GcpMonitoringNotificationChannelStatus)(nil),  // 1: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpMonitoringNotificationChannelSpec)(nil),    // 3: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec
+	(*GcpMonitoringNotificationChannelOutputs)(nil), // 4: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelOutputs
 }
 var file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannel.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannel.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannel.spec:type_name -> dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec
 	1, // 2: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannel.status:type_name -> dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatus
-	4, // 3: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatus.outputs:type_name -> dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStackOutputs
+	4, // 3: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStatus.outputs:type_name -> dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

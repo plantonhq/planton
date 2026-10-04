@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCostAnomalyMonitorStackInput is the input for the IaC modules
+// AwsCostAnomalyMonitorIacInput is the input for the IaC modules
 // that manage a Cost Explorer anomaly monitor and its folded alert
 // subscriptions.
-type AwsCostAnomalyMonitorStackInput struct {
+type AwsCostAnomalyMonitorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCostAnomalyMonitor resource to deploy.
 	Target *AwsCostAnomalyMonitor `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsCostAnomalyMonitorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCostAnomalyMonitorStackInput) Reset() {
-	*x = AwsCostAnomalyMonitorStackInput{}
+func (x *AwsCostAnomalyMonitorIacInput) Reset() {
+	*x = AwsCostAnomalyMonitorIacInput{}
 	mi := &file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCostAnomalyMonitorStackInput) String() string {
+func (x *AwsCostAnomalyMonitorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCostAnomalyMonitorStackInput) ProtoMessage() {}
+func (*AwsCostAnomalyMonitorIacInput) ProtoMessage() {}
 
-func (x *AwsCostAnomalyMonitorStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCostAnomalyMonitorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsCostAnomalyMonitorStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCostAnomalyMonitorStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCostAnomalyMonitorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCostAnomalyMonitorIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCostAnomalyMonitorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCostAnomalyMonitorStackInput) GetTarget() *AwsCostAnomalyMonitor {
+func (x *AwsCostAnomalyMonitorIacInput) GetTarget() *AwsCostAnomalyMonitor {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCostAnomalyMonitorStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCostAnomalyMonitorIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awscostanomalymonitor/v1alpha1/input.proto\x12.dev.planton.aws.awscostanomalymonitor.v1alpha1\x1a4catalog/aws/awscostanomalymonitor/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsCostAnomalyMonitorStackInput\x12]\n" +
+	"6catalog/aws/awscostanomalymonitor/v1alpha1/input.proto\x12.dev.planton.aws.awscostanomalymonitor.v1alpha1\x1a4catalog/aws/awscostanomalymonitor/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsCostAnomalyMonitorIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awscostanomalymonitor.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCostAnomalyMonitorStackInput)(nil), // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackInput
-	(*AwsCostAnomalyMonitor)(nil),           // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCostAnomalyMonitorIacInput)(nil), // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorIacInput
+	(*AwsCostAnomalyMonitor)(nil),         // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackInput.target:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor
-	2, // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorIacInput.target:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor
+	2, // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

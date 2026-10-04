@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesSeaweedFsSpec** deploys SeaweedFS — the catalog's
 in-cluster S3-compatible object store (Apache-2.0) — from the
@@ -26,7 +26,7 @@ declared (then a separate Deployment scales the API independently
 of metadata). Auth is ON by default: the chart materializes an
 admin and a read-only credential pair in the
 `<name>-s3-secret` Secret (stable across upgrades, kept on
-uninstall) — the stack outputs point at it. Buckets declared in
+uninstall) — the outputs point at it. Buckets declared in
 `s3.buckets` are created by the chart's post-install hook.
 
 STORAGE: the chart's out-of-the-box storage is hostPath (bare-metal
@@ -609,7 +609,7 @@ explicitly for a pure filer/POSIX deployment.
 Require S3 credentials. Component default: true — the chart
 materializes admin + read-only credential pairs in the
 `<name>-s3-secret` Secret (generated once, stable across
-upgrades, kept on uninstall; surfaced in the stack outputs).
+upgrades, kept on uninstall; surfaced in the outputs).
 False serves an OPEN in-cluster S3 endpoint — dev only.
 
 - default: `true`

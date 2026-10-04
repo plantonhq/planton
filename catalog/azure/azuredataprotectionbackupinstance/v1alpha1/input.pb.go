@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureDataProtectionBackupInstanceStackInput is the input to the IaC
+// AzureDataProtectionBackupInstanceIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureDataProtectionBackupInstanceStackInput struct {
+type AzureDataProtectionBackupInstanceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Data Protection backup instance resource to deploy.
 	Target *AzureDataProtectionBackupInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureDataProtectionBackupInstanceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureDataProtectionBackupInstanceStackInput) Reset() {
-	*x = AzureDataProtectionBackupInstanceStackInput{}
+func (x *AzureDataProtectionBackupInstanceIacInput) Reset() {
+	*x = AzureDataProtectionBackupInstanceIacInput{}
 	mi := &file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataProtectionBackupInstanceStackInput) String() string {
+func (x *AzureDataProtectionBackupInstanceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataProtectionBackupInstanceStackInput) ProtoMessage() {}
+func (*AzureDataProtectionBackupInstanceIacInput) ProtoMessage() {}
 
-func (x *AzureDataProtectionBackupInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureDataProtectionBackupInstanceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDataProtectionBackupInstanceStackInput) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataProtectionBackupInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*AzureDataProtectionBackupInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataProtectionBackupInstanceIacInput.ProtoReflect.Descriptor instead.
+func (*AzureDataProtectionBackupInstanceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataProtectionBackupInstanceStackInput) GetTarget() *AzureDataProtectionBackupInstance {
+func (x *AzureDataProtectionBackupInstanceIacInput) GetTarget() *AzureDataProtectionBackupInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureDataProtectionBackupInstanceStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureDataProtectionBackupInstanceIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto pr
 
 const file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azuredataprotectionbackupinstance/v1alpha1/input.proto\x12<dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1\x1aBcatalog/azure/azuredataprotectionbackupinstance/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf7\x01\n" +
-	"+AzureDataProtectionBackupInstanceStackInput\x12w\n" +
+	"Dcatalog/azure/azuredataprotectionbackupinstance/v1alpha1/input.proto\x12<dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1\x1aBcatalog/azure/azuredataprotectionbackupinstance/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf5\x01\n" +
+	")AzureDataProtectionBackupInstanceIacInput\x12w\n" +
 	"\x06target\x18\x01 \x01(\v2_.dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xe4\x03\n" +
 	"@com.dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_r
 
 var file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_goTypes = []any{
-	(*AzureDataProtectionBackupInstanceStackInput)(nil), // 0: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceStackInput
-	(*AzureDataProtectionBackupInstance)(nil),           // 1: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstance
-	(*azure.AzureProviderConfig)(nil),                   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureDataProtectionBackupInstanceIacInput)(nil), // 0: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceIacInput
+	(*AzureDataProtectionBackupInstance)(nil),         // 1: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstance
+	(*azure.AzureProviderConfig)(nil),                 // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceStackInput.target:type_name -> dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstance
-	2, // 1: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceIacInput.target:type_name -> dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstance
+	2, // 1: dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

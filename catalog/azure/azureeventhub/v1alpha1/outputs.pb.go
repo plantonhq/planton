@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubStackOutputs** captures the outputs of provisioning an
+// **AzureEventHubOutputs** captures the outputs of provisioning an
 // event hub.
 //
 // `event_hub_id` is the ARM identity hub-scoped kinds reference
 // (AzureEventHubConsumerGroup, AzureEventHubAuthorizationRule with
 // event_hub_id) and the scope for hub-level data-plane role assignments.
-type AzureEventHubStackOutputs struct {
+type AzureEventHubOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the event hub.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/eventhubs/{name}
@@ -45,20 +45,20 @@ type AzureEventHubStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureEventHubStackOutputs) Reset() {
-	*x = AzureEventHubStackOutputs{}
+func (x *AzureEventHubOutputs) Reset() {
+	*x = AzureEventHubOutputs{}
 	mi := &file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubStackOutputs) String() string {
+func (x *AzureEventHubOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubStackOutputs) ProtoMessage() {}
+func (*AzureEventHubOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,26 +70,26 @@ func (x *AzureEventHubStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubStackOutputs) GetEventHubId() string {
+func (x *AzureEventHubOutputs) GetEventHubId() string {
 	if x != nil {
 		return x.EventHubId
 	}
 	return ""
 }
 
-func (x *AzureEventHubStackOutputs) GetEventHubName() string {
+func (x *AzureEventHubOutputs) GetEventHubName() string {
 	if x != nil {
 		return x.EventHubName
 	}
 	return ""
 }
 
-func (x *AzureEventHubStackOutputs) GetPartitionIds() []string {
+func (x *AzureEventHubOutputs) GetPartitionIds() []string {
 	if x != nil {
 		return x.PartitionIds
 	}
@@ -100,8 +100,8 @@ var File_catalog_azure_azureeventhub_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/azure/azureeventhub/v1alpha1/outputs.proto\x12(dev.planton.azure.azureeventhub.v1alpha1\"\x88\x01\n" +
-	"\x19AzureEventHubStackOutputs\x12 \n" +
+	"2catalog/azure/azureeventhub/v1alpha1/outputs.proto\x12(dev.planton.azure.azureeventhub.v1alpha1\"\x83\x01\n" +
+	"\x14AzureEventHubOutputs\x12 \n" +
 	"\fevent_hub_id\x18\x01 \x01(\tR\n" +
 	"eventHubId\x12$\n" +
 	"\x0eevent_hub_name\x18\x02 \x01(\tR\feventHubName\x12#\n" +
@@ -122,7 +122,7 @@ func file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubStackOutputs)(nil), // 0: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubStackOutputs
+	(*AzureEventHubOutputs)(nil), // 0: dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubOutputs
 }
 var file_catalog_azure_azureeventhub_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-workers-kv-pair stack-input
-type CloudflareWorkersKvPairStackInput struct {
+// cloudflare-workers-kv-pair iac-input
+type CloudflareWorkersKvPairIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareWorkersKvPair `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareWorkersKvPairStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareWorkersKvPairStackInput) Reset() {
-	*x = CloudflareWorkersKvPairStackInput{}
+func (x *CloudflareWorkersKvPairIacInput) Reset() {
+	*x = CloudflareWorkersKvPairIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWorkersKvPairStackInput) String() string {
+func (x *CloudflareWorkersKvPairIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWorkersKvPairStackInput) ProtoMessage() {}
+func (*CloudflareWorkersKvPairIacInput) ProtoMessage() {}
 
-func (x *CloudflareWorkersKvPairStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWorkersKvPairIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareWorkersKvPairStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWorkersKvPairStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkersKvPairStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWorkersKvPairIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkersKvPairIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWorkersKvPairStackInput) GetTarget() *CloudflareWorkersKvPair {
+func (x *CloudflareWorkersKvPairIacInput) GetTarget() *CloudflareWorkersKvPair {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareWorkersKvPairStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareWorkersKvPairIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto protore
 
 const file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/cloudflare/cloudflareworkerskvpair/v1alpha1/input.proto\x127dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1\x1a=catalog/cloudflare/cloudflareworkerskvpair/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe8\x01\n" +
-	"!CloudflareWorkersKvPairStackInput\x12h\n" +
+	"?catalog/cloudflare/cloudflareworkerskvpair/v1alpha1/input.proto\x127dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1\x1a=catalog/cloudflare/cloudflareworkerskvpair/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe6\x01\n" +
+	"\x1fCloudflareWorkersKvPairIacInput\x12h\n" +
 	"\x06target\x18\x01 \x01(\v2P.dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	";com.dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_rawDes
 
 var file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareWorkersKvPairStackInput)(nil),   // 0: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairStackInput
+	(*CloudflareWorkersKvPairIacInput)(nil),     // 0: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairIacInput
 	(*CloudflareWorkersKvPair)(nil),             // 1: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPair
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareworkerskvpair_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairStackInput.target:type_name -> dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPair
-	2, // 1: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairIacInput.target:type_name -> dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPair
+	2, // 1: dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1.CloudflareWorkersKvPairIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

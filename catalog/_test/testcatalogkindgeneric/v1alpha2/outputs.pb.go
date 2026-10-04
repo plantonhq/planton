@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: catalog/_test/testcloudresourcegeneric/v1alpha2/outputs.proto
+// source: catalog/_test/testcatalogkindgeneric/v1alpha2/outputs.proto
 
-package testcloudresourcegenericv1alpha2
+package testcatalogkindgenericv1alpha2
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Stack outputs at v1alpha2. Relative to v1alpha1, `endpoint` is RENAMED to
+// Outputs at v1alpha2. Relative to v1alpha1, `endpoint` is RENAMED to
 // `url` -- the outputs-path rename class: other resources reference outputs
 // by string path (foreign-key annotations, valueFrom fieldPaths), so the
 // conversion spec must declare the mapping for referrer rewriting.
-type TestCloudResourceGenericStackOutputs struct {
+type TestCatalogKindGenericOutputs struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -35,21 +35,21 @@ type TestCloudResourceGenericStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TestCloudResourceGenericStackOutputs) Reset() {
-	*x = TestCloudResourceGenericStackOutputs{}
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_msgTypes[0]
+func (x *TestCatalogKindGenericOutputs) Reset() {
+	*x = TestCatalogKindGenericOutputs{}
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TestCloudResourceGenericStackOutputs) String() string {
+func (x *TestCatalogKindGenericOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TestCloudResourceGenericStackOutputs) ProtoMessage() {}
+func (*TestCatalogKindGenericOutputs) ProtoMessage() {}
 
-func (x *TestCloudResourceGenericStackOutputs) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_msgTypes[0]
+func (x *TestCatalogKindGenericOutputs) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,68 +60,68 @@ func (x *TestCloudResourceGenericStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TestCloudResourceGenericStackOutputs.ProtoReflect.Descriptor instead.
-func (*TestCloudResourceGenericStackOutputs) Descriptor() ([]byte, []int) {
-	return file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use TestCatalogKindGenericOutputs.ProtoReflect.Descriptor instead.
+func (*TestCatalogKindGenericOutputs) Descriptor() ([]byte, []int) {
+	return file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TestCloudResourceGenericStackOutputs) GetId() string {
+func (x *TestCatalogKindGenericOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *TestCloudResourceGenericStackOutputs) GetName() string {
+func (x *TestCatalogKindGenericOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *TestCloudResourceGenericStackOutputs) GetUrl() string {
+func (x *TestCatalogKindGenericOutputs) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *TestCloudResourceGenericStackOutputs) GetTags() []string {
+func (x *TestCatalogKindGenericOutputs) GetTags() []string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-var File_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto protoreflect.FileDescriptor
+var File_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto protoreflect.FileDescriptor
 
-const file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDesc = "" +
+const file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/_test/testcloudresourcegeneric/v1alpha2/outputs.proto\x123dev.planton._test.testcloudresourcegeneric.v1alpha2\"p\n" +
-	"$TestCloudResourceGenericStackOutputs\x12\x0e\n" +
+	";catalog/_test/testcatalogkindgeneric/v1alpha2/outputs.proto\x121dev.planton._test.testcatalogkindgeneric.v1alpha2\"i\n" +
+	"\x1dTestCatalogKindGenericOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x10\n" +
 	"\x03url\x18\x03 \x01(\tR\x03url\x12\x12\n" +
-	"\x04tags\x18\x04 \x03(\tR\x04tagsB\xa3\x03\n" +
-	"7com.dev.planton._test.testcloudresourcegeneric.v1alpha2B\fOutputsProtoP\x01Zmgithub.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha2;testcloudresourcegenericv1alpha2\xa2\x02\x04DP_T\xaa\x022Dev.Planton.Test.Testcloudresourcegeneric.V1alpha2\xca\x022Dev\\Planton\\Test\\Testcloudresourcegeneric\\V1alpha2\xe2\x02>Dev\\Planton\\Test\\Testcloudresourcegeneric\\V1alpha2\\GPBMetadata\xea\x026Dev::Planton::Test::Testcloudresourcegeneric::V1alpha2b\x06proto3"
+	"\x04tags\x18\x04 \x03(\tR\x04tagsB\x95\x03\n" +
+	"5com.dev.planton._test.testcatalogkindgeneric.v1alpha2B\fOutputsProtoP\x01Zigithub.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha2;testcatalogkindgenericv1alpha2\xa2\x02\x04DP_T\xaa\x020Dev.Planton.Test.Testcatalogkindgeneric.V1alpha2\xca\x020Dev\\Planton\\Test\\Testcatalogkindgeneric\\V1alpha2\xe2\x02<Dev\\Planton\\Test\\Testcatalogkindgeneric\\V1alpha2\\GPBMetadata\xea\x024Dev::Planton::Test::Testcatalogkindgeneric::V1alpha2b\x06proto3"
 
 var (
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescOnce sync.Once
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescData []byte
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescOnce sync.Once
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescData []byte
 )
 
-func file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescGZIP() []byte {
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescOnce.Do(func() {
-		file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDesc), len(file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDesc)))
+func file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescGZIP() []byte {
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescOnce.Do(func() {
+		file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDesc), len(file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDesc)))
 	})
-	return file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDescData
+	return file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDescData
 }
 
-var file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_goTypes = []any{
-	(*TestCloudResourceGenericStackOutputs)(nil), // 0: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericStackOutputs
+var file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_goTypes = []any{
+	(*TestCatalogKindGenericOutputs)(nil), // 0: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericOutputs
 }
-var file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_depIdxs = []int32{
+var file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -129,26 +129,26 @@ var file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_depIdxs =
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_init() }
-func file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_init() {
-	if File_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto != nil {
+func init() { file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_init() }
+func file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_init() {
+	if File_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDesc), len(file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDesc), len(file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_goTypes,
-		DependencyIndexes: file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_depIdxs,
-		MessageInfos:      file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_msgTypes,
+		GoTypes:           file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_goTypes,
+		DependencyIndexes: file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_depIdxs,
+		MessageInfos:      file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_msgTypes,
 	}.Build()
-	File_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto = out.File
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_goTypes = nil
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_outputs_proto_depIdxs = nil
+	File_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto = out.File
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_goTypes = nil
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_outputs_proto_depIdxs = nil
 }

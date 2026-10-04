@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeEntitlementFeatureStackInput is the input to the StripeEntitlementFeature IaC module.
+// StripeEntitlementFeatureIacInput is the input to the StripeEntitlementFeature IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeEntitlementFeatureStackInput struct {
+type StripeEntitlementFeatureIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeEntitlementFeature resource to be deployed.
 	Target *StripeEntitlementFeature `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeEntitlementFeatureStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeEntitlementFeatureStackInput) Reset() {
-	*x = StripeEntitlementFeatureStackInput{}
+func (x *StripeEntitlementFeatureIacInput) Reset() {
+	*x = StripeEntitlementFeatureIacInput{}
 	mi := &file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeEntitlementFeatureStackInput) String() string {
+func (x *StripeEntitlementFeatureIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeEntitlementFeatureStackInput) ProtoMessage() {}
+func (*StripeEntitlementFeatureIacInput) ProtoMessage() {}
 
-func (x *StripeEntitlementFeatureStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeEntitlementFeatureIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeEntitlementFeatureStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeEntitlementFeatureStackInput.ProtoReflect.Descriptor instead.
-func (*StripeEntitlementFeatureStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeEntitlementFeatureIacInput.ProtoReflect.Descriptor instead.
+func (*StripeEntitlementFeatureIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeEntitlementFeatureStackInput) GetTarget() *StripeEntitlementFeature {
+func (x *StripeEntitlementFeatureIacInput) GetTarget() *StripeEntitlementFeature {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeEntitlementFeatureStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeEntitlementFeatureIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto protorefle
 
 const file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/stripe/stripeentitlementfeature/v1alpha1/input.proto\x124dev.planton.stripe.stripeentitlementfeature.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a:catalog/stripe/stripeentitlementfeature/v1alpha1/api.proto\"\xdf\x01\n" +
-	"\"StripeEntitlementFeatureStackInput\x12f\n" +
+	"<catalog/stripe/stripeentitlementfeature/v1alpha1/input.proto\x124dev.planton.stripe.stripeentitlementfeature.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a:catalog/stripe/stripeentitlementfeature/v1alpha1/api.proto\"\xdd\x01\n" +
+	" StripeEntitlementFeatureIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xab\x03\n" +
 	"8com.dev.planton.stripe.stripeentitlementfeature.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_goTypes = []any{
-	(*StripeEntitlementFeatureStackInput)(nil), // 0: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureStackInput
-	(*StripeEntitlementFeature)(nil),           // 1: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeature
-	(*stripe.StripeProviderConfig)(nil),        // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeEntitlementFeatureIacInput)(nil), // 0: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureIacInput
+	(*StripeEntitlementFeature)(nil),         // 1: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeature
+	(*stripe.StripeProviderConfig)(nil),      // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripeentitlementfeature_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureStackInput.target:type_name -> dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeature
-	2, // 1: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureIacInput.target:type_name -> dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeature
+	2, // 1: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

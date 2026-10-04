@@ -51,7 +51,7 @@ const (
 //     default, so the `encryption` block only needs to be set to switch to
 //     SSE-KMS/DSSE-KMS or to enable the S3 Bucket Key cost optimization.
 //   - Credentials, region wiring, and deployment workflow live outside this spec
-//     in stack inputs.
+//     in IaC inputs.
 type AwsS3BucketSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the bucket will be created.

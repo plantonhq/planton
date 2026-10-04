@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningDatastoreStackOutputs** captures the outputs
+// **AzureMachineLearningDatastoreOutputs** captures the outputs
 // of provisioning a Machine Learning datastore.
-type AzureMachineLearningDatastoreStackOutputs struct {
+type AzureMachineLearningDatastoreOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the datastore.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/dataStores/{name}
@@ -39,20 +39,20 @@ type AzureMachineLearningDatastoreStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningDatastoreStackOutputs) Reset() {
-	*x = AzureMachineLearningDatastoreStackOutputs{}
+func (x *AzureMachineLearningDatastoreOutputs) Reset() {
+	*x = AzureMachineLearningDatastoreOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningDatastoreStackOutputs) String() string {
+func (x *AzureMachineLearningDatastoreOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningDatastoreStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningDatastoreOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningDatastoreStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningDatastoreOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AzureMachineLearningDatastoreStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningDatastoreStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningDatastoreStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningDatastoreOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningDatastoreOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningDatastoreStackOutputs) GetDatastoreId() string {
+func (x *AzureMachineLearningDatastoreOutputs) GetDatastoreId() string {
 	if x != nil {
 		return x.DatastoreId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningDatastoreStackOutputs) GetDatastoreName() string {
+func (x *AzureMachineLearningDatastoreOutputs) GetDatastoreName() string {
 	if x != nil {
 		return x.DatastoreName
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningDatastoreStackOutputs) GetIsDefault() bool {
+func (x *AzureMachineLearningDatastoreOutputs) GetIsDefault() bool {
 	if x != nil {
 		return x.IsDefault
 	}
@@ -94,8 +94,8 @@ var File_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azuremachinelearningdatastore/v1alpha1/outputs.proto\x128dev.planton.azure.azuremachinelearningdatastore.v1alpha1\"\x94\x01\n" +
-	")AzureMachineLearningDatastoreStackOutputs\x12!\n" +
+	"Bcatalog/azure/azuremachinelearningdatastore/v1alpha1/outputs.proto\x128dev.planton.azure.azuremachinelearningdatastore.v1alpha1\"\x8f\x01\n" +
+	"$AzureMachineLearningDatastoreOutputs\x12!\n" +
 	"\fdatastore_id\x18\x01 \x01(\tR\vdatastoreId\x12%\n" +
 	"\x0edatastore_name\x18\x02 \x01(\tR\rdatastoreName\x12\x1d\n" +
 	"\n" +
@@ -116,7 +116,7 @@ func file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningDatastoreStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningdatastore.v1alpha1.AzureMachineLearningDatastoreStackOutputs
+	(*AzureMachineLearningDatastoreOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningdatastore.v1alpha1.AzureMachineLearningDatastoreOutputs
 }
 var file_catalog_azure_azuremachinelearningdatastore_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

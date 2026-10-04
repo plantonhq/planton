@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareD1DatabaseStackOutputs captures the outputs after provisioning a Cloudflare D1 database.
-type CloudflareD1DatabaseStackOutputs struct {
+// CloudflareD1DatabaseOutputs captures the outputs after provisioning a Cloudflare D1 database.
+type CloudflareD1DatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier of the created D1 database. A Worker's `d1` binding
 	// references this value.
@@ -36,20 +36,20 @@ type CloudflareD1DatabaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareD1DatabaseStackOutputs) Reset() {
-	*x = CloudflareD1DatabaseStackOutputs{}
+func (x *CloudflareD1DatabaseOutputs) Reset() {
+	*x = CloudflareD1DatabaseOutputs{}
 	mi := &file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareD1DatabaseStackOutputs) String() string {
+func (x *CloudflareD1DatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareD1DatabaseStackOutputs) ProtoMessage() {}
+func (*CloudflareD1DatabaseOutputs) ProtoMessage() {}
 
-func (x *CloudflareD1DatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareD1DatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *CloudflareD1DatabaseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareD1DatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareD1DatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareD1DatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareD1DatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareD1DatabaseStackOutputs) GetDatabaseId() string {
+func (x *CloudflareD1DatabaseOutputs) GetDatabaseId() string {
 	if x != nil {
 		return x.DatabaseId
 	}
 	return ""
 }
 
-func (x *CloudflareD1DatabaseStackOutputs) GetDatabaseName() string {
+func (x *CloudflareD1DatabaseOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
 	return ""
 }
 
-func (x *CloudflareD1DatabaseStackOutputs) GetVersion() string {
+func (x *CloudflareD1DatabaseOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
@@ -91,8 +91,8 @@ var File_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto protoref
 
 const file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/cloudflare/cloudflared1database/v1alpha1/outputs.proto\x124dev.planton.cloudflare.cloudflared1database.v1alpha1\"\x82\x01\n" +
-	" CloudflareD1DatabaseStackOutputs\x12\x1f\n" +
+	">catalog/cloudflare/cloudflared1database/v1alpha1/outputs.proto\x124dev.planton.cloudflare.cloudflared1database.v1alpha1\"}\n" +
+	"\x1bCloudflareD1DatabaseOutputs\x12\x1f\n" +
 	"\vdatabase_id\x18\x01 \x01(\tR\n" +
 	"databaseId\x12#\n" +
 	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseName\x12\x18\n" +
@@ -113,7 +113,7 @@ func file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareD1DatabaseStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackOutputs
+	(*CloudflareD1DatabaseOutputs)(nil), // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseOutputs
 }
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

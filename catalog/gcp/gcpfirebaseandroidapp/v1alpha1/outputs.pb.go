@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpFirebaseAndroidAppStackOutputs captures the app registration's
+// GcpFirebaseAndroidAppOutputs captures the app registration's
 // identity and the configuration file the Android build consumes.
 //
 // None of these values is a secret. The app id and the API key are CLIENT
@@ -29,7 +29,7 @@ const (
 // google-services.json is the file that carries them into the build. Access
 // to the project's backends is governed by IAM, Firebase Security Rules,
 // and App Check -- never by keeping these values hidden.
-type GcpFirebaseAndroidAppStackOutputs struct {
+type GcpFirebaseAndroidAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Firebase-assigned app id (mobilesdk_app_id in
 	// google-services.json), e.g. 1:123456789012:android:0123456789abcdef.
@@ -55,20 +55,20 @@ type GcpFirebaseAndroidAppStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) Reset() {
-	*x = GcpFirebaseAndroidAppStackOutputs{}
+func (x *GcpFirebaseAndroidAppOutputs) Reset() {
+	*x = GcpFirebaseAndroidAppOutputs{}
 	mi := &file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) String() string {
+func (x *GcpFirebaseAndroidAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirebaseAndroidAppStackOutputs) ProtoMessage() {}
+func (*GcpFirebaseAndroidAppOutputs) ProtoMessage() {}
 
-func (x *GcpFirebaseAndroidAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirebaseAndroidAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,40 +80,40 @@ func (x *GcpFirebaseAndroidAppStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirebaseAndroidAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirebaseAndroidAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirebaseAndroidAppOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirebaseAndroidAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) GetAppId() string {
+func (x *GcpFirebaseAndroidAppOutputs) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) GetName() string {
+func (x *GcpFirebaseAndroidAppOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) GetApiKeyId() string {
+func (x *GcpFirebaseAndroidAppOutputs) GetApiKeyId() string {
 	if x != nil {
 		return x.ApiKeyId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) GetConfigFilename() string {
+func (x *GcpFirebaseAndroidAppOutputs) GetConfigFilename() string {
 	if x != nil {
 		return x.ConfigFilename
 	}
 	return ""
 }
 
-func (x *GcpFirebaseAndroidAppStackOutputs) GetConfigFileContents() string {
+func (x *GcpFirebaseAndroidAppOutputs) GetConfigFileContents() string {
 	if x != nil {
 		return x.ConfigFileContents
 	}
@@ -124,8 +124,8 @@ var File_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpfirebaseandroidapp/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1\"\xc7\x01\n" +
-	"!GcpFirebaseAndroidAppStackOutputs\x12\x15\n" +
+	"8catalog/gcp/gcpfirebaseandroidapp/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1\"\xc2\x01\n" +
+	"\x1cGcpFirebaseAndroidAppOutputs\x12\x15\n" +
 	"\x06app_id\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
 	"\n" +
@@ -148,7 +148,7 @@ func file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirebaseAndroidAppStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppStackOutputs
+	(*GcpFirebaseAndroidAppOutputs)(nil), // 0: dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppOutputs
 }
 var file_catalog_gcp_gcpfirebaseandroidapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

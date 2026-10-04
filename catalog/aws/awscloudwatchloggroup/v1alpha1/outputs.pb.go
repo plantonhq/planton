@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogGroupStackOutputs captures observable identifiers from a
+// AwsCloudwatchLogGroupOutputs captures observable identifiers from a
 // provisioned CloudWatch Logs log group.
 //
 // The primary output is `log_group_arn`, which downstream resources use to wire
@@ -32,7 +32,7 @@ const (
 // Note: The ARN returned here does NOT include the `:*` suffix that the AWS API
 // sometimes appends. Services that require the `:*` suffix (e.g., Step Functions)
 // should handle this in their IaC module, not in the log group outputs.
-type AwsCloudwatchLogGroupStackOutputs struct {
+type AwsCloudwatchLogGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the log group. This is the primary
 	// identifier used to reference the log group in other AWS resources such
@@ -46,20 +46,20 @@ type AwsCloudwatchLogGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogGroupStackOutputs) Reset() {
-	*x = AwsCloudwatchLogGroupStackOutputs{}
+func (x *AwsCloudwatchLogGroupOutputs) Reset() {
+	*x = AwsCloudwatchLogGroupOutputs{}
 	mi := &file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogGroupStackOutputs) String() string {
+func (x *AwsCloudwatchLogGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogGroupStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchLogGroupOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,19 +71,19 @@ func (x *AwsCloudwatchLogGroupStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogGroupStackOutputs) GetLogGroupArn() string {
+func (x *AwsCloudwatchLogGroupOutputs) GetLogGroupArn() string {
 	if x != nil {
 		return x.LogGroupArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchLogGroupStackOutputs) GetLogGroupName() string {
+func (x *AwsCloudwatchLogGroupOutputs) GetLogGroupName() string {
 	if x != nil {
 		return x.LogGroupName
 	}
@@ -94,8 +94,8 @@ var File_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awscloudwatchloggroup/v1alpha1/outputs.proto\x12.dev.planton.aws.awscloudwatchloggroup.v1alpha1\"m\n" +
-	"!AwsCloudwatchLogGroupStackOutputs\x12\"\n" +
+	"8catalog/aws/awscloudwatchloggroup/v1alpha1/outputs.proto\x12.dev.planton.aws.awscloudwatchloggroup.v1alpha1\"h\n" +
+	"\x1cAwsCloudwatchLogGroupOutputs\x12\"\n" +
 	"\rlog_group_arn\x18\x01 \x01(\tR\vlogGroupArn\x12$\n" +
 	"\x0elog_group_name\x18\x02 \x01(\tR\flogGroupNameB\x86\x03\n" +
 	"2com.dev.planton.aws.awscloudwatchloggroup.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awscloudwatchloggroup/v1alpha1;awscloudwatchloggroupv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awscloudwatchloggroup.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awscloudwatchloggroup\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awscloudwatchloggroup\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awscloudwatchloggroup::V1alpha1b\x06proto3"
@@ -114,7 +114,7 @@ func file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchLogGroupStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackOutputs
+	(*AwsCloudwatchLogGroupOutputs)(nil), // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupOutputs
 }
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamSamlProviderStackInput is the input for the IaC modules that
+// AwsIamSamlProviderIacInput is the input for the IaC modules that
 // manage an IAM SAML identity provider.
-type AwsIamSamlProviderStackInput struct {
+type AwsIamSamlProviderIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsIamSamlProvider resource to deploy.
 	Target *AwsIamSamlProvider `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsIamSamlProviderStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsIamSamlProviderStackInput) Reset() {
-	*x = AwsIamSamlProviderStackInput{}
+func (x *AwsIamSamlProviderIacInput) Reset() {
+	*x = AwsIamSamlProviderIacInput{}
 	mi := &file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamSamlProviderStackInput) String() string {
+func (x *AwsIamSamlProviderIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamSamlProviderStackInput) ProtoMessage() {}
+func (*AwsIamSamlProviderIacInput) ProtoMessage() {}
 
-func (x *AwsIamSamlProviderStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsIamSamlProviderIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsIamSamlProviderStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamSamlProviderStackInput.ProtoReflect.Descriptor instead.
-func (*AwsIamSamlProviderStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamSamlProviderIacInput.ProtoReflect.Descriptor instead.
+func (*AwsIamSamlProviderIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamSamlProviderStackInput) GetTarget() *AwsIamSamlProvider {
+func (x *AwsIamSamlProviderIacInput) GetTarget() *AwsIamSamlProvider {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsIamSamlProviderStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsIamSamlProviderIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsiamsamlprovider/v1alpha1/input.proto\x12+dev.planton.aws.awsiamsamlprovider.v1alpha1\x1a1catalog/aws/awsiamsamlprovider/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsIamSamlProviderStackInput\x12W\n" +
+	"3catalog/aws/awsiamsamlprovider/v1alpha1/input.proto\x12+dev.planton.aws.awsiamsamlprovider.v1alpha1\x1a1catalog/aws/awsiamsamlprovider/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsIamSamlProviderIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awsiamsamlprovider.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_goTypes = []any{
-	(*AwsIamSamlProviderStackInput)(nil), // 0: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderStackInput
-	(*AwsIamSamlProvider)(nil),           // 1: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProvider
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsIamSamlProviderIacInput)(nil), // 0: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderIacInput
+	(*AwsIamSamlProvider)(nil),         // 1: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProvider
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsiamsamlprovider_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderStackInput.target:type_name -> dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProvider
-	2, // 1: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderIacInput.target:type_name -> dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProvider
+	2, // 1: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

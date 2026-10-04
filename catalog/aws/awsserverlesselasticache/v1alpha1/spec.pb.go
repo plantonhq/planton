@@ -48,7 +48,7 @@ const (
 //   - `kms_key_id` and `subnet_ids` are ForceNew — changing them destroys and
 //     recreates the cache. Design encryption and networking choices upfront.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsServerlessElasticacheSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

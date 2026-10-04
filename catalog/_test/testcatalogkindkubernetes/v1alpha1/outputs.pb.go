@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: catalog/_test/testcloudresourcekubernetes/v1alpha1/outputs.proto
+// source: catalog/_test/testcatalogkindkubernetes/v1alpha1/outputs.proto
 
-package testcloudresourcekubernetesv1alpha1
+package testcatalogkindkubernetesv1alpha1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Stack outputs for TestCloudResourceKubernetes.
-// Mirrors the shape of real Kubernetes cloud resource outputs so that
+// Outputs for TestCatalogKindKubernetes.
+// Mirrors the shape of real Kubernetes catalog kind outputs so that
 // downstream consumers can test output loading, setting, getting, and
 // state-building machinery against stable test infrastructure.
-type TestCloudResourceKubernetesStackOutputs struct {
+type TestCatalogKindKubernetesOutputs struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	Namespace          string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	Service            string                 `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`
@@ -39,21 +39,21 @@ type TestCloudResourceKubernetesStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) Reset() {
-	*x = TestCloudResourceKubernetesStackOutputs{}
-	mi := &file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_msgTypes[0]
+func (x *TestCatalogKindKubernetesOutputs) Reset() {
+	*x = TestCatalogKindKubernetesOutputs{}
+	mi := &file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) String() string {
+func (x *TestCatalogKindKubernetesOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TestCloudResourceKubernetesStackOutputs) ProtoMessage() {}
+func (*TestCatalogKindKubernetesOutputs) ProtoMessage() {}
 
-func (x *TestCloudResourceKubernetesStackOutputs) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_msgTypes[0]
+func (x *TestCatalogKindKubernetesOutputs) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -64,73 +64,73 @@ func (x *TestCloudResourceKubernetesStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TestCloudResourceKubernetesStackOutputs.ProtoReflect.Descriptor instead.
-func (*TestCloudResourceKubernetesStackOutputs) Descriptor() ([]byte, []int) {
-	return file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use TestCatalogKindKubernetesOutputs.ProtoReflect.Descriptor instead.
+func (*TestCatalogKindKubernetesOutputs) Descriptor() ([]byte, []int) {
+	return file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetNamespace() string {
+func (x *TestCatalogKindKubernetesOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetService() string {
+func (x *TestCatalogKindKubernetesOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetEndpoint() string {
+func (x *TestCatalogKindKubernetesOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetPortForwardCommand() string {
+func (x *TestCatalogKindKubernetesOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetKubeEndpoint() string {
+func (x *TestCatalogKindKubernetesOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetExternalHostname() string {
+func (x *TestCatalogKindKubernetesOutputs) GetExternalHostname() string {
 	if x != nil {
 		return x.ExternalHostname
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetInternalHostname() string {
+func (x *TestCatalogKindKubernetesOutputs) GetInternalHostname() string {
 	if x != nil {
 		return x.InternalHostname
 	}
 	return ""
 }
 
-func (x *TestCloudResourceKubernetesStackOutputs) GetTags() []string {
+func (x *TestCatalogKindKubernetesOutputs) GetTags() []string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-var File_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto protoreflect.FileDescriptor
+var File_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
-const file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDesc = "" +
+const file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/_test/testcloudresourcekubernetes/v1alpha1/outputs.proto\x126dev.planton._test.testcloudresourcekubernetes.v1alpha1\"\xc2\x02\n" +
-	"'TestCloudResourceKubernetesStackOutputs\x12\x1c\n" +
+	">catalog/_test/testcatalogkindkubernetes/v1alpha1/outputs.proto\x124dev.planton._test.testcatalogkindkubernetes.v1alpha1\"\xbb\x02\n" +
+	" TestCatalogKindKubernetesOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x120\n" +
@@ -138,26 +138,26 @@ const file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawD
 	"\rkube_endpoint\x18\x05 \x01(\tR\fkubeEndpoint\x12+\n" +
 	"\x11external_hostname\x18\x06 \x01(\tR\x10externalHostname\x12+\n" +
 	"\x11internal_hostname\x18\a \x01(\tR\x10internalHostname\x12\x12\n" +
-	"\x04tags\x18\b \x03(\tR\x04tagsB\xb8\x03\n" +
-	":com.dev.planton._test.testcloudresourcekubernetes.v1alpha1B\fOutputsProtoP\x01Zsgithub.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1;testcloudresourcekubernetesv1alpha1\xa2\x02\x04DP_T\xaa\x025Dev.Planton.Test.Testcloudresourcekubernetes.V1alpha1\xca\x025Dev\\Planton\\Test\\Testcloudresourcekubernetes\\V1alpha1\xe2\x02ADev\\Planton\\Test\\Testcloudresourcekubernetes\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Test::Testcloudresourcekubernetes::V1alpha1b\x06proto3"
+	"\x04tags\x18\b \x03(\tR\x04tagsB\xaa\x03\n" +
+	"8com.dev.planton._test.testcatalogkindkubernetes.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/_test/testcatalogkindkubernetes/v1alpha1;testcatalogkindkubernetesv1alpha1\xa2\x02\x04DP_T\xaa\x023Dev.Planton.Test.Testcatalogkindkubernetes.V1alpha1\xca\x023Dev\\Planton\\Test\\Testcatalogkindkubernetes\\V1alpha1\xe2\x02?Dev\\Planton\\Test\\Testcatalogkindkubernetes\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Test::Testcatalogkindkubernetes::V1alpha1b\x06proto3"
 
 var (
-	file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescOnce sync.Once
-	file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescData []byte
+	file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescOnce sync.Once
+	file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescData []byte
 )
 
-func file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescGZIP() []byte {
-	file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescOnce.Do(func() {
-		file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDesc), len(file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDesc)))
+func file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescGZIP() []byte {
+	file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescOnce.Do(func() {
+		file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDesc), len(file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDesc)))
 	})
-	return file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDescData
+	return file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDescData
 }
 
-var file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_goTypes = []any{
-	(*TestCloudResourceKubernetesStackOutputs)(nil), // 0: dev.planton._test.testcloudresourcekubernetes.v1alpha1.TestCloudResourceKubernetesStackOutputs
+var file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_goTypes = []any{
+	(*TestCatalogKindKubernetesOutputs)(nil), // 0: dev.planton._test.testcatalogkindkubernetes.v1alpha1.TestCatalogKindKubernetesOutputs
 }
-var file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_depIdxs = []int32{
+var file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -165,26 +165,26 @@ var file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_depIdx
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_init() }
-func file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_init() {
-	if File_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto != nil {
+func init() { file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_init() }
+func file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_init() {
+	if File_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDesc), len(file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDesc), len(file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_goTypes,
-		DependencyIndexes: file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_depIdxs,
-		MessageInfos:      file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_msgTypes,
+		GoTypes:           file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_goTypes,
+		DependencyIndexes: file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_depIdxs,
+		MessageInfos:      file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_msgTypes,
 	}.Build()
-	File_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto = out.File
-	file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_goTypes = nil
-	file_catalog__test_testcloudresourcekubernetes_v1alpha1_outputs_proto_depIdxs = nil
+	File_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto = out.File
+	file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_goTypes = nil
+	file_catalog__test_testcatalogkindkubernetes_v1alpha1_outputs_proto_depIdxs = nil
 }

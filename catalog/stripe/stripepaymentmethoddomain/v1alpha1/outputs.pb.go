@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentMethodDomainStackOutputs identifies the registration and reports, wallet by
+// StripePaymentMethodDomainOutputs identifies the registration and reports, wallet by
 // wallet, whether the buttons can appear and, when not, Stripe's reason.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_domain
-type StripePaymentMethodDomainStackOutputs struct {
+type StripePaymentMethodDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the registration's Stripe id (pmd_...).
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -59,20 +59,20 @@ type StripePaymentMethodDomainStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) Reset() {
-	*x = StripePaymentMethodDomainStackOutputs{}
+func (x *StripePaymentMethodDomainOutputs) Reset() {
+	*x = StripePaymentMethodDomainOutputs{}
 	mi := &file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) String() string {
+func (x *StripePaymentMethodDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePaymentMethodDomainStackOutputs) ProtoMessage() {}
+func (*StripePaymentMethodDomainOutputs) ProtoMessage() {}
 
-func (x *StripePaymentMethodDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripePaymentMethodDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,103 +84,103 @@ func (x *StripePaymentMethodDomainStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePaymentMethodDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripePaymentMethodDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePaymentMethodDomainOutputs.ProtoReflect.Descriptor instead.
+func (*StripePaymentMethodDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetId() string {
+func (x *StripePaymentMethodDomainOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetEnabled() bool {
+func (x *StripePaymentMethodDomainOutputs) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
 	}
 	return false
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetApplePayStatus() string {
+func (x *StripePaymentMethodDomainOutputs) GetApplePayStatus() string {
 	if x != nil {
 		return x.ApplePayStatus
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetApplePayErrorMessage() string {
+func (x *StripePaymentMethodDomainOutputs) GetApplePayErrorMessage() string {
 	if x != nil {
 		return x.ApplePayErrorMessage
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetGooglePayStatus() string {
+func (x *StripePaymentMethodDomainOutputs) GetGooglePayStatus() string {
 	if x != nil {
 		return x.GooglePayStatus
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetGooglePayErrorMessage() string {
+func (x *StripePaymentMethodDomainOutputs) GetGooglePayErrorMessage() string {
 	if x != nil {
 		return x.GooglePayErrorMessage
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetLinkStatus() string {
+func (x *StripePaymentMethodDomainOutputs) GetLinkStatus() string {
 	if x != nil {
 		return x.LinkStatus
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetLinkErrorMessage() string {
+func (x *StripePaymentMethodDomainOutputs) GetLinkErrorMessage() string {
 	if x != nil {
 		return x.LinkErrorMessage
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetPaypalStatus() string {
+func (x *StripePaymentMethodDomainOutputs) GetPaypalStatus() string {
 	if x != nil {
 		return x.PaypalStatus
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetPaypalErrorMessage() string {
+func (x *StripePaymentMethodDomainOutputs) GetPaypalErrorMessage() string {
 	if x != nil {
 		return x.PaypalErrorMessage
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetAmazonPayStatus() string {
+func (x *StripePaymentMethodDomainOutputs) GetAmazonPayStatus() string {
 	if x != nil {
 		return x.AmazonPayStatus
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetAmazonPayErrorMessage() string {
+func (x *StripePaymentMethodDomainOutputs) GetAmazonPayErrorMessage() string {
 	if x != nil {
 		return x.AmazonPayErrorMessage
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetKlarnaStatus() string {
+func (x *StripePaymentMethodDomainOutputs) GetKlarnaStatus() string {
 	if x != nil {
 		return x.KlarnaStatus
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodDomainStackOutputs) GetKlarnaErrorMessage() string {
+func (x *StripePaymentMethodDomainOutputs) GetKlarnaErrorMessage() string {
 	if x != nil {
 		return x.KlarnaErrorMessage
 	}
@@ -191,8 +191,8 @@ var File_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto protore
 
 const file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/stripe/stripepaymentmethoddomain/v1alpha1/outputs.proto\x125dev.planton.stripe.stripepaymentmethoddomain.v1alpha1\"\xf9\x04\n" +
-	"%StripePaymentMethodDomainStackOutputs\x12\x0e\n" +
+	"?catalog/stripe/stripepaymentmethoddomain/v1alpha1/outputs.proto\x125dev.planton.stripe.stripepaymentmethoddomain.v1alpha1\"\xf4\x04\n" +
+	" StripePaymentMethodDomainOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\aenabled\x18\x02 \x01(\bR\aenabled\x12(\n" +
 	"\x10apple_pay_status\x18\x03 \x01(\tR\x0eapplePayStatus\x125\n" +
@@ -225,7 +225,7 @@ func file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripePaymentMethodDomainStackOutputs)(nil), // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackOutputs
+	(*StripePaymentMethodDomainOutputs)(nil), // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainOutputs
 }
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

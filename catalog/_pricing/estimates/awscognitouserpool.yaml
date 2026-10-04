@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awscognitouserpool
 spec:
@@ -38,7 +38,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the pinned PLUS tier (required for ENFORCED threat protection) bills every monthly active user from the first -- PLUS has no free allotment, so the first sign-in of the month starts the meter at the highest per-MAU rate
-        - MFA, verification, and invitation email route through the referenced SES identity at SES per-message rates on that component
+        - MFA, verification, and invitation email route through the referenced SES identity at SES per-message rates on that kind
         - if SMS factors are added later, every code the pool texts rides SNS per-message rates on the account -- the classic Cognito bill surprise
       notes: Zero committed cost -- hardening is free at rest; what PLUS removes is the free tier, not the usage gate, so an idle month still bills zero.
     - preset: 04-threat-protected

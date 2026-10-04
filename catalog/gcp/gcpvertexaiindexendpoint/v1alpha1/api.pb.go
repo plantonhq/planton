@@ -28,7 +28,7 @@ type GcpVertexAiIndexEndpoint struct {
 	state         protoimpl.MessageState          `protogen:"open.v1"`
 	ApiVersion    string                          `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                          `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpVertexAiIndexEndpointSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpVertexAiIndexEndpointStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpVertexAiIndexEndpoint) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiIndexEndpoint) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiIndexEndpoint) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpVertexAiIndexEndpoint) GetStatus() *GcpVertexAiIndexEndpointStatus {
 }
 
 type GcpVertexAiIndexEndpointStatus struct {
-	state         protoimpl.MessageState                `protogen:"open.v1"`
-	Outputs       *GcpVertexAiIndexEndpointStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState           `protogen:"open.v1"`
+	Outputs       *GcpVertexAiIndexEndpointOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpVertexAiIndexEndpointStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiIndexEndpointStatus) GetOutputs() *GcpVertexAiIndexEndpointStackOutputs {
+func (x *GcpVertexAiIndexEndpointStatus) GetOutputs() *GcpVertexAiIndexEndpointOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18GcpVertexAiIndexEndpointR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatusR\x06status\"\x93\x01\n" +
-	"\x1eGcpVertexAiIndexEndpointStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatusR\x06status\"\x8e\x01\n" +
+	"\x1eGcpVertexAiIndexEndpointStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointOutputsR\aoutputsB\x97\x03\n" +
 	"5com.dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpvertexaiindexendpoint/v1alpha1;gcpvertexaiindexendpointv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpvertexaiindexendpoint.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpvertexaiindexendpoint\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpvertexaiindexendpoint\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpvertexaiindexendpoint::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiIndexEndpoint)(nil),             // 0: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpoint
-	(*GcpVertexAiIndexEndpointStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiIndexEndpointSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointSpec
-	(*GcpVertexAiIndexEndpointStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStackOutputs
+	(*GcpVertexAiIndexEndpoint)(nil),        // 0: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpoint
+	(*GcpVertexAiIndexEndpointStatus)(nil),  // 1: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiIndexEndpointSpec)(nil),    // 3: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointSpec
+	(*GcpVertexAiIndexEndpointOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointOutputs
 }
 var file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpoint.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpoint.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpoint.spec:type_name -> dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointSpec
 	1, // 2: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpoint.status:type_name -> dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatus
-	4, // 3: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

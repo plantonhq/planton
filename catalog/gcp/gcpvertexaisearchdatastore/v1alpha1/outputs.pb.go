@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiSearchDataStoreStackOutputs captures what the data store and
+// GcpVertexAiSearchDataStoreOutputs captures what the data store and
 // its folded schema, target sites, and sitemaps resolved to.
-type GcpVertexAiSearchDataStoreStackOutputs struct {
+type GcpVertexAiSearchDataStoreOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the store:
 	// projects/{project}/locations/{location}/collections/default_collection/dataStores/{data_store_id}.
@@ -49,20 +49,20 @@ type GcpVertexAiSearchDataStoreStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) Reset() {
-	*x = GcpVertexAiSearchDataStoreStackOutputs{}
+func (x *GcpVertexAiSearchDataStoreOutputs) Reset() {
+	*x = GcpVertexAiSearchDataStoreOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) String() string {
+func (x *GcpVertexAiSearchDataStoreOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiSearchDataStoreStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiSearchDataStoreOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiSearchDataStoreOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,54 +74,54 @@ func (x *GcpVertexAiSearchDataStoreStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiSearchDataStoreStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiSearchDataStoreStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiSearchDataStoreOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiSearchDataStoreOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetName() string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetDataStoreId() string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetDataStoreId() string {
 	if x != nil {
 		return x.DataStoreId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetLocation() string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetDefaultSchemaId() string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetDefaultSchemaId() string {
 	if x != nil {
 		return x.DefaultSchemaId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetSchemaName() string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetSchemaName() string {
 	if x != nil {
 		return x.SchemaName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetTargetSiteNames() []string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetTargetSiteNames() []string {
 	if x != nil {
 		return x.TargetSiteNames
 	}
 	return nil
 }
 
-func (x *GcpVertexAiSearchDataStoreStackOutputs) GetSitemapNames() []string {
+func (x *GcpVertexAiSearchDataStoreOutputs) GetSitemapNames() []string {
 	if x != nil {
 		return x.SitemapNames
 	}
@@ -132,8 +132,8 @@ var File_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpvertexaisearchdatastore/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1\"\x9a\x02\n" +
-	"&GcpVertexAiSearchDataStoreStackOutputs\x12\x12\n" +
+	"=catalog/gcp/gcpvertexaisearchdatastore/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1\"\x95\x02\n" +
+	"!GcpVertexAiSearchDataStoreOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\"\n" +
 	"\rdata_store_id\x18\x02 \x01(\tR\vdataStoreId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12*\n" +
@@ -158,7 +158,7 @@ func file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiSearchDataStoreStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStackOutputs
+	(*GcpVertexAiSearchDataStoreOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreOutputs
 }
 var file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

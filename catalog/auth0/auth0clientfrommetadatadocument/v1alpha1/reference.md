@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0ClientFromMetadataDocumentSpec registers an application in the Auth0
 tenant the provider connection's credential belongs to from its Client ID
@@ -62,7 +62,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/clientcimd/
 
 ```yaml
 # Auth0 Client From Metadata Document Test Manifest
-# This file is used for testing the Auth0ClientFromMetadataDocument component.
+# This file is used for testing the Auth0ClientFromMetadataDocument kind.
 #
 # Prerequisites:
 # 1. Set the following environment variables:

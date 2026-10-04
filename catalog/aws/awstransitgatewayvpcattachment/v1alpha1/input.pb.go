@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsTransitGatewayVpcAttachmentStackInput is the input for the
+// AwsTransitGatewayVpcAttachmentIacInput is the input for the
 // aws-transit-gateway-vpc-attachment IaC modules.
-type AwsTransitGatewayVpcAttachmentStackInput struct {
+type AwsTransitGatewayVpcAttachmentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsTransitGatewayVpcAttachment `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsTransitGatewayVpcAttachmentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackInput) Reset() {
-	*x = AwsTransitGatewayVpcAttachmentStackInput{}
+func (x *AwsTransitGatewayVpcAttachmentIacInput) Reset() {
+	*x = AwsTransitGatewayVpcAttachmentIacInput{}
 	mi := &file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackInput) String() string {
+func (x *AwsTransitGatewayVpcAttachmentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsTransitGatewayVpcAttachmentStackInput) ProtoMessage() {}
+func (*AwsTransitGatewayVpcAttachmentIacInput) ProtoMessage() {}
 
-func (x *AwsTransitGatewayVpcAttachmentStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsTransitGatewayVpcAttachmentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsTransitGatewayVpcAttachmentStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsTransitGatewayVpcAttachmentStackInput.ProtoReflect.Descriptor instead.
-func (*AwsTransitGatewayVpcAttachmentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsTransitGatewayVpcAttachmentIacInput.ProtoReflect.Descriptor instead.
+func (*AwsTransitGatewayVpcAttachmentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackInput) GetTarget() *AwsTransitGatewayVpcAttachment {
+func (x *AwsTransitGatewayVpcAttachmentIacInput) GetTarget() *AwsTransitGatewayVpcAttachment {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsTransitGatewayVpcAttachmentIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto protore
 
 const file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awstransitgatewayvpcattachment/v1alpha1/input.proto\x127dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1\x1a=catalog/aws/awstransitgatewayvpcattachment/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe8\x01\n" +
-	"(AwsTransitGatewayVpcAttachmentStackInput\x12o\n" +
+	"?catalog/aws/awstransitgatewayvpcattachment/v1alpha1/input.proto\x127dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1\x1a=catalog/aws/awstransitgatewayvpcattachment/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe6\x01\n" +
+	"&AwsTransitGatewayVpcAttachmentIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_rawDes
 
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_goTypes = []any{
-	(*AwsTransitGatewayVpcAttachmentStackInput)(nil), // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackInput
-	(*AwsTransitGatewayVpcAttachment)(nil),           // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment
-	(*aws.AwsProviderConfig)(nil),                    // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsTransitGatewayVpcAttachmentIacInput)(nil), // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentIacInput
+	(*AwsTransitGatewayVpcAttachment)(nil),         // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment
+	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackInput.target:type_name -> dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment
-	2, // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentIacInput.target:type_name -> dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment
+	2, // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

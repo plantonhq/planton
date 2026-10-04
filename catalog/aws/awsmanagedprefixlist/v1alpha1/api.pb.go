@@ -27,7 +27,7 @@ type AwsManagedPrefixList struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsManagedPrefixListSpec     `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsManagedPrefixListStatus   `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsManagedPrefixList) GetKind() string {
 	return ""
 }
 
-func (x *AwsManagedPrefixList) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsManagedPrefixList) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsManagedPrefixList) GetStatus() *AwsManagedPrefixListStatus {
 }
 
 type AwsManagedPrefixListStatus struct {
-	state         protoimpl.MessageState            `protogen:"open.v1"`
-	Outputs       *AwsManagedPrefixListStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState       `protogen:"open.v1"`
+	Outputs       *AwsManagedPrefixListOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsManagedPrefixListStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmanagedprefixlist_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsManagedPrefixListStatus) GetOutputs() *AwsManagedPrefixListStackOutputs {
+func (x *AwsManagedPrefixListStatus) GetOutputs() *AwsManagedPrefixListOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsmanagedprefixlist_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AwsManagedPrefixListR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatusR\x06status\"\x87\x01\n" +
-	"\x1aAwsManagedPrefixListStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatusR\x06status\"\x82\x01\n" +
+	"\x1aAwsManagedPrefixListStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.aws.awsmanagedprefixlist.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/aws/awsmanagedprefixlist/v1alpha1;awsmanagedprefixlistv1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Aws.Awsmanagedprefixlist.V1alpha1\xca\x02-Dev\\Planton\\Aws\\Awsmanagedprefixlist\\V1alpha1\xe2\x029Dev\\Planton\\Aws\\Awsmanagedprefixlist\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Aws::Awsmanagedprefixlist::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsmanagedprefixlist_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_api_proto_goTypes = []any{
-	(*AwsManagedPrefixList)(nil),             // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList
-	(*AwsManagedPrefixListStatus)(nil),       // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsManagedPrefixListSpec)(nil),         // 3: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListSpec
-	(*AwsManagedPrefixListStackOutputs)(nil), // 4: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackOutputs
+	(*AwsManagedPrefixList)(nil),         // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList
+	(*AwsManagedPrefixListStatus)(nil),   // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsManagedPrefixListSpec)(nil),     // 3: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListSpec
+	(*AwsManagedPrefixListOutputs)(nil),  // 4: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListOutputs
 }
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList.spec:type_name -> dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListSpec
 	1, // 2: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixList.status:type_name -> dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatus
-	4, // 3: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatus.outputs:type_name -> dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackOutputs
+	4, // 3: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStatus.outputs:type_name -> dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

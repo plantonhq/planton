@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerPipelineStackInput is the input for the IaC modules that
+// AwsSagemakerPipelineIacInput is the input for the IaC modules that
 // deploy the pipeline.
-type AwsSagemakerPipelineStackInput struct {
+type AwsSagemakerPipelineIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSagemakerPipeline resource to deploy.
 	Target *AwsSagemakerPipeline `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerPipelineStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerPipelineStackInput) Reset() {
-	*x = AwsSagemakerPipelineStackInput{}
+func (x *AwsSagemakerPipelineIacInput) Reset() {
+	*x = AwsSagemakerPipelineIacInput{}
 	mi := &file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerPipelineStackInput) String() string {
+func (x *AwsSagemakerPipelineIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerPipelineStackInput) ProtoMessage() {}
+func (*AwsSagemakerPipelineIacInput) ProtoMessage() {}
 
-func (x *AwsSagemakerPipelineStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerPipelineIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerPipelineStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerPipelineStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerPipelineStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerPipelineIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerPipelineIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerPipelineStackInput) GetTarget() *AwsSagemakerPipeline {
+func (x *AwsSagemakerPipelineIacInput) GetTarget() *AwsSagemakerPipeline {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSagemakerPipelineStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSagemakerPipelineIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awssagemakerpipeline/v1alpha1/input.proto\x12-dev.planton.aws.awssagemakerpipeline.v1alpha1\x1a3catalog/aws/awssagemakerpipeline/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsSagemakerPipelineStackInput\x12[\n" +
+	"5catalog/aws/awssagemakerpipeline/v1alpha1/input.proto\x12-dev.planton.aws.awssagemakerpipeline.v1alpha1\x1a3catalog/aws/awssagemakerpipeline/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsSagemakerPipelineIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awssagemakerpipeline.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSagemakerPipelineStackInput)(nil), // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackInput
-	(*AwsSagemakerPipeline)(nil),           // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSagemakerPipelineIacInput)(nil), // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineIacInput
+	(*AwsSagemakerPipeline)(nil),         // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackInput.target:type_name -> dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline
-	2, // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineIacInput.target:type_name -> dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipeline
+	2, // 1: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpMemorystoreInstanceStackOutputs captures observable values produced after
+// GcpMemorystoreInstanceOutputs captures observable values produced after
 // provisioning a Memorystore instance.
 //
 // The instance uses Private Service Connect (PSC) for connectivity. The
 // discovery_address and discovery_port fields provide the primary connection
 // endpoint that clients should use.
-type GcpMemorystoreInstanceStackOutputs struct {
+type GcpMemorystoreInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// IP address of the instance's discovery endpoint.
 	// Clients connect to this address for cluster topology discovery and
@@ -56,20 +56,20 @@ type GcpMemorystoreInstanceStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) Reset() {
-	*x = GcpMemorystoreInstanceStackOutputs{}
+func (x *GcpMemorystoreInstanceOutputs) Reset() {
+	*x = GcpMemorystoreInstanceOutputs{}
 	mi := &file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) String() string {
+func (x *GcpMemorystoreInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMemorystoreInstanceStackOutputs) ProtoMessage() {}
+func (*GcpMemorystoreInstanceOutputs) ProtoMessage() {}
 
-func (x *GcpMemorystoreInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpMemorystoreInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *GcpMemorystoreInstanceStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMemorystoreInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpMemorystoreInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMemorystoreInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpMemorystoreInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) GetDiscoveryAddress() string {
+func (x *GcpMemorystoreInstanceOutputs) GetDiscoveryAddress() string {
 	if x != nil {
 		return x.DiscoveryAddress
 	}
 	return ""
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) GetDiscoveryPort() int32 {
+func (x *GcpMemorystoreInstanceOutputs) GetDiscoveryPort() int32 {
 	if x != nil {
 		return x.DiscoveryPort
 	}
 	return 0
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) GetInstanceUid() string {
+func (x *GcpMemorystoreInstanceOutputs) GetInstanceUid() string {
 	if x != nil {
 		return x.InstanceUid
 	}
 	return ""
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) GetNodeSizeGb() float64 {
+func (x *GcpMemorystoreInstanceOutputs) GetNodeSizeGb() float64 {
 	if x != nil {
 		return x.NodeSizeGb
 	}
 	return 0
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) GetName() string {
+func (x *GcpMemorystoreInstanceOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpMemorystoreInstanceStackOutputs) GetBackupCollection() string {
+func (x *GcpMemorystoreInstanceOutputs) GetBackupCollection() string {
 	if x != nil {
 		return x.BackupCollection
 	}
@@ -132,8 +132,8 @@ var File_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpmemorystoreinstance/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpmemorystoreinstance.v1alpha1\"\xfe\x01\n" +
-	"\"GcpMemorystoreInstanceStackOutputs\x12+\n" +
+	"9catalog/gcp/gcpmemorystoreinstance/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpmemorystoreinstance.v1alpha1\"\xf9\x01\n" +
+	"\x1dGcpMemorystoreInstanceOutputs\x12+\n" +
 	"\x11discovery_address\x18\x01 \x01(\tR\x10discoveryAddress\x12%\n" +
 	"\x0ediscovery_port\x18\x02 \x01(\x05R\rdiscoveryPort\x12!\n" +
 	"\finstance_uid\x18\x03 \x01(\tR\vinstanceUid\x12 \n" +
@@ -157,7 +157,7 @@ func file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpMemorystoreInstanceStackOutputs)(nil), // 0: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceStackOutputs
+	(*GcpMemorystoreInstanceOutputs)(nil), // 0: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceOutputs
 }
 var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

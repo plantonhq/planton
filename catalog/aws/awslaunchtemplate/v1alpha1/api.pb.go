@@ -31,7 +31,7 @@ type AwsLaunchTemplate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsLaunchTemplateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsLaunchTemplate) GetKind() string {
 	return ""
 }
 
-func (x *AwsLaunchTemplate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsLaunchTemplate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsLaunchTemplate) GetStatus() *AwsLaunchTemplateStatus {
 // aws-launch-template status
 type AwsLaunchTemplateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsLaunchTemplateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsLaunchTemplateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsLaunchTemplateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslaunchtemplate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsLaunchTemplateStatus) GetOutputs() *AwsLaunchTemplateStackOutputs {
+func (x *AwsLaunchTemplateStatus) GetOutputs() *AwsLaunchTemplateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awslaunchtemplate_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsLaunchTemplateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatusR\x06status\"~\n" +
-	"\x17AwsLaunchTemplateStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatusR\x06status\"y\n" +
+	"\x17AwsLaunchTemplateStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awslaunchtemplate.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awslaunchtemplate/v1alpha1;awslaunchtemplatev1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awslaunchtemplate.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awslaunchtemplate\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awslaunchtemplate\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awslaunchtemplate::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awslaunchtemplate_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awslaunchtemplate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awslaunchtemplate_v1alpha1_api_proto_goTypes = []any{
-	(*AwsLaunchTemplate)(nil),             // 0: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplate
-	(*AwsLaunchTemplateStatus)(nil),       // 1: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsLaunchTemplateSpec)(nil),         // 3: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateSpec
-	(*AwsLaunchTemplateStackOutputs)(nil), // 4: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStackOutputs
+	(*AwsLaunchTemplate)(nil),            // 0: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplate
+	(*AwsLaunchTemplateStatus)(nil),      // 1: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsLaunchTemplateSpec)(nil),        // 3: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateSpec
+	(*AwsLaunchTemplateOutputs)(nil),     // 4: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateOutputs
 }
 var file_catalog_aws_awslaunchtemplate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplate.spec:type_name -> dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateSpec
 	1, // 2: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplate.status:type_name -> dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatus
-	4, // 3: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatus.outputs:type_name -> dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStackOutputs
+	4, // 3: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStatus.outputs:type_name -> dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

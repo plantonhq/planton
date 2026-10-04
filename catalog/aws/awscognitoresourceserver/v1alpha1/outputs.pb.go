@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCognitoResourceServerStackOutputs captures observable identifiers from a
+// AwsCognitoResourceServerOutputs captures observable identifiers from a
 // provisioned Cognito resource server.
-type AwsCognitoResourceServerStackOutputs struct {
+type AwsCognitoResourceServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The resource server's identifier within its pool -- the scope prefix
 	// access tokens carry (e.g. "https://api.example.com").
@@ -41,20 +41,20 @@ type AwsCognitoResourceServerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCognitoResourceServerStackOutputs) Reset() {
-	*x = AwsCognitoResourceServerStackOutputs{}
+func (x *AwsCognitoResourceServerOutputs) Reset() {
+	*x = AwsCognitoResourceServerOutputs{}
 	mi := &file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCognitoResourceServerStackOutputs) String() string {
+func (x *AwsCognitoResourceServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCognitoResourceServerStackOutputs) ProtoMessage() {}
+func (*AwsCognitoResourceServerOutputs) ProtoMessage() {}
 
-func (x *AwsCognitoResourceServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCognitoResourceServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AwsCognitoResourceServerStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCognitoResourceServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCognitoResourceServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCognitoResourceServerOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCognitoResourceServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCognitoResourceServerStackOutputs) GetResourceServerIdentifier() string {
+func (x *AwsCognitoResourceServerOutputs) GetResourceServerIdentifier() string {
 	if x != nil {
 		return x.ResourceServerIdentifier
 	}
 	return ""
 }
 
-func (x *AwsCognitoResourceServerStackOutputs) GetScopeIdentifiers() []string {
+func (x *AwsCognitoResourceServerOutputs) GetScopeIdentifiers() []string {
 	if x != nil {
 		return x.ScopeIdentifiers
 	}
 	return nil
 }
 
-func (x *AwsCognitoResourceServerStackOutputs) GetUserPoolId() string {
+func (x *AwsCognitoResourceServerOutputs) GetUserPoolId() string {
 	if x != nil {
 		return x.UserPoolId
 	}
@@ -96,8 +96,8 @@ var File_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awscognitoresourceserver/v1alpha1/outputs.proto\x121dev.planton.aws.awscognitoresourceserver.v1alpha1\"\xb3\x01\n" +
-	"$AwsCognitoResourceServerStackOutputs\x12<\n" +
+	";catalog/aws/awscognitoresourceserver/v1alpha1/outputs.proto\x121dev.planton.aws.awscognitoresourceserver.v1alpha1\"\xae\x01\n" +
+	"\x1fAwsCognitoResourceServerOutputs\x12<\n" +
 	"\x1aresource_server_identifier\x18\x01 \x01(\tR\x18resourceServerIdentifier\x12+\n" +
 	"\x11scope_identifiers\x18\x02 \x03(\tR\x10scopeIdentifiers\x12 \n" +
 	"\fuser_pool_id\x18\x03 \x01(\tR\n" +
@@ -118,7 +118,7 @@ func file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCognitoResourceServerStackOutputs)(nil), // 0: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStackOutputs
+	(*AwsCognitoResourceServerOutputs)(nil), // 0: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerOutputs
 }
 var file_catalog_aws_awscognitoresourceserver_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

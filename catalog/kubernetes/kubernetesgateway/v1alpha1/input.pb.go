@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesGateway IaC stack. The platform resolves all
 // StringValueOrRef references (namespace, gateway_class_name) to literal
 // strings before passing this to the IaC engine.
-type KubernetesGatewayStackInput struct {
+type KubernetesGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// Target infra-component.
 	Target *KubernetesGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesGatewayStackInput) Reset() {
-	*x = KubernetesGatewayStackInput{}
+func (x *KubernetesGatewayIacInput) Reset() {
+	*x = KubernetesGatewayIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGatewayStackInput) String() string {
+func (x *KubernetesGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGatewayStackInput) ProtoMessage() {}
+func (*KubernetesGatewayIacInput) ProtoMessage() {}
 
-func (x *KubernetesGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesGatewayStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGatewayStackInput) GetTarget() *KubernetesGateway {
+func (x *KubernetesGatewayIacInput) GetTarget() *KubernetesGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesGatewayStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesGatewayIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesgateway/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesgateway.v1alpha1\x1a7catalog/kubernetes/kubernetesgateway/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd6\x01\n" +
-	"\x1bKubernetesGatewayStackInput\x12\\\n" +
+	"9catalog/kubernetes/kubernetesgateway/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesgateway.v1alpha1\x1a7catalog/kubernetes/kubernetesgateway/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd4\x01\n" +
+	"\x19KubernetesGatewayIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesgateway.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesGatewayStackInput)(nil),         // 0: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayStackInput
+	(*KubernetesGatewayIacInput)(nil),           // 0: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayIacInput
 	(*KubernetesGateway)(nil),                   // 1: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGateway
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesgateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayStackInput.target:type_name -> dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGateway
-	2, // 1: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayIacInput.target:type_name -> dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGateway
+	2, // 1: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

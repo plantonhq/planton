@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBatchSchedulingPolicyStackInput is the input for the
+// AwsBatchSchedulingPolicyIacInput is the input for the
 // aws-batch-scheduling-policy IaC modules.
-type AwsBatchSchedulingPolicyStackInput struct {
+type AwsBatchSchedulingPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsBatchSchedulingPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsBatchSchedulingPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBatchSchedulingPolicyStackInput) Reset() {
-	*x = AwsBatchSchedulingPolicyStackInput{}
+func (x *AwsBatchSchedulingPolicyIacInput) Reset() {
+	*x = AwsBatchSchedulingPolicyIacInput{}
 	mi := &file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBatchSchedulingPolicyStackInput) String() string {
+func (x *AwsBatchSchedulingPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBatchSchedulingPolicyStackInput) ProtoMessage() {}
+func (*AwsBatchSchedulingPolicyIacInput) ProtoMessage() {}
 
-func (x *AwsBatchSchedulingPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBatchSchedulingPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBatchSchedulingPolicyStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBatchSchedulingPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBatchSchedulingPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBatchSchedulingPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBatchSchedulingPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBatchSchedulingPolicyStackInput) GetTarget() *AwsBatchSchedulingPolicy {
+func (x *AwsBatchSchedulingPolicyIacInput) GetTarget() *AwsBatchSchedulingPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBatchSchedulingPolicyStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBatchSchedulingPolicyIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto protoreflect.
 
 const file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awsbatchschedulingpolicy/v1alpha1/input.proto\x121dev.planton.aws.awsbatchschedulingpolicy.v1alpha1\x1a7catalog/aws/awsbatchschedulingpolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd6\x01\n" +
-	"\"AwsBatchSchedulingPolicyStackInput\x12c\n" +
+	"9catalog/aws/awsbatchschedulingpolicy/v1alpha1/input.proto\x121dev.planton.aws.awsbatchschedulingpolicy.v1alpha1\x1a7catalog/aws/awsbatchschedulingpolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd4\x01\n" +
+	" AwsBatchSchedulingPolicyIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"5com.dev.planton.aws.awsbatchschedulingpolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBatchSchedulingPolicyStackInput)(nil), // 0: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyStackInput
-	(*AwsBatchSchedulingPolicy)(nil),           // 1: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicy
-	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBatchSchedulingPolicyIacInput)(nil), // 0: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyIacInput
+	(*AwsBatchSchedulingPolicy)(nil),         // 1: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicy
+	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbatchschedulingpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyStackInput.target:type_name -> dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicy
-	2, // 1: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyIacInput.target:type_name -> dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicy
+	2, // 1: dev.planton.aws.awsbatchschedulingpolicy.v1alpha1.AwsBatchSchedulingPolicyIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

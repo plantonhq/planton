@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureDataFactoryDatasetStackInput is the input to the IaC modules
+// AzureDataFactoryDatasetIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureDataFactoryDatasetStackInput struct {
+type AzureDataFactoryDatasetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Data Factory dataset resource to deploy.
 	Target *AzureDataFactoryDataset `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureDataFactoryDatasetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryDatasetStackInput) Reset() {
-	*x = AzureDataFactoryDatasetStackInput{}
+func (x *AzureDataFactoryDatasetIacInput) Reset() {
+	*x = AzureDataFactoryDatasetIacInput{}
 	mi := &file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryDatasetStackInput) String() string {
+func (x *AzureDataFactoryDatasetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryDatasetStackInput) ProtoMessage() {}
+func (*AzureDataFactoryDatasetIacInput) ProtoMessage() {}
 
-func (x *AzureDataFactoryDatasetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryDatasetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDataFactoryDatasetStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryDatasetStackInput.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryDatasetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryDatasetIacInput.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryDatasetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryDatasetStackInput) GetTarget() *AzureDataFactoryDataset {
+func (x *AzureDataFactoryDatasetIacInput) GetTarget() *AzureDataFactoryDataset {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureDataFactoryDatasetStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureDataFactoryDatasetIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto protoreflect
 
 const file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azuredatafactorydataset/v1alpha1/input.proto\x122dev.planton.azure.azuredatafactorydataset.v1alpha1\x1a8catalog/azure/azuredatafactorydataset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd9\x01\n" +
-	"!AzureDataFactoryDatasetStackInput\x12c\n" +
+	":catalog/azure/azuredatafactorydataset/v1alpha1/input.proto\x122dev.planton.azure.azuredatafactorydataset.v1alpha1\x1a8catalog/azure/azuredatafactorydataset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd7\x01\n" +
+	"\x1fAzureDataFactoryDatasetIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x9e\x03\n" +
 	"6com.dev.planton.azure.azuredatafactorydataset.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_goTypes = []any{
-	(*AzureDataFactoryDatasetStackInput)(nil), // 0: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetStackInput
-	(*AzureDataFactoryDataset)(nil),           // 1: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDataset
-	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureDataFactoryDatasetIacInput)(nil), // 0: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetIacInput
+	(*AzureDataFactoryDataset)(nil),         // 1: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDataset
+	(*azure.AzureProviderConfig)(nil),       // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuredatafactorydataset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetStackInput.target:type_name -> dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDataset
-	2, // 1: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetIacInput.target:type_name -> dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDataset
+	2, // 1: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

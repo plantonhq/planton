@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamUserStackOutputs describes the output values after provisioning an IAM user.
-type AwsIamUserStackOutputs struct {
+// AwsIamUserOutputs describes the output values after provisioning an IAM user.
+type AwsIamUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// user_arn is the ARN of the created IAM user.
 	UserArn string `protobuf:"bytes,1,opt,name=user_arn,json=userArn,proto3" json:"user_arn,omitempty"`
@@ -46,20 +46,20 @@ type AwsIamUserStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsIamUserStackOutputs) Reset() {
-	*x = AwsIamUserStackOutputs{}
+func (x *AwsIamUserOutputs) Reset() {
+	*x = AwsIamUserOutputs{}
 	mi := &file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamUserStackOutputs) String() string {
+func (x *AwsIamUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamUserStackOutputs) ProtoMessage() {}
+func (*AwsIamUserOutputs) ProtoMessage() {}
 
-func (x *AwsIamUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,54 +71,54 @@ func (x *AwsIamUserStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamUserOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamUserStackOutputs) GetUserArn() string {
+func (x *AwsIamUserOutputs) GetUserArn() string {
 	if x != nil {
 		return x.UserArn
 	}
 	return ""
 }
 
-func (x *AwsIamUserStackOutputs) GetAccessKeyId() string {
+func (x *AwsIamUserOutputs) GetAccessKeyId() string {
 	if x != nil {
 		return x.AccessKeyId
 	}
 	return ""
 }
 
-func (x *AwsIamUserStackOutputs) GetSecretAccessKey() string {
+func (x *AwsIamUserOutputs) GetSecretAccessKey() string {
 	if x != nil {
 		return x.SecretAccessKey
 	}
 	return ""
 }
 
-func (x *AwsIamUserStackOutputs) GetConsoleUrl() string {
+func (x *AwsIamUserOutputs) GetConsoleUrl() string {
 	if x != nil {
 		return x.ConsoleUrl
 	}
 	return ""
 }
 
-func (x *AwsIamUserStackOutputs) GetUserName() string {
+func (x *AwsIamUserOutputs) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
 	return ""
 }
 
-func (x *AwsIamUserStackOutputs) GetUserId() string {
+func (x *AwsIamUserOutputs) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *AwsIamUserStackOutputs) GetAccessKeyStatus() string {
+func (x *AwsIamUserOutputs) GetAccessKeyStatus() string {
 	if x != nil {
 		return x.AccessKeyStatus
 	}
@@ -129,8 +129,8 @@ var File_catalog_aws_awsiamuser_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsiamuser/v1alpha1/outputs.proto\x12#dev.planton.aws.awsiamuser.v1alpha1\x1a\x1cshared/options/options.proto\"\x8c\x02\n" +
-	"\x16AwsIamUserStackOutputs\x12\x19\n" +
+	"-catalog/aws/awsiamuser/v1alpha1/outputs.proto\x12#dev.planton.aws.awsiamuser.v1alpha1\x1a\x1cshared/options/options.proto\"\x87\x02\n" +
+	"\x11AwsIamUserOutputs\x12\x19\n" +
 	"\buser_arn\x18\x01 \x01(\tR\auserArn\x12\"\n" +
 	"\raccess_key_id\x18\x02 \x01(\tR\vaccessKeyId\x120\n" +
 	"\x11secret_access_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x0fsecretAccessKey\x12\x1f\n" +
@@ -155,7 +155,7 @@ func file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamUserStackOutputs)(nil), // 0: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStackOutputs
+	(*AwsIamUserOutputs)(nil), // 0: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserOutputs
 }
 var file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

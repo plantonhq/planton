@@ -271,7 +271,7 @@ type CloudflareR2BucketSpec struct {
 	Location CloudflareR2Location `protobuf:"varint,3,opt,name=location,proto3,enum=dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2Location" json:"location,omitempty"`
 	// Expose the bucket publicly over Cloudflare's managed `r2.dev` domain. When
 	// true, a managed public domain is enabled and its URL is published as the
-	// `public_url` stack output. Custom domains (below) are the production-grade
+	// `public_url` output. Custom domains (below) are the production-grade
 	// path; the r2.dev domain is rate-limited and intended for development.
 	PublicAccess bool `protobuf:"varint,4,opt,name=public_access,json=publicAccess,proto3" json:"public_access,omitempty"`
 	// Custom domains that serve the bucket's objects over your own hostnames

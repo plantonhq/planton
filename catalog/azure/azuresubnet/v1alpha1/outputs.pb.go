@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureSubnetStackOutputs** captures the outputs of provisioning an Azure
+// **AzureSubnetOutputs** captures the outputs of provisioning an Azure
 // Subnet.
 //
 // The `subnet_id` output is the single most referenced Azure output in
@@ -29,7 +29,7 @@ const (
 // clusters, container app environments, flexible database servers, private
 // endpoints, load balancers, application gateways, VMs, function and web
 // apps) consumes it via StringValueOrRef.
-type AzureSubnetStackOutputs struct {
+type AzureSubnetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the subnet.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}
@@ -53,20 +53,20 @@ type AzureSubnetStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureSubnetStackOutputs) Reset() {
-	*x = AzureSubnetStackOutputs{}
+func (x *AzureSubnetOutputs) Reset() {
+	*x = AzureSubnetOutputs{}
 	mi := &file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureSubnetStackOutputs) String() string {
+func (x *AzureSubnetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureSubnetStackOutputs) ProtoMessage() {}
+func (*AzureSubnetOutputs) ProtoMessage() {}
 
-func (x *AzureSubnetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureSubnetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,40 +78,40 @@ func (x *AzureSubnetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureSubnetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureSubnetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureSubnetOutputs.ProtoReflect.Descriptor instead.
+func (*AzureSubnetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureSubnetStackOutputs) GetSubnetId() string {
+func (x *AzureSubnetOutputs) GetSubnetId() string {
 	if x != nil {
 		return x.SubnetId
 	}
 	return ""
 }
 
-func (x *AzureSubnetStackOutputs) GetSubnetName() string {
+func (x *AzureSubnetOutputs) GetSubnetName() string {
 	if x != nil {
 		return x.SubnetName
 	}
 	return ""
 }
 
-func (x *AzureSubnetStackOutputs) GetAddressPrefixes() []string {
+func (x *AzureSubnetOutputs) GetAddressPrefixes() []string {
 	if x != nil {
 		return x.AddressPrefixes
 	}
 	return nil
 }
 
-func (x *AzureSubnetStackOutputs) GetVirtualNetworkName() string {
+func (x *AzureSubnetOutputs) GetVirtualNetworkName() string {
 	if x != nil {
 		return x.VirtualNetworkName
 	}
 	return ""
 }
 
-func (x *AzureSubnetStackOutputs) GetResourceGroupName() string {
+func (x *AzureSubnetOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
@@ -122,8 +122,8 @@ var File_catalog_azure_azuresubnet_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/azure/azuresubnet/v1alpha1/outputs.proto\x12&dev.planton.azure.azuresubnet.v1alpha1\"\xe4\x01\n" +
-	"\x17AzureSubnetStackOutputs\x12\x1b\n" +
+	"0catalog/azure/azuresubnet/v1alpha1/outputs.proto\x12&dev.planton.azure.azuresubnet.v1alpha1\"\xdf\x01\n" +
+	"\x12AzureSubnetOutputs\x12\x1b\n" +
 	"\tsubnet_id\x18\x01 \x01(\tR\bsubnetId\x12\x1f\n" +
 	"\vsubnet_name\x18\x02 \x01(\tR\n" +
 	"subnetName\x12)\n" +
@@ -146,7 +146,7 @@ func file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureSubnetStackOutputs)(nil), // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetStackOutputs
+	(*AzureSubnetOutputs)(nil), // 0: dev.planton.azure.azuresubnet.v1alpha1.AzureSubnetOutputs
 }
 var file_catalog_azure_azuresubnet_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

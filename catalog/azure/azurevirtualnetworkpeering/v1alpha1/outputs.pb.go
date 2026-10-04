@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualNetworkPeeringStackOutputs** captures the outputs of
+// **AzureVirtualNetworkPeeringOutputs** captures the outputs of
 // provisioning one direction of an Azure virtual network peering.
-type AzureVirtualNetworkPeeringStackOutputs struct {
+type AzureVirtualNetworkPeeringOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the peering.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/virtualNetworkPeerings/{name}
@@ -41,20 +41,20 @@ type AzureVirtualNetworkPeeringStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) Reset() {
-	*x = AzureVirtualNetworkPeeringStackOutputs{}
+func (x *AzureVirtualNetworkPeeringOutputs) Reset() {
+	*x = AzureVirtualNetworkPeeringOutputs{}
 	mi := &file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) String() string {
+func (x *AzureVirtualNetworkPeeringOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualNetworkPeeringStackOutputs) ProtoMessage() {}
+func (*AzureVirtualNetworkPeeringOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualNetworkPeeringOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *AzureVirtualNetworkPeeringStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualNetworkPeeringStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualNetworkPeeringStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualNetworkPeeringOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualNetworkPeeringOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) GetPeeringId() string {
+func (x *AzureVirtualNetworkPeeringOutputs) GetPeeringId() string {
 	if x != nil {
 		return x.PeeringId
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) GetPeeringName() string {
+func (x *AzureVirtualNetworkPeeringOutputs) GetPeeringName() string {
 	if x != nil {
 		return x.PeeringName
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) GetVirtualNetworkName() string {
+func (x *AzureVirtualNetworkPeeringOutputs) GetVirtualNetworkName() string {
 	if x != nil {
 		return x.VirtualNetworkName
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkPeeringStackOutputs) GetResourceGroupName() string {
+func (x *AzureVirtualNetworkPeeringOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
@@ -103,8 +103,8 @@ var File_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurevirtualnetworkpeering/v1alpha1/outputs.proto\x125dev.planton.azure.azurevirtualnetworkpeering.v1alpha1\"\xcc\x01\n" +
-	"&AzureVirtualNetworkPeeringStackOutputs\x12\x1d\n" +
+	"?catalog/azure/azurevirtualnetworkpeering/v1alpha1/outputs.proto\x125dev.planton.azure.azurevirtualnetworkpeering.v1alpha1\"\xc7\x01\n" +
+	"!AzureVirtualNetworkPeeringOutputs\x12\x1d\n" +
 	"\n" +
 	"peering_id\x18\x01 \x01(\tR\tpeeringId\x12!\n" +
 	"\fpeering_name\x18\x02 \x01(\tR\vpeeringName\x120\n" +
@@ -126,7 +126,7 @@ func file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualNetworkPeeringStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackOutputs
+	(*AzureVirtualNetworkPeeringOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringOutputs
 }
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -38,7 +38,7 @@ type AzurePlantonRunner struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration defining where the runner lives,
 	// how big it is, which build it runs, and the token it joins with.
 	Spec *AzurePlantonRunnerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -92,7 +92,7 @@ func (x *AzurePlantonRunner) GetKind() string {
 	return ""
 }
 
-func (x *AzurePlantonRunner) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePlantonRunner) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -119,7 +119,7 @@ type AzurePlantonRunnerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after
 	// provisioning.
-	Outputs       *AzurePlantonRunnerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AzurePlantonRunnerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -154,7 +154,7 @@ func (*AzurePlantonRunnerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureplantonrunner_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePlantonRunnerStatus) GetOutputs() *AzurePlantonRunnerStackOutputs {
+func (x *AzurePlantonRunnerStatus) GetOutputs() *AzurePlantonRunnerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -172,11 +172,11 @@ const file_catalog_azure_azureplantonrunner_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AzurePlantonRunnerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatusR\x06status\"\x83\x01\n" +
-	"\x18AzurePlantonRunnerStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStackOutputsR\aoutputsB\xf9\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatusR\x06status\"~\n" +
+	"\x18AzurePlantonRunnerStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerOutputsR\aoutputsB\xf9\x02\n" +
 	"1com.dev.planton.azure.azureplantonrunner.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/azure/azureplantonrunner/v1alpha1;azureplantonrunnerv1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Azure.Azureplantonrunner.V1alpha1\xca\x02-Dev\\Planton\\Azure\\Azureplantonrunner\\V1alpha1\xe2\x029Dev\\Planton\\Azure\\Azureplantonrunner\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Azure::Azureplantonrunner::V1alpha1b\x06proto3"
 
 var (
@@ -193,17 +193,17 @@ func file_catalog_azure_azureplantonrunner_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azureplantonrunner_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureplantonrunner_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePlantonRunner)(nil),             // 0: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunner
-	(*AzurePlantonRunnerStatus)(nil),       // 1: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePlantonRunnerSpec)(nil),         // 3: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerSpec
-	(*AzurePlantonRunnerStackOutputs)(nil), // 4: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStackOutputs
+	(*AzurePlantonRunner)(nil),           // 0: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunner
+	(*AzurePlantonRunnerStatus)(nil),     // 1: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePlantonRunnerSpec)(nil),       // 3: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerSpec
+	(*AzurePlantonRunnerOutputs)(nil),    // 4: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerOutputs
 }
 var file_catalog_azure_azureplantonrunner_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunner.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunner.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunner.spec:type_name -> dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerSpec
 	1, // 2: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunner.status:type_name -> dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatus
-	4, // 3: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatus.outputs:type_name -> dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStackOutputs
+	4, // 3: dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerStatus.outputs:type_name -> dev.planton.azure.azureplantonrunner.v1alpha1.AzurePlantonRunnerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

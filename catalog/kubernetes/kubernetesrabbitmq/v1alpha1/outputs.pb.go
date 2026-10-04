@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-rabbit-mq stack outputs
-type KubernetesRabbitMqStackOutputs struct {
+// kubernetes-rabbit-mq outputs
+type KubernetesRabbitMqOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -54,20 +54,20 @@ type KubernetesRabbitMqStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesRabbitMqStackOutputs) Reset() {
-	*x = KubernetesRabbitMqStackOutputs{}
+func (x *KubernetesRabbitMqOutputs) Reset() {
+	*x = KubernetesRabbitMqOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRabbitMqStackOutputs) String() string {
+func (x *KubernetesRabbitMqOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRabbitMqStackOutputs) ProtoMessage() {}
+func (*KubernetesRabbitMqOutputs) ProtoMessage() {}
 
-func (x *KubernetesRabbitMqStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRabbitMqOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,61 +79,61 @@ func (x *KubernetesRabbitMqStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRabbitMqStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesRabbitMqStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRabbitMqOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesRabbitMqOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetNamespace() string {
+func (x *KubernetesRabbitMqOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetClusterName() string {
+func (x *KubernetesRabbitMqOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetServiceName() string {
+func (x *KubernetesRabbitMqOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetHeadlessServiceName() string {
+func (x *KubernetesRabbitMqOutputs) GetHeadlessServiceName() string {
 	if x != nil {
 		return x.HeadlessServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetAmqpEndpoint() string {
+func (x *KubernetesRabbitMqOutputs) GetAmqpEndpoint() string {
 	if x != nil {
 		return x.AmqpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetManagementEndpoint() string {
+func (x *KubernetesRabbitMqOutputs) GetManagementEndpoint() string {
 	if x != nil {
 		return x.ManagementEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetDefaultUserSecretName() string {
+func (x *KubernetesRabbitMqOutputs) GetDefaultUserSecretName() string {
 	if x != nil {
 		return x.DefaultUserSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesRabbitMqOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -144,8 +144,8 @@ var File_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesrabbitmq/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1\"\xf9\x02\n" +
-	"\x1eKubernetesRabbitMqStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kubernetesrabbitmq/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1\"\xf4\x02\n" +
+	"\x19KubernetesRabbitMqOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12!\n" +
 	"\fservice_name\x18\x03 \x01(\tR\vserviceName\x122\n" +
@@ -170,7 +170,7 @@ func file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesRabbitMqStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackOutputs
+	(*KubernetesRabbitMqOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqOutputs
 }
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

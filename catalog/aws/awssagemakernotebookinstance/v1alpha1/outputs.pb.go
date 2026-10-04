@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerNotebookInstanceStackOutputs captures observable
+// AwsSagemakerNotebookInstanceOutputs captures observable
 // identifiers from a provisioned notebook instance.
-type AwsSagemakerNotebookInstanceStackOutputs struct {
+type AwsSagemakerNotebookInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The notebook instance name (the AWS identity).
 	NotebookInstanceName string `protobuf:"bytes,1,opt,name=notebook_instance_name,json=notebookInstanceName,proto3" json:"notebook_instance_name,omitempty"`
@@ -41,20 +41,20 @@ type AwsSagemakerNotebookInstanceStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) Reset() {
-	*x = AwsSagemakerNotebookInstanceStackOutputs{}
+func (x *AwsSagemakerNotebookInstanceOutputs) Reset() {
+	*x = AwsSagemakerNotebookInstanceOutputs{}
 	mi := &file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) String() string {
+func (x *AwsSagemakerNotebookInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerNotebookInstanceStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerNotebookInstanceOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerNotebookInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,40 +66,40 @@ func (x *AwsSagemakerNotebookInstanceStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerNotebookInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerNotebookInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerNotebookInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerNotebookInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) GetNotebookInstanceName() string {
+func (x *AwsSagemakerNotebookInstanceOutputs) GetNotebookInstanceName() string {
 	if x != nil {
 		return x.NotebookInstanceName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) GetNotebookInstanceArn() string {
+func (x *AwsSagemakerNotebookInstanceOutputs) GetNotebookInstanceArn() string {
 	if x != nil {
 		return x.NotebookInstanceArn
 	}
 	return ""
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) GetUrl() string {
+func (x *AwsSagemakerNotebookInstanceOutputs) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) GetNetworkInterfaceId() string {
+func (x *AwsSagemakerNotebookInstanceOutputs) GetNetworkInterfaceId() string {
 	if x != nil {
 		return x.NetworkInterfaceId
 	}
 	return ""
 }
 
-func (x *AwsSagemakerNotebookInstanceStackOutputs) GetLifecycleConfigName() string {
+func (x *AwsSagemakerNotebookInstanceOutputs) GetLifecycleConfigName() string {
 	if x != nil {
 		return x.LifecycleConfigName
 	}
@@ -110,8 +110,8 @@ var File_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto protore
 
 const file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awssagemakernotebookinstance/v1alpha1/outputs.proto\x125dev.planton.aws.awssagemakernotebookinstance.v1alpha1\"\x8c\x02\n" +
-	"(AwsSagemakerNotebookInstanceStackOutputs\x124\n" +
+	"?catalog/aws/awssagemakernotebookinstance/v1alpha1/outputs.proto\x125dev.planton.aws.awssagemakernotebookinstance.v1alpha1\"\x87\x02\n" +
+	"#AwsSagemakerNotebookInstanceOutputs\x124\n" +
 	"\x16notebook_instance_name\x18\x01 \x01(\tR\x14notebookInstanceName\x122\n" +
 	"\x15notebook_instance_arn\x18\x02 \x01(\tR\x13notebookInstanceArn\x12\x10\n" +
 	"\x03url\x18\x03 \x01(\tR\x03url\x120\n" +
@@ -133,7 +133,7 @@ func file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerNotebookInstanceStackOutputs)(nil), // 0: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceStackOutputs
+	(*AwsSagemakerNotebookInstanceOutputs)(nil), // 0: dev.planton.aws.awssagemakernotebookinstance.v1alpha1.AwsSagemakerNotebookInstanceOutputs
 }
 var file_catalog_aws_awssagemakernotebookinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

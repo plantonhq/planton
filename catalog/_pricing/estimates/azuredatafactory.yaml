@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azuredatafactory
 spec:
@@ -37,6 +37,6 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - per-GB data processed through the endpoint (0.01 USD/GB inbound and outbound) follows ETL volume
-        - pipeline execution bills the managed-VNET meter class (1.00 USD per 1,000 activity runs, 0.25 USD per DIU-hour of movement, 1.00 USD/hour of pipeline activity) on the pipeline components and their runs
-        - the target storage account, and everything else the private endpoint reaches, bills on its own component
+        - pipeline execution bills the managed-VNET meter class (1.00 USD per 1,000 activity runs, 0.25 USD per DIU-hour of movement, 1.00 USD/hour of pipeline activity) on the pipeline kinds and their runs
+        - the target storage account, and everything else the private endpoint reaches, bills on its own kind
       notes: "The committed floor is Private Link custody: 730 hours x 0.01 USD ~ 7.30 USD/month for the one pinned endpoint. publicNetworkEnabled false closes the public path but carries no meter of its own -- the endpoints ARE the private path's cost."

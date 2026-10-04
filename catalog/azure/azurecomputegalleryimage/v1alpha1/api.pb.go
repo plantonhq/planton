@@ -34,7 +34,7 @@ type AzureComputeGalleryImage struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureComputeGalleryImageSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureComputeGalleryImage) GetKind() string {
 	return ""
 }
 
-func (x *AzureComputeGalleryImage) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureComputeGalleryImage) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureComputeGalleryImage) GetStatus() *AzureComputeGalleryImageStatus {
 // image deployment.
 type AzureComputeGalleryImageStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-compute-gallery-image stack-outputs
-	Outputs       *AzureComputeGalleryImageStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-compute-gallery-image outputs
+	Outputs       *AzureComputeGalleryImageOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureComputeGalleryImageStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecomputegalleryimage_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureComputeGalleryImageStatus) GetOutputs() *AzureComputeGalleryImageStackOutputs {
+func (x *AzureComputeGalleryImageStatus) GetOutputs() *AzureComputeGalleryImageOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azurecomputegalleryimage_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AzureComputeGalleryImageR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatusR\x06status\"\x95\x01\n" +
-	"\x1eAzureComputeGalleryImageStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputsR\aoutputsB\xa3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatusR\x06status\"\x90\x01\n" +
+	"\x1eAzureComputeGalleryImageStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputsR\aoutputsB\xa3\x03\n" +
 	"7com.dev.planton.azure.azurecomputegalleryimage.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azurecomputegalleryimage/v1alpha1;azurecomputegalleryimagev1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azurecomputegalleryimage.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azurecomputegalleryimage\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azurecomputegalleryimage\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azurecomputegalleryimage::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azurecomputegalleryimage_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_azure_azurecomputegalleryimage_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecomputegalleryimage_v1alpha1_api_proto_goTypes = []any{
-	(*AzureComputeGalleryImage)(nil),             // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImage
-	(*AzureComputeGalleryImageStatus)(nil),       // 1: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureComputeGalleryImageSpec)(nil),         // 3: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageSpec
-	(*AzureComputeGalleryImageStackOutputs)(nil), // 4: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs
+	(*AzureComputeGalleryImage)(nil),        // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImage
+	(*AzureComputeGalleryImageStatus)(nil),  // 1: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureComputeGalleryImageSpec)(nil),    // 3: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageSpec
+	(*AzureComputeGalleryImageOutputs)(nil), // 4: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs
 }
 var file_catalog_azure_azurecomputegalleryimage_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImage.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImage.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImage.spec:type_name -> dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageSpec
 	1, // 2: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImage.status:type_name -> dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatus
-	4, // 3: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatus.outputs:type_name -> dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs
+	4, // 3: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStatus.outputs:type_name -> dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

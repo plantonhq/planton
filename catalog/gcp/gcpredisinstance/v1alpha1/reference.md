@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpRedisInstanceSpec defines the configuration for a Google Cloud Memorystore
 for Redis instance.
@@ -28,7 +28,7 @@ Important behavioral notes:
     after creation. Changing them requires replacing the instance.
 
   - When auth_enabled is true, GCP generates a random AUTH string that is
-    rotated automatically. The current AUTH string is exported in stack outputs.
+    rotated automatically. The current AUTH string is exported in outputs.
 
   - Read replicas are only available with STANDARD_HA tier and require
     read_replicas_mode to be set to READ_REPLICAS_ENABLED.
@@ -263,7 +263,7 @@ field you set when scaling an in-place instance out to read replicas.
 `bool`
 
 Whether Redis AUTH is enabled. When true, clients must provide
-the AUTH string (exported in stack outputs) to connect.
+the AUTH string (exported in outputs) to connect.
 AUTH provides an additional layer of security beyond network controls.
 
 ### spec.transitEncryptionMode
@@ -273,7 +273,7 @@ AUTH provides an additional layer of security beyond network controls.
 TLS encryption mode for client-to-server traffic.
 DISABLED: no encryption (default).
 SERVER_AUTHENTICATION: clients verify the server's identity via TLS;
-pair with the server_ca_certs stack output, which carries the CA
+pair with the server_ca_certs output, which carries the CA
 certificates clients must trust.
 Immutable after creation.
 

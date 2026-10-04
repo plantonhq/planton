@@ -49,7 +49,7 @@ const (
 //     either destroys and recreates the user. `access_string` and the
 //     authentication mode update in place.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsElasticacheUserSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the user is created. ElastiCache users are regional

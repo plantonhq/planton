@@ -35,10 +35,10 @@ type AzureExpressRouteCircuit struct {
 	// Resource kind. Must be "AzureExpressRouteCircuit".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ExpressRoute circuit specification.
 	Spec *AzureExpressRouteCircuitSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureExpressRouteCircuitStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -88,7 +88,7 @@ func (x *AzureExpressRouteCircuit) GetKind() string {
 	return ""
 }
 
-func (x *AzureExpressRouteCircuit) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureExpressRouteCircuit) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureExpressRouteCircuit) GetStatus() *AzureExpressRouteCircuitStatus {
 // AzureExpressRouteCircuitStatus holds the deployment outputs.
 type AzureExpressRouteCircuitStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureExpressRouteCircuitStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureExpressRouteCircuitOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureExpressRouteCircuitStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutecircuit_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureExpressRouteCircuitStatus) GetOutputs() *AzureExpressRouteCircuitStackOutputs {
+func (x *AzureExpressRouteCircuitStatus) GetOutputs() *AzureExpressRouteCircuitOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azureexpressroutecircuit_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AzureExpressRouteCircuitR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatusR\x06status\"\x95\x01\n" +
-	"\x1eAzureExpressRouteCircuitStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputsR\aoutputsB\xa3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatusR\x06status\"\x90\x01\n" +
+	"\x1eAzureExpressRouteCircuitStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputsR\aoutputsB\xa3\x03\n" +
 	"7com.dev.planton.azure.azureexpressroutecircuit.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azureexpressroutecircuit/v1alpha1;azureexpressroutecircuitv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azureexpressroutecircuit.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azureexpressroutecircuit\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azureexpressroutecircuit\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azureexpressroutecircuit::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azureexpressroutecircuit_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_azure_azureexpressroutecircuit_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureexpressroutecircuit_v1alpha1_api_proto_goTypes = []any{
-	(*AzureExpressRouteCircuit)(nil),             // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuit
-	(*AzureExpressRouteCircuitStatus)(nil),       // 1: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureExpressRouteCircuitSpec)(nil),         // 3: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitSpec
-	(*AzureExpressRouteCircuitStackOutputs)(nil), // 4: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs
+	(*AzureExpressRouteCircuit)(nil),        // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuit
+	(*AzureExpressRouteCircuitStatus)(nil),  // 1: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureExpressRouteCircuitSpec)(nil),    // 3: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitSpec
+	(*AzureExpressRouteCircuitOutputs)(nil), // 4: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs
 }
 var file_catalog_azure_azureexpressroutecircuit_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuit.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuit.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuit.spec:type_name -> dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitSpec
 	1, // 2: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuit.status:type_name -> dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatus
-	4, // 3: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatus.outputs:type_name -> dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs
+	4, // 3: dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStatus.outputs:type_name -> dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

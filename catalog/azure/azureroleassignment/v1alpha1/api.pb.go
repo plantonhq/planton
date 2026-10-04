@@ -35,7 +35,7 @@ type AzureRoleAssignment struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureRoleAssignmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureRoleAssignment) GetKind() string {
 	return ""
 }
 
-func (x *AzureRoleAssignment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureRoleAssignment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureRoleAssignment) GetStatus() *AzureRoleAssignmentStatus {
 // AzureRoleAssignmentStatus holds the deployment status and outputs.
 type AzureRoleAssignmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureRoleAssignmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureRoleAssignmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureRoleAssignmentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureroleassignment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureRoleAssignmentStatus) GetOutputs() *AzureRoleAssignmentStackOutputs {
+func (x *AzureRoleAssignmentStatus) GetOutputs() *AzureRoleAssignmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azureroleassignment_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzureRoleAssignmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatusR\x06status\"\x86\x01\n" +
-	"\x19AzureRoleAssignmentStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatusR\x06status\"\x81\x01\n" +
+	"\x19AzureRoleAssignmentStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azureroleassignment.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azureroleassignment/v1alpha1;azureroleassignmentv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azureroleassignment.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azureroleassignment\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azureroleassignment\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azureroleassignment::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azureroleassignment_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azureroleassignment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureroleassignment_v1alpha1_api_proto_goTypes = []any{
-	(*AzureRoleAssignment)(nil),             // 0: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignment
-	(*AzureRoleAssignmentStatus)(nil),       // 1: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureRoleAssignmentSpec)(nil),         // 3: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentSpec
-	(*AzureRoleAssignmentStackOutputs)(nil), // 4: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStackOutputs
+	(*AzureRoleAssignment)(nil),          // 0: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignment
+	(*AzureRoleAssignmentStatus)(nil),    // 1: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureRoleAssignmentSpec)(nil),      // 3: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentSpec
+	(*AzureRoleAssignmentOutputs)(nil),   // 4: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentOutputs
 }
 var file_catalog_azure_azureroleassignment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignment.spec:type_name -> dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentSpec
 	1, // 2: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignment.status:type_name -> dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatus
-	4, // 3: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatus.outputs:type_name -> dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStackOutputs
+	4, // 3: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStatus.outputs:type_name -> dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

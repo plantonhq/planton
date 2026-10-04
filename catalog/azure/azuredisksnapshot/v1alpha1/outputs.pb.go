@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDiskSnapshotStackOutputs** captures the outputs from
+// **AzureDiskSnapshotOutputs** captures the outputs from
 // provisioning a managed disk snapshot.
-type AzureDiskSnapshotStackOutputs struct {
+type AzureDiskSnapshotOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The snapshot's Azure Resource Manager ID -- what disks restore
 	// from and gallery image versions build from.
@@ -34,20 +34,20 @@ type AzureDiskSnapshotStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDiskSnapshotStackOutputs) Reset() {
-	*x = AzureDiskSnapshotStackOutputs{}
+func (x *AzureDiskSnapshotOutputs) Reset() {
+	*x = AzureDiskSnapshotOutputs{}
 	mi := &file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDiskSnapshotStackOutputs) String() string {
+func (x *AzureDiskSnapshotOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDiskSnapshotStackOutputs) ProtoMessage() {}
+func (*AzureDiskSnapshotOutputs) ProtoMessage() {}
 
-func (x *AzureDiskSnapshotStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDiskSnapshotOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureDiskSnapshotStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDiskSnapshotStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDiskSnapshotStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDiskSnapshotOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDiskSnapshotOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDiskSnapshotStackOutputs) GetSnapshotId() string {
+func (x *AzureDiskSnapshotOutputs) GetSnapshotId() string {
 	if x != nil {
 		return x.SnapshotId
 	}
 	return ""
 }
 
-func (x *AzureDiskSnapshotStackOutputs) GetSnapshotName() string {
+func (x *AzureDiskSnapshotOutputs) GetSnapshotName() string {
 	if x != nil {
 		return x.SnapshotName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azuredisksnapshot/v1alpha1/outputs.proto\x12,dev.planton.azure.azuredisksnapshot.v1alpha1\"e\n" +
-	"\x1dAzureDiskSnapshotStackOutputs\x12\x1f\n" +
+	"6catalog/azure/azuredisksnapshot/v1alpha1/outputs.proto\x12,dev.planton.azure.azuredisksnapshot.v1alpha1\"`\n" +
+	"\x18AzureDiskSnapshotOutputs\x12\x1f\n" +
 	"\vsnapshot_id\x18\x01 \x01(\tR\n" +
 	"snapshotId\x12#\n" +
 	"\rsnapshot_name\x18\x02 \x01(\tR\fsnapshotNameB\xf6\x02\n" +
@@ -103,7 +103,7 @@ func file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDiskSnapshotStackOutputs)(nil), // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotStackOutputs
+	(*AzureDiskSnapshotOutputs)(nil), // 0: dev.planton.azure.azuredisksnapshot.v1alpha1.AzureDiskSnapshotOutputs
 }
 var file_catalog_azure_azuredisksnapshot_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

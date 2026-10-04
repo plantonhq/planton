@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDnsZoneStackOutputs captures values returned after provisioning a
+// GcpDnsZoneOutputs captures values returned after provisioning a
 // Cloud DNS managed zone.
-type GcpDnsZoneStackOutputs struct {
+type GcpDnsZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Numeric identifier the Cloud DNS API assigns to the managed zone.
 	ZoneId string `protobuf:"bytes,1,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
@@ -37,20 +37,20 @@ type GcpDnsZoneStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDnsZoneStackOutputs) Reset() {
-	*x = GcpDnsZoneStackOutputs{}
+func (x *GcpDnsZoneOutputs) Reset() {
+	*x = GcpDnsZoneOutputs{}
 	mi := &file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDnsZoneStackOutputs) String() string {
+func (x *GcpDnsZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDnsZoneStackOutputs) ProtoMessage() {}
+func (*GcpDnsZoneOutputs) ProtoMessage() {}
 
-func (x *GcpDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDnsZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *GcpDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDnsZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDnsZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDnsZoneOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDnsZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDnsZoneStackOutputs) GetZoneId() string {
+func (x *GcpDnsZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *GcpDnsZoneStackOutputs) GetZoneName() string {
+func (x *GcpDnsZoneOutputs) GetZoneName() string {
 	if x != nil {
 		return x.ZoneName
 	}
 	return ""
 }
 
-func (x *GcpDnsZoneStackOutputs) GetNameservers() []string {
+func (x *GcpDnsZoneOutputs) GetNameservers() []string {
 	if x != nil {
 		return x.Nameservers
 	}
@@ -92,8 +92,8 @@ var File_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcpdnszone/v1alpha1/outputs.proto\x12#dev.planton.gcp.gcpdnszone.v1alpha1\"p\n" +
-	"\x16GcpDnsZoneStackOutputs\x12\x17\n" +
+	"-catalog/gcp/gcpdnszone/v1alpha1/outputs.proto\x12#dev.planton.gcp.gcpdnszone.v1alpha1\"k\n" +
+	"\x11GcpDnsZoneOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12\x1b\n" +
 	"\tzone_name\x18\x02 \x01(\tR\bzoneName\x12 \n" +
 	"\vnameservers\x18\x03 \x03(\tR\vnameserversB\xb9\x02\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDnsZoneStackOutputs)(nil), // 0: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneStackOutputs
+	(*GcpDnsZoneOutputs)(nil), // 0: dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneOutputs
 }
 var file_catalog_gcp_gcpdnszone_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

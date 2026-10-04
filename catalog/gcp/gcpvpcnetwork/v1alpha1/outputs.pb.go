@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP VPC.
-type GcpVpcNetworkStackOutputs struct {
+type GcpVpcNetworkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full self-link URL of the created network (useful for connecting subnets or other resources to this VPC).
 	NetworkSelfLink string `protobuf:"bytes,1,opt,name=network_self_link,json=networkSelfLink,proto3" json:"network_self_link,omitempty"`
@@ -40,20 +40,20 @@ type GcpVpcNetworkStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *GcpVpcNetworkStackOutputs) Reset() {
-	*x = GcpVpcNetworkStackOutputs{}
+func (x *GcpVpcNetworkOutputs) Reset() {
+	*x = GcpVpcNetworkOutputs{}
 	mi := &file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVpcNetworkStackOutputs) String() string {
+func (x *GcpVpcNetworkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVpcNetworkStackOutputs) ProtoMessage() {}
+func (*GcpVpcNetworkOutputs) ProtoMessage() {}
 
-func (x *GcpVpcNetworkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVpcNetworkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *GcpVpcNetworkStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVpcNetworkStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVpcNetworkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVpcNetworkOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVpcNetworkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVpcNetworkStackOutputs) GetNetworkSelfLink() string {
+func (x *GcpVpcNetworkOutputs) GetNetworkSelfLink() string {
 	if x != nil {
 		return x.NetworkSelfLink
 	}
 	return ""
 }
 
-func (x *GcpVpcNetworkStackOutputs) GetNetworkName() string {
+func (x *GcpVpcNetworkOutputs) GetNetworkName() string {
 	if x != nil {
 		return x.NetworkName
 	}
 	return ""
 }
 
-func (x *GcpVpcNetworkStackOutputs) GetNetworkId() string {
+func (x *GcpVpcNetworkOutputs) GetNetworkId() string {
 	if x != nil {
 		return x.NetworkId
 	}
 	return ""
 }
 
-func (x *GcpVpcNetworkStackOutputs) GetGatewayIpv4() string {
+func (x *GcpVpcNetworkOutputs) GetGatewayIpv4() string {
 	if x != nil {
 		return x.GatewayIpv4
 	}
 	return ""
 }
 
-func (x *GcpVpcNetworkStackOutputs) GetInternalIpv6Range() string {
+func (x *GcpVpcNetworkOutputs) GetInternalIpv6Range() string {
 	if x != nil {
 		return x.InternalIpv6Range
 	}
@@ -109,8 +109,8 @@ var File_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpvpcnetwork/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpvpcnetwork.v1alpha1\"\xdc\x01\n" +
-	"\x19GcpVpcNetworkStackOutputs\x12*\n" +
+	"0catalog/gcp/gcpvpcnetwork/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpvpcnetwork.v1alpha1\"\xd7\x01\n" +
+	"\x14GcpVpcNetworkOutputs\x12*\n" +
 	"\x11network_self_link\x18\x01 \x01(\tR\x0fnetworkSelfLink\x12!\n" +
 	"\fnetwork_name\x18\x02 \x01(\tR\vnetworkName\x12\x1d\n" +
 	"\n" +
@@ -133,7 +133,7 @@ func file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVpcNetworkStackOutputs)(nil), // 0: dev.planton.gcp.gcpvpcnetwork.v1alpha1.GcpVpcNetworkStackOutputs
+	(*GcpVpcNetworkOutputs)(nil), // 0: dev.planton.gcp.gcpvpcnetwork.v1alpha1.GcpVpcNetworkOutputs
 }
 var file_catalog_gcp_gcpvpcnetwork_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

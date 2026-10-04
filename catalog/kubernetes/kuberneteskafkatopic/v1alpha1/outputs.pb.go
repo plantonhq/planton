@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesKafkaTopicStackOutputs** — the handles a declared Kafka
+// **KubernetesKafkaTopicOutputs** — the handles a declared Kafka
 // topic exports for composition (producers/consumers configure the
 // topic name; the bootstrap endpoint comes from the KubernetesKafka
 // resource's own outputs).
-type KubernetesKafkaTopicStackOutputs struct {
+type KubernetesKafkaTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the KafkaTopic resource lives in (the Kafka cluster's
 	// namespace).
@@ -38,20 +38,20 @@ type KubernetesKafkaTopicStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaTopicStackOutputs) Reset() {
-	*x = KubernetesKafkaTopicStackOutputs{}
+func (x *KubernetesKafkaTopicOutputs) Reset() {
+	*x = KubernetesKafkaTopicOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaTopicStackOutputs) String() string {
+func (x *KubernetesKafkaTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaTopicStackOutputs) ProtoMessage() {}
+func (*KubernetesKafkaTopicOutputs) ProtoMessage() {}
 
-func (x *KubernetesKafkaTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *KubernetesKafkaTopicStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaTopicOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaTopicStackOutputs) GetNamespace() string {
+func (x *KubernetesKafkaTopicOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaTopicStackOutputs) GetTopicName() string {
+func (x *KubernetesKafkaTopicOutputs) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
@@ -86,8 +86,8 @@ var File_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kuberneteskafkatopic/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1\"_\n" +
-	" KubernetesKafkaTopicStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kuberneteskafkatopic/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1\"Z\n" +
+	"\x1bKubernetesKafkaTopicOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
 	"topic_name\x18\x02 \x01(\tR\ttopicNameB\xa9\x03\n" +
@@ -107,7 +107,7 @@ func file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKafkaTopicStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackOutputs
+	(*KubernetesKafkaTopicOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicOutputs
 }
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

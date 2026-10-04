@@ -28,7 +28,7 @@ type GcpCertManagerIssuanceConfig struct {
 	state         protoimpl.MessageState              `protogen:"open.v1"`
 	ApiVersion    string                              `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                              `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata       `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata       `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpCertManagerIssuanceConfigSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpCertManagerIssuanceConfigStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpCertManagerIssuanceConfig) GetKind() string {
 	return ""
 }
 
-func (x *GcpCertManagerIssuanceConfig) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCertManagerIssuanceConfig) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpCertManagerIssuanceConfig) GetStatus() *GcpCertManagerIssuanceConfig
 }
 
 type GcpCertManagerIssuanceConfigStatus struct {
-	state         protoimpl.MessageState                    `protogen:"open.v1"`
-	Outputs       *GcpCertManagerIssuanceConfigStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState               `protogen:"open.v1"`
+	Outputs       *GcpCertManagerIssuanceConfigOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpCertManagerIssuanceConfigStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCertManagerIssuanceConfigStatus) GetOutputs() *GcpCertManagerIssuanceConfigStackOutputs {
+func (x *GcpCertManagerIssuanceConfigStatus) GetOutputs() *GcpCertManagerIssuanceConfigOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cGcpCertManagerIssuanceConfigR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatusR\x06status\"\x9f\x01\n" +
-	"\"GcpCertManagerIssuanceConfigStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatusR\x06status\"\x9a\x01\n" +
+	"\"GcpCertManagerIssuanceConfigStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigOutputsR\aoutputsB\xb3\x03\n" +
 	"9com.dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1;gcpcertmanagerissuanceconfigv1alpha1\xa2\x02\x04DPGG\xaa\x025Dev.Planton.Gcp.Gcpcertmanagerissuanceconfig.V1alpha1\xca\x025Dev\\Planton\\Gcp\\Gcpcertmanagerissuanceconfig\\V1alpha1\xe2\x02ADev\\Planton\\Gcp\\Gcpcertmanagerissuanceconfig\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Gcp::Gcpcertmanagerissuanceconfig::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCertManagerIssuanceConfig)(nil),             // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig
-	(*GcpCertManagerIssuanceConfigStatus)(nil),       // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCertManagerIssuanceConfigSpec)(nil),         // 3: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigSpec
-	(*GcpCertManagerIssuanceConfigStackOutputs)(nil), // 4: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackOutputs
+	(*GcpCertManagerIssuanceConfig)(nil),        // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig
+	(*GcpCertManagerIssuanceConfigStatus)(nil),  // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCertManagerIssuanceConfigSpec)(nil),    // 3: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigSpec
+	(*GcpCertManagerIssuanceConfigOutputs)(nil), // 4: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigOutputs
 }
 var file_catalog_gcp_gcpcertmanagerissuanceconfig_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig.spec:type_name -> dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigSpec
 	1, // 2: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfig.status:type_name -> dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatus
-	4, // 3: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatus.outputs:type_name -> dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStackOutputs
+	4, // 3: dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigStatus.outputs:type_name -> dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

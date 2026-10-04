@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsTransitGatewayRouteTableStackInput is the input for the
+// AwsTransitGatewayRouteTableIacInput is the input for the
 // aws-transit-gateway-route-table IaC modules.
-type AwsTransitGatewayRouteTableStackInput struct {
+type AwsTransitGatewayRouteTableIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsTransitGatewayRouteTable `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsTransitGatewayRouteTableStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsTransitGatewayRouteTableStackInput) Reset() {
-	*x = AwsTransitGatewayRouteTableStackInput{}
+func (x *AwsTransitGatewayRouteTableIacInput) Reset() {
+	*x = AwsTransitGatewayRouteTableIacInput{}
 	mi := &file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsTransitGatewayRouteTableStackInput) String() string {
+func (x *AwsTransitGatewayRouteTableIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsTransitGatewayRouteTableStackInput) ProtoMessage() {}
+func (*AwsTransitGatewayRouteTableIacInput) ProtoMessage() {}
 
-func (x *AwsTransitGatewayRouteTableStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsTransitGatewayRouteTableIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsTransitGatewayRouteTableStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsTransitGatewayRouteTableStackInput.ProtoReflect.Descriptor instead.
-func (*AwsTransitGatewayRouteTableStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsTransitGatewayRouteTableIacInput.ProtoReflect.Descriptor instead.
+func (*AwsTransitGatewayRouteTableIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsTransitGatewayRouteTableStackInput) GetTarget() *AwsTransitGatewayRouteTable {
+func (x *AwsTransitGatewayRouteTableIacInput) GetTarget() *AwsTransitGatewayRouteTable {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsTransitGatewayRouteTableStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsTransitGatewayRouteTableIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto protorefle
 
 const file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/aws/awstransitgatewayroutetable/v1alpha1/input.proto\x124dev.planton.aws.awstransitgatewayroutetable.v1alpha1\x1a:catalog/aws/awstransitgatewayroutetable/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdf\x01\n" +
-	"%AwsTransitGatewayRouteTableStackInput\x12i\n" +
+	"<catalog/aws/awstransitgatewayroutetable/v1alpha1/input.proto\x124dev.planton.aws.awstransitgatewayroutetable.v1alpha1\x1a:catalog/aws/awstransitgatewayroutetable/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdd\x01\n" +
+	"#AwsTransitGatewayRouteTableIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"8com.dev.planton.aws.awstransitgatewayroutetable.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_goTypes = []any{
-	(*AwsTransitGatewayRouteTableStackInput)(nil), // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStackInput
-	(*AwsTransitGatewayRouteTable)(nil),           // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable
-	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsTransitGatewayRouteTableIacInput)(nil), // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableIacInput
+	(*AwsTransitGatewayRouteTable)(nil),         // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable
+	(*aws.AwsProviderConfig)(nil),               // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awstransitgatewayroutetable_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStackInput.target:type_name -> dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable
-	2, // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableIacInput.target:type_name -> dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable
+	2, // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

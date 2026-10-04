@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMskServerlessClusterStackOutputs captures observable identifiers and the
+// AwsMskServerlessClusterOutputs captures observable identifiers and the
 // connection endpoint from a deployed MSK Serverless cluster. These outputs
 // enable downstream resources (Lambda event source mappings, ECS/EKS consumer
 // services) to connect to the cluster and integrate with IAM policies.
-type AwsMskServerlessClusterStackOutputs struct {
+type AwsMskServerlessClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// cluster_arn is the Amazon Resource Name of the MSK Serverless cluster --
 	// also the resource identifier AWS uses for it. Referenced in IAM policies
@@ -42,20 +42,20 @@ type AwsMskServerlessClusterStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AwsMskServerlessClusterStackOutputs) Reset() {
-	*x = AwsMskServerlessClusterStackOutputs{}
+func (x *AwsMskServerlessClusterOutputs) Reset() {
+	*x = AwsMskServerlessClusterOutputs{}
 	mi := &file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMskServerlessClusterStackOutputs) String() string {
+func (x *AwsMskServerlessClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMskServerlessClusterStackOutputs) ProtoMessage() {}
+func (*AwsMskServerlessClusterOutputs) ProtoMessage() {}
 
-func (x *AwsMskServerlessClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMskServerlessClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AwsMskServerlessClusterStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMskServerlessClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMskServerlessClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMskServerlessClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMskServerlessClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMskServerlessClusterStackOutputs) GetClusterArn() string {
+func (x *AwsMskServerlessClusterOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsMskServerlessClusterStackOutputs) GetClusterName() string {
+func (x *AwsMskServerlessClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *AwsMskServerlessClusterStackOutputs) GetClusterUuid() string {
+func (x *AwsMskServerlessClusterOutputs) GetClusterUuid() string {
 	if x != nil {
 		return x.ClusterUuid
 	}
 	return ""
 }
 
-func (x *AwsMskServerlessClusterStackOutputs) GetBootstrapBrokersSaslIam() string {
+func (x *AwsMskServerlessClusterOutputs) GetBootstrapBrokersSaslIam() string {
 	if x != nil {
 		return x.BootstrapBrokersSaslIam
 	}
@@ -104,8 +104,8 @@ var File_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awsmskserverlesscluster/v1alpha1/outputs.proto\x120dev.planton.aws.awsmskserverlesscluster.v1alpha1\"\xc9\x01\n" +
-	"#AwsMskServerlessClusterStackOutputs\x12\x1f\n" +
+	":catalog/aws/awsmskserverlesscluster/v1alpha1/outputs.proto\x120dev.planton.aws.awsmskserverlesscluster.v1alpha1\"\xc4\x01\n" +
+	"\x1eAwsMskServerlessClusterOutputs\x12\x1f\n" +
 	"\vcluster_arn\x18\x01 \x01(\tR\n" +
 	"clusterArn\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12!\n" +
@@ -127,7 +127,7 @@ func file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMskServerlessClusterStackOutputs)(nil), // 0: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStackOutputs
+	(*AwsMskServerlessClusterOutputs)(nil), // 0: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterOutputs
 }
 var file_catalog_aws_awsmskserverlesscluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

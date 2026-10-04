@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesTrinoStackOutputs** — the composition handles a
+// **KubernetesTrinoOutputs** — the composition handles a
 // deployed Trino exports. SQL clients (the trino CLI, JDBC/ODBC,
 // BI tools like a KubernetesSuperset) point at the coordinator
 // endpoint; the admin credential is exported as a Secret handle.
-type KubernetesTrinoStackOutputs struct {
+type KubernetesTrinoOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Trino runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -57,20 +57,20 @@ type KubernetesTrinoStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesTrinoStackOutputs) Reset() {
-	*x = KubernetesTrinoStackOutputs{}
+func (x *KubernetesTrinoOutputs) Reset() {
+	*x = KubernetesTrinoOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTrinoStackOutputs) String() string {
+func (x *KubernetesTrinoOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTrinoStackOutputs) ProtoMessage() {}
+func (*KubernetesTrinoOutputs) ProtoMessage() {}
 
-func (x *KubernetesTrinoStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTrinoOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,54 +82,54 @@ func (x *KubernetesTrinoStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTrinoStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTrinoStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTrinoOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTrinoOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTrinoStackOutputs) GetNamespace() string {
+func (x *KubernetesTrinoOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesTrinoStackOutputs) GetCoordinatorService() string {
+func (x *KubernetesTrinoOutputs) GetCoordinatorService() string {
 	if x != nil {
 		return x.CoordinatorService
 	}
 	return ""
 }
 
-func (x *KubernetesTrinoStackOutputs) GetCoordinatorEndpoint() string {
+func (x *KubernetesTrinoOutputs) GetCoordinatorEndpoint() string {
 	if x != nil {
 		return x.CoordinatorEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTrinoStackOutputs) GetAdminUsername() string {
+func (x *KubernetesTrinoOutputs) GetAdminUsername() string {
 	if x != nil {
 		return x.AdminUsername
 	}
 	return ""
 }
 
-func (x *KubernetesTrinoStackOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesTrinoOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AdminPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesTrinoStackOutputs) GetWorkerService() string {
+func (x *KubernetesTrinoOutputs) GetWorkerService() string {
 	if x != nil {
 		return x.WorkerService
 	}
 	return ""
 }
 
-func (x *KubernetesTrinoStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesTrinoOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -140,8 +140,8 @@ var File_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetestrino/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetestrino.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x80\x03\n" +
-	"\x1bKubernetesTrinoStackOutputs\x12\x1c\n" +
+	"9catalog/kubernetes/kubernetestrino/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kubernetestrino.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xfb\x02\n" +
+	"\x16KubernetesTrinoOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12/\n" +
 	"\x13coordinator_service\x18\x02 \x01(\tR\x12coordinatorService\x121\n" +
 	"\x14coordinator_endpoint\x18\x03 \x01(\tR\x13coordinatorEndpoint\x12%\n" +
@@ -165,11 +165,11 @@ func file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTrinoStackOutputs)(nil),    // 0: dev.planton.kubernetes.kubernetestrino.v1alpha1.KubernetesTrinoStackOutputs
+	(*KubernetesTrinoOutputs)(nil),         // 0: dev.planton.kubernetes.kubernetestrino.v1alpha1.KubernetesTrinoOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetestrino_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetestrino.v1alpha1.KubernetesTrinoStackOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetestrino.v1alpha1.KubernetesTrinoOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

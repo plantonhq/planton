@@ -22,13 +22,13 @@ const (
 )
 
 // *
-// **KubernetesIngressStackOutputs** captures the observable handles of a deployed
+// **KubernetesIngressOutputs** captures the observable handles of a deployed
 // Ingress. The load-balancer address handles are what DNS automation composes on:
 // point records at `load_balancer_ip` / `load_balancer_hostname` (or let
 // external-dns read the same status). Both stay empty until an ingress controller
 // claims and reconciles the Ingress — an Ingress without a controller is valid
 // but unserved.
-type KubernetesIngressStackOutputs struct {
+type KubernetesIngressOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the Ingress object as created in the cluster.
 	IngressName string `protobuf:"bytes,1,opt,name=ingress_name,json=ingressName,proto3" json:"ingress_name,omitempty"`
@@ -54,20 +54,20 @@ type KubernetesIngressStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesIngressStackOutputs) Reset() {
-	*x = KubernetesIngressStackOutputs{}
+func (x *KubernetesIngressOutputs) Reset() {
+	*x = KubernetesIngressOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIngressStackOutputs) String() string {
+func (x *KubernetesIngressOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIngressStackOutputs) ProtoMessage() {}
+func (*KubernetesIngressOutputs) ProtoMessage() {}
 
-func (x *KubernetesIngressStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIngressOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,40 +79,40 @@ func (x *KubernetesIngressStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIngressStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesIngressStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIngressOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesIngressOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIngressStackOutputs) GetIngressName() string {
+func (x *KubernetesIngressOutputs) GetIngressName() string {
 	if x != nil {
 		return x.IngressName
 	}
 	return ""
 }
 
-func (x *KubernetesIngressStackOutputs) GetNamespace() string {
+func (x *KubernetesIngressOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesIngressStackOutputs) GetLoadBalancerIp() string {
+func (x *KubernetesIngressOutputs) GetLoadBalancerIp() string {
 	if x != nil {
 		return x.LoadBalancerIp
 	}
 	return ""
 }
 
-func (x *KubernetesIngressStackOutputs) GetLoadBalancerHostname() string {
+func (x *KubernetesIngressOutputs) GetLoadBalancerHostname() string {
 	if x != nil {
 		return x.LoadBalancerHostname
 	}
 	return ""
 }
 
-func (x *KubernetesIngressStackOutputs) GetFirstHost() string {
+func (x *KubernetesIngressOutputs) GetFirstHost() string {
 	if x != nil {
 		return x.FirstHost
 	}
@@ -123,8 +123,8 @@ var File_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesingress/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesingress.v1alpha1\"\xdf\x01\n" +
-	"\x1dKubernetesIngressStackOutputs\x12!\n" +
+	";catalog/kubernetes/kubernetesingress/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesingress.v1alpha1\"\xda\x01\n" +
+	"\x18KubernetesIngressOutputs\x12!\n" +
 	"\fingress_name\x18\x01 \x01(\tR\vingressName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12(\n" +
 	"\x10load_balancer_ip\x18\x03 \x01(\tR\x0eloadBalancerIp\x124\n" +
@@ -147,7 +147,7 @@ func file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesIngressStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressStackOutputs
+	(*KubernetesIngressOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressOutputs
 }
 var file_catalog_kubernetes_kubernetesingress_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

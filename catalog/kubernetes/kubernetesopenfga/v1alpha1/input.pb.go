@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// open-fga-kubernetes stack-input
-type KubernetesOpenFgaStackInput struct {
+// open-fga-kubernetes iac-input
+type KubernetesOpenFgaIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesOpenFga `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesOpenFgaStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenFgaStackInput) Reset() {
-	*x = KubernetesOpenFgaStackInput{}
+func (x *KubernetesOpenFgaIacInput) Reset() {
+	*x = KubernetesOpenFgaIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenFgaStackInput) String() string {
+func (x *KubernetesOpenFgaIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenFgaStackInput) ProtoMessage() {}
+func (*KubernetesOpenFgaIacInput) ProtoMessage() {}
 
-func (x *KubernetesOpenFgaStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenFgaIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesOpenFgaStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenFgaStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenFgaStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenFgaIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenFgaIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenFgaStackInput) GetTarget() *KubernetesOpenFga {
+func (x *KubernetesOpenFgaIacInput) GetTarget() *KubernetesOpenFga {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesOpenFgaStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesOpenFgaIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesopenfga/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesopenfga.v1alpha1\x1a7catalog/kubernetes/kubernetesopenfga/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd6\x01\n" +
-	"\x1bKubernetesOpenFgaStackInput\x12\\\n" +
+	"9catalog/kubernetes/kubernetesopenfga/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesopenfga.v1alpha1\x1a7catalog/kubernetes/kubernetesopenfga/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd4\x01\n" +
+	"\x19KubernetesOpenFgaIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesopenfga.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesOpenFgaStackInput)(nil),         // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackInput
+	(*KubernetesOpenFgaIacInput)(nil),           // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaIacInput
 	(*KubernetesOpenFga)(nil),                   // 1: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackInput.target:type_name -> dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga
-	2, // 1: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaIacInput.target:type_name -> dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFga
+	2, // 1: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpFirebaseProjectStackOutputs captures the project-level Firebase
+// GcpFirebaseProjectOutputs captures the project-level Firebase
 // identity and the Admin SDK configuration values after provisioning.
 //
 // None of these values is a secret: they are the project-level identifiers
 // the Firebase client and Admin SDKs are initialised with, and they ship in
 // client configuration files by design. Access is governed by IAM and by
 // App Check, not by keeping these values hidden.
-type GcpFirebaseProjectStackOutputs struct {
+type GcpFirebaseProjectOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the enablement lives on (projects/{project}).
 	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
@@ -53,20 +53,20 @@ type GcpFirebaseProjectStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFirebaseProjectStackOutputs) Reset() {
-	*x = GcpFirebaseProjectStackOutputs{}
+func (x *GcpFirebaseProjectOutputs) Reset() {
+	*x = GcpFirebaseProjectOutputs{}
 	mi := &file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirebaseProjectStackOutputs) String() string {
+func (x *GcpFirebaseProjectOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirebaseProjectStackOutputs) ProtoMessage() {}
+func (*GcpFirebaseProjectOutputs) ProtoMessage() {}
 
-func (x *GcpFirebaseProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirebaseProjectOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,47 +78,47 @@ func (x *GcpFirebaseProjectStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirebaseProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirebaseProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirebaseProjectOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirebaseProjectOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirebaseProjectStackOutputs) GetProjectId() string {
+func (x *GcpFirebaseProjectOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *GcpFirebaseProjectStackOutputs) GetProjectNumber() string {
+func (x *GcpFirebaseProjectOutputs) GetProjectNumber() string {
 	if x != nil {
 		return x.ProjectNumber
 	}
 	return ""
 }
 
-func (x *GcpFirebaseProjectStackOutputs) GetDisplayName() string {
+func (x *GcpFirebaseProjectOutputs) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-func (x *GcpFirebaseProjectStackOutputs) GetDatabaseUrl() string {
+func (x *GcpFirebaseProjectOutputs) GetDatabaseUrl() string {
 	if x != nil {
 		return x.DatabaseUrl
 	}
 	return ""
 }
 
-func (x *GcpFirebaseProjectStackOutputs) GetStorageBucket() string {
+func (x *GcpFirebaseProjectOutputs) GetStorageBucket() string {
 	if x != nil {
 		return x.StorageBucket
 	}
 	return ""
 }
 
-func (x *GcpFirebaseProjectStackOutputs) GetLocationId() string {
+func (x *GcpFirebaseProjectOutputs) GetLocationId() string {
 	if x != nil {
 		return x.LocationId
 	}
@@ -129,8 +129,8 @@ var File_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpfirebaseproject/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpfirebaseproject.v1alpha1\"\xf4\x01\n" +
-	"\x1eGcpFirebaseProjectStackOutputs\x12\x1d\n" +
+	"5catalog/gcp/gcpfirebaseproject/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpfirebaseproject.v1alpha1\"\xef\x01\n" +
+	"\x19GcpFirebaseProjectOutputs\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12%\n" +
 	"\x0eproject_number\x18\x02 \x01(\tR\rprojectNumber\x12!\n" +
@@ -155,7 +155,7 @@ func file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirebaseProjectStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirebaseproject.v1alpha1.GcpFirebaseProjectStackOutputs
+	(*GcpFirebaseProjectOutputs)(nil), // 0: dev.planton.gcp.gcpfirebaseproject.v1alpha1.GcpFirebaseProjectOutputs
 }
 var file_catalog_gcp_gcpfirebaseproject_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

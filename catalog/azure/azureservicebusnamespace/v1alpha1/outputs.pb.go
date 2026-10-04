@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServiceBusNamespaceStackOutputs** captures the outputs of
+// **AzureServiceBusNamespaceOutputs** captures the outputs of
 // provisioning an Azure Service Bus namespace.
 //
 // `namespace_id` is the ARM identity every child kind references
@@ -37,7 +37,7 @@ const (
 // use; production workloads should mint least-privilege credentials with
 // AzureServiceBusAuthorizationRule, or go keyless (local_auth_enabled
 // false + Entra data-plane roles), which makes these keys unusable.
-type AzureServiceBusNamespaceStackOutputs struct {
+type AzureServiceBusNamespaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the namespace.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ServiceBus/namespaces/{name}
@@ -72,20 +72,20 @@ type AzureServiceBusNamespaceStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) Reset() {
-	*x = AzureServiceBusNamespaceStackOutputs{}
+func (x *AzureServiceBusNamespaceOutputs) Reset() {
+	*x = AzureServiceBusNamespaceOutputs{}
 	mi := &file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) String() string {
+func (x *AzureServiceBusNamespaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusNamespaceStackOutputs) ProtoMessage() {}
+func (*AzureServiceBusNamespaceOutputs) ProtoMessage() {}
 
-func (x *AzureServiceBusNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusNamespaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,61 +97,61 @@ func (x *AzureServiceBusNamespaceStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusNamespaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusNamespaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusNamespaceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusNamespaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetNamespaceId() string {
+func (x *AzureServiceBusNamespaceOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetNamespaceName() string {
+func (x *AzureServiceBusNamespaceOutputs) GetNamespaceName() string {
 	if x != nil {
 		return x.NamespaceName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetEndpoint() string {
+func (x *AzureServiceBusNamespaceOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureServiceBusNamespaceOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetDefaultPrimaryConnectionString() string {
+func (x *AzureServiceBusNamespaceOutputs) GetDefaultPrimaryConnectionString() string {
 	if x != nil {
 		return x.DefaultPrimaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetDefaultSecondaryConnectionString() string {
+func (x *AzureServiceBusNamespaceOutputs) GetDefaultSecondaryConnectionString() string {
 	if x != nil {
 		return x.DefaultSecondaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetDefaultPrimaryKey() string {
+func (x *AzureServiceBusNamespaceOutputs) GetDefaultPrimaryKey() string {
 	if x != nil {
 		return x.DefaultPrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureServiceBusNamespaceStackOutputs) GetDefaultSecondaryKey() string {
+func (x *AzureServiceBusNamespaceOutputs) GetDefaultSecondaryKey() string {
 	if x != nil {
 		return x.DefaultSecondaryKey
 	}
@@ -162,8 +162,8 @@ var File_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureservicebusnamespace/v1alpha1/outputs.proto\x123dev.planton.azure.azureservicebusnamespace.v1alpha1\x1a\x1cshared/options/options.proto\"\xd6\x03\n" +
-	"$AzureServiceBusNamespaceStackOutputs\x12!\n" +
+	"=catalog/azure/azureservicebusnamespace/v1alpha1/outputs.proto\x123dev.planton.azure.azureservicebusnamespace.v1alpha1\x1a\x1cshared/options/options.proto\"\xd1\x03\n" +
+	"\x1fAzureServiceBusNamespaceOutputs\x12!\n" +
 	"\fnamespace_id\x18\x01 \x01(\tR\vnamespaceId\x12%\n" +
 	"\x0enamespace_name\x18\x02 \x01(\tR\rnamespaceName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x122\n" +
@@ -188,7 +188,7 @@ func file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServiceBusNamespaceStackOutputs)(nil), // 0: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStackOutputs
+	(*AzureServiceBusNamespaceOutputs)(nil), // 0: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceOutputs
 }
 var file_catalog_azure_azureservicebusnamespace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

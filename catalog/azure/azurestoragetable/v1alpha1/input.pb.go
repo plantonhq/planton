@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-storage-table stack-input
-type AzureStorageTableStackInput struct {
+// azure-storage-table iac-input
+type AzureStorageTableIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureStorageTable `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureStorageTableStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureStorageTableStackInput) Reset() {
-	*x = AzureStorageTableStackInput{}
+func (x *AzureStorageTableIacInput) Reset() {
+	*x = AzureStorageTableIacInput{}
 	mi := &file_catalog_azure_azurestoragetable_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageTableStackInput) String() string {
+func (x *AzureStorageTableIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageTableStackInput) ProtoMessage() {}
+func (*AzureStorageTableIacInput) ProtoMessage() {}
 
-func (x *AzureStorageTableStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageTableIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragetable_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureStorageTableStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageTableStackInput.ProtoReflect.Descriptor instead.
-func (*AzureStorageTableStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageTableIacInput.ProtoReflect.Descriptor instead.
+func (*AzureStorageTableIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragetable_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageTableStackInput) GetTarget() *AzureStorageTable {
+func (x *AzureStorageTableIacInput) GetTarget() *AzureStorageTable {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureStorageTableStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureStorageTableIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurestoragetable_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_azure_azurestoragetable_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurestoragetable/v1alpha1/input.proto\x12,dev.planton.azure.azurestoragetable.v1alpha1\x1a2catalog/azure/azurestoragetable/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc7\x01\n" +
-	"\x1bAzureStorageTableStackInput\x12W\n" +
+	"4catalog/azure/azurestoragetable/v1alpha1/input.proto\x12,dev.planton.azure.azurestoragetable.v1alpha1\x1a2catalog/azure/azurestoragetable/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc5\x01\n" +
+	"\x19AzureStorageTableIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xf4\x02\n" +
 	"0com.dev.planton.azure.azurestoragetable.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurestoragetable_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurestoragetable_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragetable_v1alpha1_input_proto_goTypes = []any{
-	(*AzureStorageTableStackInput)(nil), // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackInput
-	(*AzureStorageTable)(nil),           // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable
-	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureStorageTableIacInput)(nil), // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableIacInput
+	(*AzureStorageTable)(nil),         // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurestoragetable_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackInput.target:type_name -> dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable
-	2, // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableIacInput.target:type_name -> dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTable
+	2, // 1: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

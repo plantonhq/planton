@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureLocalNetworkGatewayStackOutputs** captures the outputs of
+// **AzureLocalNetworkGatewayOutputs** captures the outputs of
 // provisioning a local network gateway.
-type AzureLocalNetworkGatewayStackOutputs struct {
+type AzureLocalNetworkGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the local network gateway -- what
 	// connections reference as local_network_gateway_id.
@@ -35,20 +35,20 @@ type AzureLocalNetworkGatewayStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AzureLocalNetworkGatewayStackOutputs) Reset() {
-	*x = AzureLocalNetworkGatewayStackOutputs{}
+func (x *AzureLocalNetworkGatewayOutputs) Reset() {
+	*x = AzureLocalNetworkGatewayOutputs{}
 	mi := &file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureLocalNetworkGatewayStackOutputs) String() string {
+func (x *AzureLocalNetworkGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureLocalNetworkGatewayStackOutputs) ProtoMessage() {}
+func (*AzureLocalNetworkGatewayOutputs) ProtoMessage() {}
 
-func (x *AzureLocalNetworkGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureLocalNetworkGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureLocalNetworkGatewayStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureLocalNetworkGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureLocalNetworkGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureLocalNetworkGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzureLocalNetworkGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureLocalNetworkGatewayStackOutputs) GetLocalNetworkGatewayId() string {
+func (x *AzureLocalNetworkGatewayOutputs) GetLocalNetworkGatewayId() string {
 	if x != nil {
 		return x.LocalNetworkGatewayId
 	}
 	return ""
 }
 
-func (x *AzureLocalNetworkGatewayStackOutputs) GetLocalNetworkGatewayName() string {
+func (x *AzureLocalNetworkGatewayOutputs) GetLocalNetworkGatewayName() string {
 	if x != nil {
 		return x.LocalNetworkGatewayName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurelocalnetworkgateway/v1alpha1/outputs.proto\x123dev.planton.azure.azurelocalnetworkgateway.v1alpha1\"\x9c\x01\n" +
-	"$AzureLocalNetworkGatewayStackOutputs\x127\n" +
+	"=catalog/azure/azurelocalnetworkgateway/v1alpha1/outputs.proto\x123dev.planton.azure.azurelocalnetworkgateway.v1alpha1\"\x97\x01\n" +
+	"\x1fAzureLocalNetworkGatewayOutputs\x127\n" +
 	"\x18local_network_gateway_id\x18\x01 \x01(\tR\x15localNetworkGatewayId\x12;\n" +
 	"\x1alocal_network_gateway_name\x18\x02 \x01(\tR\x17localNetworkGatewayNameB\xa7\x03\n" +
 	"7com.dev.planton.azure.azurelocalnetworkgateway.v1alpha1B\fOutputsProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azurelocalnetworkgateway/v1alpha1;azurelocalnetworkgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azurelocalnetworkgateway.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azurelocalnetworkgateway\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azurelocalnetworkgateway\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azurelocalnetworkgateway::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureLocalNetworkGatewayStackOutputs)(nil), // 0: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStackOutputs
+	(*AzureLocalNetworkGatewayOutputs)(nil), // 0: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayOutputs
 }
 var file_catalog_azure_azurelocalnetworkgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

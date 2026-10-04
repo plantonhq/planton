@@ -32,7 +32,7 @@ type KubernetesDaemonSet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesDaemonSetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *KubernetesDaemonSet) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesDaemonSet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesDaemonSet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *KubernetesDaemonSet) GetStatus() *KubernetesDaemonSetStatus {
 // KubernetesDaemonSetStatus represents the status of the KubernetesDaemonSet resource.
 type KubernetesDaemonSetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesDaemonSetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesDaemonSetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*KubernetesDaemonSetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesDaemonSetStatus) GetOutputs() *KubernetesDaemonSetStackOutputs {
+func (x *KubernetesDaemonSetStatus) GetOutputs() *KubernetesDaemonSetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13KubernetesDaemonSetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatusR\x06status\"\x8b\x01\n" +
-	"\x19KubernetesDaemonSetStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatusR\x06status\"\x86\x01\n" +
+	"\x19KubernetesDaemonSetStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesdaemonset/v1alpha1;kubernetesdaemonsetv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetesdaemonset.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetesdaemonset\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetesdaemonset\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetesdaemonset::V1alpha1b\x06proto3"
 
 var (
@@ -184,17 +184,17 @@ func file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesDaemonSet)(nil),             // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet
-	(*KubernetesDaemonSetStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesDaemonSetSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetSpec
-	(*KubernetesDaemonSetStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackOutputs
+	(*KubernetesDaemonSet)(nil),          // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet
+	(*KubernetesDaemonSetStatus)(nil),    // 1: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesDaemonSetSpec)(nil),      // 3: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetSpec
+	(*KubernetesDaemonSetOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetOutputs
 }
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet.spec:type_name -> dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetSpec
 	1, // 2: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet.status:type_name -> dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatus
-	4, // 3: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

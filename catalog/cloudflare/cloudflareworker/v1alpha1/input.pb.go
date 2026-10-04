@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-worker stack-input
-type CloudflareWorkerStackInput struct {
+// cloudflare-worker iac-input
+type CloudflareWorkerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareWorker `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareWorkerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareWorkerStackInput) Reset() {
-	*x = CloudflareWorkerStackInput{}
+func (x *CloudflareWorkerIacInput) Reset() {
+	*x = CloudflareWorkerIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWorkerStackInput) String() string {
+func (x *CloudflareWorkerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWorkerStackInput) ProtoMessage() {}
+func (*CloudflareWorkerIacInput) ProtoMessage() {}
 
-func (x *CloudflareWorkerStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWorkerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareWorkerStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWorkerStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWorkerIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWorkerStackInput) GetTarget() *CloudflareWorker {
+func (x *CloudflareWorkerIacInput) GetTarget() *CloudflareWorker {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareWorkerStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareWorkerIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/cloudflare/cloudflareworker/v1alpha1/input.proto\x120dev.planton.cloudflare.cloudflareworker.v1alpha1\x1a6catalog/cloudflare/cloudflareworker/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xd3\x01\n" +
-	"\x1aCloudflareWorkerStackInput\x12Z\n" +
+	"8catalog/cloudflare/cloudflareworker/v1alpha1/input.proto\x120dev.planton.cloudflare.cloudflareworker.v1alpha1\x1a6catalog/cloudflare/cloudflareworker/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xd1\x01\n" +
+	"\x18CloudflareWorkerIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"4com.dev.planton.cloudflare.cloudflareworker.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareWorkerStackInput)(nil),          // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackInput
+	(*CloudflareWorkerIacInput)(nil),            // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerIacInput
 	(*CloudflareWorker)(nil),                    // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorker
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareworker_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackInput.target:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorker
-	2, // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerIacInput.target:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorker
+	2, // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

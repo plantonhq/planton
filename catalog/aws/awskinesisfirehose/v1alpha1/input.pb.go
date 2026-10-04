@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsKinesisFirehoseStackInput is the input envelope passed to IaC modules for provisioning.
-type AwsKinesisFirehoseStackInput struct {
+// AwsKinesisFirehoseIacInput is the input envelope passed to IaC modules for provisioning.
+type AwsKinesisFirehoseIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsKinesisFirehose resource to provision.
 	Target *AwsKinesisFirehose `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsKinesisFirehoseStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsKinesisFirehoseStackInput) Reset() {
-	*x = AwsKinesisFirehoseStackInput{}
+func (x *AwsKinesisFirehoseIacInput) Reset() {
+	*x = AwsKinesisFirehoseIacInput{}
 	mi := &file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsKinesisFirehoseStackInput) String() string {
+func (x *AwsKinesisFirehoseIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsKinesisFirehoseStackInput) ProtoMessage() {}
+func (*AwsKinesisFirehoseIacInput) ProtoMessage() {}
 
-func (x *AwsKinesisFirehoseStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsKinesisFirehoseIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsKinesisFirehoseStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsKinesisFirehoseStackInput.ProtoReflect.Descriptor instead.
-func (*AwsKinesisFirehoseStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsKinesisFirehoseIacInput.ProtoReflect.Descriptor instead.
+func (*AwsKinesisFirehoseIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsKinesisFirehoseStackInput) GetTarget() *AwsKinesisFirehose {
+func (x *AwsKinesisFirehoseIacInput) GetTarget() *AwsKinesisFirehose {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsKinesisFirehoseStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsKinesisFirehoseIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awskinesisfirehose_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awskinesisfirehose/v1alpha1/input.proto\x12+dev.planton.aws.awskinesisfirehose.v1alpha1\x1a1catalog/aws/awskinesisfirehose/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsKinesisFirehoseStackInput\x12W\n" +
+	"3catalog/aws/awskinesisfirehose/v1alpha1/input.proto\x12+dev.planton.aws.awskinesisfirehose.v1alpha1\x1a1catalog/aws/awskinesisfirehose/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsKinesisFirehoseIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awskinesisfirehose.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_goTypes = []any{
-	(*AwsKinesisFirehoseStackInput)(nil), // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackInput
-	(*AwsKinesisFirehose)(nil),           // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsKinesisFirehoseIacInput)(nil), // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseIacInput
+	(*AwsKinesisFirehose)(nil),         // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awskinesisfirehose_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackInput.target:type_name -> dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose
-	2, // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseIacInput.target:type_name -> dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehose
+	2, // 1: dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

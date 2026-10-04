@@ -22,13 +22,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ResourceServerStackOutputs contains the outputs from an Auth0 Resource Server deployment.
+// Auth0ResourceServerOutputs contains the outputs from an Auth0 Resource Server deployment.
 // These outputs provide identifiers and configuration details needed for integrating
 // your applications with the deployed API.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/resource_server#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/resourceserver/#outputs
-type Auth0ResourceServerStackOutputs struct {
+type Auth0ResourceServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the internal Auth0 identifier for this resource server.
 	// This is a unique string assigned by Auth0 when the resource is created.
@@ -76,20 +76,20 @@ type Auth0ResourceServerStackOutputs struct {
 	sizeCache                       protoimpl.SizeCache
 }
 
-func (x *Auth0ResourceServerStackOutputs) Reset() {
-	*x = Auth0ResourceServerStackOutputs{}
+func (x *Auth0ResourceServerOutputs) Reset() {
+	*x = Auth0ResourceServerOutputs{}
 	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ResourceServerStackOutputs) String() string {
+func (x *Auth0ResourceServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ResourceServerStackOutputs) ProtoMessage() {}
+func (*Auth0ResourceServerOutputs) ProtoMessage() {}
 
-func (x *Auth0ResourceServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0ResourceServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -101,103 +101,103 @@ func (x *Auth0ResourceServerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ResourceServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0ResourceServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ResourceServerOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetId() string {
+func (x *Auth0ResourceServerOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetIdentifier() string {
+func (x *Auth0ResourceServerOutputs) GetIdentifier() string {
 	if x != nil {
 		return x.Identifier
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetName() string {
+func (x *Auth0ResourceServerOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetSigningAlg() string {
+func (x *Auth0ResourceServerOutputs) GetSigningAlg() string {
 	if x != nil {
 		return x.SigningAlg
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetSigningSecret() string {
+func (x *Auth0ResourceServerOutputs) GetSigningSecret() string {
 	if x != nil {
 		return x.SigningSecret
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetTokenLifetime() string {
+func (x *Auth0ResourceServerOutputs) GetTokenLifetime() string {
 	if x != nil {
 		return x.TokenLifetime
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetTokenLifetimeForWeb() string {
+func (x *Auth0ResourceServerOutputs) GetTokenLifetimeForWeb() string {
 	if x != nil {
 		return x.TokenLifetimeForWeb
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetAllowOfflineAccess() string {
+func (x *Auth0ResourceServerOutputs) GetAllowOfflineAccess() string {
 	if x != nil {
 		return x.AllowOfflineAccess
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetSkipConsentForVerifiableFirstPartyClients() string {
+func (x *Auth0ResourceServerOutputs) GetSkipConsentForVerifiableFirstPartyClients() string {
 	if x != nil {
 		return x.SkipConsentForVerifiableFirstPartyClients
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetEnforcePolicies() string {
+func (x *Auth0ResourceServerOutputs) GetEnforcePolicies() string {
 	if x != nil {
 		return x.EnforcePolicies
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetTokenDialect() string {
+func (x *Auth0ResourceServerOutputs) GetTokenDialect() string {
 	if x != nil {
 		return x.TokenDialect
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetIsSystem() string {
+func (x *Auth0ResourceServerOutputs) GetIsSystem() string {
 	if x != nil {
 		return x.IsSystem
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetClientId() string {
+func (x *Auth0ResourceServerOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *Auth0ResourceServerStackOutputs) GetThirdPartyClientDefaultGrantIds() map[string]string {
+func (x *Auth0ResourceServerOutputs) GetThirdPartyClientDefaultGrantIds() map[string]string {
 	if x != nil {
 		return x.ThirdPartyClientDefaultGrantIds
 	}
@@ -208,8 +208,8 @@ var File_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/auth0/auth0resourceserver/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a\x1cshared/options/options.proto\"\xc9\x06\n" +
-	"\x1fAuth0ResourceServerStackOutputs\x12\x0e\n" +
+	"8catalog/auth0/auth0resourceserver/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a\x1cshared/options/options.proto\"\xbf\x06\n" +
+	"\x1aAuth0ResourceServerOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1e\n" +
 	"\n" +
 	"identifier\x18\x02 \x01(\tR\n" +
@@ -226,8 +226,8 @@ const file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc = ""
 	" \x01(\tR\x0fenforcePolicies\x12#\n" +
 	"\rtoken_dialect\x18\v \x01(\tR\ftokenDialect\x12\x1b\n" +
 	"\tis_system\x18\f \x01(\tR\bisSystem\x12\x1b\n" +
-	"\tclient_id\x18\r \x01(\tR\bclientId\x12\xc3\x01\n" +
-	"$third_party_client_default_grant_ids\x18\x0e \x03(\v2t.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.ThirdPartyClientDefaultGrantIdsEntryR\x1fthirdPartyClientDefaultGrantIds\x1aR\n" +
+	"\tclient_id\x18\r \x01(\tR\bclientId\x12\xbe\x01\n" +
+	"$third_party_client_default_grant_ids\x18\x0e \x03(\v2o.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerOutputs.ThirdPartyClientDefaultGrantIdsEntryR\x1fthirdPartyClientDefaultGrantIds\x1aR\n" +
 	"$ThirdPartyClientDefaultGrantIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x84\x03\n" +
@@ -247,11 +247,11 @@ func file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0ResourceServerStackOutputs)(nil), // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs
-	nil,                                     // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.ThirdPartyClientDefaultGrantIdsEntry
+	(*Auth0ResourceServerOutputs)(nil), // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerOutputs
+	nil,                                // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerOutputs.ThirdPartyClientDefaultGrantIdsEntry
 }
 var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.third_party_client_default_grant_ids:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.ThirdPartyClientDefaultGrantIdsEntry
+	1, // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerOutputs.third_party_client_default_grant_ids:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerOutputs.ThirdPartyClientDefaultGrantIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

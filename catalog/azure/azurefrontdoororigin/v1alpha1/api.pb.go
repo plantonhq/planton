@@ -34,7 +34,7 @@ type AzureFrontDoorOrigin struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFrontDoorOriginSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureFrontDoorOrigin) GetKind() string {
 	return ""
 }
 
-func (x *AzureFrontDoorOrigin) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFrontDoorOrigin) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureFrontDoorOrigin) GetStatus() *AzureFrontDoorOriginStatus {
 // AzureFrontDoorOriginStatus holds the deployment status and outputs.
 type AzureFrontDoorOriginStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureFrontDoorOriginStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureFrontDoorOriginOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureFrontDoorOriginStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoororigin_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFrontDoorOriginStatus) GetOutputs() *AzureFrontDoorOriginStackOutputs {
+func (x *AzureFrontDoorOriginStatus) GetOutputs() *AzureFrontDoorOriginOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurefrontdoororigin_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AzureFrontDoorOriginR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatusR\x06status\"\x89\x01\n" +
-	"\x1aAzureFrontDoorOriginStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackOutputsR\aoutputsB\x87\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatusR\x06status\"\x84\x01\n" +
+	"\x1aAzureFrontDoorOriginStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginOutputsR\aoutputsB\x87\x03\n" +
 	"3com.dev.planton.azure.azurefrontdoororigin.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azurefrontdoororigin/v1alpha1;azurefrontdoororiginv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azurefrontdoororigin.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azurefrontdoororigin\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azurefrontdoororigin\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azurefrontdoororigin::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurefrontdoororigin_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFrontDoorOrigin)(nil),             // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin
-	(*AzureFrontDoorOriginStatus)(nil),       // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFrontDoorOriginSpec)(nil),         // 3: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpec
-	(*AzureFrontDoorOriginStackOutputs)(nil), // 4: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackOutputs
+	(*AzureFrontDoorOrigin)(nil),         // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin
+	(*AzureFrontDoorOriginStatus)(nil),   // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFrontDoorOriginSpec)(nil),     // 3: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpec
+	(*AzureFrontDoorOriginOutputs)(nil),  // 4: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginOutputs
 }
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin.spec:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpec
 	1, // 2: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOrigin.status:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatus
-	4, // 3: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatus.outputs:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackOutputs
+	4, // 3: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStatus.outputs:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

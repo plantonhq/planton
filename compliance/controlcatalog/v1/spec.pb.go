@@ -91,11 +91,11 @@ func (Category) EnumDescriptor() ([]byte, []int) {
 }
 
 // ControlCatalogSpec holds the full list of technical controls. Adding a
-// control is additive but not free: component control profiles are held to
+// control is additive but not free: catalog kind control profiles are held to
 // COMPLETE examination (every catalog control appears in every authored
 // profile, not_applicable with a reason counting as examined), so a new
-// control obligates re-examining every authored component. That friction is
-// deliberate -- it is what keeps "this catalog examined every component
+// control obligates re-examining every authored kind. That friction is
+// deliberate -- it is what keeps "this catalog examined every kind
 // against every control" a true sentence. Renaming or deleting an id breaks
 // every profile and crosswalk that references it, so ids are immutable once
 // published (the conformance gate enforces referential integrity in both
@@ -148,14 +148,14 @@ func (x *ControlCatalogSpec) GetControls() []*Control {
 type Control struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Stable lowercase-dashed identifier, e.g. "enc-at-rest". This is the id
-	// component profiles and framework crosswalks reference. Immutable once
+	// kind profiles and framework crosswalks reference. Immutable once
 	// published. OSCAL-compatible (usable as an OSCAL control id token).
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Short human name, e.g. "Encryption at rest".
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// What the control asserts, as ONE testable sentence about the deployed
 	// resource. Write it so an auditor could check it against a live
-	// resource: "Data the component stores is encrypted at rest." -- never
+	// resource: "Data the kind stores is encrypted at rest." -- never
 	// aspirational language.
 	Statement string `protobuf:"bytes,3,opt,name=statement,proto3" json:"statement,omitempty"`
 	// The posture area the control belongs to.

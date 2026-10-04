@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsbackuprestoretestingplan
 spec:
@@ -31,5 +31,5 @@ spec:
         - the monthly run bills a flat evaluation fee per recovery point orchestrated, scoped to resources tagged tier=critical -- the tag condition is the quantity dial
         - LATEST_WITHIN_WINDOW over 7 days draws the newest points, which sit in warm storage and avoid the cold-restore premium the random algorithm risks
         - restored data bills per GB; each restored copy bills its own service's rates for up to the 8-hour validation window
-        - the recovery points being tested bill their storage on the AwsBackupPlan and vault components that created them
+        - the recovery points being tested bill their storage on the AwsBackupPlan and vault kinds that created them
       notes: Zero committed cost -- monthly cadence, tag scoping, and newest-point selection all shrink what each drill exercises, but the zero at creation is commitment-absence; the first tagged recovery point starts the meters.

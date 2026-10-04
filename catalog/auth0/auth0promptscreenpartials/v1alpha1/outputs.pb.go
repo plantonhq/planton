@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptScreenPartialsStackOutputs names the prompt managed.
+// Auth0PromptScreenPartialsOutputs names the prompt managed.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt_screen_partials#attributes-reference
-type Auth0PromptScreenPartialsStackOutputs struct {
+type Auth0PromptScreenPartialsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// prompt_type is the prompt whose screens the partials extend.
 	PromptType    string `protobuf:"bytes,1,opt,name=prompt_type,json=promptType,proto3" json:"prompt_type,omitempty"`
@@ -32,20 +32,20 @@ type Auth0PromptScreenPartialsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0PromptScreenPartialsStackOutputs) Reset() {
-	*x = Auth0PromptScreenPartialsStackOutputs{}
+func (x *Auth0PromptScreenPartialsOutputs) Reset() {
+	*x = Auth0PromptScreenPartialsOutputs{}
 	mi := &file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0PromptScreenPartialsStackOutputs) String() string {
+func (x *Auth0PromptScreenPartialsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0PromptScreenPartialsStackOutputs) ProtoMessage() {}
+func (*Auth0PromptScreenPartialsOutputs) ProtoMessage() {}
 
-func (x *Auth0PromptScreenPartialsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0PromptScreenPartialsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *Auth0PromptScreenPartialsStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0PromptScreenPartialsStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0PromptScreenPartialsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0PromptScreenPartialsOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0PromptScreenPartialsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0PromptScreenPartialsStackOutputs) GetPromptType() string {
+func (x *Auth0PromptScreenPartialsOutputs) GetPromptType() string {
 	if x != nil {
 		return x.PromptType
 	}
@@ -73,8 +73,8 @@ var File_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto protoref
 
 const file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/auth0/auth0promptscreenpartials/v1alpha1/outputs.proto\x124dev.planton.auth0.auth0promptscreenpartials.v1alpha1\"H\n" +
-	"%Auth0PromptScreenPartialsStackOutputs\x12\x1f\n" +
+	">catalog/auth0/auth0promptscreenpartials/v1alpha1/outputs.proto\x124dev.planton.auth0.auth0promptscreenpartials.v1alpha1\"C\n" +
+	" Auth0PromptScreenPartialsOutputs\x12\x1f\n" +
 	"\vprompt_type\x18\x01 \x01(\tR\n" +
 	"promptTypeB\xae\x03\n" +
 	"8com.dev.planton.auth0.auth0promptscreenpartials.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/auth0/auth0promptscreenpartials/v1alpha1;auth0promptscreenpartialsv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Auth0.Auth0promptscreenpartials.V1alpha1\xca\x024Dev\\Planton\\Auth0\\Auth0promptscreenpartials\\V1alpha1\xe2\x02@Dev\\Planton\\Auth0\\Auth0promptscreenpartials\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Auth0::Auth0promptscreenpartials::V1alpha1b\x06proto3"
@@ -93,7 +93,7 @@ func file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0PromptScreenPartialsStackOutputs)(nil), // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackOutputs
+	(*Auth0PromptScreenPartialsOutputs)(nil), // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsOutputs
 }
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

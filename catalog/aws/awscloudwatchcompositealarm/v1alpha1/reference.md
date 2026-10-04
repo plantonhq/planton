@@ -26,7 +26,7 @@ The composite alarm evaluates the rule whenever any referenced alarm
 changes state — it has no metrics, periods, or thresholds of its own.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 
@@ -95,7 +95,7 @@ TRUE and FALSE are also valid (useful when testing a new composite).
 Example: "ALARM(\"cpu-high\") AND ALARM(\"error-rate-high\")"
 
 Compose alarm names from AwsCloudwatchAlarm resources via their exported
-`alarm_name` stack output. Maximum 10240 characters.
+`alarm_name` output. Maximum 10240 characters.
 
 - rule: {"required":true,"string":{"maxLen":"10240"}}
 

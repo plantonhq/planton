@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-dataproc-autoscaling-policy stack-input
-type GcpDataprocAutoscalingPolicyStackInput struct {
+// gcp-dataproc-autoscaling-policy iac-input
+type GcpDataprocAutoscalingPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpDataprocAutoscalingPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpDataprocAutoscalingPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackInput) Reset() {
-	*x = GcpDataprocAutoscalingPolicyStackInput{}
+func (x *GcpDataprocAutoscalingPolicyIacInput) Reset() {
+	*x = GcpDataprocAutoscalingPolicyIacInput{}
 	mi := &file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackInput) String() string {
+func (x *GcpDataprocAutoscalingPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDataprocAutoscalingPolicyStackInput) ProtoMessage() {}
+func (*GcpDataprocAutoscalingPolicyIacInput) ProtoMessage() {}
 
-func (x *GcpDataprocAutoscalingPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpDataprocAutoscalingPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpDataprocAutoscalingPolicyStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDataprocAutoscalingPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*GcpDataprocAutoscalingPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDataprocAutoscalingPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*GcpDataprocAutoscalingPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackInput) GetTarget() *GcpDataprocAutoscalingPolicy {
+func (x *GcpDataprocAutoscalingPolicyIacInput) GetTarget() *GcpDataprocAutoscalingPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpDataprocAutoscalingPolicyIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto protorefl
 
 const file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1/input.proto\x125dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1\x1a;catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe2\x01\n" +
-	"&GcpDataprocAutoscalingPolicyStackInput\x12k\n" +
+	"=catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1/input.proto\x125dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1\x1a;catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe0\x01\n" +
+	"$GcpDataprocAutoscalingPolicyIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	"9com.dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_rawDescG
 
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*GcpDataprocAutoscalingPolicyStackInput)(nil), // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackInput
-	(*GcpDataprocAutoscalingPolicy)(nil),           // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy
-	(*gcp.GcpProviderConfig)(nil),                  // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpDataprocAutoscalingPolicyIacInput)(nil), // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyIacInput
+	(*GcpDataprocAutoscalingPolicy)(nil),         // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy
+	(*gcp.GcpProviderConfig)(nil),                // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackInput.target:type_name -> dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy
-	2, // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyIacInput.target:type_name -> dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicy
+	2, // 1: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

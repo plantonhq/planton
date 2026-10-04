@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Cloud Monitoring notification
 // channel.
-type GcpMonitoringNotificationChannelStackOutputs struct {
+type GcpMonitoringNotificationChannelOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-assigned resource name of the channel.
 	// Format: projects/{project}/notificationChannels/{channel_id}
@@ -39,20 +39,20 @@ type GcpMonitoringNotificationChannelStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *GcpMonitoringNotificationChannelStackOutputs) Reset() {
-	*x = GcpMonitoringNotificationChannelStackOutputs{}
+func (x *GcpMonitoringNotificationChannelOutputs) Reset() {
+	*x = GcpMonitoringNotificationChannelOutputs{}
 	mi := &file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMonitoringNotificationChannelStackOutputs) String() string {
+func (x *GcpMonitoringNotificationChannelOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMonitoringNotificationChannelStackOutputs) ProtoMessage() {}
+func (*GcpMonitoringNotificationChannelOutputs) ProtoMessage() {}
 
-func (x *GcpMonitoringNotificationChannelStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpMonitoringNotificationChannelOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *GcpMonitoringNotificationChannelStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMonitoringNotificationChannelStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpMonitoringNotificationChannelStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMonitoringNotificationChannelOutputs.ProtoReflect.Descriptor instead.
+func (*GcpMonitoringNotificationChannelOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMonitoringNotificationChannelStackOutputs) GetChannelName() string {
+func (x *GcpMonitoringNotificationChannelOutputs) GetChannelName() string {
 	if x != nil {
 		return x.ChannelName
 	}
 	return ""
 }
 
-func (x *GcpMonitoringNotificationChannelStackOutputs) GetVerificationStatus() string {
+func (x *GcpMonitoringNotificationChannelOutputs) GetVerificationStatus() string {
 	if x != nil {
 		return x.VerificationStatus
 	}
@@ -87,8 +87,8 @@ var File_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto pro
 
 const file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/gcp/gcpmonitoringnotificationchannel/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1\"\x82\x01\n" +
-	",GcpMonitoringNotificationChannelStackOutputs\x12!\n" +
+	"Ccatalog/gcp/gcpmonitoringnotificationchannel/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1\"}\n" +
+	"'GcpMonitoringNotificationChannelOutputs\x12!\n" +
 	"\fchannel_name\x18\x01 \x01(\tR\vchannelName\x12/\n" +
 	"\x13verification_status\x18\x02 \x01(\tR\x12verificationStatusB\xd3\x03\n" +
 	"=com.dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1B\fOutputsProtoP\x01Z{github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1;gcpmonitoringnotificationchannelv1alpha1\xa2\x02\x04DPGG\xaa\x029Dev.Planton.Gcp.Gcpmonitoringnotificationchannel.V1alpha1\xca\x029Dev\\Planton\\Gcp\\Gcpmonitoringnotificationchannel\\V1alpha1\xe2\x02EDev\\Planton\\Gcp\\Gcpmonitoringnotificationchannel\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Gcp::Gcpmonitoringnotificationchannel::V1alpha1b\x06proto3"
@@ -107,7 +107,7 @@ func file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_ra
 
 var file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpMonitoringNotificationChannelStackOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelStackOutputs
+	(*GcpMonitoringNotificationChannelOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelOutputs
 }
 var file_catalog_gcp_gcpmonitoringnotificationchannel_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsBedrockCustomModelSpec defines the desired configuration for an Amazon
 Bedrock custom model - a foundation model customized with your training
@@ -30,7 +30,7 @@ To serve real traffic, a custom model needs Provisioned Throughput
 on-demand custom-model deployment where AWS supports it.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

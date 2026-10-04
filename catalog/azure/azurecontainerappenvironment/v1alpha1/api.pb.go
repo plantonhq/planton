@@ -34,7 +34,7 @@ type AzureContainerAppEnvironment struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureContainerAppEnvironmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureContainerAppEnvironment) GetKind() string {
 	return ""
 }
 
-func (x *AzureContainerAppEnvironment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureContainerAppEnvironment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureContainerAppEnvironment) GetStatus() *AzureContainerAppEnvironment
 // AzureContainerAppEnvironmentStatus holds the deployment status and outputs.
 type AzureContainerAppEnvironmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureContainerAppEnvironmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureContainerAppEnvironmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureContainerAppEnvironmentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureContainerAppEnvironmentStatus) GetOutputs() *AzureContainerAppEnvironmentStackOutputs {
+func (x *AzureContainerAppEnvironmentStatus) GetOutputs() *AzureContainerAppEnvironmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurecontainerappenvironment_v1alpha1_api_proto_rawDesc
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cAzureContainerAppEnvironmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
 	"\x04spec\x18\x04 \x01(\v2Y.dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatusR\x06status\"\xa1\x01\n" +
-	"\"AzureContainerAppEnvironmentStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStackOutputsR\aoutputsB\xbf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2[.dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatusR\x06status\"\x9c\x01\n" +
+	"\"AzureContainerAppEnvironmentStatus\x12v\n" +
+	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentOutputsR\aoutputsB\xbf\x03\n" +
 	";com.dev.planton.azure.azurecontainerappenvironment.v1alpha1B\bApiProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azurecontainerappenvironment/v1alpha1;azurecontainerappenvironmentv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azurecontainerappenvironment.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azurecontainerappenvironment\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azurecontainerappenvironment\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azurecontainerappenvironment::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurecontainerappenvironment_v1alpha1_api_proto_rawDescG
 
 var file_catalog_azure_azurecontainerappenvironment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecontainerappenvironment_v1alpha1_api_proto_goTypes = []any{
-	(*AzureContainerAppEnvironment)(nil),             // 0: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironment
-	(*AzureContainerAppEnvironmentStatus)(nil),       // 1: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureContainerAppEnvironmentSpec)(nil),         // 3: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentSpec
-	(*AzureContainerAppEnvironmentStackOutputs)(nil), // 4: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStackOutputs
+	(*AzureContainerAppEnvironment)(nil),        // 0: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironment
+	(*AzureContainerAppEnvironmentStatus)(nil),  // 1: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureContainerAppEnvironmentSpec)(nil),    // 3: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentSpec
+	(*AzureContainerAppEnvironmentOutputs)(nil), // 4: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentOutputs
 }
 var file_catalog_azure_azurecontainerappenvironment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironment.spec:type_name -> dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentSpec
 	1, // 2: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironment.status:type_name -> dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatus
-	4, // 3: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatus.outputs:type_name -> dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStackOutputs
+	4, // 3: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStatus.outputs:type_name -> dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

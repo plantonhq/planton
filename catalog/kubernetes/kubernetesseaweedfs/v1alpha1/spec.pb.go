@@ -44,7 +44,7 @@ const (
 // of metadata). Auth is ON by default: the chart materializes an
 // admin and a read-only credential pair in the
 // `<name>-s3-secret` Secret (stable across upgrades, kept on
-// uninstall) — the stack outputs point at it. Buckets declared in
+// uninstall) — the outputs point at it. Buckets declared in
 // `s3.buckets` are created by the chart's post-install hook.
 //
 // STORAGE: the chart's out-of-the-box storage is hostPath (bare-metal
@@ -557,7 +557,7 @@ type KubernetesSeaweedFsS3 struct {
 	// Require S3 credentials. Component default: true — the chart
 	// materializes admin + read-only credential pairs in the
 	// `<name>-s3-secret` Secret (generated once, stable across
-	// upgrades, kept on uninstall; surfaced in the stack outputs).
+	// upgrades, kept on uninstall; surfaced in the outputs).
 	// False serves an OPEN in-cluster S3 endpoint — dev only.
 	EnableAuth *bool `protobuf:"varint,2,opt,name=enable_auth,json=enableAuth,proto3,oneof" json:"enable_auth,omitempty"`
 	// *

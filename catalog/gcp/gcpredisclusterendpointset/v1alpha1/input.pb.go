@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-redis-cluster-endpoint-set stack-input
-type GcpRedisClusterEndpointSetStackInput struct {
+// gcp-redis-cluster-endpoint-set iac-input
+type GcpRedisClusterEndpointSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpRedisClusterEndpointSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpRedisClusterEndpointSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpRedisClusterEndpointSetStackInput) Reset() {
-	*x = GcpRedisClusterEndpointSetStackInput{}
+func (x *GcpRedisClusterEndpointSetIacInput) Reset() {
+	*x = GcpRedisClusterEndpointSetIacInput{}
 	mi := &file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRedisClusterEndpointSetStackInput) String() string {
+func (x *GcpRedisClusterEndpointSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRedisClusterEndpointSetStackInput) ProtoMessage() {}
+func (*GcpRedisClusterEndpointSetIacInput) ProtoMessage() {}
 
-func (x *GcpRedisClusterEndpointSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpRedisClusterEndpointSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpRedisClusterEndpointSetStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRedisClusterEndpointSetStackInput.ProtoReflect.Descriptor instead.
-func (*GcpRedisClusterEndpointSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRedisClusterEndpointSetIacInput.ProtoReflect.Descriptor instead.
+func (*GcpRedisClusterEndpointSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRedisClusterEndpointSetStackInput) GetTarget() *GcpRedisClusterEndpointSet {
+func (x *GcpRedisClusterEndpointSetIacInput) GetTarget() *GcpRedisClusterEndpointSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpRedisClusterEndpointSetStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpRedisClusterEndpointSetIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto protoreflec
 
 const file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpredisclusterendpointset/v1alpha1/input.proto\x123dev.planton.gcp.gcpredisclusterendpointset.v1alpha1\x1a9catalog/gcp/gcpredisclusterendpointset/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xdc\x01\n" +
-	"$GcpRedisClusterEndpointSetStackInput\x12g\n" +
+	";catalog/gcp/gcpredisclusterendpointset/v1alpha1/input.proto\x123dev.planton.gcp.gcpredisclusterendpointset.v1alpha1\x1a9catalog/gcp/gcpredisclusterendpointset/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xda\x01\n" +
+	"\"GcpRedisClusterEndpointSetIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.gcp.gcpredisclusterendpointset.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_goTypes = []any{
-	(*GcpRedisClusterEndpointSetStackInput)(nil), // 0: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetStackInput
-	(*GcpRedisClusterEndpointSet)(nil),           // 1: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSet
-	(*gcp.GcpProviderConfig)(nil),                // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpRedisClusterEndpointSetIacInput)(nil), // 0: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetIacInput
+	(*GcpRedisClusterEndpointSet)(nil),         // 1: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSet
+	(*gcp.GcpProviderConfig)(nil),              // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetStackInput.target:type_name -> dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSet
-	2, // 1: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetIacInput.target:type_name -> dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSet
+	2, // 1: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

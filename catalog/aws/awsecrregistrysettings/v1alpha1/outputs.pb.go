@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEcrRegistrySettingsStackOutputs captures the observable state of
+// AwsEcrRegistrySettingsOutputs captures the observable state of
 // the registry configuration after apply.
-type AwsEcrRegistrySettingsStackOutputs struct {
+type AwsEcrRegistrySettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The registry id - the account's 12-digit id, and the import ID
 	// for the policy/scanning/replication singletons.
@@ -46,20 +46,20 @@ type AwsEcrRegistrySettingsStackOutputs struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) Reset() {
-	*x = AwsEcrRegistrySettingsStackOutputs{}
+func (x *AwsEcrRegistrySettingsOutputs) Reset() {
+	*x = AwsEcrRegistrySettingsOutputs{}
 	mi := &file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) String() string {
+func (x *AwsEcrRegistrySettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEcrRegistrySettingsStackOutputs) ProtoMessage() {}
+func (*AwsEcrRegistrySettingsOutputs) ProtoMessage() {}
 
-func (x *AwsEcrRegistrySettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEcrRegistrySettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,40 +71,40 @@ func (x *AwsEcrRegistrySettingsStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEcrRegistrySettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEcrRegistrySettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEcrRegistrySettingsOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEcrRegistrySettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) GetRegistryId() string {
+func (x *AwsEcrRegistrySettingsOutputs) GetRegistryId() string {
 	if x != nil {
 		return x.RegistryId
 	}
 	return ""
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) GetRegistryUrl() string {
+func (x *AwsEcrRegistrySettingsOutputs) GetRegistryUrl() string {
 	if x != nil {
 		return x.RegistryUrl
 	}
 	return ""
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) GetPullThroughCacheRuleRegistryIds() map[string]string {
+func (x *AwsEcrRegistrySettingsOutputs) GetPullThroughCacheRuleRegistryIds() map[string]string {
 	if x != nil {
 		return x.PullThroughCacheRuleRegistryIds
 	}
 	return nil
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) GetRepositoryCreationTemplateRegistryIds() map[string]string {
+func (x *AwsEcrRegistrySettingsOutputs) GetRepositoryCreationTemplateRegistryIds() map[string]string {
 	if x != nil {
 		return x.RepositoryCreationTemplateRegistryIds
 	}
 	return nil
 }
 
-func (x *AwsEcrRegistrySettingsStackOutputs) GetPullTimeUpdateExclusionArns() map[string]string {
+func (x *AwsEcrRegistrySettingsOutputs) GetPullTimeUpdateExclusionArns() map[string]string {
 	if x != nil {
 		return x.PullTimeUpdateExclusionArns
 	}
@@ -115,14 +115,14 @@ var File_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awsecrregistrysettings/v1alpha1/outputs.proto\x12/dev.planton.aws.awsecrregistrysettings.v1alpha1\"\xc8\a\n" +
-	"\"AwsEcrRegistrySettingsStackOutputs\x12\x1f\n" +
+	"9catalog/aws/awsecrregistrysettings/v1alpha1/outputs.proto\x12/dev.planton.aws.awsecrregistrysettings.v1alpha1\"\xb4\a\n" +
+	"\x1dAwsEcrRegistrySettingsOutputs\x12\x1f\n" +
 	"\vregistry_id\x18\x01 \x01(\tR\n" +
 	"registryId\x12!\n" +
-	"\fregistry_url\x18\x02 \x01(\tR\vregistryUrl\x12\xc7\x01\n" +
-	"$pull_through_cache_rule_registry_ids\x18\x03 \x03(\v2x.dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.PullThroughCacheRuleRegistryIdsEntryR\x1fpullThroughCacheRuleRegistryIds\x12\xd8\x01\n" +
-	")repository_creation_template_registry_ids\x18\x04 \x03(\v2~.dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.RepositoryCreationTemplateRegistryIdsEntryR%repositoryCreationTemplateRegistryIds\x12\xba\x01\n" +
-	"\x1fpull_time_update_exclusion_arns\x18\x05 \x03(\v2t.dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.PullTimeUpdateExclusionArnsEntryR\x1bpullTimeUpdateExclusionArns\x1aR\n" +
+	"\fregistry_url\x18\x02 \x01(\tR\vregistryUrl\x12\xc2\x01\n" +
+	"$pull_through_cache_rule_registry_ids\x18\x03 \x03(\v2s.dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.PullThroughCacheRuleRegistryIdsEntryR\x1fpullThroughCacheRuleRegistryIds\x12\xd3\x01\n" +
+	")repository_creation_template_registry_ids\x18\x04 \x03(\v2y.dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.RepositoryCreationTemplateRegistryIdsEntryR%repositoryCreationTemplateRegistryIds\x12\xb5\x01\n" +
+	"\x1fpull_time_update_exclusion_arns\x18\x05 \x03(\v2o.dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.PullTimeUpdateExclusionArnsEntryR\x1bpullTimeUpdateExclusionArns\x1aR\n" +
 	"$PullThroughCacheRuleRegistryIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aX\n" +
@@ -148,15 +148,15 @@ func file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEcrRegistrySettingsStackOutputs)(nil), // 0: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs
-	nil, // 1: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.PullThroughCacheRuleRegistryIdsEntry
-	nil, // 2: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.RepositoryCreationTemplateRegistryIdsEntry
-	nil, // 3: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.PullTimeUpdateExclusionArnsEntry
+	(*AwsEcrRegistrySettingsOutputs)(nil), // 0: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs
+	nil,                                   // 1: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.PullThroughCacheRuleRegistryIdsEntry
+	nil,                                   // 2: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.RepositoryCreationTemplateRegistryIdsEntry
+	nil,                                   // 3: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.PullTimeUpdateExclusionArnsEntry
 }
 var file_catalog_aws_awsecrregistrysettings_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.pull_through_cache_rule_registry_ids:type_name -> dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.PullThroughCacheRuleRegistryIdsEntry
-	2, // 1: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.repository_creation_template_registry_ids:type_name -> dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.RepositoryCreationTemplateRegistryIdsEntry
-	3, // 2: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.pull_time_update_exclusion_arns:type_name -> dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsStackOutputs.PullTimeUpdateExclusionArnsEntry
+	1, // 0: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.pull_through_cache_rule_registry_ids:type_name -> dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.PullThroughCacheRuleRegistryIdsEntry
+	2, // 1: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.repository_creation_template_registry_ids:type_name -> dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.RepositoryCreationTemplateRegistryIdsEntry
+	3, // 2: dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.pull_time_update_exclusion_arns:type_name -> dev.planton.aws.awsecrregistrysettings.v1alpha1.AwsEcrRegistrySettingsOutputs.PullTimeUpdateExclusionArnsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

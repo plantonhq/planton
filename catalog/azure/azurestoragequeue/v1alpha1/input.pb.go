@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-storage-queue stack-input
-type AzureStorageQueueStackInput struct {
+// azure-storage-queue iac-input
+type AzureStorageQueueIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureStorageQueue `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureStorageQueueStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureStorageQueueStackInput) Reset() {
-	*x = AzureStorageQueueStackInput{}
+func (x *AzureStorageQueueIacInput) Reset() {
+	*x = AzureStorageQueueIacInput{}
 	mi := &file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageQueueStackInput) String() string {
+func (x *AzureStorageQueueIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageQueueStackInput) ProtoMessage() {}
+func (*AzureStorageQueueIacInput) ProtoMessage() {}
 
-func (x *AzureStorageQueueStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageQueueIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureStorageQueueStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageQueueStackInput.ProtoReflect.Descriptor instead.
-func (*AzureStorageQueueStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageQueueIacInput.ProtoReflect.Descriptor instead.
+func (*AzureStorageQueueIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageQueueStackInput) GetTarget() *AzureStorageQueue {
+func (x *AzureStorageQueueIacInput) GetTarget() *AzureStorageQueue {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureStorageQueueStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureStorageQueueIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurestoragequeue_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurestoragequeue/v1alpha1/input.proto\x12,dev.planton.azure.azurestoragequeue.v1alpha1\x1a2catalog/azure/azurestoragequeue/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc7\x01\n" +
-	"\x1bAzureStorageQueueStackInput\x12W\n" +
+	"4catalog/azure/azurestoragequeue/v1alpha1/input.proto\x12,dev.planton.azure.azurestoragequeue.v1alpha1\x1a2catalog/azure/azurestoragequeue/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc5\x01\n" +
+	"\x19AzureStorageQueueIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xf4\x02\n" +
 	"0com.dev.planton.azure.azurestoragequeue.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_goTypes = []any{
-	(*AzureStorageQueueStackInput)(nil), // 0: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueStackInput
-	(*AzureStorageQueue)(nil),           // 1: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueue
-	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureStorageQueueIacInput)(nil), // 0: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueIacInput
+	(*AzureStorageQueue)(nil),         // 1: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueue
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurestoragequeue_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueStackInput.target:type_name -> dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueue
-	2, // 1: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueIacInput.target:type_name -> dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueue
+	2, // 1: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

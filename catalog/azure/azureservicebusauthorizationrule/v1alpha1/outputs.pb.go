@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServiceBusAuthorizationRuleStackOutputs** captures the outputs of
+// **AzureServiceBusAuthorizationRuleOutputs** captures the outputs of
 // provisioning a SAS authorization rule: the credential surface
 // applications actually consume.
 //
@@ -32,7 +32,7 @@ const (
 // paired for geo-disaster recovery (AzureServiceBusDisasterRecoveryConfig)
 // -- they address the failover-stable alias DNS name instead of the
 // namespace, so clients survive a failover without reconfiguration.
-type AzureServiceBusAuthorizationRuleStackOutputs struct {
+type AzureServiceBusAuthorizationRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the rule (under its namespace,
 	// queue, or topic parent). AzureServiceBusDisasterRecoveryConfig's
@@ -60,20 +60,20 @@ type AzureServiceBusAuthorizationRuleStackOutputs struct {
 	sizeCache                      protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) Reset() {
-	*x = AzureServiceBusAuthorizationRuleStackOutputs{}
+func (x *AzureServiceBusAuthorizationRuleOutputs) Reset() {
+	*x = AzureServiceBusAuthorizationRuleOutputs{}
 	mi := &file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) String() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusAuthorizationRuleStackOutputs) ProtoMessage() {}
+func (*AzureServiceBusAuthorizationRuleOutputs) ProtoMessage() {}
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusAuthorizationRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,61 +85,61 @@ func (x *AzureServiceBusAuthorizationRuleStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusAuthorizationRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusAuthorizationRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusAuthorizationRuleOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusAuthorizationRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetAuthorizationRuleId() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetAuthorizationRuleId() string {
 	if x != nil {
 		return x.AuthorizationRuleId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetRuleName() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetRuleName() string {
 	if x != nil {
 		return x.RuleName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetPrimaryKey() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetPrimaryKey() string {
 	if x != nil {
 		return x.PrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetSecondaryKey() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetSecondaryKey() string {
 	if x != nil {
 		return x.SecondaryKey
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetPrimaryConnectionString() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetPrimaryConnectionString() string {
 	if x != nil {
 		return x.PrimaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetSecondaryConnectionString() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetSecondaryConnectionString() string {
 	if x != nil {
 		return x.SecondaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetPrimaryConnectionStringAlias() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetPrimaryConnectionStringAlias() string {
 	if x != nil {
 		return x.PrimaryConnectionStringAlias
 	}
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRuleStackOutputs) GetSecondaryConnectionStringAlias() string {
+func (x *AzureServiceBusAuthorizationRuleOutputs) GetSecondaryConnectionStringAlias() string {
 	if x != nil {
 		return x.SecondaryConnectionStringAlias
 	}
@@ -150,8 +150,8 @@ var File_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto p
 
 const file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/azure/azureservicebusauthorizationrule/v1alpha1/outputs.proto\x12;dev.planton.azure.azureservicebusauthorizationrule.v1alpha1\x1a\x1cshared/options/options.proto\"\xf7\x03\n" +
-	",AzureServiceBusAuthorizationRuleStackOutputs\x122\n" +
+	"Ecatalog/azure/azureservicebusauthorizationrule/v1alpha1/outputs.proto\x12;dev.planton.azure.azureservicebusauthorizationrule.v1alpha1\x1a\x1cshared/options/options.proto\"\xf2\x03\n" +
+	"'AzureServiceBusAuthorizationRuleOutputs\x122\n" +
 	"\x15authorization_rule_id\x18\x01 \x01(\tR\x13authorizationRuleId\x12\x1b\n" +
 	"\trule_name\x18\x02 \x01(\tR\bruleName\x12%\n" +
 	"\vprimary_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
@@ -177,7 +177,7 @@ func file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_
 
 var file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServiceBusAuthorizationRuleStackOutputs)(nil), // 0: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStackOutputs
+	(*AzureServiceBusAuthorizationRuleOutputs)(nil), // 0: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleOutputs
 }
 var file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

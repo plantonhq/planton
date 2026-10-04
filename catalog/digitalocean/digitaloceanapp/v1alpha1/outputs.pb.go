@@ -23,7 +23,7 @@ const (
 
 // Outputs of a deployed App Platform application. Names match across
 // Terraform and Pulumi.
-type DigitalOceanAppStackOutputs struct {
+type DigitalOceanAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// App UUID. Used to import the digitalocean_app resource.
 	AppId string `protobuf:"bytes,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
@@ -40,20 +40,20 @@ type DigitalOceanAppStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *DigitalOceanAppStackOutputs) Reset() {
-	*x = DigitalOceanAppStackOutputs{}
+func (x *DigitalOceanAppOutputs) Reset() {
+	*x = DigitalOceanAppOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanAppStackOutputs) String() string {
+func (x *DigitalOceanAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanAppStackOutputs) ProtoMessage() {}
+func (*DigitalOceanAppOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *DigitalOceanAppStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanAppOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanAppStackOutputs) GetAppId() string {
+func (x *DigitalOceanAppOutputs) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
 	return ""
 }
 
-func (x *DigitalOceanAppStackOutputs) GetDefaultHostname() string {
+func (x *DigitalOceanAppOutputs) GetDefaultHostname() string {
 	if x != nil {
 		return x.DefaultHostname
 	}
 	return ""
 }
 
-func (x *DigitalOceanAppStackOutputs) GetLiveUrl() string {
+func (x *DigitalOceanAppOutputs) GetLiveUrl() string {
 	if x != nil {
 		return x.LiveUrl
 	}
 	return ""
 }
 
-func (x *DigitalOceanAppStackOutputs) GetLiveDomain() string {
+func (x *DigitalOceanAppOutputs) GetLiveDomain() string {
 	if x != nil {
 		return x.LiveDomain
 	}
 	return ""
 }
 
-func (x *DigitalOceanAppStackOutputs) GetActiveDeploymentId() string {
+func (x *DigitalOceanAppOutputs) GetActiveDeploymentId() string {
 	if x != nil {
 		return x.ActiveDeploymentId
 	}
@@ -109,8 +109,8 @@ var File_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/digitalocean/digitaloceanapp/v1alpha1/outputs.proto\x121dev.planton.digitalocean.digitaloceanapp.v1alpha1\"\xcd\x01\n" +
-	"\x1bDigitalOceanAppStackOutputs\x12\x15\n" +
+	";catalog/digitalocean/digitaloceanapp/v1alpha1/outputs.proto\x121dev.planton.digitalocean.digitaloceanapp.v1alpha1\"\xc8\x01\n" +
+	"\x16DigitalOceanAppOutputs\x12\x15\n" +
 	"\x06app_id\x18\x01 \x01(\tR\x05appId\x12)\n" +
 	"\x10default_hostname\x18\x02 \x01(\tR\x0fdefaultHostname\x12\x19\n" +
 	"\blive_url\x18\x03 \x01(\tR\aliveUrl\x12\x1f\n" +
@@ -133,7 +133,7 @@ func file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanAppStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStackOutputs
+	(*DigitalOceanAppOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppOutputs
 }
 var file_catalog_digitalocean_digitaloceanapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -32,7 +32,7 @@ type CloudflareCustomSslCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareCustomSslCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *CloudflareCustomSslCertificate) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareCustomSslCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareCustomSslCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareCustomSslCertificate) GetStatus() *CloudflareCustomSslCertifi
 // uploaded certificate.
 type CloudflareCustomSslCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareCustomSslCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareCustomSslCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareCustomSslCertificateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareCustomSslCertificateStatus) GetOutputs() *CloudflareCustomSslCertificateStackOutputs {
+func (x *CloudflareCustomSslCertificateStatus) GetOutputs() *CloudflareCustomSslCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_api_proto_
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eCloudflareCustomSslCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
 	"\x04spec\x18\x04 \x01(\v2b.dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12|\n" +
-	"\x06status\x18\x05 \x01(\v2d.dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatusR\x06status\"\xad\x01\n" +
-	"$CloudflareCustomSslCertificateStatus\x12\x84\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2j.dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStackOutputsR\aoutputsB\xeb\x03\n" +
+	"\x06status\x18\x05 \x01(\v2d.dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatusR\x06status\"\xa7\x01\n" +
+	"$CloudflareCustomSslCertificateStatus\x12\x7f\n" +
+	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateOutputsR\aoutputsB\xeb\x03\n" +
 	"Bcom.dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1B\bApiProtoP\x01Z~github.com/plantonhq/planton/catalog/cloudflare/cloudflarecustomsslcertificate/v1alpha1;cloudflarecustomsslcertificatev1alpha1\xa2\x02\x04DPCC\xaa\x02>Dev.Planton.Cloudflare.Cloudflarecustomsslcertificate.V1alpha1\xca\x02>Dev\\Planton\\Cloudflare\\Cloudflarecustomsslcertificate\\V1alpha1\xe2\x02JDev\\Planton\\Cloudflare\\Cloudflarecustomsslcertificate\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Cloudflare::Cloudflarecustomsslcertificate::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_api_proto_r
 
 var file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareCustomSslCertificate)(nil),             // 0: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificate
-	(*CloudflareCustomSslCertificateStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareCustomSslCertificateSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateSpec
-	(*CloudflareCustomSslCertificateStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStackOutputs
+	(*CloudflareCustomSslCertificate)(nil),        // 0: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificate
+	(*CloudflareCustomSslCertificateStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareCustomSslCertificateSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateSpec
+	(*CloudflareCustomSslCertificateOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflarecustomsslcertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificate.spec:type_name -> dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateSpec
 	1, // 2: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificate.status:type_name -> dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatus
-	4, // 3: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1.CloudflareCustomSslCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

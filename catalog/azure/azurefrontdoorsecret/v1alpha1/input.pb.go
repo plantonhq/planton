@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-front-door-secret stack-input
-type AzureFrontDoorSecretStackInput struct {
+// azure-front-door-secret iac-input
+type AzureFrontDoorSecretIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureFrontDoorSecret `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureFrontDoorSecretStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorSecretStackInput) Reset() {
-	*x = AzureFrontDoorSecretStackInput{}
+func (x *AzureFrontDoorSecretIacInput) Reset() {
+	*x = AzureFrontDoorSecretIacInput{}
 	mi := &file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorSecretStackInput) String() string {
+func (x *AzureFrontDoorSecretIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorSecretStackInput) ProtoMessage() {}
+func (*AzureFrontDoorSecretIacInput) ProtoMessage() {}
 
-func (x *AzureFrontDoorSecretStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorSecretIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureFrontDoorSecretStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorSecretStackInput.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorSecretStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorSecretIacInput.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorSecretIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorSecretStackInput) GetTarget() *AzureFrontDoorSecret {
+func (x *AzureFrontDoorSecretIacInput) GetTarget() *AzureFrontDoorSecret {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureFrontDoorSecretStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureFrontDoorSecretIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azurefrontdoorsecret/v1alpha1/input.proto\x12/dev.planton.azure.azurefrontdoorsecret.v1alpha1\x1a5catalog/azure/azurefrontdoorsecret/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd0\x01\n" +
-	"\x1eAzureFrontDoorSecretStackInput\x12]\n" +
+	"7catalog/azure/azurefrontdoorsecret/v1alpha1/input.proto\x12/dev.planton.azure.azurefrontdoorsecret.v1alpha1\x1a5catalog/azure/azurefrontdoorsecret/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xce\x01\n" +
+	"\x1cAzureFrontDoorSecretIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x89\x03\n" +
 	"3com.dev.planton.azure.azurefrontdoorsecret.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_goTypes = []any{
-	(*AzureFrontDoorSecretStackInput)(nil), // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackInput
-	(*AzureFrontDoorSecret)(nil),           // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret
-	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureFrontDoorSecretIacInput)(nil), // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretIacInput
+	(*AzureFrontDoorSecret)(nil),         // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret
+	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackInput.target:type_name -> dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret
-	2, // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretIacInput.target:type_name -> dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret
+	2, // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

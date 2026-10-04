@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppRunnerVpcConnectorStackOutputs captures observable identifiers from a
+// AwsAppRunnerVpcConnectorOutputs captures observable identifiers from a
 // provisioned App Runner VPC connector. Services reference the connector by
 // its ARN in their network egress configuration.
-type AwsAppRunnerVpcConnectorStackOutputs struct {
+type AwsAppRunnerVpcConnectorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the VPC connector (e.g. "arn:aws:apprunner:us-west-2:
 	// 123456789012:vpcconnector/my-connector/1/abc123"). This is the
@@ -41,20 +41,20 @@ type AwsAppRunnerVpcConnectorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsAppRunnerVpcConnectorStackOutputs) Reset() {
-	*x = AwsAppRunnerVpcConnectorStackOutputs{}
+func (x *AwsAppRunnerVpcConnectorOutputs) Reset() {
+	*x = AwsAppRunnerVpcConnectorOutputs{}
 	mi := &file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppRunnerVpcConnectorStackOutputs) String() string {
+func (x *AwsAppRunnerVpcConnectorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppRunnerVpcConnectorStackOutputs) ProtoMessage() {}
+func (*AwsAppRunnerVpcConnectorOutputs) ProtoMessage() {}
 
-func (x *AwsAppRunnerVpcConnectorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAppRunnerVpcConnectorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AwsAppRunnerVpcConnectorStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppRunnerVpcConnectorStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAppRunnerVpcConnectorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppRunnerVpcConnectorOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAppRunnerVpcConnectorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppRunnerVpcConnectorStackOutputs) GetVpcConnectorArn() string {
+func (x *AwsAppRunnerVpcConnectorOutputs) GetVpcConnectorArn() string {
 	if x != nil {
 		return x.VpcConnectorArn
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerVpcConnectorStackOutputs) GetVpcConnectorRevision() int64 {
+func (x *AwsAppRunnerVpcConnectorOutputs) GetVpcConnectorRevision() int64 {
 	if x != nil {
 		return x.VpcConnectorRevision
 	}
 	return 0
 }
 
-func (x *AwsAppRunnerVpcConnectorStackOutputs) GetStatus() string {
+func (x *AwsAppRunnerVpcConnectorOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -96,8 +96,8 @@ var File_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsapprunnervpcconnector/v1alpha1/outputs.proto\x121dev.planton.aws.awsapprunnervpcconnector.v1alpha1\"\xa0\x01\n" +
-	"$AwsAppRunnerVpcConnectorStackOutputs\x12*\n" +
+	";catalog/aws/awsapprunnervpcconnector/v1alpha1/outputs.proto\x121dev.planton.aws.awsapprunnervpcconnector.v1alpha1\"\x9b\x01\n" +
+	"\x1fAwsAppRunnerVpcConnectorOutputs\x12*\n" +
 	"\x11vpc_connector_arn\x18\x01 \x01(\tR\x0fvpcConnectorArn\x124\n" +
 	"\x16vpc_connector_revision\x18\x02 \x01(\x03R\x14vpcConnectorRevision\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06statusB\x9b\x03\n" +
@@ -117,7 +117,7 @@ func file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAppRunnerVpcConnectorStackOutputs)(nil), // 0: dev.planton.aws.awsapprunnervpcconnector.v1alpha1.AwsAppRunnerVpcConnectorStackOutputs
+	(*AwsAppRunnerVpcConnectorOutputs)(nil), // 0: dev.planton.aws.awsapprunnervpcconnector.v1alpha1.AwsAppRunnerVpcConnectorOutputs
 }
 var file_catalog_aws_awsapprunnervpcconnector_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

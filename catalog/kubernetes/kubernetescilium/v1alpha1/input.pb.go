@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesCilium IaC stack. The platform resolves all
 // StringValueOrRef references (the namespace) to literal strings before
 // passing this to the IaC engine.
-type KubernetesCiliumStackInput struct {
+type KubernetesCiliumIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// Target infra-component.
 	Target *KubernetesCilium `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesCiliumStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesCiliumStackInput) Reset() {
-	*x = KubernetesCiliumStackInput{}
+func (x *KubernetesCiliumIacInput) Reset() {
+	*x = KubernetesCiliumIacInput{}
 	mi := &file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesCiliumStackInput) String() string {
+func (x *KubernetesCiliumIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesCiliumStackInput) ProtoMessage() {}
+func (*KubernetesCiliumIacInput) ProtoMessage() {}
 
-func (x *KubernetesCiliumStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesCiliumIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesCiliumStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesCiliumStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesCiliumStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesCiliumIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesCiliumIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesCiliumStackInput) GetTarget() *KubernetesCilium {
+func (x *KubernetesCiliumIacInput) GetTarget() *KubernetesCilium {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesCiliumStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesCiliumIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetescilium/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetescilium.v1alpha1\x1a6catalog/kubernetes/kubernetescilium/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd3\x01\n" +
-	"\x1aKubernetesCiliumStackInput\x12Z\n" +
+	"8catalog/kubernetes/kubernetescilium/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetescilium.v1alpha1\x1a6catalog/kubernetes/kubernetescilium/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd1\x01\n" +
+	"\x18KubernetesCiliumIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetescilium.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesCiliumStackInput)(nil),          // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackInput
+	(*KubernetesCiliumIacInput)(nil),            // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumIacInput
 	(*KubernetesCilium)(nil),                    // 1: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackInput.target:type_name -> dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium
-	2, // 1: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumIacInput.target:type_name -> dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium
+	2, // 1: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

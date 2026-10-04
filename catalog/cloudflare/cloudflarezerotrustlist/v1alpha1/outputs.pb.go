@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustListStackOutputs captures the observable outputs after
+// CloudflareZeroTrustListOutputs captures the observable outputs after
 // creating a Zero Trust list.
-type CloudflareZeroTrustListStackOutputs struct {
+type CloudflareZeroTrustListOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The UUID of the created list -- what Gateway policies and device-posture
 	// rules reference.
@@ -32,20 +32,20 @@ type CloudflareZeroTrustListStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustListStackOutputs) Reset() {
-	*x = CloudflareZeroTrustListStackOutputs{}
+func (x *CloudflareZeroTrustListOutputs) Reset() {
+	*x = CloudflareZeroTrustListOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustListStackOutputs) String() string {
+func (x *CloudflareZeroTrustListOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustListStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustListOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustListStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustListOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *CloudflareZeroTrustListStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustListStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustListStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustListOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustListOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustListStackOutputs) GetListId() string {
+func (x *CloudflareZeroTrustListOutputs) GetListId() string {
 	if x != nil {
 		return x.ListId
 	}
@@ -73,8 +73,8 @@ var File_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto proto
 
 const file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/cloudflare/cloudflarezerotrustlist/v1alpha1/outputs.proto\x127dev.planton.cloudflare.cloudflarezerotrustlist.v1alpha1\">\n" +
-	"#CloudflareZeroTrustListStackOutputs\x12\x17\n" +
+	"Acatalog/cloudflare/cloudflarezerotrustlist/v1alpha1/outputs.proto\x127dev.planton.cloudflare.cloudflarezerotrustlist.v1alpha1\"9\n" +
+	"\x1eCloudflareZeroTrustListOutputs\x12\x17\n" +
 	"\alist_id\x18\x01 \x01(\tR\x06listIdB\xbe\x03\n" +
 	";com.dev.planton.cloudflare.cloudflarezerotrustlist.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustlist/v1alpha1;cloudflarezerotrustlistv1alpha1\xa2\x02\x04DPCC\xaa\x027Dev.Planton.Cloudflare.Cloudflarezerotrustlist.V1alpha1\xca\x027Dev\\Planton\\Cloudflare\\Cloudflarezerotrustlist\\V1alpha1\xe2\x02CDev\\Planton\\Cloudflare\\Cloudflarezerotrustlist\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Cloudflare::Cloudflarezerotrustlist::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_rawD
 
 var file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustListStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustlist.v1alpha1.CloudflareZeroTrustListStackOutputs
+	(*CloudflareZeroTrustListOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustlist.v1alpha1.CloudflareZeroTrustListOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustlist_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

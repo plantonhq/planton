@@ -28,7 +28,7 @@ type GcpCertManagerDnsAuthorization struct {
 	state         protoimpl.MessageState                `protogen:"open.v1"`
 	ApiVersion    string                                `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                                `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpCertManagerDnsAuthorizationSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpCertManagerDnsAuthorizationStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpCertManagerDnsAuthorization) GetKind() string {
 	return ""
 }
 
-func (x *GcpCertManagerDnsAuthorization) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCertManagerDnsAuthorization) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpCertManagerDnsAuthorization) GetStatus() *GcpCertManagerDnsAuthoriza
 }
 
 type GcpCertManagerDnsAuthorizationStatus struct {
-	state         protoimpl.MessageState                      `protogen:"open.v1"`
-	Outputs       *GcpCertManagerDnsAuthorizationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState                 `protogen:"open.v1"`
+	Outputs       *GcpCertManagerDnsAuthorizationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpCertManagerDnsAuthorizationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCertManagerDnsAuthorizationStatus) GetOutputs() *GcpCertManagerDnsAuthorizationStackOutputs {
+func (x *GcpCertManagerDnsAuthorizationStatus) GetOutputs() *GcpCertManagerDnsAuthorizationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_api_proto_rawDesc
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eGcpCertManagerDnsAuthorizationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
 	"\x04spec\x18\x04 \x01(\v2[.dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatusR\x06status\"\xa5\x01\n" +
-	"$GcpCertManagerDnsAuthorizationStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2].dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatusR\x06status\"\xa0\x01\n" +
+	"$GcpCertManagerDnsAuthorizationStatus\x12x\n" +
+	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationOutputsR\aoutputsB\xc1\x03\n" +
 	";com.dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1B\bApiProtoP\x01Zwgithub.com/plantonhq/planton/catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1;gcpcertmanagerdnsauthorizationv1alpha1\xa2\x02\x04DPGG\xaa\x027Dev.Planton.Gcp.Gcpcertmanagerdnsauthorization.V1alpha1\xca\x027Dev\\Planton\\Gcp\\Gcpcertmanagerdnsauthorization\\V1alpha1\xe2\x02CDev\\Planton\\Gcp\\Gcpcertmanagerdnsauthorization\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Gcp::Gcpcertmanagerdnsauthorization::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_api_proto_rawDescG
 
 var file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCertManagerDnsAuthorization)(nil),             // 0: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorization
-	(*GcpCertManagerDnsAuthorizationStatus)(nil),       // 1: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCertManagerDnsAuthorizationSpec)(nil),         // 3: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationSpec
-	(*GcpCertManagerDnsAuthorizationStackOutputs)(nil), // 4: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStackOutputs
+	(*GcpCertManagerDnsAuthorization)(nil),        // 0: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorization
+	(*GcpCertManagerDnsAuthorizationStatus)(nil),  // 1: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCertManagerDnsAuthorizationSpec)(nil),    // 3: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationSpec
+	(*GcpCertManagerDnsAuthorizationOutputs)(nil), // 4: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationOutputs
 }
 var file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorization.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorization.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorization.spec:type_name -> dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationSpec
 	1, // 2: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorization.status:type_name -> dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatus
-	4, // 3: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatus.outputs:type_name -> dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStackOutputs
+	4, // 3: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStatus.outputs:type_name -> dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

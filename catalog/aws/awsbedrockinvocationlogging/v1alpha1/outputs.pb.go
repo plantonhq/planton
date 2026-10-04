@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockInvocationLoggingStackOutputs captures the observable
+// AwsBedrockInvocationLoggingOutputs captures the observable
 // identity of the region's invocation logging configuration.
-type AwsBedrockInvocationLoggingStackOutputs struct {
+type AwsBedrockInvocationLoggingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The region whose invocation logging this instance owns - the
 	// singleton's identity, and the provider's import ID.
@@ -32,20 +32,20 @@ type AwsBedrockInvocationLoggingStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AwsBedrockInvocationLoggingStackOutputs) Reset() {
-	*x = AwsBedrockInvocationLoggingStackOutputs{}
+func (x *AwsBedrockInvocationLoggingOutputs) Reset() {
+	*x = AwsBedrockInvocationLoggingOutputs{}
 	mi := &file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockInvocationLoggingStackOutputs) String() string {
+func (x *AwsBedrockInvocationLoggingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockInvocationLoggingStackOutputs) ProtoMessage() {}
+func (*AwsBedrockInvocationLoggingOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockInvocationLoggingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockInvocationLoggingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *AwsBedrockInvocationLoggingStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockInvocationLoggingStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockInvocationLoggingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockInvocationLoggingOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockInvocationLoggingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockInvocationLoggingStackOutputs) GetConfiguredRegion() string {
+func (x *AwsBedrockInvocationLoggingOutputs) GetConfiguredRegion() string {
 	if x != nil {
 		return x.ConfiguredRegion
 	}
@@ -73,8 +73,8 @@ var File_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awsbedrockinvocationlogging/v1alpha1/outputs.proto\x124dev.planton.aws.awsbedrockinvocationlogging.v1alpha1\"V\n" +
-	"'AwsBedrockInvocationLoggingStackOutputs\x12+\n" +
+	">catalog/aws/awsbedrockinvocationlogging/v1alpha1/outputs.proto\x124dev.planton.aws.awsbedrockinvocationlogging.v1alpha1\"Q\n" +
+	"\"AwsBedrockInvocationLoggingOutputs\x12+\n" +
 	"\x11configured_region\x18\x01 \x01(\tR\x10configuredRegionB\xb0\x03\n" +
 	"8com.dev.planton.aws.awsbedrockinvocationlogging.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awsbedrockinvocationlogging/v1alpha1;awsbedrockinvocationloggingv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awsbedrockinvocationlogging.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awsbedrockinvocationlogging\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awsbedrockinvocationlogging\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awsbedrockinvocationlogging::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockInvocationLoggingStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingStackOutputs
+	(*AwsBedrockInvocationLoggingOutputs)(nil), // 0: dev.planton.aws.awsbedrockinvocationlogging.v1alpha1.AwsBedrockInvocationLoggingOutputs
 }
 var file_catalog_aws_awsbedrockinvocationlogging_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

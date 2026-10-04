@@ -38,7 +38,7 @@ type AzureEventHubNamespace struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventHubNamespaceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -91,7 +91,7 @@ func (x *AzureEventHubNamespace) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventHubNamespace) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventHubNamespace) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,8 +115,8 @@ func (x *AzureEventHubNamespace) GetStatus() *AzureEventHubNamespaceStatus {
 // AzureEventHubNamespaceStatus holds the deployment status and outputs.
 type AzureEventHubNamespaceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureEventHubNamespaceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureEventHubNamespaceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*AzureEventHubNamespaceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubnamespace_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventHubNamespaceStatus) GetOutputs() *AzureEventHubNamespaceStackOutputs {
+func (x *AzureEventHubNamespaceStatus) GetOutputs() *AzureEventHubNamespaceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_azure_azureeventhubnamespace_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16AzureEventHubNamespaceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatusR\x06status\"\x8f\x01\n" +
-	"\x1cAzureEventHubNamespaceStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStackOutputsR\aoutputsB\x95\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatusR\x06status\"\x8a\x01\n" +
+	"\x1cAzureEventHubNamespaceStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceOutputsR\aoutputsB\x95\x03\n" +
 	"5com.dev.planton.azure.azureeventhubnamespace.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/azure/azureeventhubnamespace/v1alpha1;azureeventhubnamespacev1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Azure.Azureeventhubnamespace.V1alpha1\xca\x021Dev\\Planton\\Azure\\Azureeventhubnamespace\\V1alpha1\xe2\x02=Dev\\Planton\\Azure\\Azureeventhubnamespace\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Azure::Azureeventhubnamespace::V1alpha1b\x06proto3"
 
 var (
@@ -190,17 +190,17 @@ func file_catalog_azure_azureeventhubnamespace_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_azure_azureeventhubnamespace_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventhubnamespace_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventHubNamespace)(nil),             // 0: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespace
-	(*AzureEventHubNamespaceStatus)(nil),       // 1: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventHubNamespaceSpec)(nil),         // 3: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceSpec
-	(*AzureEventHubNamespaceStackOutputs)(nil), // 4: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStackOutputs
+	(*AzureEventHubNamespace)(nil),        // 0: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespace
+	(*AzureEventHubNamespaceStatus)(nil),  // 1: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventHubNamespaceSpec)(nil),    // 3: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceSpec
+	(*AzureEventHubNamespaceOutputs)(nil), // 4: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceOutputs
 }
 var file_catalog_azure_azureeventhubnamespace_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespace.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespace.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespace.spec:type_name -> dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceSpec
 	1, // 2: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespace.status:type_name -> dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatus
-	4, // 3: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatus.outputs:type_name -> dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStackOutputs
+	4, // 3: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStatus.outputs:type_name -> dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFabricCapacityStackOutputs** captures the outputs from
+// **AzureFabricCapacityOutputs** captures the outputs from
 // provisioning a Microsoft Fabric capacity.
-type AzureFabricCapacityStackOutputs struct {
+type AzureFabricCapacityOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The capacity's Azure Resource Manager ID.
 	FabricCapacityId string `protobuf:"bytes,1,opt,name=fabric_capacity_id,json=fabricCapacityId,proto3" json:"fabric_capacity_id,omitempty"`
@@ -34,20 +34,20 @@ type AzureFabricCapacityStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureFabricCapacityStackOutputs) Reset() {
-	*x = AzureFabricCapacityStackOutputs{}
+func (x *AzureFabricCapacityOutputs) Reset() {
+	*x = AzureFabricCapacityOutputs{}
 	mi := &file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFabricCapacityStackOutputs) String() string {
+func (x *AzureFabricCapacityOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFabricCapacityStackOutputs) ProtoMessage() {}
+func (*AzureFabricCapacityOutputs) ProtoMessage() {}
 
-func (x *AzureFabricCapacityStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFabricCapacityOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureFabricCapacityStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFabricCapacityStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFabricCapacityStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFabricCapacityOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFabricCapacityOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFabricCapacityStackOutputs) GetFabricCapacityId() string {
+func (x *AzureFabricCapacityOutputs) GetFabricCapacityId() string {
 	if x != nil {
 		return x.FabricCapacityId
 	}
 	return ""
 }
 
-func (x *AzureFabricCapacityStackOutputs) GetFabricCapacityName() string {
+func (x *AzureFabricCapacityOutputs) GetFabricCapacityName() string {
 	if x != nil {
 		return x.FabricCapacityName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurefabriccapacity/v1alpha1/outputs.proto\x12.dev.planton.azure.azurefabriccapacity.v1alpha1\"\x81\x01\n" +
-	"\x1fAzureFabricCapacityStackOutputs\x12,\n" +
+	"8catalog/azure/azurefabriccapacity/v1alpha1/outputs.proto\x12.dev.planton.azure.azurefabriccapacity.v1alpha1\"|\n" +
+	"\x1aAzureFabricCapacityOutputs\x12,\n" +
 	"\x12fabric_capacity_id\x18\x01 \x01(\tR\x10fabricCapacityId\x120\n" +
 	"\x14fabric_capacity_name\x18\x02 \x01(\tR\x12fabricCapacityNameB\x84\x03\n" +
 	"2com.dev.planton.azure.azurefabriccapacity.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurefabriccapacity/v1alpha1;azurefabriccapacityv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurefabriccapacity.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurefabriccapacity\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurefabriccapacity\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurefabriccapacity::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFabricCapacityStackOutputs)(nil), // 0: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityStackOutputs
+	(*AzureFabricCapacityOutputs)(nil), // 0: dev.planton.azure.azurefabriccapacity.v1alpha1.AzureFabricCapacityOutputs
 }
 var file_catalog_azure_azurefabriccapacity_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

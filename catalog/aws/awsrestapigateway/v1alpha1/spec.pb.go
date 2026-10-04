@@ -67,7 +67,7 @@ const (
 //     role to be configured once per region.
 //
 // Credentials, region, and deployment workflow live outside this spec
-// in stack inputs.
+// in IaC inputs.
 type AwsRestApiGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the API will be created.

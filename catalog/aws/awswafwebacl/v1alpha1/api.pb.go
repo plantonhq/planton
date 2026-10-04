@@ -38,7 +38,7 @@ type AwsWafWebAcl struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the Web ACL.
 	Spec *AwsWafWebAclSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -91,7 +91,7 @@ func (x *AwsWafWebAcl) GetKind() string {
 	return ""
 }
 
-func (x *AwsWafWebAcl) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsWafWebAcl) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -116,7 +116,7 @@ func (x *AwsWafWebAcl) GetStatus() *AwsWafWebAclStatus {
 type AwsWafWebAclStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsWafWebAclStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsWafWebAclOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*AwsWafWebAclStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awswafwebacl_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsWafWebAclStatus) GetOutputs() *AwsWafWebAclStackOutputs {
+func (x *AwsWafWebAclStatus) GetOutputs() *AwsWafWebAclOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_aws_awswafwebacl_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fAwsWafWebAclR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStatusR\x06status\"o\n" +
-	"\x12AwsWafWebAclStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStackOutputsR\aoutputsB\xc3\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStatusR\x06status\"j\n" +
+	"\x12AwsWafWebAclStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclOutputsR\aoutputsB\xc3\x02\n" +
 	")com.dev.planton.aws.awswafwebacl.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/aws/awswafwebacl/v1alpha1;awswafwebaclv1alpha1\xa2\x02\x04DPAA\xaa\x02%Dev.Planton.Aws.Awswafwebacl.V1alpha1\xca\x02%Dev\\Planton\\Aws\\Awswafwebacl\\V1alpha1\xe2\x021Dev\\Planton\\Aws\\Awswafwebacl\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Aws::Awswafwebacl::V1alpha1b\x06proto3"
 
 var (
@@ -192,15 +192,15 @@ var file_catalog_aws_awswafwebacl_v1alpha1_api_proto_msgTypes = make([]protoimpl
 var file_catalog_aws_awswafwebacl_v1alpha1_api_proto_goTypes = []any{
 	(*AwsWafWebAcl)(nil),                 // 0: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAcl
 	(*AwsWafWebAclStatus)(nil),           // 1: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsWafWebAclSpec)(nil),             // 3: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclSpec
-	(*AwsWafWebAclStackOutputs)(nil),     // 4: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStackOutputs
+	(*AwsWafWebAclOutputs)(nil),          // 4: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclOutputs
 }
 var file_catalog_aws_awswafwebacl_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAcl.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAcl.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAcl.spec:type_name -> dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclSpec
 	1, // 2: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAcl.status:type_name -> dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStatus
-	4, // 3: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStatus.outputs:type_name -> dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStackOutputs
+	4, // 3: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStatus.outputs:type_name -> dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

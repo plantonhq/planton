@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Logging log-based metric.
-type GcpLogMetricStackOutputs struct {
+type GcpLogMetricOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The metric name. Address it from Cloud Monitoring (dashboards, alert
 	// policy filters) as metric.type =
@@ -32,20 +32,20 @@ type GcpLogMetricStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpLogMetricStackOutputs) Reset() {
-	*x = GcpLogMetricStackOutputs{}
+func (x *GcpLogMetricOutputs) Reset() {
+	*x = GcpLogMetricOutputs{}
 	mi := &file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpLogMetricStackOutputs) String() string {
+func (x *GcpLogMetricOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpLogMetricStackOutputs) ProtoMessage() {}
+func (*GcpLogMetricOutputs) ProtoMessage() {}
 
-func (x *GcpLogMetricStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpLogMetricOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *GcpLogMetricStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpLogMetricStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpLogMetricStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpLogMetricOutputs.ProtoReflect.Descriptor instead.
+func (*GcpLogMetricOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpLogMetricStackOutputs) GetMetricName() string {
+func (x *GcpLogMetricOutputs) GetMetricName() string {
 	if x != nil {
 		return x.MetricName
 	}
@@ -73,8 +73,8 @@ var File_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcplogmetric/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcplogmetric.v1alpha1\";\n" +
-	"\x18GcpLogMetricStackOutputs\x12\x1f\n" +
+	"/catalog/gcp/gcplogmetric/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcplogmetric.v1alpha1\"6\n" +
+	"\x13GcpLogMetricOutputs\x12\x1f\n" +
 	"\vmetric_name\x18\x01 \x01(\tR\n" +
 	"metricNameB\xc7\x02\n" +
 	")com.dev.planton.gcp.gcplogmetric.v1alpha1B\fOutputsProtoP\x01ZSgithub.com/plantonhq/planton/catalog/gcp/gcplogmetric/v1alpha1;gcplogmetricv1alpha1\xa2\x02\x04DPGG\xaa\x02%Dev.Planton.Gcp.Gcplogmetric.V1alpha1\xca\x02%Dev\\Planton\\Gcp\\Gcplogmetric\\V1alpha1\xe2\x021Dev\\Planton\\Gcp\\Gcplogmetric\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Gcp::Gcplogmetric::V1alpha1b\x06proto3"
@@ -93,7 +93,7 @@ func file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpLogMetricStackOutputs)(nil), // 0: dev.planton.gcp.gcplogmetric.v1alpha1.GcpLogMetricStackOutputs
+	(*GcpLogMetricOutputs)(nil), // 0: dev.planton.gcp.gcplogmetric.v1alpha1.GcpLogMetricOutputs
 }
 var file_catalog_gcp_gcplogmetric_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

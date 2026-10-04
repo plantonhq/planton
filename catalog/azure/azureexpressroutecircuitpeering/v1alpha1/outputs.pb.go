@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureExpressRouteCircuitPeeringStackOutputs** captures the outputs
+// **AzureExpressRouteCircuitPeeringOutputs** captures the outputs
 // of provisioning an ExpressRoute circuit peering.
-type AzureExpressRouteCircuitPeeringStackOutputs struct {
+type AzureExpressRouteCircuitPeeringOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the peering -- what a Global Reach
 	// connection on ANOTHER circuit references as peer_peering_id.
@@ -46,20 +46,20 @@ type AzureExpressRouteCircuitPeeringStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) Reset() {
-	*x = AzureExpressRouteCircuitPeeringStackOutputs{}
+func (x *AzureExpressRouteCircuitPeeringOutputs) Reset() {
+	*x = AzureExpressRouteCircuitPeeringOutputs{}
 	mi := &file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) String() string {
+func (x *AzureExpressRouteCircuitPeeringOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRouteCircuitPeeringStackOutputs) ProtoMessage() {}
+func (*AzureExpressRouteCircuitPeeringOutputs) ProtoMessage() {}
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRouteCircuitPeeringOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,40 +71,40 @@ func (x *AzureExpressRouteCircuitPeeringStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRouteCircuitPeeringStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureExpressRouteCircuitPeeringStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRouteCircuitPeeringOutputs.ProtoReflect.Descriptor instead.
+func (*AzureExpressRouteCircuitPeeringOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) GetExpressRouteCircuitPeeringId() string {
+func (x *AzureExpressRouteCircuitPeeringOutputs) GetExpressRouteCircuitPeeringId() string {
 	if x != nil {
 		return x.ExpressRouteCircuitPeeringId
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) GetAzureAsn() int64 {
+func (x *AzureExpressRouteCircuitPeeringOutputs) GetAzureAsn() int64 {
 	if x != nil {
 		return x.AzureAsn
 	}
 	return 0
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) GetPrimaryAzurePort() string {
+func (x *AzureExpressRouteCircuitPeeringOutputs) GetPrimaryAzurePort() string {
 	if x != nil {
 		return x.PrimaryAzurePort
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) GetSecondaryAzurePort() string {
+func (x *AzureExpressRouteCircuitPeeringOutputs) GetSecondaryAzurePort() string {
 	if x != nil {
 		return x.SecondaryAzurePort
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackOutputs) GetConnectionIds() map[string]string {
+func (x *AzureExpressRouteCircuitPeeringOutputs) GetConnectionIds() map[string]string {
 	if x != nil {
 		return x.ConnectionIds
 	}
@@ -115,13 +115,13 @@ var File_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azureexpressroutecircuitpeering/v1alpha1/outputs.proto\x12:dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1\"\xd8\x03\n" +
-	"+AzureExpressRouteCircuitPeeringStackOutputs\x12F\n" +
+	"Dcatalog/azure/azureexpressroutecircuitpeering/v1alpha1/outputs.proto\x12:dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1\"\xce\x03\n" +
+	"&AzureExpressRouteCircuitPeeringOutputs\x12F\n" +
 	" express_route_circuit_peering_id\x18\x01 \x01(\tR\x1cexpressRouteCircuitPeeringId\x12\x1b\n" +
 	"\tazure_asn\x18\x02 \x01(\x03R\bazureAsn\x12,\n" +
 	"\x12primary_azure_port\x18\x03 \x01(\tR\x10primaryAzurePort\x120\n" +
-	"\x14secondary_azure_port\x18\x04 \x01(\tR\x12secondaryAzurePort\x12\xa1\x01\n" +
-	"\x0econnection_ids\x18\x05 \x03(\v2z.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs.ConnectionIdsEntryR\rconnectionIds\x1a@\n" +
+	"\x14secondary_azure_port\x18\x04 \x01(\tR\x12secondaryAzurePort\x12\x9c\x01\n" +
+	"\x0econnection_ids\x18\x05 \x03(\v2u.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs.ConnectionIdsEntryR\rconnectionIds\x1a@\n" +
 	"\x12ConnectionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xd8\x03\n" +
@@ -141,11 +141,11 @@ func file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_r
 
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureExpressRouteCircuitPeeringStackOutputs)(nil), // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs
-	nil, // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs.ConnectionIdsEntry
+	(*AzureExpressRouteCircuitPeeringOutputs)(nil), // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs
+	nil, // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs.ConnectionIdsEntry
 }
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs.connection_ids:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs.ConnectionIdsEntry
+	1, // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs.connection_ids:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs.ConnectionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

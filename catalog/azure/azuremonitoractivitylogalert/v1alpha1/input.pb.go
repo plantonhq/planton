@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureMonitorActivityLogAlertStackInput is the input to the IaC modules
+// AzureMonitorActivityLogAlertIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-type AzureMonitorActivityLogAlertStackInput struct {
+type AzureMonitorActivityLogAlertIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The activity log alert resource to deploy.
 	Target *AzureMonitorActivityLogAlert `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureMonitorActivityLogAlertStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureMonitorActivityLogAlertStackInput) Reset() {
-	*x = AzureMonitorActivityLogAlertStackInput{}
+func (x *AzureMonitorActivityLogAlertIacInput) Reset() {
+	*x = AzureMonitorActivityLogAlertIacInput{}
 	mi := &file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorActivityLogAlertStackInput) String() string {
+func (x *AzureMonitorActivityLogAlertIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorActivityLogAlertStackInput) ProtoMessage() {}
+func (*AzureMonitorActivityLogAlertIacInput) ProtoMessage() {}
 
-func (x *AzureMonitorActivityLogAlertStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorActivityLogAlertIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMonitorActivityLogAlertStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorActivityLogAlertStackInput.ProtoReflect.Descriptor instead.
-func (*AzureMonitorActivityLogAlertStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorActivityLogAlertIacInput.ProtoReflect.Descriptor instead.
+func (*AzureMonitorActivityLogAlertIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorActivityLogAlertStackInput) GetTarget() *AzureMonitorActivityLogAlert {
+func (x *AzureMonitorActivityLogAlertIacInput) GetTarget() *AzureMonitorActivityLogAlert {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureMonitorActivityLogAlertStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureMonitorActivityLogAlertIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto protore
 
 const file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azuremonitoractivitylogalert/v1alpha1/input.proto\x127dev.planton.azure.azuremonitoractivitylogalert.v1alpha1\x1a=catalog/azure/azuremonitoractivitylogalert/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe8\x01\n" +
-	"&AzureMonitorActivityLogAlertStackInput\x12m\n" +
+	"?catalog/azure/azuremonitoractivitylogalert/v1alpha1/input.proto\x127dev.planton.azure.azuremonitoractivitylogalert.v1alpha1\x1a=catalog/azure/azuremonitoractivitylogalert/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe6\x01\n" +
+	"$AzureMonitorActivityLogAlertIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xc1\x03\n" +
 	";com.dev.planton.azure.azuremonitoractivitylogalert.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_rawDes
 
 var file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_goTypes = []any{
-	(*AzureMonitorActivityLogAlertStackInput)(nil), // 0: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertStackInput
-	(*AzureMonitorActivityLogAlert)(nil),           // 1: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlert
-	(*azure.AzureProviderConfig)(nil),              // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureMonitorActivityLogAlertIacInput)(nil), // 0: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertIacInput
+	(*AzureMonitorActivityLogAlert)(nil),         // 1: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlert
+	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremonitoractivitylogalert_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertStackInput.target:type_name -> dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlert
-	2, // 1: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertIacInput.target:type_name -> dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlert
+	2, // 1: dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

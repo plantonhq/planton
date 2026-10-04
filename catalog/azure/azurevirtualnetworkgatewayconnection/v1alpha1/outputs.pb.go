@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualNetworkGatewayConnectionStackOutputs** captures the
+// **AzureVirtualNetworkGatewayConnectionOutputs** captures the
 // outputs of provisioning a gateway connection. (The tunnel's live
 // state -- Connecting/Connected -- is runtime telemetry, not a
 // provisioning output; read it from Azure Monitor or `az network
 // vpn-connection show`.)
-type AzureVirtualNetworkGatewayConnectionStackOutputs struct {
+type AzureVirtualNetworkGatewayConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the connection.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/connections/{name}
@@ -37,20 +37,20 @@ type AzureVirtualNetworkGatewayConnectionStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVirtualNetworkGatewayConnectionStackOutputs) Reset() {
-	*x = AzureVirtualNetworkGatewayConnectionStackOutputs{}
+func (x *AzureVirtualNetworkGatewayConnectionOutputs) Reset() {
+	*x = AzureVirtualNetworkGatewayConnectionOutputs{}
 	mi := &file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualNetworkGatewayConnectionStackOutputs) String() string {
+func (x *AzureVirtualNetworkGatewayConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualNetworkGatewayConnectionStackOutputs) ProtoMessage() {}
+func (*AzureVirtualNetworkGatewayConnectionOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualNetworkGatewayConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualNetworkGatewayConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AzureVirtualNetworkGatewayConnectionStackOutputs) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualNetworkGatewayConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualNetworkGatewayConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualNetworkGatewayConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualNetworkGatewayConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualNetworkGatewayConnectionStackOutputs) GetConnectionId() string {
+func (x *AzureVirtualNetworkGatewayConnectionOutputs) GetConnectionId() string {
 	if x != nil {
 		return x.ConnectionId
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkGatewayConnectionStackOutputs) GetConnectionName() string {
+func (x *AzureVirtualNetworkGatewayConnectionOutputs) GetConnectionName() string {
 	if x != nil {
 		return x.ConnectionName
 	}
@@ -85,8 +85,8 @@ var File_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_pro
 
 const file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/azure/azurevirtualnetworkgatewayconnection/v1alpha1/outputs.proto\x12?dev.planton.azure.azurevirtualnetworkgatewayconnection.v1alpha1\"\x80\x01\n" +
-	"0AzureVirtualNetworkGatewayConnectionStackOutputs\x12#\n" +
+	"Icatalog/azure/azurevirtualnetworkgatewayconnection/v1alpha1/outputs.proto\x12?dev.planton.azure.azurevirtualnetworkgatewayconnection.v1alpha1\"{\n" +
+	"+AzureVirtualNetworkGatewayConnectionOutputs\x12#\n" +
 	"\rconnection_id\x18\x01 \x01(\tR\fconnectionId\x12'\n" +
 	"\x0fconnection_name\x18\x02 \x01(\tR\x0econnectionNameB\xfc\x03\n" +
 	"Ccom.dev.planton.azure.azurevirtualnetworkgatewayconnection.v1alpha1B\fOutputsProtoP\x01Z\x85\x01github.com/plantonhq/planton/catalog/azure/azurevirtualnetworkgatewayconnection/v1alpha1;azurevirtualnetworkgatewayconnectionv1alpha1\xa2\x02\x04DPAA\xaa\x02?Dev.Planton.Azure.Azurevirtualnetworkgatewayconnection.V1alpha1\xca\x02?Dev\\Planton\\Azure\\Azurevirtualnetworkgatewayconnection\\V1alpha1\xe2\x02KDev\\Planton\\Azure\\Azurevirtualnetworkgatewayconnection\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Azure::Azurevirtualnetworkgatewayconnection::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_pr
 
 var file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualNetworkGatewayConnectionStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetworkgatewayconnection.v1alpha1.AzureVirtualNetworkGatewayConnectionStackOutputs
+	(*AzureVirtualNetworkGatewayConnectionOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetworkgatewayconnection.v1alpha1.AzureVirtualNetworkGatewayConnectionOutputs
 }
 var file_catalog_azure_azurevirtualnetworkgatewayconnection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

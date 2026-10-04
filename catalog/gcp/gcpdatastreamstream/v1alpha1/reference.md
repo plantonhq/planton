@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpDatastreamStreamSpec defines a Datastream stream
 (`google_datastream_stream`) -- continuous change data capture from one
@@ -1559,7 +1559,7 @@ The folder inside the bucket.
 The BigQuery connection whose service account writes the bucket -- a
 GcpBigQueryConnection reference (its name output, which the modules
 convert to Google's {project}.{location}.{connection_id} form) or a
-literal in the dotted form. Use a cloud_resource connection and grant
+literal in the dotted form. Use an infra_component connection and grant
 its service account storage access on the bucket.
 
 - references: GcpBigQueryConnection (`status.outputs.name`)

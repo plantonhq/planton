@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpCloudArmorPolicyStackInput struct {
+type GcpCloudArmorPolicyIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpCloudArmorPolicy   `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpCloudArmorPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudArmorPolicyStackInput) Reset() {
-	*x = GcpCloudArmorPolicyStackInput{}
+func (x *GcpCloudArmorPolicyIacInput) Reset() {
+	*x = GcpCloudArmorPolicyIacInput{}
 	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudArmorPolicyStackInput) String() string {
+func (x *GcpCloudArmorPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudArmorPolicyStackInput) ProtoMessage() {}
+func (*GcpCloudArmorPolicyIacInput) ProtoMessage() {}
 
-func (x *GcpCloudArmorPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudArmorPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpCloudArmorPolicyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudArmorPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudArmorPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudArmorPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudArmorPolicyStackInput) GetTarget() *GcpCloudArmorPolicy {
+func (x *GcpCloudArmorPolicyIacInput) GetTarget() *GcpCloudArmorPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudArmorPolicyStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudArmorPolicyIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpcloudarmorpolicy/v1alpha1/input.proto\x12,dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1\x1a2catalog/gcp/gcpcloudarmorpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc7\x01\n" +
-	"\x1dGcpCloudArmorPolicyStackInput\x12Y\n" +
+	"4catalog/gcp/gcpcloudarmorpolicy/v1alpha1/input.proto\x12,dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1\x1a2catalog/gcp/gcpcloudarmorpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc5\x01\n" +
+	"\x1bGcpCloudArmorPolicyIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudArmorPolicyStackInput)(nil), // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackInput
-	(*GcpCloudArmorPolicy)(nil),           // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy
-	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCloudArmorPolicyIacInput)(nil), // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyIacInput
+	(*GcpCloudArmorPolicy)(nil),         // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy
+	(*gcp.GcpProviderConfig)(nil),       // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackInput.target:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy
-	2, // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyIacInput.target:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicy
+	2, // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

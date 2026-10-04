@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockGuardrailStackInput is the input for the IaC modules that
+// AwsBedrockGuardrailIacInput is the input for the IaC modules that
 // deploy the Bedrock guardrail.
-type AwsBedrockGuardrailStackInput struct {
+type AwsBedrockGuardrailIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockGuardrail resource to deploy.
 	Target *AwsBedrockGuardrail `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockGuardrailStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockGuardrailStackInput) Reset() {
-	*x = AwsBedrockGuardrailStackInput{}
+func (x *AwsBedrockGuardrailIacInput) Reset() {
+	*x = AwsBedrockGuardrailIacInput{}
 	mi := &file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockGuardrailStackInput) String() string {
+func (x *AwsBedrockGuardrailIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockGuardrailStackInput) ProtoMessage() {}
+func (*AwsBedrockGuardrailIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockGuardrailStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockGuardrailIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockGuardrailStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockGuardrailStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockGuardrailStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockGuardrailIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockGuardrailIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockGuardrailStackInput) GetTarget() *AwsBedrockGuardrail {
+func (x *AwsBedrockGuardrailIacInput) GetTarget() *AwsBedrockGuardrail {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockGuardrailStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockGuardrailIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsbedrockguardrail/v1alpha1/input.proto\x12,dev.planton.aws.awsbedrockguardrail.v1alpha1\x1a2catalog/aws/awsbedrockguardrail/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsBedrockGuardrailStackInput\x12Y\n" +
+	"4catalog/aws/awsbedrockguardrail/v1alpha1/input.proto\x12,dev.planton.aws.awsbedrockguardrail.v1alpha1\x1a2catalog/aws/awsbedrockguardrail/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsBedrockGuardrailIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsbedrockguardrail.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockGuardrailStackInput)(nil), // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackInput
-	(*AwsBedrockGuardrail)(nil),           // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockGuardrailIacInput)(nil), // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailIacInput
+	(*AwsBedrockGuardrail)(nil),         // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackInput.target:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail
-	2, // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailIacInput.target:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail
+	2, // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

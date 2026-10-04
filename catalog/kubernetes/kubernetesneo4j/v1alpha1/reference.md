@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesNeo4jSpec** deploys a Neo4j graph database — the
 standard engine for knowledge graphs, GraphRAG and agent-memory
@@ -378,7 +378,7 @@ http 7474, https 7473). Empty = ClusterIP — NOTE this is a
 deliberate override of the chart's LoadBalancer default; exposure
 composes from first-class kinds instead. In-cluster clients use
 the always-created default Service (= the resource name — the
-endpoints in the stack outputs), so this block matters only when
+endpoints in the outputs), so this block matters only when
 exposing the server directly.
 
 ### spec.service.type

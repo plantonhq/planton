@@ -31,7 +31,7 @@ const (
 // written, and `helm list` shows the release exactly as if installed by the
 // Helm CLI.
 //
-// WHEN NOT TO USE THIS: a first-class catalog component always wins. Typed
+// WHEN NOT TO USE THIS: a first-class catalog kind always wins. Typed
 // components validate their configuration before deploy, export composable
 // outputs, and teach their trade-offs field by field — a generic chart
 // install does none of that. Reach for KubernetesHelmRelease only when the

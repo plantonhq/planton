@@ -31,7 +31,7 @@ type GcpAlloydbCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpAlloydbClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpAlloydbCluster) GetKind() string {
 	return ""
 }
 
-func (x *GcpAlloydbCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpAlloydbCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpAlloydbCluster) GetStatus() *GcpAlloydbClusterStatus {
 // gcp-alloydb-cluster status
 type GcpAlloydbClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpAlloydbClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpAlloydbClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpAlloydbClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpalloydbcluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpAlloydbClusterStatus) GetOutputs() *GcpAlloydbClusterStackOutputs {
+func (x *GcpAlloydbClusterStatus) GetOutputs() *GcpAlloydbClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpalloydbcluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11GcpAlloydbClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatusR\x06status\"~\n" +
-	"\x17GcpAlloydbClusterStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatusR\x06status\"y\n" +
+	"\x17GcpAlloydbClusterStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.gcp.gcpalloydbcluster.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpalloydbcluster/v1alpha1;gcpalloydbclusterv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpalloydbcluster.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpalloydbcluster\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpalloydbcluster\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpalloydbcluster::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpalloydbcluster_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpalloydbcluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpalloydbcluster_v1alpha1_api_proto_goTypes = []any{
-	(*GcpAlloydbCluster)(nil),             // 0: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbCluster
-	(*GcpAlloydbClusterStatus)(nil),       // 1: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpAlloydbClusterSpec)(nil),         // 3: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpec
-	(*GcpAlloydbClusterStackOutputs)(nil), // 4: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStackOutputs
+	(*GcpAlloydbCluster)(nil),            // 0: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbCluster
+	(*GcpAlloydbClusterStatus)(nil),      // 1: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpAlloydbClusterSpec)(nil),        // 3: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpec
+	(*GcpAlloydbClusterOutputs)(nil),     // 4: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterOutputs
 }
 var file_catalog_gcp_gcpalloydbcluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbCluster.spec:type_name -> dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpec
 	1, // 2: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbCluster.status:type_name -> dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatus
-	4, // 3: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatus.outputs:type_name -> dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStackOutputs
+	4, // 3: dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterStatus.outputs:type_name -> dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

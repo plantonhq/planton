@@ -31,7 +31,7 @@ type AwsMemcachedElasticache struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsMemcachedElasticacheSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsMemcachedElasticache) GetKind() string {
 	return ""
 }
 
-func (x *AwsMemcachedElasticache) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsMemcachedElasticache) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsMemcachedElasticache) GetStatus() *AwsMemcachedElasticacheStatus {
 // aws-memcached-elasticache status
 type AwsMemcachedElasticacheStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsMemcachedElasticacheStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsMemcachedElasticacheOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsMemcachedElasticacheStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemcachedelasticache_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsMemcachedElasticacheStatus) GetOutputs() *AwsMemcachedElasticacheStackOutputs {
+func (x *AwsMemcachedElasticacheStatus) GetOutputs() *AwsMemcachedElasticacheOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsmemcachedelasticache_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AwsMemcachedElasticacheR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatusR\x06status\"\x90\x01\n" +
-	"\x1dAwsMemcachedElasticacheStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatusR\x06status\"\x8b\x01\n" +
+	"\x1dAwsMemcachedElasticacheStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.aws.awsmemcachedelasticache.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/aws/awsmemcachedelasticache/v1alpha1;awsmemcachedelasticachev1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Aws.Awsmemcachedelasticache.V1alpha1\xca\x020Dev\\Planton\\Aws\\Awsmemcachedelasticache\\V1alpha1\xe2\x02<Dev\\Planton\\Aws\\Awsmemcachedelasticache\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Aws::Awsmemcachedelasticache::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsmemcachedelasticache_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_api_proto_goTypes = []any{
-	(*AwsMemcachedElasticache)(nil),             // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache
-	(*AwsMemcachedElasticacheStatus)(nil),       // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsMemcachedElasticacheSpec)(nil),         // 3: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheSpec
-	(*AwsMemcachedElasticacheStackOutputs)(nil), // 4: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackOutputs
+	(*AwsMemcachedElasticache)(nil),        // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache
+	(*AwsMemcachedElasticacheStatus)(nil),  // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsMemcachedElasticacheSpec)(nil),    // 3: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheSpec
+	(*AwsMemcachedElasticacheOutputs)(nil), // 4: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheOutputs
 }
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache.spec:type_name -> dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheSpec
 	1, // 2: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache.status:type_name -> dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatus
-	4, // 3: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatus.outputs:type_name -> dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackOutputs
+	4, // 3: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStatus.outputs:type_name -> dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

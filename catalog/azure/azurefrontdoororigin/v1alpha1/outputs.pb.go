@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorOriginStackOutputs** captures the outputs of
+// **AzureFrontDoorOriginOutputs** captures the outputs of
 // provisioning an Azure Front Door origin.
-type AzureFrontDoorOriginStackOutputs struct {
+type AzureFrontDoorOriginOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the origin -- what
 	// AzureFrontDoorRoute's origin_ids list references to sequence route
@@ -36,20 +36,20 @@ type AzureFrontDoorOriginStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorOriginStackOutputs) Reset() {
-	*x = AzureFrontDoorOriginStackOutputs{}
+func (x *AzureFrontDoorOriginOutputs) Reset() {
+	*x = AzureFrontDoorOriginOutputs{}
 	mi := &file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorOriginStackOutputs) String() string {
+func (x *AzureFrontDoorOriginOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorOriginStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorOriginOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorOriginStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorOriginOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureFrontDoorOriginStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorOriginStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorOriginStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorOriginOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorOriginOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorOriginStackOutputs) GetOriginId() string {
+func (x *AzureFrontDoorOriginOutputs) GetOriginId() string {
 	if x != nil {
 		return x.OriginId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorOriginStackOutputs) GetOriginName() string {
+func (x *AzureFrontDoorOriginOutputs) GetOriginName() string {
 	if x != nil {
 		return x.OriginName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurefrontdoororigin/v1alpha1/outputs.proto\x12/dev.planton.azure.azurefrontdoororigin.v1alpha1\"`\n" +
-	" AzureFrontDoorOriginStackOutputs\x12\x1b\n" +
+	"9catalog/azure/azurefrontdoororigin/v1alpha1/outputs.proto\x12/dev.planton.azure.azurefrontdoororigin.v1alpha1\"[\n" +
+	"\x1bAzureFrontDoorOriginOutputs\x12\x1b\n" +
 	"\torigin_id\x18\x01 \x01(\tR\boriginId\x12\x1f\n" +
 	"\vorigin_name\x18\x02 \x01(\tR\n" +
 	"originNameB\x8b\x03\n" +
@@ -105,7 +105,7 @@ func file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorOriginStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginStackOutputs
+	(*AzureFrontDoorOriginOutputs)(nil), // 0: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginOutputs
 }
 var file_catalog_azure_azurefrontdoororigin_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

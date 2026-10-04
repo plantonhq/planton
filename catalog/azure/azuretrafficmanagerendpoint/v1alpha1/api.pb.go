@@ -33,7 +33,7 @@ type AzureTrafficManagerEndpoint struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureTrafficManagerEndpointSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AzureTrafficManagerEndpoint) GetKind() string {
 	return ""
 }
 
-func (x *AzureTrafficManagerEndpoint) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureTrafficManagerEndpoint) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,10 +111,10 @@ func (x *AzureTrafficManagerEndpoint) GetStatus() *AzureTrafficManagerEndpointSt
 // Traffic Manager endpoint deployment.
 type AzureTrafficManagerEndpointStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-traffic-manager-endpoint stack-outputs
-	Outputs       *AzureTrafficManagerEndpointStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-traffic-manager-endpoint outputs
+	Outputs       *AzureTrafficManagerEndpointOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureTrafficManagerEndpointStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureTrafficManagerEndpointStatus) GetOutputs() *AzureTrafficManagerEndpointStackOutputs {
+func (x *AzureTrafficManagerEndpointStatus) GetOutputs() *AzureTrafficManagerEndpointOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAzureTrafficManagerEndpointR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatusR\x06status\"\x9e\x01\n" +
-	"!AzureTrafficManagerEndpointStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatusR\x06status\"\x99\x01\n" +
+	"!AzureTrafficManagerEndpointStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointOutputsR\aoutputsB\xb8\x03\n" +
 	":com.dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/azure/azuretrafficmanagerendpoint/v1alpha1;azuretrafficmanagerendpointv1alpha1\xa2\x02\x04DPAA\xaa\x026Dev.Planton.Azure.Azuretrafficmanagerendpoint.V1alpha1\xca\x026Dev\\Planton\\Azure\\Azuretrafficmanagerendpoint\\V1alpha1\xe2\x02BDev\\Planton\\Azure\\Azuretrafficmanagerendpoint\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Azure::Azuretrafficmanagerendpoint::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_api_proto_goTypes = []any{
-	(*AzureTrafficManagerEndpoint)(nil),             // 0: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpoint
-	(*AzureTrafficManagerEndpointStatus)(nil),       // 1: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureTrafficManagerEndpointSpec)(nil),         // 3: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointSpec
-	(*AzureTrafficManagerEndpointStackOutputs)(nil), // 4: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStackOutputs
+	(*AzureTrafficManagerEndpoint)(nil),        // 0: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpoint
+	(*AzureTrafficManagerEndpointStatus)(nil),  // 1: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureTrafficManagerEndpointSpec)(nil),    // 3: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointSpec
+	(*AzureTrafficManagerEndpointOutputs)(nil), // 4: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointOutputs
 }
 var file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpoint.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpoint.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpoint.spec:type_name -> dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointSpec
 	1, // 2: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpoint.status:type_name -> dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatus
-	4, // 3: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatus.outputs:type_name -> dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStackOutputs
+	4, // 3: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStatus.outputs:type_name -> dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

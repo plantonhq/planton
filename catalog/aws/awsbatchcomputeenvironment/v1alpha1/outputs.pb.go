@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBatchComputeEnvironmentStackOutputs captures the observable identifiers
+// AwsBatchComputeEnvironmentOutputs captures the observable identifiers
 // of the AWS Batch compute environment.
 //
 // The primary join key is `compute_environment_arn`: an AwsBatchJobQueue's
 // compute_environment_order entries reference it to map the queue onto this
 // environment.
-type AwsBatchComputeEnvironmentStackOutputs struct {
+type AwsBatchComputeEnvironmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the compute environment -- what job
 	// queues reference in their compute_environment_order.
@@ -45,20 +45,20 @@ type AwsBatchComputeEnvironmentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) Reset() {
-	*x = AwsBatchComputeEnvironmentStackOutputs{}
+func (x *AwsBatchComputeEnvironmentOutputs) Reset() {
+	*x = AwsBatchComputeEnvironmentOutputs{}
 	mi := &file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) String() string {
+func (x *AwsBatchComputeEnvironmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBatchComputeEnvironmentStackOutputs) ProtoMessage() {}
+func (*AwsBatchComputeEnvironmentOutputs) ProtoMessage() {}
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBatchComputeEnvironmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *AwsBatchComputeEnvironmentStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBatchComputeEnvironmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBatchComputeEnvironmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBatchComputeEnvironmentOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBatchComputeEnvironmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) GetComputeEnvironmentArn() string {
+func (x *AwsBatchComputeEnvironmentOutputs) GetComputeEnvironmentArn() string {
 	if x != nil {
 		return x.ComputeEnvironmentArn
 	}
 	return ""
 }
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) GetComputeEnvironmentName() string {
+func (x *AwsBatchComputeEnvironmentOutputs) GetComputeEnvironmentName() string {
 	if x != nil {
 		return x.ComputeEnvironmentName
 	}
 	return ""
 }
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) GetEcsClusterArn() string {
+func (x *AwsBatchComputeEnvironmentOutputs) GetEcsClusterArn() string {
 	if x != nil {
 		return x.EcsClusterArn
 	}
 	return ""
 }
 
-func (x *AwsBatchComputeEnvironmentStackOutputs) GetStatus() string {
+func (x *AwsBatchComputeEnvironmentOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -107,8 +107,8 @@ var File_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsbatchcomputeenvironment/v1alpha1/outputs.proto\x123dev.planton.aws.awsbatchcomputeenvironment.v1alpha1\"\xda\x01\n" +
-	"&AwsBatchComputeEnvironmentStackOutputs\x126\n" +
+	"=catalog/aws/awsbatchcomputeenvironment/v1alpha1/outputs.proto\x123dev.planton.aws.awsbatchcomputeenvironment.v1alpha1\"\xd5\x01\n" +
+	"!AwsBatchComputeEnvironmentOutputs\x126\n" +
 	"\x17compute_environment_arn\x18\x01 \x01(\tR\x15computeEnvironmentArn\x128\n" +
 	"\x18compute_environment_name\x18\x02 \x01(\tR\x16computeEnvironmentName\x12&\n" +
 	"\x0fecs_cluster_arn\x18\x03 \x01(\tR\recsClusterArn\x12\x16\n" +
@@ -129,7 +129,7 @@ func file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBatchComputeEnvironmentStackOutputs)(nil), // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentStackOutputs
+	(*AwsBatchComputeEnvironmentOutputs)(nil), // 0: dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeEnvironmentOutputs
 }
 var file_catalog_aws_awsbatchcomputeenvironment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

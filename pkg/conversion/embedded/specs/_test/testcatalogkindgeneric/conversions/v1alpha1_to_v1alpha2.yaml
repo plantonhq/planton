@@ -1,10 +1,10 @@
-# Conversion bridge for TestCloudResourceGeneric: v1alpha1 <-> v1alpha2.
+# Conversion bridge for TestCatalogKindGeneric: v1alpha1 <-> v1alpha2.
 #
 # This is the catalog's permanent conversion fixture -- one operation of each
 # breaking-change class, exercised by the golden corpus in
 # conversions/testdata/ and by the certification suite. Paths address the
 # DOCUMENT (JSON field names), the durable contract every store speaks.
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 from: v1alpha1
 to: v1alpha2
 

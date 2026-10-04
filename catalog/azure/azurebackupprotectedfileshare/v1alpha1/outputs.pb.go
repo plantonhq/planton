@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureBackupProtectedFileShareStackOutputs** captures the outputs
+// **AzureBackupProtectedFileShareOutputs** captures the outputs
 // of registering a file share under backup protection.
-type AzureBackupProtectedFileShareStackOutputs struct {
+type AzureBackupProtectedFileShareOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the protected item. Azure names
 	// the item by the share's SYSTEM name (not its friendly name).
@@ -33,20 +33,20 @@ type AzureBackupProtectedFileShareStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *AzureBackupProtectedFileShareStackOutputs) Reset() {
-	*x = AzureBackupProtectedFileShareStackOutputs{}
+func (x *AzureBackupProtectedFileShareOutputs) Reset() {
+	*x = AzureBackupProtectedFileShareOutputs{}
 	mi := &file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupProtectedFileShareStackOutputs) String() string {
+func (x *AzureBackupProtectedFileShareOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupProtectedFileShareStackOutputs) ProtoMessage() {}
+func (*AzureBackupProtectedFileShareOutputs) ProtoMessage() {}
 
-func (x *AzureBackupProtectedFileShareStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupProtectedFileShareOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *AzureBackupProtectedFileShareStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupProtectedFileShareStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureBackupProtectedFileShareStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupProtectedFileShareOutputs.ProtoReflect.Descriptor instead.
+func (*AzureBackupProtectedFileShareOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupProtectedFileShareStackOutputs) GetBackupProtectedFileShareId() string {
+func (x *AzureBackupProtectedFileShareOutputs) GetBackupProtectedFileShareId() string {
 	if x != nil {
 		return x.BackupProtectedFileShareId
 	}
@@ -74,8 +74,8 @@ var File_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azurebackupprotectedfileshare/v1alpha1/outputs.proto\x128dev.planton.azure.azurebackupprotectedfileshare.v1alpha1\"o\n" +
-	")AzureBackupProtectedFileShareStackOutputs\x12B\n" +
+	"Bcatalog/azure/azurebackupprotectedfileshare/v1alpha1/outputs.proto\x128dev.planton.azure.azurebackupprotectedfileshare.v1alpha1\"j\n" +
+	"$AzureBackupProtectedFileShareOutputs\x12B\n" +
 	"\x1ebackup_protected_file_share_id\x18\x01 \x01(\tR\x1abackupProtectedFileShareIdB\xca\x03\n" +
 	"<com.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1B\fOutputsProtoP\x01Zwgithub.com/plantonhq/planton/catalog/azure/azurebackupprotectedfileshare/v1alpha1;azurebackupprotectedfilesharev1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Azure.Azurebackupprotectedfileshare.V1alpha1\xca\x028Dev\\Planton\\Azure\\Azurebackupprotectedfileshare\\V1alpha1\xe2\x02DDev\\Planton\\Azure\\Azurebackupprotectedfileshare\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Azure::Azurebackupprotectedfileshare::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureBackupProtectedFileShareStackOutputs)(nil), // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackOutputs
+	(*AzureBackupProtectedFileShareOutputs)(nil), // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareOutputs
 }
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

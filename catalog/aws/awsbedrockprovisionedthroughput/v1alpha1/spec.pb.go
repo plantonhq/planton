@@ -44,7 +44,7 @@ const (
 // its term ends).
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsBedrockProvisionedThroughputSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region of the provisioned capacity.

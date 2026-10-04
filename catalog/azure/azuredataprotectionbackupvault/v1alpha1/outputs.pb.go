@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataProtectionBackupVaultStackOutputs** captures the outputs
+// **AzureDataProtectionBackupVaultOutputs** captures the outputs
 // of provisioning a Data Protection backup vault.
-type AzureDataProtectionBackupVaultStackOutputs struct {
+type AzureDataProtectionBackupVaultOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the vault -- what backup
 	// policies and backup instances reference their vault by.
@@ -40,20 +40,20 @@ type AzureDataProtectionBackupVaultStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureDataProtectionBackupVaultStackOutputs) Reset() {
-	*x = AzureDataProtectionBackupVaultStackOutputs{}
+func (x *AzureDataProtectionBackupVaultOutputs) Reset() {
+	*x = AzureDataProtectionBackupVaultOutputs{}
 	mi := &file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataProtectionBackupVaultStackOutputs) String() string {
+func (x *AzureDataProtectionBackupVaultOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataProtectionBackupVaultStackOutputs) ProtoMessage() {}
+func (*AzureDataProtectionBackupVaultOutputs) ProtoMessage() {}
 
-func (x *AzureDataProtectionBackupVaultStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataProtectionBackupVaultOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureDataProtectionBackupVaultStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataProtectionBackupVaultStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataProtectionBackupVaultStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataProtectionBackupVaultOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataProtectionBackupVaultOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataProtectionBackupVaultStackOutputs) GetBackupVaultId() string {
+func (x *AzureDataProtectionBackupVaultOutputs) GetBackupVaultId() string {
 	if x != nil {
 		return x.BackupVaultId
 	}
 	return ""
 }
 
-func (x *AzureDataProtectionBackupVaultStackOutputs) GetBackupVaultName() string {
+func (x *AzureDataProtectionBackupVaultOutputs) GetBackupVaultName() string {
 	if x != nil {
 		return x.BackupVaultName
 	}
 	return ""
 }
 
-func (x *AzureDataProtectionBackupVaultStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureDataProtectionBackupVaultOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -95,8 +95,8 @@ var File_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto pro
 
 const file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azuredataprotectionbackupvault/v1alpha1/outputs.proto\x129dev.planton.azure.azuredataprotectionbackupvault.v1alpha1\"\xd2\x01\n" +
-	"*AzureDataProtectionBackupVaultStackOutputs\x12&\n" +
+	"Ccatalog/azure/azuredataprotectionbackupvault/v1alpha1/outputs.proto\x129dev.planton.azure.azuredataprotectionbackupvault.v1alpha1\"\xcd\x01\n" +
+	"%AzureDataProtectionBackupVaultOutputs\x12&\n" +
 	"\x0fbackup_vault_id\x18\x01 \x01(\tR\rbackupVaultId\x12*\n" +
 	"\x11backup_vault_name\x18\x02 \x01(\tR\x0fbackupVaultName\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\x03 \x01(\tR!systemAssignedIdentityPrincipalIdB\xd1\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_ra
 
 var file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataProtectionBackupVaultStackOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStackOutputs
+	(*AzureDataProtectionBackupVaultOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultOutputs
 }
 var file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

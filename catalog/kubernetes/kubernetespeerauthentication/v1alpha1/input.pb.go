@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesPeerAuthenticationStackInput provides the inputs for creating the
+// KubernetesPeerAuthenticationIacInput provides the inputs for creating the
 // PeerAuthentication on a Kubernetes cluster.
-type KubernetesPeerAuthenticationStackInput struct {
+type KubernetesPeerAuthenticationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesPeerAuthentication `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesPeerAuthenticationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesPeerAuthenticationStackInput) Reset() {
-	*x = KubernetesPeerAuthenticationStackInput{}
+func (x *KubernetesPeerAuthenticationIacInput) Reset() {
+	*x = KubernetesPeerAuthenticationIacInput{}
 	mi := &file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPeerAuthenticationStackInput) String() string {
+func (x *KubernetesPeerAuthenticationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPeerAuthenticationStackInput) ProtoMessage() {}
+func (*KubernetesPeerAuthenticationIacInput) ProtoMessage() {}
 
-func (x *KubernetesPeerAuthenticationStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPeerAuthenticationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesPeerAuthenticationStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPeerAuthenticationStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesPeerAuthenticationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPeerAuthenticationIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesPeerAuthenticationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPeerAuthenticationStackInput) GetTarget() *KubernetesPeerAuthentication {
+func (x *KubernetesPeerAuthenticationIacInput) GetTarget() *KubernetesPeerAuthentication {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesPeerAuthenticationStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesPeerAuthenticationIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto pr
 
 const file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/kubernetes/kubernetespeerauthentication/v1alpha1/input.proto\x12<dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1\x1aBcatalog/kubernetes/kubernetespeerauthentication/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf7\x01\n" +
-	"&KubernetesPeerAuthenticationStackInput\x12r\n" +
+	"Dcatalog/kubernetes/kubernetespeerauthentication/v1alpha1/input.proto\x12<dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1\x1aBcatalog/kubernetes/kubernetespeerauthentication/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf5\x01\n" +
+	"$KubernetesPeerAuthenticationIacInput\x12r\n" +
 	"\x06target\x18\x01 \x01(\v2Z.dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xdf\x03\n" +
 	"@com.dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_r
 
 var file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesPeerAuthenticationStackInput)(nil), // 0: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationStackInput
-	(*KubernetesPeerAuthentication)(nil),           // 1: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthentication
-	(*kubernetes.KubernetesProviderConfig)(nil),    // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesPeerAuthenticationIacInput)(nil), // 0: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationIacInput
+	(*KubernetesPeerAuthentication)(nil),         // 1: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthentication
+	(*kubernetes.KubernetesProviderConfig)(nil),  // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationStackInput.target:type_name -> dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthentication
-	2, // 1: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationIacInput.target:type_name -> dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthentication
+	2, // 1: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

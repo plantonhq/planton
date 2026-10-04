@@ -23,7 +23,7 @@ revision, so a change here rolls referencing services naturally through
 the resource graph.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

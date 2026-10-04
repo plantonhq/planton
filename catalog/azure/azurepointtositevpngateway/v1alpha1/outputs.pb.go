@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePointToSiteVpnGatewayStackOutputs** captures the outputs of
+// **AzurePointToSiteVpnGatewayOutputs** captures the outputs of
 // provisioning a point-to-site VPN gateway.
-type AzurePointToSiteVpnGatewayStackOutputs struct {
+type AzurePointToSiteVpnGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the point-to-site VPN gateway.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/p2sVpnGateways/{name}
@@ -34,20 +34,20 @@ type AzurePointToSiteVpnGatewayStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *AzurePointToSiteVpnGatewayStackOutputs) Reset() {
-	*x = AzurePointToSiteVpnGatewayStackOutputs{}
+func (x *AzurePointToSiteVpnGatewayOutputs) Reset() {
+	*x = AzurePointToSiteVpnGatewayOutputs{}
 	mi := &file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePointToSiteVpnGatewayStackOutputs) String() string {
+func (x *AzurePointToSiteVpnGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePointToSiteVpnGatewayStackOutputs) ProtoMessage() {}
+func (*AzurePointToSiteVpnGatewayOutputs) ProtoMessage() {}
 
-func (x *AzurePointToSiteVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePointToSiteVpnGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzurePointToSiteVpnGatewayStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePointToSiteVpnGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePointToSiteVpnGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePointToSiteVpnGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePointToSiteVpnGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePointToSiteVpnGatewayStackOutputs) GetPointToSiteVpnGatewayId() string {
+func (x *AzurePointToSiteVpnGatewayOutputs) GetPointToSiteVpnGatewayId() string {
 	if x != nil {
 		return x.PointToSiteVpnGatewayId
 	}
 	return ""
 }
 
-func (x *AzurePointToSiteVpnGatewayStackOutputs) GetPointToSiteVpnGatewayName() string {
+func (x *AzurePointToSiteVpnGatewayOutputs) GetPointToSiteVpnGatewayName() string {
 	if x != nil {
 		return x.PointToSiteVpnGatewayName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurepointtositevpngateway/v1alpha1/outputs.proto\x125dev.planton.azure.azurepointtositevpngateway.v1alpha1\"\xaa\x01\n" +
-	"&AzurePointToSiteVpnGatewayStackOutputs\x12=\n" +
+	"?catalog/azure/azurepointtositevpngateway/v1alpha1/outputs.proto\x125dev.planton.azure.azurepointtositevpngateway.v1alpha1\"\xa5\x01\n" +
+	"!AzurePointToSiteVpnGatewayOutputs\x12=\n" +
 	"\x1cpoint_to_site_vpn_gateway_id\x18\x01 \x01(\tR\x17pointToSiteVpnGatewayId\x12A\n" +
 	"\x1epoint_to_site_vpn_gateway_name\x18\x02 \x01(\tR\x19pointToSiteVpnGatewayNameB\xb5\x03\n" +
 	"9com.dev.planton.azure.azurepointtositevpngateway.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azurepointtositevpngateway/v1alpha1;azurepointtositevpngatewayv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azurepointtositevpngateway.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azurepointtositevpngateway\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azurepointtositevpngateway\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azurepointtositevpngateway::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePointToSiteVpnGatewayStackOutputs)(nil), // 0: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayStackOutputs
+	(*AzurePointToSiteVpnGatewayOutputs)(nil), // 0: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayOutputs
 }
 var file_catalog_azure_azurepointtositevpngateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: compliance/componentcontrolprofile/v1/spec.proto
+// source: compliance/catalogkindcontrolprofile/v1/spec.proto
 
-package componentcontrolprofilev1
+package catalogkindcontrolprofilev1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Status is the component's enforcement stance on a control.
+// Status is the kind's enforcement stance on a control.
 type Status int32
 
 const (
@@ -32,7 +32,7 @@ const (
 	// The control is a spec choice: field_path names the field, and notes
 	// should say which presets enable it.
 	Status_configurable Status = 2
-	// The control has no meaning for this component class (e.g. "automated
+	// The control has no meaning for this kind class (e.g. "automated
 	// backup" for a stateless load balancer). notes must say why.
 	Status_not_applicable Status = 3
 )
@@ -64,11 +64,11 @@ func (x Status) String() string {
 }
 
 func (Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_enumTypes[0].Descriptor()
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_enumTypes[0].Descriptor()
 }
 
 func (Status) Type() protoreflect.EnumType {
-	return &file_compliance_componentcontrolprofile_v1_spec_proto_enumTypes[0]
+	return &file_compliance_catalogkindcontrolprofile_v1_spec_proto_enumTypes[0]
 }
 
 func (x Status) Number() protoreflect.EnumNumber {
@@ -77,7 +77,7 @@ func (x Status) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Status.Descriptor instead.
 func (Status) EnumDescriptor() ([]byte, []int) {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{0}
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
 // Type classifies where evidence comes from.
@@ -136,11 +136,11 @@ func (x Type) String() string {
 }
 
 func (Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_enumTypes[1].Descriptor()
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_enumTypes[1].Descriptor()
 }
 
 func (Type) Type() protoreflect.EnumType {
-	return &file_compliance_componentcontrolprofile_v1_spec_proto_enumTypes[1]
+	return &file_compliance_catalogkindcontrolprofile_v1_spec_proto_enumTypes[1]
 }
 
 func (x Type) Number() protoreflect.EnumNumber {
@@ -149,38 +149,38 @@ func (x Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Type.Descriptor instead.
 func (Type) EnumDescriptor() ([]byte, []int) {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-// ComponentControlProfileSpec lists the component's posture per control.
+// CatalogKindControlProfileSpec lists the kind's posture per control.
 // Authoring contract: EVERY control in the central catalog appears exactly
 // once -- use not_applicable (with a reason in notes) rather than omission
 // when a control genuinely cannot apply. An omitted control is
 // indistinguishable from an unexamined one, and this profile's value is
 // that every control WAS examined; the conformance gate enforces
 // completeness.
-type ComponentControlProfileSpec struct {
+type CatalogKindControlProfileSpec struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Controls      []*ControlPosture      `protobuf:"bytes,1,rep,name=controls,proto3" json:"controls,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentControlProfileSpec) Reset() {
-	*x = ComponentControlProfileSpec{}
-	mi := &file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindControlProfileSpec) Reset() {
+	*x = CatalogKindControlProfileSpec{}
+	mi := &file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentControlProfileSpec) String() string {
+func (x *CatalogKindControlProfileSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentControlProfileSpec) ProtoMessage() {}
+func (*CatalogKindControlProfileSpec) ProtoMessage() {}
 
-func (x *ComponentControlProfileSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindControlProfileSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -191,19 +191,19 @@ func (x *ComponentControlProfileSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentControlProfileSpec.ProtoReflect.Descriptor instead.
-func (*ComponentControlProfileSpec) Descriptor() ([]byte, []int) {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindControlProfileSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindControlProfileSpec) Descriptor() ([]byte, []int) {
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentControlProfileSpec) GetControls() []*ControlPosture {
+func (x *CatalogKindControlProfileSpec) GetControls() []*ControlPosture {
 	if x != nil {
 		return x.Controls
 	}
 	return nil
 }
 
-// ControlPosture is the component's stance on one catalog control.
+// ControlPosture is the kind's stance on one catalog control.
 type ControlPosture struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The control's id in the central control catalog
@@ -212,7 +212,7 @@ type ControlPosture struct {
 	ControlId string `protobuf:"bytes,1,opt,name=control_id,json=controlId,proto3" json:"control_id,omitempty"`
 	// Whether the official modules enforce, expose, or cannot express the
 	// control.
-	Status Status `protobuf:"varint,2,opt,name=status,proto3,enum=dev.planton.compliance.componentcontrolprofile.v1.Status" json:"status,omitempty"`
+	Status Status `protobuf:"varint,2,opt,name=status,proto3,enum=dev.planton.compliance.catalogkindcontrolprofile.v1.Status" json:"status,omitempty"`
 	// The spec field that turns the control on/off or tunes it. Required when
 	// status is configurable; spec-relative proto field path (snake_case,
 	// dot-separated), validated against the served version's descriptors.
@@ -230,7 +230,7 @@ type ControlPosture struct {
 
 func (x *ControlPosture) Reset() {
 	*x = ControlPosture{}
-	mi := &file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes[1]
+	mi := &file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -242,7 +242,7 @@ func (x *ControlPosture) String() string {
 func (*ControlPosture) ProtoMessage() {}
 
 func (x *ControlPosture) ProtoReflect() protoreflect.Message {
-	mi := &file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes[1]
+	mi := &file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -255,7 +255,7 @@ func (x *ControlPosture) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ControlPosture.ProtoReflect.Descriptor instead.
 func (*ControlPosture) Descriptor() ([]byte, []int) {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ControlPosture) GetControlId() string {
@@ -297,7 +297,7 @@ func (x *ControlPosture) GetNotes() string {
 type Evidence struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// What kind of ground backs the claim.
-	Type Type `protobuf:"varint,1,opt,name=type,proto3,enum=dev.planton.compliance.componentcontrolprofile.v1.Type" json:"type,omitempty"`
+	Type Type `protobuf:"varint,1,opt,name=type,proto3,enum=dev.planton.compliance.catalogkindcontrolprofile.v1.Type" json:"type,omitempty"`
 	// The pointer a reviewer follows to verify: the module behavior described
 	// in one sentence (module_default), the provider guarantee in one
 	// sentence (provider_default), the spec field and its declared default
@@ -309,7 +309,7 @@ type Evidence struct {
 
 func (x *Evidence) Reset() {
 	*x = Evidence{}
-	mi := &file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes[2]
+	mi := &file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -321,7 +321,7 @@ func (x *Evidence) String() string {
 func (*Evidence) ProtoMessage() {}
 
 func (x *Evidence) ProtoReflect() protoreflect.Message {
-	mi := &file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes[2]
+	mi := &file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -334,7 +334,7 @@ func (x *Evidence) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Evidence.ProtoReflect.Descriptor instead.
 func (*Evidence) Descriptor() ([]byte, []int) {
-	return file_compliance_componentcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Evidence) GetType() Type {
@@ -351,23 +351,23 @@ func (x *Evidence) GetReference() string {
 	return ""
 }
 
-var File_compliance_componentcontrolprofile_v1_spec_proto protoreflect.FileDescriptor
+var File_compliance_catalogkindcontrolprofile_v1_spec_proto protoreflect.FileDescriptor
 
-const file_compliance_componentcontrolprofile_v1_spec_proto_rawDesc = "" +
+const file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0compliance/componentcontrolprofile/v1/spec.proto\x121dev.planton.compliance.componentcontrolprofile.v1\"|\n" +
-	"\x1bComponentControlProfileSpec\x12]\n" +
-	"\bcontrols\x18\x01 \x03(\v2A.dev.planton.compliance.componentcontrolprofile.v1.ControlPostureR\bcontrols\"\x90\x02\n" +
+	"2compliance/catalogkindcontrolprofile/v1/spec.proto\x123dev.planton.compliance.catalogkindcontrolprofile.v1\"\x80\x01\n" +
+	"\x1dCatalogKindControlProfileSpec\x12_\n" +
+	"\bcontrols\x18\x01 \x03(\v2C.dev.planton.compliance.catalogkindcontrolprofile.v1.ControlPostureR\bcontrols\"\x94\x02\n" +
 	"\x0eControlPosture\x12\x1d\n" +
 	"\n" +
-	"control_id\x18\x01 \x01(\tR\tcontrolId\x12Q\n" +
-	"\x06status\x18\x02 \x01(\x0e29.dev.planton.compliance.componentcontrolprofile.v1.StatusR\x06status\x12\x1d\n" +
+	"control_id\x18\x01 \x01(\tR\tcontrolId\x12S\n" +
+	"\x06status\x18\x02 \x01(\x0e2;.dev.planton.compliance.catalogkindcontrolprofile.v1.StatusR\x06status\x12\x1d\n" +
 	"\n" +
-	"field_path\x18\x03 \x01(\tR\tfieldPath\x12W\n" +
-	"\bevidence\x18\x04 \x01(\v2;.dev.planton.compliance.componentcontrolprofile.v1.EvidenceR\bevidence\x12\x14\n" +
-	"\x05notes\x18\x05 \x01(\tR\x05notes\"u\n" +
-	"\bEvidence\x12K\n" +
-	"\x04type\x18\x01 \x01(\x0e27.dev.planton.compliance.componentcontrolprofile.v1.TypeR\x04type\x12\x1c\n" +
+	"field_path\x18\x03 \x01(\tR\tfieldPath\x12Y\n" +
+	"\bevidence\x18\x04 \x01(\v2=.dev.planton.compliance.catalogkindcontrolprofile.v1.EvidenceR\bevidence\x12\x14\n" +
+	"\x05notes\x18\x05 \x01(\tR\x05notes\"w\n" +
+	"\bEvidence\x12M\n" +
+	"\x04type\x18\x01 \x01(\x0e29.dev.planton.compliance.catalogkindcontrolprofile.v1.TypeR\x04type\x12\x1c\n" +
 	"\treference\x18\x02 \x01(\tR\treference*_\n" +
 	"\x06Status\x12\x16\n" +
 	"\x12status_unspecified\x10\x00\x12\x17\n" +
@@ -380,35 +380,35 @@ const file_compliance_componentcontrolprofile_v1_spec_proto_rawDesc = "" +
 	"\x10provider_default\x10\x02\x12\x10\n" +
 	"\fspec_default\x10\x03\x12\x11\n" +
 	"\rscanner_check\x10\x04\x12\x13\n" +
-	"\x0fspec_validation\x10\x05B\x89\x03\n" +
-	"5com.dev.planton.compliance.componentcontrolprofile.v1B\tSpecProtoP\x01Z\\github.com/plantonhq/planton/compliance/componentcontrolprofile/v1;componentcontrolprofilev1\xa2\x02\x04DPCC\xaa\x021Dev.Planton.Compliance.Componentcontrolprofile.V1\xca\x021Dev\\Planton\\Compliance\\Componentcontrolprofile\\V1\xe2\x02=Dev\\Planton\\Compliance\\Componentcontrolprofile\\V1\\GPBMetadata\xea\x025Dev::Planton::Compliance::Componentcontrolprofile::V1b\x06proto3"
+	"\x0fspec_validation\x10\x05B\x97\x03\n" +
+	"7com.dev.planton.compliance.catalogkindcontrolprofile.v1B\tSpecProtoP\x01Z`github.com/plantonhq/planton/compliance/catalogkindcontrolprofile/v1;catalogkindcontrolprofilev1\xa2\x02\x04DPCC\xaa\x023Dev.Planton.Compliance.Catalogkindcontrolprofile.V1\xca\x023Dev\\Planton\\Compliance\\Catalogkindcontrolprofile\\V1\xe2\x02?Dev\\Planton\\Compliance\\Catalogkindcontrolprofile\\V1\\GPBMetadata\xea\x027Dev::Planton::Compliance::Catalogkindcontrolprofile::V1b\x06proto3"
 
 var (
-	file_compliance_componentcontrolprofile_v1_spec_proto_rawDescOnce sync.Once
-	file_compliance_componentcontrolprofile_v1_spec_proto_rawDescData []byte
+	file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescOnce sync.Once
+	file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescData []byte
 )
 
-func file_compliance_componentcontrolprofile_v1_spec_proto_rawDescGZIP() []byte {
-	file_compliance_componentcontrolprofile_v1_spec_proto_rawDescOnce.Do(func() {
-		file_compliance_componentcontrolprofile_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_compliance_componentcontrolprofile_v1_spec_proto_rawDesc), len(file_compliance_componentcontrolprofile_v1_spec_proto_rawDesc)))
+func file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescGZIP() []byte {
+	file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescOnce.Do(func() {
+		file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDesc), len(file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDesc)))
 	})
-	return file_compliance_componentcontrolprofile_v1_spec_proto_rawDescData
+	return file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDescData
 }
 
-var file_compliance_componentcontrolprofile_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_compliance_componentcontrolprofile_v1_spec_proto_goTypes = []any{
-	(Status)(0),                         // 0: dev.planton.compliance.componentcontrolprofile.v1.Status
-	(Type)(0),                           // 1: dev.planton.compliance.componentcontrolprofile.v1.Type
-	(*ComponentControlProfileSpec)(nil), // 2: dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfileSpec
-	(*ControlPosture)(nil),              // 3: dev.planton.compliance.componentcontrolprofile.v1.ControlPosture
-	(*Evidence)(nil),                    // 4: dev.planton.compliance.componentcontrolprofile.v1.Evidence
+var file_compliance_catalogkindcontrolprofile_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_compliance_catalogkindcontrolprofile_v1_spec_proto_goTypes = []any{
+	(Status)(0),                           // 0: dev.planton.compliance.catalogkindcontrolprofile.v1.Status
+	(Type)(0),                             // 1: dev.planton.compliance.catalogkindcontrolprofile.v1.Type
+	(*CatalogKindControlProfileSpec)(nil), // 2: dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfileSpec
+	(*ControlPosture)(nil),                // 3: dev.planton.compliance.catalogkindcontrolprofile.v1.ControlPosture
+	(*Evidence)(nil),                      // 4: dev.planton.compliance.catalogkindcontrolprofile.v1.Evidence
 }
-var file_compliance_componentcontrolprofile_v1_spec_proto_depIdxs = []int32{
-	3, // 0: dev.planton.compliance.componentcontrolprofile.v1.ComponentControlProfileSpec.controls:type_name -> dev.planton.compliance.componentcontrolprofile.v1.ControlPosture
-	0, // 1: dev.planton.compliance.componentcontrolprofile.v1.ControlPosture.status:type_name -> dev.planton.compliance.componentcontrolprofile.v1.Status
-	4, // 2: dev.planton.compliance.componentcontrolprofile.v1.ControlPosture.evidence:type_name -> dev.planton.compliance.componentcontrolprofile.v1.Evidence
-	1, // 3: dev.planton.compliance.componentcontrolprofile.v1.Evidence.type:type_name -> dev.planton.compliance.componentcontrolprofile.v1.Type
+var file_compliance_catalogkindcontrolprofile_v1_spec_proto_depIdxs = []int32{
+	3, // 0: dev.planton.compliance.catalogkindcontrolprofile.v1.CatalogKindControlProfileSpec.controls:type_name -> dev.planton.compliance.catalogkindcontrolprofile.v1.ControlPosture
+	0, // 1: dev.planton.compliance.catalogkindcontrolprofile.v1.ControlPosture.status:type_name -> dev.planton.compliance.catalogkindcontrolprofile.v1.Status
+	4, // 2: dev.planton.compliance.catalogkindcontrolprofile.v1.ControlPosture.evidence:type_name -> dev.planton.compliance.catalogkindcontrolprofile.v1.Evidence
+	1, // 3: dev.planton.compliance.catalogkindcontrolprofile.v1.Evidence.type:type_name -> dev.planton.compliance.catalogkindcontrolprofile.v1.Type
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
@@ -416,27 +416,27 @@ var file_compliance_componentcontrolprofile_v1_spec_proto_depIdxs = []int32{
 	0, // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_compliance_componentcontrolprofile_v1_spec_proto_init() }
-func file_compliance_componentcontrolprofile_v1_spec_proto_init() {
-	if File_compliance_componentcontrolprofile_v1_spec_proto != nil {
+func init() { file_compliance_catalogkindcontrolprofile_v1_spec_proto_init() }
+func file_compliance_catalogkindcontrolprofile_v1_spec_proto_init() {
+	if File_compliance_catalogkindcontrolprofile_v1_spec_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_compliance_componentcontrolprofile_v1_spec_proto_rawDesc), len(file_compliance_componentcontrolprofile_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDesc), len(file_compliance_catalogkindcontrolprofile_v1_spec_proto_rawDesc)),
 			NumEnums:      2,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_compliance_componentcontrolprofile_v1_spec_proto_goTypes,
-		DependencyIndexes: file_compliance_componentcontrolprofile_v1_spec_proto_depIdxs,
-		EnumInfos:         file_compliance_componentcontrolprofile_v1_spec_proto_enumTypes,
-		MessageInfos:      file_compliance_componentcontrolprofile_v1_spec_proto_msgTypes,
+		GoTypes:           file_compliance_catalogkindcontrolprofile_v1_spec_proto_goTypes,
+		DependencyIndexes: file_compliance_catalogkindcontrolprofile_v1_spec_proto_depIdxs,
+		EnumInfos:         file_compliance_catalogkindcontrolprofile_v1_spec_proto_enumTypes,
+		MessageInfos:      file_compliance_catalogkindcontrolprofile_v1_spec_proto_msgTypes,
 	}.Build()
-	File_compliance_componentcontrolprofile_v1_spec_proto = out.File
-	file_compliance_componentcontrolprofile_v1_spec_proto_goTypes = nil
-	file_compliance_componentcontrolprofile_v1_spec_proto_depIdxs = nil
+	File_compliance_catalogkindcontrolprofile_v1_spec_proto = out.File
+	file_compliance_catalogkindcontrolprofile_v1_spec_proto_goTypes = nil
+	file_compliance_catalogkindcontrolprofile_v1_spec_proto_depIdxs = nil
 }

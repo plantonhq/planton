@@ -31,7 +31,7 @@ type GcpTpuQueuedResource struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpTpuQueuedResourceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpTpuQueuedResource) GetKind() string {
 	return ""
 }
 
-func (x *GcpTpuQueuedResource) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpTpuQueuedResource) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpTpuQueuedResource) GetStatus() *GcpTpuQueuedResourceStatus {
 // gcp-tpu-queued-resource status
 type GcpTpuQueuedResourceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpTpuQueuedResourceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpTpuQueuedResourceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpTpuQueuedResourceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptpuqueuedresource_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpTpuQueuedResourceStatus) GetOutputs() *GcpTpuQueuedResourceStackOutputs {
+func (x *GcpTpuQueuedResourceStatus) GetOutputs() *GcpTpuQueuedResourceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcptpuqueuedresource_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14GcpTpuQueuedResourceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatusR\x06status\"\x87\x01\n" +
-	"\x1aGcpTpuQueuedResourceStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatusR\x06status\"\x82\x01\n" +
+	"\x1aGcpTpuQueuedResourceStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.gcp.gcptpuqueuedresource.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/gcp/gcptpuqueuedresource/v1alpha1;gcptpuqueuedresourcev1alpha1\xa2\x02\x04DPGG\xaa\x02-Dev.Planton.Gcp.Gcptpuqueuedresource.V1alpha1\xca\x02-Dev\\Planton\\Gcp\\Gcptpuqueuedresource\\V1alpha1\xe2\x029Dev\\Planton\\Gcp\\Gcptpuqueuedresource\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Gcp::Gcptpuqueuedresource::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcptpuqueuedresource_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_api_proto_goTypes = []any{
-	(*GcpTpuQueuedResource)(nil),             // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource
-	(*GcpTpuQueuedResourceStatus)(nil),       // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpTpuQueuedResourceSpec)(nil),         // 3: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceSpec
-	(*GcpTpuQueuedResourceStackOutputs)(nil), // 4: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackOutputs
+	(*GcpTpuQueuedResource)(nil),         // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource
+	(*GcpTpuQueuedResourceStatus)(nil),   // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpTpuQueuedResourceSpec)(nil),     // 3: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceSpec
+	(*GcpTpuQueuedResourceOutputs)(nil),  // 4: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceOutputs
 }
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource.spec:type_name -> dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceSpec
 	1, // 2: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource.status:type_name -> dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatus
-	4, // 3: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatus.outputs:type_name -> dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackOutputs
+	4, // 3: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStatus.outputs:type_name -> dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

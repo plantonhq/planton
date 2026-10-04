@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurevirtualnetworkgateway
 spec:
@@ -32,7 +32,7 @@ spec:
       exclusions:
         - site-to-site tunnels beyond the included 10 bill per tunnel-hour, counted across ALL the gateway's connections -- an aggregate invisible in this manifest
         - egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-        - the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
+        - the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
     - preset: 02-active-active-zone-redundant
       region_assumption: eastus
       currency: USD
@@ -51,8 +51,8 @@ spec:
       exclusions:
         - site-to-site tunnels beyond the included 10 bill per tunnel-hour, counted across ALL the gateway's connections -- an aggregate invisible in this manifest
         - egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-        - the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
-      notes: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own component.
+        - the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
+      notes: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own kind.
     - preset: 03-point-to-site-entra-id
       region_assumption: eastus
       currency: USD
@@ -72,4 +72,4 @@ spec:
         - site-to-site tunnels beyond the included 10 bill per tunnel-hour, counted across ALL the gateway's connections -- an aggregate invisible in this manifest
         - point-to-site connections beyond the included 128 bill per connection-hour and follow client behavior
         - egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-        - the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
+        - the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines

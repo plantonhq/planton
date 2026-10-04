@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureBackupContainerStorageAccountStackInput is the input to the
+// AzureBackupContainerStorageAccountIacInput is the input to the
 // IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureBackupContainerStorageAccountStackInput struct {
+type AzureBackupContainerStorageAccountIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The backup container registration resource to deploy.
 	Target *AzureBackupContainerStorageAccount `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureBackupContainerStorageAccountStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureBackupContainerStorageAccountStackInput) Reset() {
-	*x = AzureBackupContainerStorageAccountStackInput{}
+func (x *AzureBackupContainerStorageAccountIacInput) Reset() {
+	*x = AzureBackupContainerStorageAccountIacInput{}
 	mi := &file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupContainerStorageAccountStackInput) String() string {
+func (x *AzureBackupContainerStorageAccountIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupContainerStorageAccountStackInput) ProtoMessage() {}
+func (*AzureBackupContainerStorageAccountIacInput) ProtoMessage() {}
 
-func (x *AzureBackupContainerStorageAccountStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupContainerStorageAccountIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureBackupContainerStorageAccountStackInput) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupContainerStorageAccountStackInput.ProtoReflect.Descriptor instead.
-func (*AzureBackupContainerStorageAccountStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupContainerStorageAccountIacInput.ProtoReflect.Descriptor instead.
+func (*AzureBackupContainerStorageAccountIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupContainerStorageAccountStackInput) GetTarget() *AzureBackupContainerStorageAccount {
+func (x *AzureBackupContainerStorageAccountIacInput) GetTarget() *AzureBackupContainerStorageAccount {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureBackupContainerStorageAccountStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureBackupContainerStorageAccountIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto p
 
 const file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/azure/azurebackupcontainerstorageaccount/v1alpha1/input.proto\x12=dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1\x1aCcatalog/azure/azurebackupcontainerstorageaccount/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xfa\x01\n" +
-	",AzureBackupContainerStorageAccountStackInput\x12y\n" +
+	"Ecatalog/azure/azurebackupcontainerstorageaccount/v1alpha1/input.proto\x12=dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1\x1aCcatalog/azure/azurebackupcontainerstorageaccount/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf8\x01\n" +
+	"*AzureBackupContainerStorageAccountIacInput\x12y\n" +
 	"\x06target\x18\x01 \x01(\v2a.dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xec\x03\n" +
 	"Acom.dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_
 
 var file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_goTypes = []any{
-	(*AzureBackupContainerStorageAccountStackInput)(nil), // 0: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountStackInput
-	(*AzureBackupContainerStorageAccount)(nil),           // 1: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccount
-	(*azure.AzureProviderConfig)(nil),                    // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureBackupContainerStorageAccountIacInput)(nil), // 0: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountIacInput
+	(*AzureBackupContainerStorageAccount)(nil),         // 1: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccount
+	(*azure.AzureProviderConfig)(nil),                  // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountStackInput.target:type_name -> dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccount
-	2, // 1: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountIacInput.target:type_name -> dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccount
+	2, // 1: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesTektonStackInput provides the input for the Tekton IaC stack.
-type KubernetesTektonStackInput struct {
+// KubernetesTektonIacInput provides the input for the Tekton IaC stack.
+type KubernetesTektonIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesTekton `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Kubernetes provider
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesTektonStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesTektonStackInput) Reset() {
-	*x = KubernetesTektonStackInput{}
+func (x *KubernetesTektonIacInput) Reset() {
+	*x = KubernetesTektonIacInput{}
 	mi := &file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTektonStackInput) String() string {
+func (x *KubernetesTektonIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTektonStackInput) ProtoMessage() {}
+func (*KubernetesTektonIacInput) ProtoMessage() {}
 
-func (x *KubernetesTektonStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTektonIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesTektonStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTektonStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesTektonStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTektonIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesTektonIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTektonStackInput) GetTarget() *KubernetesTekton {
+func (x *KubernetesTektonIacInput) GetTarget() *KubernetesTekton {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesTektonStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesTektonIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetestekton/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetestekton.v1alpha1\x1a6catalog/kubernetes/kubernetestekton/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd3\x01\n" +
-	"\x1aKubernetesTektonStackInput\x12Z\n" +
+	"8catalog/kubernetes/kubernetestekton/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetestekton.v1alpha1\x1a6catalog/kubernetes/kubernetestekton/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd1\x01\n" +
+	"\x18KubernetesTektonIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetestekton.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesTektonStackInput)(nil),          // 0: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonStackInput
+	(*KubernetesTektonIacInput)(nil),            // 0: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonIacInput
 	(*KubernetesTekton)(nil),                    // 1: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTekton
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetestekton_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonStackInput.target:type_name -> dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTekton
-	2, // 1: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonIacInput.target:type_name -> dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTekton
+	2, // 1: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

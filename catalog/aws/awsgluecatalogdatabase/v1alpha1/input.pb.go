@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsGlueCatalogDatabaseStackInput is the input envelope passed to IaC modules for provisioning.
-type AwsGlueCatalogDatabaseStackInput struct {
+// AwsGlueCatalogDatabaseIacInput is the input envelope passed to IaC modules for provisioning.
+type AwsGlueCatalogDatabaseIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsGlueCatalogDatabase resource to provision.
 	Target *AwsGlueCatalogDatabase `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsGlueCatalogDatabaseStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsGlueCatalogDatabaseStackInput) Reset() {
-	*x = AwsGlueCatalogDatabaseStackInput{}
+func (x *AwsGlueCatalogDatabaseIacInput) Reset() {
+	*x = AwsGlueCatalogDatabaseIacInput{}
 	mi := &file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsGlueCatalogDatabaseStackInput) String() string {
+func (x *AwsGlueCatalogDatabaseIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsGlueCatalogDatabaseStackInput) ProtoMessage() {}
+func (*AwsGlueCatalogDatabaseIacInput) ProtoMessage() {}
 
-func (x *AwsGlueCatalogDatabaseStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsGlueCatalogDatabaseIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsGlueCatalogDatabaseStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsGlueCatalogDatabaseStackInput.ProtoReflect.Descriptor instead.
-func (*AwsGlueCatalogDatabaseStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsGlueCatalogDatabaseIacInput.ProtoReflect.Descriptor instead.
+func (*AwsGlueCatalogDatabaseIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsGlueCatalogDatabaseStackInput) GetTarget() *AwsGlueCatalogDatabase {
+func (x *AwsGlueCatalogDatabaseIacInput) GetTarget() *AwsGlueCatalogDatabase {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsGlueCatalogDatabaseStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsGlueCatalogDatabaseIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsgluecatalogdatabase/v1alpha1/input.proto\x12/dev.planton.aws.awsgluecatalogdatabase.v1alpha1\x1a5catalog/aws/awsgluecatalogdatabase/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd0\x01\n" +
-	" AwsGlueCatalogDatabaseStackInput\x12_\n" +
+	"7catalog/aws/awsgluecatalogdatabase/v1alpha1/input.proto\x12/dev.planton.aws.awsgluecatalogdatabase.v1alpha1\x1a5catalog/aws/awsgluecatalogdatabase/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xce\x01\n" +
+	"\x1eAwsGlueCatalogDatabaseIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"3com.dev.planton.aws.awsgluecatalogdatabase.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_goTypes = []any{
-	(*AwsGlueCatalogDatabaseStackInput)(nil), // 0: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseStackInput
-	(*AwsGlueCatalogDatabase)(nil),           // 1: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabase
-	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsGlueCatalogDatabaseIacInput)(nil), // 0: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseIacInput
+	(*AwsGlueCatalogDatabase)(nil),         // 1: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabase
+	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsgluecatalogdatabase_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseStackInput.target:type_name -> dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabase
-	2, // 1: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseIacInput.target:type_name -> dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabase
+	2, // 1: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

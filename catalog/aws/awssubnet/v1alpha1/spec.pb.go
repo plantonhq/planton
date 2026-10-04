@@ -130,7 +130,7 @@ func (AwsSubnetSpec_AwsSubnetRoute_RouteTargetType) EnumDescriptor() ([]byte, []
 //   - route_table_id: an existing, externally-managed route table to associate.
 //
 // If neither is set, the subnet uses the VPC's main route table. The
-// route_table_id is always exported as a stack output so downstream resources
+// route_table_id is always exported as an output so downstream resources
 // can reference whichever table ended up associated.
 type AwsSubnetSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

@@ -31,7 +31,7 @@ type AwsMwaaEnvironment struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsMwaaEnvironmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsMwaaEnvironment) GetKind() string {
 	return ""
 }
 
-func (x *AwsMwaaEnvironment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsMwaaEnvironment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsMwaaEnvironment) GetStatus() *AwsMwaaEnvironmentStatus {
 // aws-mwaa-environment status
 type AwsMwaaEnvironmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsMwaaEnvironmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsMwaaEnvironmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsMwaaEnvironmentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmwaaenvironment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsMwaaEnvironmentStatus) GetOutputs() *AwsMwaaEnvironmentStackOutputs {
+func (x *AwsMwaaEnvironmentStatus) GetOutputs() *AwsMwaaEnvironmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsmwaaenvironment_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsMwaaEnvironmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsMwaaEnvironmentStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatusR\x06status\"|\n" +
+	"\x18AwsMwaaEnvironmentStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awsmwaaenvironment.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsmwaaenvironment/v1alpha1;awsmwaaenvironmentv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsmwaaenvironment.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsmwaaenvironment\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsmwaaenvironment\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsmwaaenvironment::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsmwaaenvironment_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsmwaaenvironment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsmwaaenvironment_v1alpha1_api_proto_goTypes = []any{
-	(*AwsMwaaEnvironment)(nil),             // 0: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironment
-	(*AwsMwaaEnvironmentStatus)(nil),       // 1: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsMwaaEnvironmentSpec)(nil),         // 3: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentSpec
-	(*AwsMwaaEnvironmentStackOutputs)(nil), // 4: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStackOutputs
+	(*AwsMwaaEnvironment)(nil),           // 0: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironment
+	(*AwsMwaaEnvironmentStatus)(nil),     // 1: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsMwaaEnvironmentSpec)(nil),       // 3: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentSpec
+	(*AwsMwaaEnvironmentOutputs)(nil),    // 4: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentOutputs
 }
 var file_catalog_aws_awsmwaaenvironment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironment.spec:type_name -> dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentSpec
 	1, // 2: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironment.status:type_name -> dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatus
-	4, // 3: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatus.outputs:type_name -> dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStackOutputs
+	4, // 3: dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentStatus.outputs:type_name -> dev.planton.aws.awsmwaaenvironment.v1alpha1.AwsMwaaEnvironmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

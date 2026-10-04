@@ -32,7 +32,7 @@ Notes:
   either destroys and recreates the user. `access_string` and the
   authentication mode update in place.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurebastionhost
 spec:
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "138.7000"
       exclusions:
         - outbound data transfer through sessions bills per GB in volume tiers after the free 5 GB/month
-        - the referenced Standard public IP bills hourly on its own component
+        - the referenced Standard public IP bills hourly on its own kind
       notes: Billing runs from provisioning until deletion, sessions or no sessions -- an idle jump host costs the same as a busy one.
     - preset: 02-standard-tunneling
       region_assumption: eastus
@@ -56,7 +56,7 @@ spec:
       total_list_cost: "416.1000"
       exclusions:
         - outbound data transfer through sessions bills per GB in volume tiers after the free 5 GB/month
-        - the referenced Standard public IP bills hourly on its own component
+        - the referenced Standard public IP bills hourly on its own kind
       notes: The feature toggles this preset enables (tunneling, file copy, IP connect) gate on the STANDARD SKU but add no meters -- capacity (scale_units) is the only dial beyond the SKU itself, adjustable in place.
     - preset: 03-developer
       region_assumption: eastus2
@@ -65,5 +65,5 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - outbound data transfer through sessions bills per GB in volume tiers after the free 5 GB/month
-        - the target virtual machines bill on their own components
+        - the target virtual machines bill on their own kinds
       notes: "The DEVELOPER SKU is genuinely free: Azure-hosted shared infrastructure with no gateway meter at all (the Retail Prices API carries no Developer meter -- verified), no dedicated subnet, and no public IP. The estimate totals to zero because the committed spend IS zero; the real money lives in outbound data transfer and the VMs being reached. The trade is capability: one connection per user, no feature knobs, limited regions."

@@ -28,7 +28,7 @@ type GcpFirebaseAppleApp struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpFirebaseAppleAppSpec      `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpFirebaseAppleAppStatus    `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpFirebaseAppleApp) GetKind() string {
 	return ""
 }
 
-func (x *GcpFirebaseAppleApp) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpFirebaseAppleApp) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpFirebaseAppleApp) GetStatus() *GcpFirebaseAppleAppStatus {
 }
 
 type GcpFirebaseAppleAppStatus struct {
-	state         protoimpl.MessageState           `protogen:"open.v1"`
-	Outputs       *GcpFirebaseAppleAppStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Outputs       *GcpFirebaseAppleAppOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpFirebaseAppleAppStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirebaseappleapp_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpFirebaseAppleAppStatus) GetOutputs() *GcpFirebaseAppleAppStackOutputs {
+func (x *GcpFirebaseAppleAppStatus) GetOutputs() *GcpFirebaseAppleAppOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpfirebaseappleapp_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13GcpFirebaseAppleAppR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatusR\x06status\"\x84\x01\n" +
-	"\x19GcpFirebaseAppleAppStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatusR\x06status\"\x7f\n" +
+	"\x19GcpFirebaseAppleAppStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.gcp.gcpfirebaseappleapp.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpfirebaseappleapp/v1alpha1;gcpfirebaseappleappv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpfirebaseappleapp.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpfirebaseappleapp\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpfirebaseappleapp\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpfirebaseappleapp::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpfirebaseappleapp_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpfirebaseappleapp_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpfirebaseappleapp_v1alpha1_api_proto_goTypes = []any{
-	(*GcpFirebaseAppleApp)(nil),             // 0: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleApp
-	(*GcpFirebaseAppleAppStatus)(nil),       // 1: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpFirebaseAppleAppSpec)(nil),         // 3: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppSpec
-	(*GcpFirebaseAppleAppStackOutputs)(nil), // 4: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStackOutputs
+	(*GcpFirebaseAppleApp)(nil),          // 0: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleApp
+	(*GcpFirebaseAppleAppStatus)(nil),    // 1: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpFirebaseAppleAppSpec)(nil),      // 3: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppSpec
+	(*GcpFirebaseAppleAppOutputs)(nil),   // 4: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppOutputs
 }
 var file_catalog_gcp_gcpfirebaseappleapp_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleApp.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleApp.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleApp.spec:type_name -> dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppSpec
 	1, // 2: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleApp.status:type_name -> dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatus
-	4, // 3: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatus.outputs:type_name -> dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStackOutputs
+	4, // 3: dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppStatus.outputs:type_name -> dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBudgetStackInput is the input for the IaC modules that manage a
+// AwsBudgetIacInput is the input for the IaC modules that manage a
 // Budgets budget and its folded actions.
-type AwsBudgetStackInput struct {
+type AwsBudgetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBudget resource to deploy.
 	Target *AwsBudget `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBudgetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBudgetStackInput) Reset() {
-	*x = AwsBudgetStackInput{}
+func (x *AwsBudgetIacInput) Reset() {
+	*x = AwsBudgetIacInput{}
 	mi := &file_catalog_aws_awsbudget_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBudgetStackInput) String() string {
+func (x *AwsBudgetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBudgetStackInput) ProtoMessage() {}
+func (*AwsBudgetIacInput) ProtoMessage() {}
 
-func (x *AwsBudgetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBudgetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbudget_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBudgetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBudgetStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBudgetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBudgetIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBudgetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbudget_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBudgetStackInput) GetTarget() *AwsBudget {
+func (x *AwsBudgetIacInput) GetTarget() *AwsBudget {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBudgetStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBudgetIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbudget_v1alpha1_input_proto protoreflect.FileDescriptor
 
 const file_catalog_aws_awsbudget_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"*catalog/aws/awsbudget/v1alpha1/input.proto\x12\"dev.planton.aws.awsbudget.v1alpha1\x1a(catalog/aws/awsbudget/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xa9\x01\n" +
-	"\x13AwsBudgetStackInput\x12E\n" +
+	"*catalog/aws/awsbudget/v1alpha1/input.proto\x12\"dev.planton.aws.awsbudget.v1alpha1\x1a(catalog/aws/awsbudget/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xa7\x01\n" +
+	"\x11AwsBudgetIacInput\x12E\n" +
 	"\x06target\x18\x01 \x01(\v2-.dev.planton.aws.awsbudget.v1alpha1.AwsBudgetR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xb0\x02\n" +
 	"&com.dev.planton.aws.awsbudget.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbudget_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsbudget_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbudget_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBudgetStackInput)(nil),   // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackInput
+	(*AwsBudgetIacInput)(nil),     // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetIacInput
 	(*AwsBudget)(nil),             // 1: dev.planton.aws.awsbudget.v1alpha1.AwsBudget
 	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbudget_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackInput.target:type_name -> dev.planton.aws.awsbudget.v1alpha1.AwsBudget
-	2, // 1: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetIacInput.target:type_name -> dev.planton.aws.awsbudget.v1alpha1.AwsBudget
+	2, // 1: dev.planton.aws.awsbudget.v1alpha1.AwsBudgetIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

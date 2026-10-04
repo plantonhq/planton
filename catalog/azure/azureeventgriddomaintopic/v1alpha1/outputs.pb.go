@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventgridDomainTopicStackOutputs** captures the outputs from
+// **AzureEventgridDomainTopicOutputs** captures the outputs from
 // provisioning an Azure Event Grid domain topic.
-type AzureEventgridDomainTopicStackOutputs struct {
+type AzureEventgridDomainTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The domain topic's Azure Resource Manager ID
 	// ({domain_id}/topics/{name}) -- the scope event subscriptions
@@ -36,20 +36,20 @@ type AzureEventgridDomainTopicStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureEventgridDomainTopicStackOutputs) Reset() {
-	*x = AzureEventgridDomainTopicStackOutputs{}
+func (x *AzureEventgridDomainTopicOutputs) Reset() {
+	*x = AzureEventgridDomainTopicOutputs{}
 	mi := &file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridDomainTopicStackOutputs) String() string {
+func (x *AzureEventgridDomainTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridDomainTopicStackOutputs) ProtoMessage() {}
+func (*AzureEventgridDomainTopicOutputs) ProtoMessage() {}
 
-func (x *AzureEventgridDomainTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridDomainTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureEventgridDomainTopicStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridDomainTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventgridDomainTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridDomainTopicOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventgridDomainTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridDomainTopicStackOutputs) GetDomainTopicId() string {
+func (x *AzureEventgridDomainTopicOutputs) GetDomainTopicId() string {
 	if x != nil {
 		return x.DomainTopicId
 	}
 	return ""
 }
 
-func (x *AzureEventgridDomainTopicStackOutputs) GetDomainTopicName() string {
+func (x *AzureEventgridDomainTopicOutputs) GetDomainTopicName() string {
 	if x != nil {
 		return x.DomainTopicName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto protoref
 
 const file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azureeventgriddomaintopic/v1alpha1/outputs.proto\x124dev.planton.azure.azureeventgriddomaintopic.v1alpha1\"{\n" +
-	"%AzureEventgridDomainTopicStackOutputs\x12&\n" +
+	">catalog/azure/azureeventgriddomaintopic/v1alpha1/outputs.proto\x124dev.planton.azure.azureeventgriddomaintopic.v1alpha1\"v\n" +
+	" AzureEventgridDomainTopicOutputs\x12&\n" +
 	"\x0fdomain_topic_id\x18\x01 \x01(\tR\rdomainTopicId\x12*\n" +
 	"\x11domain_topic_name\x18\x02 \x01(\tR\x0fdomainTopicNameB\xae\x03\n" +
 	"8com.dev.planton.azure.azureeventgriddomaintopic.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/azure/azureeventgriddomaintopic/v1alpha1;azureeventgriddomaintopicv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Azure.Azureeventgriddomaintopic.V1alpha1\xca\x024Dev\\Planton\\Azure\\Azureeventgriddomaintopic\\V1alpha1\xe2\x02@Dev\\Planton\\Azure\\Azureeventgriddomaintopic\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Azure::Azureeventgriddomaintopic::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventgridDomainTopicStackOutputs)(nil), // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackOutputs
+	(*AzureEventgridDomainTopicOutputs)(nil), // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicOutputs
 }
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

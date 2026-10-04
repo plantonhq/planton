@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudMapNamespaceStackInput is the input for the IaC modules that
+// AwsCloudMapNamespaceIacInput is the input for the IaC modules that
 // manage a Cloud Map namespace with its services and statically
 // registered instances.
-type AwsCloudMapNamespaceStackInput struct {
+type AwsCloudMapNamespaceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudMapNamespace resource to deploy.
 	Target *AwsCloudMapNamespace `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsCloudMapNamespaceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudMapNamespaceStackInput) Reset() {
-	*x = AwsCloudMapNamespaceStackInput{}
+func (x *AwsCloudMapNamespaceIacInput) Reset() {
+	*x = AwsCloudMapNamespaceIacInput{}
 	mi := &file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudMapNamespaceStackInput) String() string {
+func (x *AwsCloudMapNamespaceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudMapNamespaceStackInput) ProtoMessage() {}
+func (*AwsCloudMapNamespaceIacInput) ProtoMessage() {}
 
-func (x *AwsCloudMapNamespaceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudMapNamespaceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsCloudMapNamespaceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudMapNamespaceStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudMapNamespaceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudMapNamespaceIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudMapNamespaceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudMapNamespaceStackInput) GetTarget() *AwsCloudMapNamespace {
+func (x *AwsCloudMapNamespaceIacInput) GetTarget() *AwsCloudMapNamespace {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudMapNamespaceStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudMapNamespaceIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awscloudmapnamespace/v1alpha1/input.proto\x12-dev.planton.aws.awscloudmapnamespace.v1alpha1\x1a3catalog/aws/awscloudmapnamespace/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsCloudMapNamespaceStackInput\x12[\n" +
+	"5catalog/aws/awscloudmapnamespace/v1alpha1/input.proto\x12-dev.planton.aws.awscloudmapnamespace.v1alpha1\x1a3catalog/aws/awscloudmapnamespace/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsCloudMapNamespaceIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awscloudmapnamespace.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudMapNamespaceStackInput)(nil), // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackInput
-	(*AwsCloudMapNamespace)(nil),           // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespace
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudMapNamespaceIacInput)(nil), // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceIacInput
+	(*AwsCloudMapNamespace)(nil),         // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespace
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudmapnamespace_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackInput.target:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespace
-	2, // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceIacInput.target:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespace
+	2, // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0TenantSettingsStackOutputs contains the tenant settings as applied: the
+// Auth0TenantSettingsOutputs contains the tenant settings as applied: the
 // values the tenant carries after the deployment, managed or not.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/tenant#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/#outputs
-type Auth0TenantSettingsStackOutputs struct {
+type Auth0TenantSettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// friendly_name is the tenant's name as people see it.
 	FriendlyName string `protobuf:"bytes,1,opt,name=friendly_name,json=friendlyName,proto3" json:"friendly_name,omitempty"`
@@ -72,20 +72,20 @@ type Auth0TenantSettingsStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0TenantSettingsStackOutputs) Reset() {
-	*x = Auth0TenantSettingsStackOutputs{}
+func (x *Auth0TenantSettingsOutputs) Reset() {
+	*x = Auth0TenantSettingsOutputs{}
 	mi := &file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0TenantSettingsStackOutputs) String() string {
+func (x *Auth0TenantSettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0TenantSettingsStackOutputs) ProtoMessage() {}
+func (*Auth0TenantSettingsOutputs) ProtoMessage() {}
 
-func (x *Auth0TenantSettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0TenantSettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,110 +97,110 @@ func (x *Auth0TenantSettingsStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0TenantSettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0TenantSettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0TenantSettingsOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0TenantSettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetFriendlyName() string {
+func (x *Auth0TenantSettingsOutputs) GetFriendlyName() string {
 	if x != nil {
 		return x.FriendlyName
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetPictureUrl() string {
+func (x *Auth0TenantSettingsOutputs) GetPictureUrl() string {
 	if x != nil {
 		return x.PictureUrl
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetSupportEmail() string {
+func (x *Auth0TenantSettingsOutputs) GetSupportEmail() string {
 	if x != nil {
 		return x.SupportEmail
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetSupportUrl() string {
+func (x *Auth0TenantSettingsOutputs) GetSupportUrl() string {
 	if x != nil {
 		return x.SupportUrl
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetDefaultCustomDomain() string {
+func (x *Auth0TenantSettingsOutputs) GetDefaultCustomDomain() string {
 	if x != nil {
 		return x.DefaultCustomDomain
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetDefaultAudience() string {
+func (x *Auth0TenantSettingsOutputs) GetDefaultAudience() string {
 	if x != nil {
 		return x.DefaultAudience
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetDefaultDirectory() string {
+func (x *Auth0TenantSettingsOutputs) GetDefaultDirectory() string {
 	if x != nil {
 		return x.DefaultDirectory
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetClientIdMetadataDocumentSupported() bool {
+func (x *Auth0TenantSettingsOutputs) GetClientIdMetadataDocumentSupported() bool {
 	if x != nil {
 		return x.ClientIdMetadataDocumentSupported
 	}
 	return false
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetResourceParameterProfile() string {
+func (x *Auth0TenantSettingsOutputs) GetResourceParameterProfile() string {
 	if x != nil {
 		return x.ResourceParameterProfile
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetEnableDynamicClientRegistration() bool {
+func (x *Auth0TenantSettingsOutputs) GetEnableDynamicClientRegistration() bool {
 	if x != nil {
 		return x.EnableDynamicClientRegistration
 	}
 	return false
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetDynamicClientRegistrationSecurityMode() string {
+func (x *Auth0TenantSettingsOutputs) GetDynamicClientRegistrationSecurityMode() string {
 	if x != nil {
 		return x.DynamicClientRegistrationSecurityMode
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetSessionLifetime() float64 {
+func (x *Auth0TenantSettingsOutputs) GetSessionLifetime() float64 {
 	if x != nil {
 		return x.SessionLifetime
 	}
 	return 0
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetIdleSessionLifetime() float64 {
+func (x *Auth0TenantSettingsOutputs) GetIdleSessionLifetime() float64 {
 	if x != nil {
 		return x.IdleSessionLifetime
 	}
 	return 0
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetSessionCookieMode() string {
+func (x *Auth0TenantSettingsOutputs) GetSessionCookieMode() string {
 	if x != nil {
 		return x.SessionCookieMode
 	}
 	return ""
 }
 
-func (x *Auth0TenantSettingsStackOutputs) GetEnabledLocales() []string {
+func (x *Auth0TenantSettingsOutputs) GetEnabledLocales() []string {
 	if x != nil {
 		return x.EnabledLocales
 	}
@@ -211,8 +211,8 @@ var File_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\"\xa8\x06\n" +
-	"\x1fAuth0TenantSettingsStackOutputs\x12#\n" +
+	"8catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\"\xa3\x06\n" +
+	"\x1aAuth0TenantSettingsOutputs\x12#\n" +
 	"\rfriendly_name\x18\x01 \x01(\tR\ffriendlyName\x12\x1f\n" +
 	"\vpicture_url\x18\x02 \x01(\tR\n" +
 	"pictureUrl\x12#\n" +
@@ -247,7 +247,7 @@ func file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0TenantSettingsStackOutputs)(nil), // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackOutputs
+	(*Auth0TenantSettingsOutputs)(nil), // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsOutputs
 }
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

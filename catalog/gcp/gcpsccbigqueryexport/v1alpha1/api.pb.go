@@ -31,7 +31,7 @@ type GcpSccBigQueryExport struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpSccBigQueryExportSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpSccBigQueryExport) GetKind() string {
 	return ""
 }
 
-func (x *GcpSccBigQueryExport) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpSccBigQueryExport) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpSccBigQueryExport) GetStatus() *GcpSccBigQueryExportStatus {
 // gcp-scc-bigquery-export status
 type GcpSccBigQueryExportStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpSccBigQueryExportStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpSccBigQueryExportOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpSccBigQueryExportStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpSccBigQueryExportStatus) GetOutputs() *GcpSccBigQueryExportStackOutputs {
+func (x *GcpSccBigQueryExportStatus) GetOutputs() *GcpSccBigQueryExportOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14GcpSccBigQueryExportR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatusR\x06status\"\x87\x01\n" +
-	"\x1aGcpSccBigQueryExportStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatusR\x06status\"\x82\x01\n" +
+	"\x1aGcpSccBigQueryExportStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/gcp/gcpsccbigqueryexport/v1alpha1;gcpsccbigqueryexportv1alpha1\xa2\x02\x04DPGG\xaa\x02-Dev.Planton.Gcp.Gcpsccbigqueryexport.V1alpha1\xca\x02-Dev\\Planton\\Gcp\\Gcpsccbigqueryexport\\V1alpha1\xe2\x029Dev\\Planton\\Gcp\\Gcpsccbigqueryexport\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Gcp::Gcpsccbigqueryexport::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_api_proto_goTypes = []any{
-	(*GcpSccBigQueryExport)(nil),             // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport
-	(*GcpSccBigQueryExportStatus)(nil),       // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpSccBigQueryExportSpec)(nil),         // 3: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportSpec
-	(*GcpSccBigQueryExportStackOutputs)(nil), // 4: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackOutputs
+	(*GcpSccBigQueryExport)(nil),         // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport
+	(*GcpSccBigQueryExportStatus)(nil),   // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpSccBigQueryExportSpec)(nil),     // 3: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportSpec
+	(*GcpSccBigQueryExportOutputs)(nil),  // 4: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportOutputs
 }
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport.spec:type_name -> dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportSpec
 	1, // 2: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport.status:type_name -> dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatus
-	4, // 3: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatus.outputs:type_name -> dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackOutputs
+	4, // 3: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStatus.outputs:type_name -> dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

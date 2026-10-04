@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// otel-operator-kubernetes stack-input
-type KubernetesOtelOperatorStackInput struct {
+// otel-operator-kubernetes iac-input
+type KubernetesOtelOperatorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesOtelOperator `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesOtelOperatorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesOtelOperatorStackInput) Reset() {
-	*x = KubernetesOtelOperatorStackInput{}
+func (x *KubernetesOtelOperatorIacInput) Reset() {
+	*x = KubernetesOtelOperatorIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOtelOperatorStackInput) String() string {
+func (x *KubernetesOtelOperatorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOtelOperatorStackInput) ProtoMessage() {}
+func (*KubernetesOtelOperatorIacInput) ProtoMessage() {}
 
-func (x *KubernetesOtelOperatorStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOtelOperatorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesOtelOperatorStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOtelOperatorStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesOtelOperatorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOtelOperatorIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesOtelOperatorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOtelOperatorStackInput) GetTarget() *KubernetesOtelOperator {
+func (x *KubernetesOtelOperatorIacInput) GetTarget() *KubernetesOtelOperator {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesOtelOperatorStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesOtelOperatorIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto protoref
 
 const file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesoteloperator/v1alpha1/input.proto\x126dev.planton.kubernetes.kubernetesoteloperator.v1alpha1\x1a<catalog/kubernetes/kubernetesoteloperator/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe5\x01\n" +
-	" KubernetesOtelOperatorStackInput\x12f\n" +
+	">catalog/kubernetes/kubernetesoteloperator/v1alpha1/input.proto\x126dev.planton.kubernetes.kubernetesoteloperator.v1alpha1\x1a<catalog/kubernetes/kubernetesoteloperator/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe3\x01\n" +
+	"\x1eKubernetesOtelOperatorIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesoteloperator.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesOtelOperatorStackInput)(nil),    // 0: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorStackInput
+	(*KubernetesOtelOperatorIacInput)(nil),      // 0: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorIacInput
 	(*KubernetesOtelOperator)(nil),              // 1: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperator
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorStackInput.target:type_name -> dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperator
-	2, // 1: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorIacInput.target:type_name -> dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperator
+	2, // 1: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

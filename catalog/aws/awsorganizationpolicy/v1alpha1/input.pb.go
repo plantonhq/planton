@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOrganizationPolicyStackInput is the input for the IaC modules
+// AwsOrganizationPolicyIacInput is the input for the IaC modules
 // that manage an organization policy with its folded attachments.
-type AwsOrganizationPolicyStackInput struct {
+type AwsOrganizationPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsOrganizationPolicy resource to deploy.
 	Target *AwsOrganizationPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsOrganizationPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsOrganizationPolicyStackInput) Reset() {
-	*x = AwsOrganizationPolicyStackInput{}
+func (x *AwsOrganizationPolicyIacInput) Reset() {
+	*x = AwsOrganizationPolicyIacInput{}
 	mi := &file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOrganizationPolicyStackInput) String() string {
+func (x *AwsOrganizationPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOrganizationPolicyStackInput) ProtoMessage() {}
+func (*AwsOrganizationPolicyIacInput) ProtoMessage() {}
 
-func (x *AwsOrganizationPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsOrganizationPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsOrganizationPolicyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOrganizationPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AwsOrganizationPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOrganizationPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AwsOrganizationPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOrganizationPolicyStackInput) GetTarget() *AwsOrganizationPolicy {
+func (x *AwsOrganizationPolicyIacInput) GetTarget() *AwsOrganizationPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsOrganizationPolicyStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsOrganizationPolicyIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsorganizationpolicy/v1alpha1/input.proto\x12.dev.planton.aws.awsorganizationpolicy.v1alpha1\x1a4catalog/aws/awsorganizationpolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsOrganizationPolicyStackInput\x12]\n" +
+	"6catalog/aws/awsorganizationpolicy/v1alpha1/input.proto\x12.dev.planton.aws.awsorganizationpolicy.v1alpha1\x1a4catalog/aws/awsorganizationpolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsOrganizationPolicyIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awsorganizationpolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AwsOrganizationPolicyStackInput)(nil), // 0: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyStackInput
-	(*AwsOrganizationPolicy)(nil),           // 1: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicy
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsOrganizationPolicyIacInput)(nil), // 0: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyIacInput
+	(*AwsOrganizationPolicy)(nil),         // 1: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicy
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsorganizationpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyStackInput.target:type_name -> dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicy
-	2, // 1: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyIacInput.target:type_name -> dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicy
+	2, // 1: dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

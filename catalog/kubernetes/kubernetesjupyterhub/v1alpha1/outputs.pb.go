@@ -23,12 +23,12 @@ const (
 )
 
 // *
-// **KubernetesJupyterHubStackOutputs** — the composition handles a
+// **KubernetesJupyterHubOutputs** — the composition handles a
 // deployed JupyterHub exports. Users reach the hub through the
 // proxy-public Service (compose exposure kinds over it); the
 // shared-password credential (when that sign-in method is active) is
 // exported as a Secret handle.
-type KubernetesJupyterHubStackOutputs struct {
+type KubernetesJupyterHubOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace JupyterHub runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -57,20 +57,20 @@ type KubernetesJupyterHubStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesJupyterHubStackOutputs) Reset() {
-	*x = KubernetesJupyterHubStackOutputs{}
+func (x *KubernetesJupyterHubOutputs) Reset() {
+	*x = KubernetesJupyterHubOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesJupyterHubStackOutputs) String() string {
+func (x *KubernetesJupyterHubOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesJupyterHubStackOutputs) ProtoMessage() {}
+func (*KubernetesJupyterHubOutputs) ProtoMessage() {}
 
-func (x *KubernetesJupyterHubStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesJupyterHubOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,47 +82,47 @@ func (x *KubernetesJupyterHubStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesJupyterHubStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesJupyterHubStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesJupyterHubOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesJupyterHubOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesJupyterHubStackOutputs) GetNamespace() string {
+func (x *KubernetesJupyterHubOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesJupyterHubStackOutputs) GetProxyPublicService() string {
+func (x *KubernetesJupyterHubOutputs) GetProxyPublicService() string {
 	if x != nil {
 		return x.ProxyPublicService
 	}
 	return ""
 }
 
-func (x *KubernetesJupyterHubStackOutputs) GetEndpoint() string {
+func (x *KubernetesJupyterHubOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *KubernetesJupyterHubStackOutputs) GetHubService() string {
+func (x *KubernetesJupyterHubOutputs) GetHubService() string {
 	if x != nil {
 		return x.HubService
 	}
 	return ""
 }
 
-func (x *KubernetesJupyterHubStackOutputs) GetSharedPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesJupyterHubOutputs) GetSharedPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.SharedPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesJupyterHubStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesJupyterHubOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -133,8 +133,8 @@ var File_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesjupyterhub/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xc4\x02\n" +
-	" KubernetesJupyterHubStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kubernetesjupyterhub/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xbf\x02\n" +
+	"\x1bKubernetesJupyterHubOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x120\n" +
 	"\x14proxy_public_service\x18\x02 \x01(\tR\x12proxyPublicService\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12\x1f\n" +
@@ -158,11 +158,11 @@ func file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesJupyterHubStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubStackOutputs
-	(*kubernetes.KubernetesSecretKey)(nil),   // 1: dev.planton.kubernetes.KubernetesSecretKey
+	(*KubernetesJupyterHubOutputs)(nil),    // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubOutputs
+	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubStackOutputs.shared_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubOutputs.shared_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

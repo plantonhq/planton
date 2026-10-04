@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-gke-fleet-scope stack-input
-type GcpGkeFleetScopeStackInput struct {
+// gcp-gke-fleet-scope iac-input
+type GcpGkeFleetScopeIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpGkeFleetScope `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpGkeFleetScopeStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpGkeFleetScopeStackInput) Reset() {
-	*x = GcpGkeFleetScopeStackInput{}
+func (x *GcpGkeFleetScopeIacInput) Reset() {
+	*x = GcpGkeFleetScopeIacInput{}
 	mi := &file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeFleetScopeStackInput) String() string {
+func (x *GcpGkeFleetScopeIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeFleetScopeStackInput) ProtoMessage() {}
+func (*GcpGkeFleetScopeIacInput) ProtoMessage() {}
 
-func (x *GcpGkeFleetScopeStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeFleetScopeIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpGkeFleetScopeStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeFleetScopeStackInput.ProtoReflect.Descriptor instead.
-func (*GcpGkeFleetScopeStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeFleetScopeIacInput.ProtoReflect.Descriptor instead.
+func (*GcpGkeFleetScopeIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeFleetScopeStackInput) GetTarget() *GcpGkeFleetScope {
+func (x *GcpGkeFleetScopeIacInput) GetTarget() *GcpGkeFleetScope {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpGkeFleetScopeStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpGkeFleetScopeIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpgkefleetscope/v1alpha1/input.proto\x12)dev.planton.gcp.gcpgkefleetscope.v1alpha1\x1a/catalog/gcp/gcpgkefleetscope/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbe\x01\n" +
-	"\x1aGcpGkeFleetScopeStackInput\x12S\n" +
+	"1catalog/gcp/gcpgkefleetscope/v1alpha1/input.proto\x12)dev.planton.gcp.gcpgkefleetscope.v1alpha1\x1a/catalog/gcp/gcpgkefleetscope/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbc\x01\n" +
+	"\x18GcpGkeFleetScopeIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xe1\x02\n" +
 	"-com.dev.planton.gcp.gcpgkefleetscope.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_goTypes = []any{
-	(*GcpGkeFleetScopeStackInput)(nil), // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackInput
-	(*GcpGkeFleetScope)(nil),           // 1: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope
-	(*gcp.GcpProviderConfig)(nil),      // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpGkeFleetScopeIacInput)(nil), // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeIacInput
+	(*GcpGkeFleetScope)(nil),         // 1: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope
+	(*gcp.GcpProviderConfig)(nil),    // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackInput.target:type_name -> dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope
-	2, // 1: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeIacInput.target:type_name -> dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope
+	2, // 1: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

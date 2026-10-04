@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreTokenVaultStackInput is the input for the IaC
+// AwsBedrockAgentCoreTokenVaultIacInput is the input for the IaC
 // modules that manage the token vault's encryption key.
-type AwsBedrockAgentCoreTokenVaultStackInput struct {
+type AwsBedrockAgentCoreTokenVaultIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockAgentCoreTokenVault resource to deploy.
 	Target *AwsBedrockAgentCoreTokenVault `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockAgentCoreTokenVaultStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackInput) Reset() {
-	*x = AwsBedrockAgentCoreTokenVaultStackInput{}
+func (x *AwsBedrockAgentCoreTokenVaultIacInput) Reset() {
+	*x = AwsBedrockAgentCoreTokenVaultIacInput{}
 	mi := &file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackInput) String() string {
+func (x *AwsBedrockAgentCoreTokenVaultIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreTokenVaultStackInput) ProtoMessage() {}
+func (*AwsBedrockAgentCoreTokenVaultIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreTokenVaultStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreTokenVaultIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockAgentCoreTokenVaultStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreTokenVaultStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreTokenVaultStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreTokenVaultIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreTokenVaultIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackInput) GetTarget() *AwsBedrockAgentCoreTokenVault {
+func (x *AwsBedrockAgentCoreTokenVaultIacInput) GetTarget() *AwsBedrockAgentCoreTokenVault {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreTokenVaultStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockAgentCoreTokenVaultIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto protoref
 
 const file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/input.proto\x126dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1\x1a<catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe5\x01\n" +
-	"'AwsBedrockAgentCoreTokenVaultStackInput\x12m\n" +
+	">catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/input.proto\x126dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1\x1a<catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe3\x01\n" +
+	"%AwsBedrockAgentCoreTokenVaultIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	":com.dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_rawDesc
 
 var file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreTokenVaultStackInput)(nil), // 0: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultStackInput
-	(*AwsBedrockAgentCoreTokenVault)(nil),           // 1: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVault
-	(*aws.AwsProviderConfig)(nil),                   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockAgentCoreTokenVaultIacInput)(nil), // 0: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultIacInput
+	(*AwsBedrockAgentCoreTokenVault)(nil),         // 1: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVault
+	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockagentcoretokenvault_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultStackInput.target:type_name -> dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVault
-	2, // 1: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultIacInput.target:type_name -> dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVault
+	2, // 1: dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1.AwsBedrockAgentCoreTokenVaultIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -31,7 +31,7 @@ type KubernetesJenkins struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesJenkinsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesJenkins) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesJenkins) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesJenkins) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesJenkins) GetStatus() *KubernetesJenkinsStatus {
 // jenkins-kubernetes status.
 type KubernetesJenkinsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesJenkinsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesJenkinsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesJenkinsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesjenkins_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesJenkinsStatus) GetOutputs() *KubernetesJenkinsStackOutputs {
+func (x *KubernetesJenkinsStatus) GetOutputs() *KubernetesJenkinsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesjenkins_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11KubernetesJenkinsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatusR\x06status\"\x85\x01\n" +
-	"\x17KubernetesJenkinsStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatusR\x06status\"\x80\x01\n" +
+	"\x17KubernetesJenkinsStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsOutputsR\aoutputsB\x90\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesjenkins.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesjenkins/v1alpha1;kubernetesjenkinsv1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kubernetesjenkins.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kubernetesjenkins\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kubernetesjenkins\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kubernetesjenkins::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesjenkins_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kubernetesjenkins_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesjenkins_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesJenkins)(nil),             // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkins
-	(*KubernetesJenkinsStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesJenkinsSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsSpec
-	(*KubernetesJenkinsStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStackOutputs
+	(*KubernetesJenkins)(nil),            // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkins
+	(*KubernetesJenkinsStatus)(nil),      // 1: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesJenkinsSpec)(nil),        // 3: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsSpec
+	(*KubernetesJenkinsOutputs)(nil),     // 4: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsOutputs
 }
 var file_catalog_kubernetes_kubernetesjenkins_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkins.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkins.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkins.spec:type_name -> dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsSpec
 	1, // 2: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkins.status:type_name -> dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatus
-	4, // 3: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesjenkins.v1alpha1.KubernetesJenkinsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

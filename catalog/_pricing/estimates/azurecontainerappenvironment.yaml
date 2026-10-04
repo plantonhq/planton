@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurecontainerappenvironment
 spec:
@@ -17,8 +17,8 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - apps and jobs deployed into this environment bill their own per-second vCPU/memory and request meters on the AzureContainerApp / AzureContainerAppJob components
-        - log ingestion and retention bill per GB on the linked AzureLogAnalyticsWorkspace component and follow what the workloads write
+        - apps and jobs deployed into this environment bill their own per-second vCPU/memory and request meters on the AzureContainerApp / AzureContainerAppJob kinds
+        - log ingestion and retention bill per GB on the linked AzureLogAnalyticsWorkspace kind and follow what the workloads write
       notes: "Zero-committed is real but zero is not free-forever: a Consumption-only environment carries no meter of its own (Microsoft's pricing page bills the Consumption plan per replica-second and per request, both on the apps), yet every workload deployed into it starts the per-use meters, and the linked Log Analytics workspace bills every GB the apps log."
     - preset: 02-workload-profiles-vnet
       region_assumption: eastus
@@ -55,6 +55,6 @@ spec:
       total_list_cost: "297.80788"
       exclusions:
         - demand can scale the profile from the 1-instance floor to maximumCount 5 -- each added instance bills another 4 vCPU x 16 GiB hourly, entirely on load
-        - apps that stay on the built-in Consumption profile still bill their own per-second meters on the AzureContainerApp component
-        - log ingestion and retention bill per GB on the linked AzureLogAnalyticsWorkspace component; zone redundancy and mTLS carry no meters of their own
+        - apps that stay on the built-in Consumption profile still bill their own per-second meters on the AzureContainerApp kind
+        - log ingestion and retention bill per GB on the linked AzureLogAnalyticsWorkspace kind; zone redundancy and mTLS carry no meters of their own
       notes: The floor prices one D4 instance around the clock plus the plan-management base. More apps sharing the profile do not raise the bill until demand grows the instance count -- that sharing is the Dedicated plan's economy.

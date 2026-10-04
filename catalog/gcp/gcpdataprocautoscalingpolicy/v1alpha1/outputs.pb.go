@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Dataproc autoscaling policy.
-type GcpDataprocAutoscalingPolicyStackOutputs struct {
+type GcpDataprocAutoscalingPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified policy resource name as computed by the provider —
 	// projects/{project}/regions|locations/{location}/autoscalingPolicies/{policy_id}
@@ -38,20 +38,20 @@ type GcpDataprocAutoscalingPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackOutputs) Reset() {
-	*x = GcpDataprocAutoscalingPolicyStackOutputs{}
+func (x *GcpDataprocAutoscalingPolicyOutputs) Reset() {
+	*x = GcpDataprocAutoscalingPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackOutputs) String() string {
+func (x *GcpDataprocAutoscalingPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDataprocAutoscalingPolicyStackOutputs) ProtoMessage() {}
+func (*GcpDataprocAutoscalingPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpDataprocAutoscalingPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDataprocAutoscalingPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpDataprocAutoscalingPolicyStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDataprocAutoscalingPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDataprocAutoscalingPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDataprocAutoscalingPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDataprocAutoscalingPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackOutputs) GetName() string {
+func (x *GcpDataprocAutoscalingPolicyOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackOutputs) GetPolicyId() string {
+func (x *GcpDataprocAutoscalingPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *GcpDataprocAutoscalingPolicyStackOutputs) GetLocation() string {
+func (x *GcpDataprocAutoscalingPolicyOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto protore
 
 const file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1/outputs.proto\x125dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1\"w\n" +
-	"(GcpDataprocAutoscalingPolicyStackOutputs\x12\x12\n" +
+	"?catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1/outputs.proto\x125dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1\"r\n" +
+	"#GcpDataprocAutoscalingPolicyOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tpolicy_id\x18\x02 \x01(\tR\bpolicyId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\xb7\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDataprocAutoscalingPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyStackOutputs
+	(*GcpDataprocAutoscalingPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1.GcpDataprocAutoscalingPolicyOutputs
 }
 var file_catalog_gcp_gcpdataprocautoscalingpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

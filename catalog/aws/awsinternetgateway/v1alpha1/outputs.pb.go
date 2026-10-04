@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsInternetGatewayStackOutputs contains the values produced by deploying an
+// AwsInternetGatewayOutputs contains the values produced by deploying an
 // AwsInternetGateway. Downstream components reference these via StringValueOrRef
 // -- most commonly an AwsSubnet route whose target is this gateway's id.
-type AwsInternetGatewayStackOutputs struct {
+type AwsInternetGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The internet gateway's id (e.g. "igw-0abc123"). This is the value a subnet
 	// route uses as its target_id when target_type is internet_gateway.
@@ -40,20 +40,20 @@ type AwsInternetGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsInternetGatewayStackOutputs) Reset() {
-	*x = AwsInternetGatewayStackOutputs{}
+func (x *AwsInternetGatewayOutputs) Reset() {
+	*x = AwsInternetGatewayOutputs{}
 	mi := &file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsInternetGatewayStackOutputs) String() string {
+func (x *AwsInternetGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsInternetGatewayStackOutputs) ProtoMessage() {}
+func (*AwsInternetGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsInternetGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsInternetGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *AwsInternetGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsInternetGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsInternetGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsInternetGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsInternetGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsInternetGatewayStackOutputs) GetInternetGatewayId() string {
+func (x *AwsInternetGatewayOutputs) GetInternetGatewayId() string {
 	if x != nil {
 		return x.InternetGatewayId
 	}
 	return ""
 }
 
-func (x *AwsInternetGatewayStackOutputs) GetInternetGatewayArn() string {
+func (x *AwsInternetGatewayOutputs) GetInternetGatewayArn() string {
 	if x != nil {
 		return x.InternetGatewayArn
 	}
 	return ""
 }
 
-func (x *AwsInternetGatewayStackOutputs) GetVpcId() string {
+func (x *AwsInternetGatewayOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsInternetGatewayStackOutputs) GetRegion() string {
+func (x *AwsInternetGatewayOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -102,8 +102,8 @@ var File_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsinternetgateway/v1alpha1/outputs.proto\x12+dev.planton.aws.awsinternetgateway.v1alpha1\"\xb1\x01\n" +
-	"\x1eAwsInternetGatewayStackOutputs\x12.\n" +
+	"5catalog/aws/awsinternetgateway/v1alpha1/outputs.proto\x12+dev.planton.aws.awsinternetgateway.v1alpha1\"\xac\x01\n" +
+	"\x19AwsInternetGatewayOutputs\x12.\n" +
 	"\x13internet_gateway_id\x18\x01 \x01(\tR\x11internetGatewayId\x120\n" +
 	"\x14internet_gateway_arn\x18\x02 \x01(\tR\x12internetGatewayArn\x12\x15\n" +
 	"\x06vpc_id\x18\x03 \x01(\tR\x05vpcId\x12\x16\n" +
@@ -124,7 +124,7 @@ func file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsInternetGatewayStackOutputs)(nil), // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackOutputs
+	(*AwsInternetGatewayOutputs)(nil), // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayOutputs
 }
 var file_catalog_aws_awsinternetgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

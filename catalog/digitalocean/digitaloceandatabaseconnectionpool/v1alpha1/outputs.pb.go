@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDatabaseConnectionPoolStackOutputs captures the key outputs
+// DigitalOceanDatabaseConnectionPoolOutputs captures the key outputs
 // after provisioning a connection pool on a DigitalOcean PostgreSQL
 // cluster. The cluster id and pool name are echoed so consumers (and
 // verification tooling) can address the pool directly -- the DigitalOcean
@@ -31,7 +31,7 @@ const (
 // The connection URIs are assembled by the provisioners from the pool's
 // live connection details and embed credentials, so equality across
 // engines is asserted on host/port, never on the full URI.
-type DigitalOceanDatabaseConnectionPoolStackOutputs struct {
+type DigitalOceanDatabaseConnectionPoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the PostgreSQL cluster the pool runs on.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -58,20 +58,20 @@ type DigitalOceanDatabaseConnectionPoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) Reset() {
-	*x = DigitalOceanDatabaseConnectionPoolStackOutputs{}
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) Reset() {
+	*x = DigitalOceanDatabaseConnectionPoolOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) String() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseConnectionPoolStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDatabaseConnectionPoolOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,61 +83,61 @@ func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseConnectionPoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseConnectionPoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseConnectionPoolOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseConnectionPoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetClusterId() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetPoolName() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetPoolName() string {
 	if x != nil {
 		return x.PoolName
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetHost() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetHost() string {
 	if x != nil {
 		return x.Host
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetPrivateHost() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetPrivateHost() string {
 	if x != nil {
 		return x.PrivateHost
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetPort() uint32 {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetPort() uint32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetUri() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetUri() string {
 	if x != nil {
 		return x.Uri
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetPrivateUri() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetPrivateUri() string {
 	if x != nil {
 		return x.PrivateUri
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackOutputs) GetPassword() string {
+func (x *DigitalOceanDatabaseConnectionPoolOutputs) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
@@ -148,8 +148,8 @@ var File_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_output
 
 const file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/outputs.proto\x12Ddev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1\x1a\x1cshared/options/options.proto\"\x98\x02\n" +
-	".DigitalOceanDatabaseConnectionPoolStackOutputs\x12\x1d\n" +
+	"Ncatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/outputs.proto\x12Ddev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1\x1a\x1cshared/options/options.proto\"\x93\x02\n" +
+	")DigitalOceanDatabaseConnectionPoolOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1b\n" +
 	"\tpool_name\x18\x02 \x01(\tR\bpoolName\x12\x12\n" +
@@ -176,7 +176,7 @@ func file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outpu
 
 var file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDatabaseConnectionPoolStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolStackOutputs
+	(*DigitalOceanDatabaseConnectionPoolOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

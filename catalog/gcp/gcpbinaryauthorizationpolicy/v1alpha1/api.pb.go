@@ -31,7 +31,7 @@ type GcpBinaryAuthorizationPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpBinaryAuthorizationPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpBinaryAuthorizationPolicy) GetKind() string {
 	return ""
 }
 
-func (x *GcpBinaryAuthorizationPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpBinaryAuthorizationPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpBinaryAuthorizationPolicy) GetStatus() *GcpBinaryAuthorizationPolicy
 // gcp-binary-authorization-policy status
 type GcpBinaryAuthorizationPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpBinaryAuthorizationPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpBinaryAuthorizationPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpBinaryAuthorizationPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpBinaryAuthorizationPolicyStatus) GetOutputs() *GcpBinaryAuthorizationPolicyStackOutputs {
+func (x *GcpBinaryAuthorizationPolicyStatus) GetOutputs() *GcpBinaryAuthorizationPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cGcpBinaryAuthorizationPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatusR\x06status\"\x9f\x01\n" +
-	"\"GcpBinaryAuthorizationPolicyStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatusR\x06status\"\x9a\x01\n" +
+	"\"GcpBinaryAuthorizationPolicyStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyOutputsR\aoutputsB\xb3\x03\n" +
 	"9com.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1;gcpbinaryauthorizationpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x025Dev.Planton.Gcp.Gcpbinaryauthorizationpolicy.V1alpha1\xca\x025Dev\\Planton\\Gcp\\Gcpbinaryauthorizationpolicy\\V1alpha1\xe2\x02ADev\\Planton\\Gcp\\Gcpbinaryauthorizationpolicy\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Gcp::Gcpbinaryauthorizationpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*GcpBinaryAuthorizationPolicy)(nil),             // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy
-	(*GcpBinaryAuthorizationPolicyStatus)(nil),       // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpBinaryAuthorizationPolicySpec)(nil),         // 3: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicySpec
-	(*GcpBinaryAuthorizationPolicyStackOutputs)(nil), // 4: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStackOutputs
+	(*GcpBinaryAuthorizationPolicy)(nil),        // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy
+	(*GcpBinaryAuthorizationPolicyStatus)(nil),  // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpBinaryAuthorizationPolicySpec)(nil),    // 3: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicySpec
+	(*GcpBinaryAuthorizationPolicyOutputs)(nil), // 4: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyOutputs
 }
 var file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy.spec:type_name -> dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicySpec
 	1, // 2: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy.status:type_name -> dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatus
-	4, // 3: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatus.outputs:type_name -> dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStackOutputs
+	4, // 3: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStatus.outputs:type_name -> dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

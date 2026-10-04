@@ -6,7 +6,7 @@
 
 **apiVersion**: `stripe.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 StripePaymentMethodDomainSpec registers a domain where the account's own checkout pages may
 show wallet buttons -- Apple Pay, Google Pay, Link, PayPal, Amazon Pay, Klarna -- through Stripe

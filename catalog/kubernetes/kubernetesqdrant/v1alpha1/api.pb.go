@@ -31,7 +31,7 @@ type KubernetesQdrant struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesQdrantSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesQdrant) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesQdrant) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesQdrant) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesQdrant) GetStatus() *KubernetesQdrantStatus {
 // qdrant-kubernetes status.
 type KubernetesQdrantStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesQdrantStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesQdrantOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesQdrantStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesqdrant_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesQdrantStatus) GetOutputs() *KubernetesQdrantStackOutputs {
+func (x *KubernetesQdrantStatus) GetOutputs() *KubernetesQdrantOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesqdrant_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10KubernetesQdrantR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStatusR\x06status\"\x82\x01\n" +
-	"\x16KubernetesQdrantStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStatusR\x06status\"}\n" +
+	"\x16KubernetesQdrantStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantOutputsR\aoutputsB\x89\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetesqdrant.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesqdrant/v1alpha1;kubernetesqdrantv1alpha1\xa2\x02\x04DPKK\xaa\x020Dev.Planton.Kubernetes.Kubernetesqdrant.V1alpha1\xca\x020Dev\\Planton\\Kubernetes\\Kubernetesqdrant\\V1alpha1\xe2\x02<Dev\\Planton\\Kubernetes\\Kubernetesqdrant\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Kubernetes::Kubernetesqdrant::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetesqdrant_v1alpha1_api_proto_msgTypes = make(
 var file_catalog_kubernetes_kubernetesqdrant_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesQdrant)(nil),             // 0: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrant
 	(*KubernetesQdrantStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesQdrantSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantSpec
-	(*KubernetesQdrantStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStackOutputs
+	(*KubernetesQdrantOutputs)(nil),      // 4: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantOutputs
 }
 var file_catalog_kubernetes_kubernetesqdrant_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrant.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrant.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrant.spec:type_name -> dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantSpec
 	1, // 2: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrant.status:type_name -> dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStatus
-	4, // 3: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

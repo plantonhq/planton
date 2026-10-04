@@ -34,7 +34,7 @@ type AzureTrafficManagerProfile struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureTrafficManagerProfileSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureTrafficManagerProfile) GetKind() string {
 	return ""
 }
 
-func (x *AzureTrafficManagerProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureTrafficManagerProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureTrafficManagerProfile) GetStatus() *AzureTrafficManagerProfileStat
 // Traffic Manager profile deployment.
 type AzureTrafficManagerProfileStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-traffic-manager-profile stack-outputs
-	Outputs       *AzureTrafficManagerProfileStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-traffic-manager-profile outputs
+	Outputs       *AzureTrafficManagerProfileOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureTrafficManagerProfileStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureTrafficManagerProfileStatus) GetOutputs() *AzureTrafficManagerProfileStackOutputs {
+func (x *AzureTrafficManagerProfileStatus) GetOutputs() *AzureTrafficManagerProfileOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureTrafficManagerProfileR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatusR\x06status\"\x9b\x01\n" +
-	" AzureTrafficManagerProfileStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatusR\x06status\"\x96\x01\n" +
+	" AzureTrafficManagerProfileStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azuretrafficmanagerprofile.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azuretrafficmanagerprofile/v1alpha1;azuretrafficmanagerprofilev1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azuretrafficmanagerprofile.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azuretrafficmanagerprofile\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azuretrafficmanagerprofile\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azuretrafficmanagerprofile::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_api_proto_goTypes = []any{
-	(*AzureTrafficManagerProfile)(nil),             // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile
-	(*AzureTrafficManagerProfileStatus)(nil),       // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureTrafficManagerProfileSpec)(nil),         // 3: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileSpec
-	(*AzureTrafficManagerProfileStackOutputs)(nil), // 4: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackOutputs
+	(*AzureTrafficManagerProfile)(nil),        // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile
+	(*AzureTrafficManagerProfileStatus)(nil),  // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureTrafficManagerProfileSpec)(nil),    // 3: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileSpec
+	(*AzureTrafficManagerProfileOutputs)(nil), // 4: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileOutputs
 }
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile.spec:type_name -> dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileSpec
 	1, // 2: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfile.status:type_name -> dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatus
-	4, // 3: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatus.outputs:type_name -> dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackOutputs
+	4, // 3: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStatus.outputs:type_name -> dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

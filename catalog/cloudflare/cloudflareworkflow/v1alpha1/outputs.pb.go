@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareWorkflowStackOutputs captures the observable outputs after
+// CloudflareWorkflowOutputs captures the observable outputs after
 // registering a workflow.
-type CloudflareWorkflowStackOutputs struct {
+type CloudflareWorkflowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The workflow's name -- its identity within the account, and what Worker
 	// workflow bindings reference.
@@ -34,20 +34,20 @@ type CloudflareWorkflowStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareWorkflowStackOutputs) Reset() {
-	*x = CloudflareWorkflowStackOutputs{}
+func (x *CloudflareWorkflowOutputs) Reset() {
+	*x = CloudflareWorkflowOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWorkflowStackOutputs) String() string {
+func (x *CloudflareWorkflowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWorkflowStackOutputs) ProtoMessage() {}
+func (*CloudflareWorkflowOutputs) ProtoMessage() {}
 
-func (x *CloudflareWorkflowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWorkflowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareWorkflowStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWorkflowStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkflowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWorkflowOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkflowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWorkflowStackOutputs) GetWorkflowName() string {
+func (x *CloudflareWorkflowOutputs) GetWorkflowName() string {
 	if x != nil {
 		return x.WorkflowName
 	}
 	return ""
 }
 
-func (x *CloudflareWorkflowStackOutputs) GetVersionId() string {
+func (x *CloudflareWorkflowOutputs) GetVersionId() string {
 	if x != nil {
 		return x.VersionId
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto protorefle
 
 const file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/cloudflare/cloudflareworkflow/v1alpha1/outputs.proto\x122dev.planton.cloudflare.cloudflareworkflow.v1alpha1\"d\n" +
-	"\x1eCloudflareWorkflowStackOutputs\x12#\n" +
+	"<catalog/cloudflare/cloudflareworkflow/v1alpha1/outputs.proto\x122dev.planton.cloudflare.cloudflareworkflow.v1alpha1\"_\n" +
+	"\x19CloudflareWorkflowOutputs\x12#\n" +
 	"\rworkflow_name\x18\x01 \x01(\tR\fworkflowName\x12\x1d\n" +
 	"\n" +
 	"version_id\x18\x02 \x01(\tR\tversionIdB\x9b\x03\n" +
@@ -103,7 +103,7 @@ func file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareWorkflowStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareworkflow.v1alpha1.CloudflareWorkflowStackOutputs
+	(*CloudflareWorkflowOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareworkflow.v1alpha1.CloudflareWorkflowOutputs
 }
 var file_catalog_cloudflare_cloudflareworkflow_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

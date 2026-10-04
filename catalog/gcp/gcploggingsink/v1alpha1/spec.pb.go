@@ -38,7 +38,7 @@ const (
 // THE post-create step every sink needs: GCP mints a `writer_identity`
 // service account for the sink, and that identity must be GRANTED write
 // access on the destination or the sink silently exports nothing. The
-// writer_identity stack output (already in IAM member form,
+// writer_identity output (already in IAM member form,
 // serviceAccount:{email}) exists exactly for that wiring. Grant it with a
 // standalone grant that depends on both the sink and the destination,
 // its member referencing this sink's writer_identity output:

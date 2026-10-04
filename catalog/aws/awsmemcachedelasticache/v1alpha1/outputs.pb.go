@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMemcachedElasticacheStackOutputs captures observable identifiers and
+// AwsMemcachedElasticacheOutputs captures observable identifiers and
 // endpoints from a provisioned ElastiCache Memcached cluster. These outputs
 // are used by downstream resources to wire dependencies via StringValueOrRef.
-type AwsMemcachedElasticacheStackOutputs struct {
+type AwsMemcachedElasticacheOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The identifier of the ElastiCache cluster.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -53,20 +53,20 @@ type AwsMemcachedElasticacheStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) Reset() {
-	*x = AwsMemcachedElasticacheStackOutputs{}
+func (x *AwsMemcachedElasticacheOutputs) Reset() {
+	*x = AwsMemcachedElasticacheOutputs{}
 	mi := &file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) String() string {
+func (x *AwsMemcachedElasticacheOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMemcachedElasticacheStackOutputs) ProtoMessage() {}
+func (*AwsMemcachedElasticacheOutputs) ProtoMessage() {}
 
-func (x *AwsMemcachedElasticacheStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMemcachedElasticacheOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,54 +78,54 @@ func (x *AwsMemcachedElasticacheStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMemcachedElasticacheStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMemcachedElasticacheStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMemcachedElasticacheOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMemcachedElasticacheOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetClusterId() string {
+func (x *AwsMemcachedElasticacheOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetClusterAddress() string {
+func (x *AwsMemcachedElasticacheOutputs) GetClusterAddress() string {
 	if x != nil {
 		return x.ClusterAddress
 	}
 	return ""
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetConfigurationEndpoint() string {
+func (x *AwsMemcachedElasticacheOutputs) GetConfigurationEndpoint() string {
 	if x != nil {
 		return x.ConfigurationEndpoint
 	}
 	return ""
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetArn() string {
+func (x *AwsMemcachedElasticacheOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetPort() int32 {
+func (x *AwsMemcachedElasticacheOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetSubnetGroupName() string {
+func (x *AwsMemcachedElasticacheOutputs) GetSubnetGroupName() string {
 	if x != nil {
 		return x.SubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsMemcachedElasticacheStackOutputs) GetParameterGroupName() string {
+func (x *AwsMemcachedElasticacheOutputs) GetParameterGroupName() string {
 	if x != nil {
 		return x.ParameterGroupName
 	}
@@ -136,8 +136,8 @@ var File_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awsmemcachedelasticache/v1alpha1/outputs.proto\x120dev.planton.aws.awsmemcachedelasticache.v1alpha1\"\xa8\x02\n" +
-	"#AwsMemcachedElasticacheStackOutputs\x12\x1d\n" +
+	":catalog/aws/awsmemcachedelasticache/v1alpha1/outputs.proto\x120dev.planton.aws.awsmemcachedelasticache.v1alpha1\"\xa3\x02\n" +
+	"\x1eAwsMemcachedElasticacheOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12'\n" +
 	"\x0fcluster_address\x18\x02 \x01(\tR\x0eclusterAddress\x125\n" +
@@ -162,7 +162,7 @@ func file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMemcachedElasticacheStackOutputs)(nil), // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackOutputs
+	(*AwsMemcachedElasticacheOutputs)(nil), // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheOutputs
 }
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsVpcStackOutputs captures the observable outputs of a provisioned VPC, for
+// AwsVpcOutputs captures the observable outputs of a provisioned VPC, for
 // downstream resources (subnets, gateways, security groups, ...) to reference.
-type AwsVpcStackOutputs struct {
+type AwsVpcOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the VPC (e.g. "vpc-0abc123"). The primary handle other resources
 	// reference via status.outputs.vpc_id.
@@ -68,20 +68,20 @@ type AwsVpcStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsVpcStackOutputs) Reset() {
-	*x = AwsVpcStackOutputs{}
+func (x *AwsVpcOutputs) Reset() {
+	*x = AwsVpcOutputs{}
 	mi := &file_catalog_aws_awsvpc_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsVpcStackOutputs) String() string {
+func (x *AwsVpcOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsVpcStackOutputs) ProtoMessage() {}
+func (*AwsVpcOutputs) ProtoMessage() {}
 
-func (x *AwsVpcStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsVpcOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsvpc_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,96 +93,96 @@ func (x *AwsVpcStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsVpcStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsVpcStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsVpcOutputs.ProtoReflect.Descriptor instead.
+func (*AwsVpcOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsvpc_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsVpcStackOutputs) GetVpcId() string {
+func (x *AwsVpcOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetVpcArn() string {
+func (x *AwsVpcOutputs) GetVpcArn() string {
 	if x != nil {
 		return x.VpcArn
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetCidrBlock() string {
+func (x *AwsVpcOutputs) GetCidrBlock() string {
 	if x != nil {
 		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetIpv6CidrBlock() string {
+func (x *AwsVpcOutputs) GetIpv6CidrBlock() string {
 	if x != nil {
 		return x.Ipv6CidrBlock
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetOwnerId() string {
+func (x *AwsVpcOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetMainRouteTableId() string {
+func (x *AwsVpcOutputs) GetMainRouteTableId() string {
 	if x != nil {
 		return x.MainRouteTableId
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetDefaultSecurityGroupId() string {
+func (x *AwsVpcOutputs) GetDefaultSecurityGroupId() string {
 	if x != nil {
 		return x.DefaultSecurityGroupId
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetDefaultNetworkAclId() string {
+func (x *AwsVpcOutputs) GetDefaultNetworkAclId() string {
 	if x != nil {
 		return x.DefaultNetworkAclId
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetDefaultRouteTableId() string {
+func (x *AwsVpcOutputs) GetDefaultRouteTableId() string {
 	if x != nil {
 		return x.DefaultRouteTableId
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetRegion() string {
+func (x *AwsVpcOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetSecondaryIpv4CidrAssociationIds() map[string]string {
+func (x *AwsVpcOutputs) GetSecondaryIpv4CidrAssociationIds() map[string]string {
 	if x != nil {
 		return x.SecondaryIpv4CidrAssociationIds
 	}
 	return nil
 }
 
-func (x *AwsVpcStackOutputs) GetSecondaryIpv6CidrAssociationIds() map[string]string {
+func (x *AwsVpcOutputs) GetSecondaryIpv6CidrAssociationIds() map[string]string {
 	if x != nil {
 		return x.SecondaryIpv6CidrAssociationIds
 	}
 	return nil
 }
 
-func (x *AwsVpcStackOutputs) GetEncryptionControlId() string {
+func (x *AwsVpcOutputs) GetEncryptionControlId() string {
 	if x != nil {
 		return x.EncryptionControlId
 	}
@@ -193,8 +193,8 @@ var File_catalog_aws_awsvpc_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_aws_awsvpc_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	")catalog/aws/awsvpc/v1alpha1/outputs.proto\x12\x1fdev.planton.aws.awsvpc.v1alpha1\"\xc0\a\n" +
-	"\x12AwsVpcStackOutputs\x12\x15\n" +
+	")catalog/aws/awsvpc/v1alpha1/outputs.proto\x12\x1fdev.planton.aws.awsvpc.v1alpha1\"\xb1\a\n" +
+	"\rAwsVpcOutputs\x12\x15\n" +
 	"\x06vpc_id\x18\x01 \x01(\tR\x05vpcId\x12\x17\n" +
 	"\avpc_arn\x18\x02 \x01(\tR\x06vpcArn\x12\x1d\n" +
 	"\n" +
@@ -206,9 +206,9 @@ const file_catalog_aws_awsvpc_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x16default_network_acl_id\x18\b \x01(\tR\x13defaultNetworkAclId\x123\n" +
 	"\x16default_route_table_id\x18\t \x01(\tR\x13defaultRouteTableId\x12\x16\n" +
 	"\x06region\x18\n" +
-	" \x01(\tR\x06region\x12\xa6\x01\n" +
-	"#secondary_ipv4_cidr_association_ids\x18\v \x03(\v2X.dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.SecondaryIpv4CidrAssociationIdsEntryR\x1fsecondaryIpv4CidrAssociationIds\x12\xa6\x01\n" +
-	"#secondary_ipv6_cidr_association_ids\x18\f \x03(\v2X.dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.SecondaryIpv6CidrAssociationIdsEntryR\x1fsecondaryIpv6CidrAssociationIds\x122\n" +
+	" \x01(\tR\x06region\x12\xa1\x01\n" +
+	"#secondary_ipv4_cidr_association_ids\x18\v \x03(\v2S.dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.SecondaryIpv4CidrAssociationIdsEntryR\x1fsecondaryIpv4CidrAssociationIds\x12\xa1\x01\n" +
+	"#secondary_ipv6_cidr_association_ids\x18\f \x03(\v2S.dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.SecondaryIpv6CidrAssociationIdsEntryR\x1fsecondaryIpv6CidrAssociationIds\x122\n" +
 	"\x15encryption_control_id\x18\r \x01(\tR\x13encryptionControlId\x1aR\n" +
 	"$SecondaryIpv4CidrAssociationIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -232,13 +232,13 @@ func file_catalog_aws_awsvpc_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsvpc_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsvpc_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsVpcStackOutputs)(nil), // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs
-	nil,                        // 1: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.SecondaryIpv4CidrAssociationIdsEntry
-	nil,                        // 2: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.SecondaryIpv6CidrAssociationIdsEntry
+	(*AwsVpcOutputs)(nil), // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs
+	nil,                   // 1: dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.SecondaryIpv4CidrAssociationIdsEntry
+	nil,                   // 2: dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.SecondaryIpv6CidrAssociationIdsEntry
 }
 var file_catalog_aws_awsvpc_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.secondary_ipv4_cidr_association_ids:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.SecondaryIpv4CidrAssociationIdsEntry
-	2, // 1: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.secondary_ipv6_cidr_association_ids:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs.SecondaryIpv6CidrAssociationIdsEntry
+	1, // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.secondary_ipv4_cidr_association_ids:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.SecondaryIpv4CidrAssociationIdsEntry
+	2, // 1: dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.secondary_ipv6_cidr_association_ids:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs.SecondaryIpv6CidrAssociationIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

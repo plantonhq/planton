@@ -31,7 +31,7 @@ type AzureVirtualMachine struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureVirtualMachineSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureVirtualMachine) GetKind() string {
 	return ""
 }
 
-func (x *AzureVirtualMachine) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureVirtualMachine) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureVirtualMachine) GetStatus() *AzureVirtualMachineStatus {
 // azure-virtual-machine status
 type AzureVirtualMachineStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-virtual-machine stack-outputs
-	Outputs       *AzureVirtualMachineStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-virtual-machine outputs
+	Outputs       *AzureVirtualMachineOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureVirtualMachineStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualmachine_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureVirtualMachineStatus) GetOutputs() *AzureVirtualMachineStackOutputs {
+func (x *AzureVirtualMachineStatus) GetOutputs() *AzureVirtualMachineOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurevirtualmachine_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzureVirtualMachineR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatusR\x06status\"\x86\x01\n" +
-	"\x19AzureVirtualMachineStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatusR\x06status\"\x81\x01\n" +
+	"\x19AzureVirtualMachineStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azurevirtualmachine.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurevirtualmachine/v1alpha1;azurevirtualmachinev1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurevirtualmachine.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurevirtualmachine\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurevirtualmachine\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurevirtualmachine::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azurevirtualmachine_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurevirtualmachine_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevirtualmachine_v1alpha1_api_proto_goTypes = []any{
-	(*AzureVirtualMachine)(nil),             // 0: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachine
-	(*AzureVirtualMachineStatus)(nil),       // 1: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureVirtualMachineSpec)(nil),         // 3: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineSpec
-	(*AzureVirtualMachineStackOutputs)(nil), // 4: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStackOutputs
+	(*AzureVirtualMachine)(nil),          // 0: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachine
+	(*AzureVirtualMachineStatus)(nil),    // 1: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureVirtualMachineSpec)(nil),      // 3: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineSpec
+	(*AzureVirtualMachineOutputs)(nil),   // 4: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineOutputs
 }
 var file_catalog_azure_azurevirtualmachine_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachine.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachine.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachine.spec:type_name -> dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineSpec
 	1, // 2: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachine.status:type_name -> dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatus
-	4, // 3: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatus.outputs:type_name -> dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStackOutputs
+	4, // 3: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStatus.outputs:type_name -> dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

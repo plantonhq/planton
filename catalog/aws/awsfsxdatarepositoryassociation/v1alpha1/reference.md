@@ -32,7 +32,7 @@ Key design notes:
 - Only Lustre file systems WITHOUT the legacy in-spec import_path arm can
   carry associations (AWS forbids mixing the two S3-link generations).
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

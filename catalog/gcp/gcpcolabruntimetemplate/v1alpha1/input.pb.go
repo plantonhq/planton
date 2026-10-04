@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-colab-runtime-template stack-input
-type GcpColabRuntimeTemplateStackInput struct {
+// gcp-colab-runtime-template iac-input
+type GcpColabRuntimeTemplateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpColabRuntimeTemplate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpColabRuntimeTemplateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpColabRuntimeTemplateStackInput) Reset() {
-	*x = GcpColabRuntimeTemplateStackInput{}
+func (x *GcpColabRuntimeTemplateIacInput) Reset() {
+	*x = GcpColabRuntimeTemplateIacInput{}
 	mi := &file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpColabRuntimeTemplateStackInput) String() string {
+func (x *GcpColabRuntimeTemplateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpColabRuntimeTemplateStackInput) ProtoMessage() {}
+func (*GcpColabRuntimeTemplateIacInput) ProtoMessage() {}
 
-func (x *GcpColabRuntimeTemplateStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpColabRuntimeTemplateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpColabRuntimeTemplateStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpColabRuntimeTemplateStackInput.ProtoReflect.Descriptor instead.
-func (*GcpColabRuntimeTemplateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpColabRuntimeTemplateIacInput.ProtoReflect.Descriptor instead.
+func (*GcpColabRuntimeTemplateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpColabRuntimeTemplateStackInput) GetTarget() *GcpColabRuntimeTemplate {
+func (x *GcpColabRuntimeTemplateIacInput) GetTarget() *GcpColabRuntimeTemplate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpColabRuntimeTemplateStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpColabRuntimeTemplateIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpcolabruntimetemplate/v1alpha1/input.proto\x120dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1\x1a6catalog/gcp/gcpcolabruntimetemplate/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd3\x01\n" +
-	"!GcpColabRuntimeTemplateStackInput\x12a\n" +
+	"8catalog/gcp/gcpcolabruntimetemplate/v1alpha1/input.proto\x120dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1\x1a6catalog/gcp/gcpcolabruntimetemplate/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd1\x01\n" +
+	"\x1fGcpColabRuntimeTemplateIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_goTypes = []any{
-	(*GcpColabRuntimeTemplateStackInput)(nil), // 0: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateStackInput
-	(*GcpColabRuntimeTemplate)(nil),           // 1: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplate
-	(*gcp.GcpProviderConfig)(nil),             // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpColabRuntimeTemplateIacInput)(nil), // 0: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateIacInput
+	(*GcpColabRuntimeTemplate)(nil),         // 1: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplate
+	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateStackInput.target:type_name -> dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplate
-	2, // 1: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateIacInput.target:type_name -> dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplate
+	2, // 1: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

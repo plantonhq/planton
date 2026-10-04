@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePublicIpPrefixStackOutputs** captures the outputs of provisioning
+// **AzurePublicIpPrefixOutputs** captures the outputs of provisioning
 // an Azure Public IP Prefix.
-type AzurePublicIpPrefixStackOutputs struct {
+type AzurePublicIpPrefixOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the prefix. Referenced by
 	// AzurePublicIp (public_ip_prefix_id) to allocate addresses from the
@@ -41,20 +41,20 @@ type AzurePublicIpPrefixStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzurePublicIpPrefixStackOutputs) Reset() {
-	*x = AzurePublicIpPrefixStackOutputs{}
+func (x *AzurePublicIpPrefixOutputs) Reset() {
+	*x = AzurePublicIpPrefixOutputs{}
 	mi := &file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePublicIpPrefixStackOutputs) String() string {
+func (x *AzurePublicIpPrefixOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePublicIpPrefixStackOutputs) ProtoMessage() {}
+func (*AzurePublicIpPrefixOutputs) ProtoMessage() {}
 
-func (x *AzurePublicIpPrefixStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePublicIpPrefixOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AzurePublicIpPrefixStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePublicIpPrefixStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePublicIpPrefixStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePublicIpPrefixOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePublicIpPrefixOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePublicIpPrefixStackOutputs) GetPublicIpPrefixId() string {
+func (x *AzurePublicIpPrefixOutputs) GetPublicIpPrefixId() string {
 	if x != nil {
 		return x.PublicIpPrefixId
 	}
 	return ""
 }
 
-func (x *AzurePublicIpPrefixStackOutputs) GetIpPrefix() string {
+func (x *AzurePublicIpPrefixOutputs) GetIpPrefix() string {
 	if x != nil {
 		return x.IpPrefix
 	}
 	return ""
 }
 
-func (x *AzurePublicIpPrefixStackOutputs) GetPublicIpPrefixName() string {
+func (x *AzurePublicIpPrefixOutputs) GetPublicIpPrefixName() string {
 	if x != nil {
 		return x.PublicIpPrefixName
 	}
@@ -96,8 +96,8 @@ var File_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurepublicipprefix/v1alpha1/outputs.proto\x12.dev.planton.azure.azurepublicipprefix.v1alpha1\"\xa0\x01\n" +
-	"\x1fAzurePublicIpPrefixStackOutputs\x12-\n" +
+	"8catalog/azure/azurepublicipprefix/v1alpha1/outputs.proto\x12.dev.planton.azure.azurepublicipprefix.v1alpha1\"\x9b\x01\n" +
+	"\x1aAzurePublicIpPrefixOutputs\x12-\n" +
 	"\x13public_ip_prefix_id\x18\x01 \x01(\tR\x10publicIpPrefixId\x12\x1b\n" +
 	"\tip_prefix\x18\x02 \x01(\tR\bipPrefix\x121\n" +
 	"\x15public_ip_prefix_name\x18\x03 \x01(\tR\x12publicIpPrefixNameB\x84\x03\n" +
@@ -117,7 +117,7 @@ func file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePublicIpPrefixStackOutputs)(nil), // 0: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixStackOutputs
+	(*AzurePublicIpPrefixOutputs)(nil), // 0: dev.planton.azure.azurepublicipprefix.v1alpha1.AzurePublicIpPrefixOutputs
 }
 var file_catalog_azure_azurepublicipprefix_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

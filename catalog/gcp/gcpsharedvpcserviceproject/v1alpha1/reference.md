@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpSharedVpcServiceProjectSpec attaches one SERVICE project to a Shared
 VPC HOST project (GcpSharedVpcHost), so workloads in the service project
@@ -45,7 +45,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpsharedvpcserviceproject
+    e2e-catalog-kind: gcpsharedvpcserviceproject
   annotations:
     planton.dev/e2e: "true"
     # A second project under the same organization, arranged by the owner

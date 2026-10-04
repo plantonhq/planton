@@ -34,7 +34,7 @@ type AwsGlobalAccelerator struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the Global Accelerator.
 	Spec *AwsGlobalAcceleratorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -87,7 +87,7 @@ func (x *AwsGlobalAccelerator) GetKind() string {
 	return ""
 }
 
-func (x *AwsGlobalAccelerator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsGlobalAccelerator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsGlobalAccelerator) GetStatus() *AwsGlobalAcceleratorStatus {
 type AwsGlobalAcceleratorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsGlobalAcceleratorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsGlobalAcceleratorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsGlobalAcceleratorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsglobalaccelerator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsGlobalAcceleratorStatus) GetOutputs() *AwsGlobalAcceleratorStackOutputs {
+func (x *AwsGlobalAcceleratorStatus) GetOutputs() *AwsGlobalAcceleratorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awsglobalaccelerator_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AwsGlobalAcceleratorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatusR\x06status\"\x87\x01\n" +
-	"\x1aAwsGlobalAcceleratorStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatusR\x06status\"\x82\x01\n" +
+	"\x1aAwsGlobalAcceleratorStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.aws.awsglobalaccelerator.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/aws/awsglobalaccelerator/v1alpha1;awsglobalacceleratorv1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Aws.Awsglobalaccelerator.V1alpha1\xca\x02-Dev\\Planton\\Aws\\Awsglobalaccelerator\\V1alpha1\xe2\x029Dev\\Planton\\Aws\\Awsglobalaccelerator\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Aws::Awsglobalaccelerator::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_aws_awsglobalaccelerator_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_api_proto_goTypes = []any{
-	(*AwsGlobalAccelerator)(nil),             // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator
-	(*AwsGlobalAcceleratorStatus)(nil),       // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsGlobalAcceleratorSpec)(nil),         // 3: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorSpec
-	(*AwsGlobalAcceleratorStackOutputs)(nil), // 4: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs
+	(*AwsGlobalAccelerator)(nil),         // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator
+	(*AwsGlobalAcceleratorStatus)(nil),   // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsGlobalAcceleratorSpec)(nil),     // 3: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorSpec
+	(*AwsGlobalAcceleratorOutputs)(nil),  // 4: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs
 }
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator.spec:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorSpec
 	1, // 2: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator.status:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatus
-	4, // 3: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatus.outputs:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs
+	4, // 3: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStatus.outputs:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

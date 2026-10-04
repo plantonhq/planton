@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azurecontainerinstance
 spec:
@@ -64,7 +64,7 @@ spec:
           list_cost: "6.4970"
       total_list_cost: "36.0620"
       exclusions:
-        - the delegated subnet and the user-assigned identity are their own components; the group's private IP is free
+        - the delegated subnet and the user-assigned identity are their own kinds; the group's private IP is free
         - image pull seconds and registry-side egress precede every start
         - network egress follows traffic and client placement
       notes: Private networking changes posture, not price -- the vCPU and memory meters read the same inside a subnet.

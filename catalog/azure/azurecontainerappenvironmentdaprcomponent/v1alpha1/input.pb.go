@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureContainerAppEnvironmentDaprComponentStackInput is the input to the IaC module.
+// AzureContainerAppEnvironmentDaprComponentIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureContainerAppEnvironmentDaprComponentStackInput struct {
+type AzureContainerAppEnvironmentDaprComponentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *AzureContainerAppEnvironmentDaprComponent `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureContainerAppEnvironmentDaprComponentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackInput) Reset() {
-	*x = AzureContainerAppEnvironmentDaprComponentStackInput{}
+func (x *AzureContainerAppEnvironmentDaprComponentIacInput) Reset() {
+	*x = AzureContainerAppEnvironmentDaprComponentIacInput{}
 	mi := &file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackInput) String() string {
+func (x *AzureContainerAppEnvironmentDaprComponentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppEnvironmentDaprComponentStackInput) ProtoMessage() {}
+func (*AzureContainerAppEnvironmentDaprComponentIacInput) ProtoMessage() {}
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppEnvironmentDaprComponentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureContainerAppEnvironmentDaprComponentStackInput) ProtoReflect() pro
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppEnvironmentDaprComponentStackInput.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppEnvironmentDaprComponentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppEnvironmentDaprComponentIacInput.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppEnvironmentDaprComponentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackInput) GetTarget() *AzureContainerAppEnvironmentDaprComponent {
+func (x *AzureContainerAppEnvironmentDaprComponentIacInput) GetTarget() *AzureContainerAppEnvironmentDaprComponent {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureContainerAppEnvironmentDaprComponentIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_
 
 const file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1/input.proto\x12Ddev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1\x1aJcatalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x90\x02\n" +
-	"3AzureContainerAppEnvironmentDaprComponentStackInput\x12\x87\x01\n" +
+	"Lcatalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1/input.proto\x12Ddev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1\x1aJcatalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8e\x02\n" +
+	"1AzureContainerAppEnvironmentDaprComponentIacInput\x12\x87\x01\n" +
 	"\x06target\x18\x01 \x01(\v2o.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x9d\x04\n" +
 	"Hcom.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input
 
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentDaprComponentStackInput)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackInput
-	(*AzureContainerAppEnvironmentDaprComponent)(nil),           // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent
-	(*azure.AzureProviderConfig)(nil),                           // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureContainerAppEnvironmentDaprComponentIacInput)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentIacInput
+	(*AzureContainerAppEnvironmentDaprComponent)(nil),         // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent
+	(*azure.AzureProviderConfig)(nil),                         // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackInput.target:type_name -> dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent
-	2, // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentIacInput.target:type_name -> dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent
+	2, // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

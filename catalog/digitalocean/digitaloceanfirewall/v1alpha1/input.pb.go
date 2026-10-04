@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-firewall stack-input
-type DigitalOceanFirewallStackInput struct {
+// digital-ocean-firewall iac-input
+type DigitalOceanFirewallIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanFirewall `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanFirewallStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanFirewallStackInput) Reset() {
-	*x = DigitalOceanFirewallStackInput{}
+func (x *DigitalOceanFirewallIacInput) Reset() {
+	*x = DigitalOceanFirewallIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanFirewallStackInput) String() string {
+func (x *DigitalOceanFirewallIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanFirewallStackInput) ProtoMessage() {}
+func (*DigitalOceanFirewallIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanFirewallStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanFirewallIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanFirewallStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanFirewallStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanFirewallStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanFirewallIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanFirewallIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanFirewallStackInput) GetTarget() *DigitalOceanFirewall {
+func (x *DigitalOceanFirewallIacInput) GetTarget() *DigitalOceanFirewall {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanFirewallStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanFirewallIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto protoref
 
 const file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/digitalocean/digitaloceanfirewall/v1alpha1/input.proto\x126dev.planton.digitalocean.digitaloceanfirewall.v1alpha1\x1a<catalog/digitalocean/digitaloceanfirewall/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xe5\x01\n" +
-	"\x1eDigitalOceanFirewallStackInput\x12d\n" +
+	">catalog/digitalocean/digitaloceanfirewall/v1alpha1/input.proto\x126dev.planton.digitalocean.digitaloceanfirewall.v1alpha1\x1a<catalog/digitalocean/digitaloceanfirewall/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xe3\x01\n" +
+	"\x1cDigitalOceanFirewallIacInput\x12d\n" +
 	"\x06target\x18\x01 \x01(\v2L.dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xb3\x03\n" +
 	":com.dev.planton.digitalocean.digitaloceanfirewall.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_rawDesc
 
 var file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanFirewallStackInput)(nil),          // 0: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallStackInput
+	(*DigitalOceanFirewallIacInput)(nil),            // 0: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallIacInput
 	(*DigitalOceanFirewall)(nil),                    // 1: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewall
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallStackInput.target:type_name -> dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewall
-	2, // 1: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallIacInput.target:type_name -> dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewall
+	2, // 1: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -33,7 +33,7 @@ type AzureResourceGroup struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureResourceGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AzureResourceGroup) GetKind() string {
 	return ""
 }
 
-func (x *AzureResourceGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureResourceGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzureResourceGroup) GetStatus() *AzureResourceGroupStatus {
 // AzureResourceGroupStatus holds the deployment status and outputs.
 type AzureResourceGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureResourceGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureResourceGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureResourceGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureresourcegroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureResourceGroupStatus) GetOutputs() *AzureResourceGroupStackOutputs {
+func (x *AzureResourceGroupStatus) GetOutputs() *AzureResourceGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azureresourcegroup_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AzureResourceGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatusR\x06status\"\x83\x01\n" +
-	"\x18AzureResourceGroupStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStackOutputsR\aoutputsB\xf9\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatusR\x06status\"~\n" +
+	"\x18AzureResourceGroupStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupOutputsR\aoutputsB\xf9\x02\n" +
 	"1com.dev.planton.azure.azureresourcegroup.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/azure/azureresourcegroup/v1alpha1;azureresourcegroupv1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Azure.Azureresourcegroup.V1alpha1\xca\x02-Dev\\Planton\\Azure\\Azureresourcegroup\\V1alpha1\xe2\x029Dev\\Planton\\Azure\\Azureresourcegroup\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Azure::Azureresourcegroup::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azureresourcegroup_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azureresourcegroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureresourcegroup_v1alpha1_api_proto_goTypes = []any{
-	(*AzureResourceGroup)(nil),             // 0: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroup
-	(*AzureResourceGroupStatus)(nil),       // 1: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureResourceGroupSpec)(nil),         // 3: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupSpec
-	(*AzureResourceGroupStackOutputs)(nil), // 4: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStackOutputs
+	(*AzureResourceGroup)(nil),           // 0: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroup
+	(*AzureResourceGroupStatus)(nil),     // 1: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureResourceGroupSpec)(nil),       // 3: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupSpec
+	(*AzureResourceGroupOutputs)(nil),    // 4: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupOutputs
 }
 var file_catalog_azure_azureresourcegroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroup.spec:type_name -> dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupSpec
 	1, // 2: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroup.status:type_name -> dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatus
-	4, // 3: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatus.outputs:type_name -> dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStackOutputs
+	4, // 3: dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupStatus.outputs:type_name -> dev.planton.azure.azureresourcegroup.v1alpha1.AzureResourceGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -74,12 +74,12 @@ type OpenFgaRelationshipTuple struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "OpenFgaRelationshipTuple" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the tuple within Planton
 	// - org: Organization that owns this tuple
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the OpenFGA relationship tuple.
 	// Includes the store ID, user, relation, object, and optional condition.
 	Spec *OpenFgaRelationshipTupleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -135,7 +135,7 @@ func (x *OpenFgaRelationshipTuple) GetKind() string {
 	return ""
 }
 
-func (x *OpenFgaRelationshipTuple) GetMetadata() *shared.CloudResourceMetadata {
+func (x *OpenFgaRelationshipTuple) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -160,10 +160,10 @@ func (x *OpenFgaRelationshipTuple) GetStatus() *OpenFgaRelationshipTupleStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type OpenFgaRelationshipTupleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the OpenFGA relationship tuple deployment.
+	// outputs contains the outputs from the OpenFGA relationship tuple deployment.
 	// These values are populated after successful deployment and confirm
 	// the tuple was created.
-	Outputs       *OpenFgaRelationshipTupleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *OpenFgaRelationshipTupleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -198,7 +198,7 @@ func (*OpenFgaRelationshipTupleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgarelationshiptuple_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *OpenFgaRelationshipTupleStatus) GetOutputs() *OpenFgaRelationshipTupleStackOutputs {
+func (x *OpenFgaRelationshipTupleStatus) GetOutputs() *OpenFgaRelationshipTupleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -216,11 +216,11 @@ const file_catalog_openfga_openfgarelationshiptuple_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18OpenFgaRelationshipTupleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatusR\x06status\"\x97\x01\n" +
-	"\x1eOpenFgaRelationshipTupleStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackOutputsR\aoutputsB\xaf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatusR\x06status\"\x92\x01\n" +
+	"\x1eOpenFgaRelationshipTupleStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleOutputsR\aoutputsB\xaf\x03\n" +
 	"9com.dev.planton.openfga.openfgarelationshiptuple.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/openfga/openfgarelationshiptuple/v1alpha1;openfgarelationshiptuplev1alpha1\xa2\x02\x04DPOO\xaa\x025Dev.Planton.Openfga.Openfgarelationshiptuple.V1alpha1\xca\x025Dev\\Planton\\Openfga\\Openfgarelationshiptuple\\V1alpha1\xe2\x02ADev\\Planton\\Openfga\\Openfgarelationshiptuple\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Openfga::Openfgarelationshiptuple::V1alpha1b\x06proto3"
 
 var (
@@ -237,17 +237,17 @@ func file_catalog_openfga_openfgarelationshiptuple_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_api_proto_goTypes = []any{
-	(*OpenFgaRelationshipTuple)(nil),             // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple
-	(*OpenFgaRelationshipTupleStatus)(nil),       // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*OpenFgaRelationshipTupleSpec)(nil),         // 3: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleSpec
-	(*OpenFgaRelationshipTupleStackOutputs)(nil), // 4: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackOutputs
+	(*OpenFgaRelationshipTuple)(nil),        // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple
+	(*OpenFgaRelationshipTupleStatus)(nil),  // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*OpenFgaRelationshipTupleSpec)(nil),    // 3: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleSpec
+	(*OpenFgaRelationshipTupleOutputs)(nil), // 4: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleOutputs
 }
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple.spec:type_name -> dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleSpec
 	1, // 2: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple.status:type_name -> dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatus
-	4, // 3: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatus.outputs:type_name -> dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackOutputs
+	4, // 3: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStatus.outputs:type_name -> dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

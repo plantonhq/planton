@@ -33,7 +33,7 @@ type CloudflareZeroTrustDeviceCustomProfile struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustDeviceCustomProfileSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareZeroTrustDeviceCustomProfile) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustDeviceCustomProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustDeviceCustomProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *CloudflareZeroTrustDeviceCustomProfile) GetStatus() *CloudflareZeroTrus
 // state of the custom device profile.
 type CloudflareZeroTrustDeviceCustomProfileStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareZeroTrustDeviceCustomProfileStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareZeroTrustDeviceCustomProfileOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*CloudflareZeroTrustDeviceCustomProfileStatus) Descriptor() ([]byte, []int
 	return file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustDeviceCustomProfileStatus) GetOutputs() *CloudflareZeroTrustDeviceCustomProfileStackOutputs {
+func (x *CloudflareZeroTrustDeviceCustomProfileStatus) GetOutputs() *CloudflareZeroTrustDeviceCustomProfileOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_ap
 	"apiVersion\x12A\n" +
 	"\x04kind\x18\x02 \x01(\tB-\xbaH*r(\n" +
 	"&CloudflareZeroTrustDeviceCustomProfileR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8e\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8e\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2r.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8c\x01\n" +
-	"\x06status\x18\x05 \x01(\v2t.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatusR\x06status\"\xc5\x01\n" +
-	",CloudflareZeroTrustDeviceCustomProfileStatus\x12\x94\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2z.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStackOutputsR\aoutputsB\xa4\x04\n" +
+	"\x06status\x18\x05 \x01(\v2t.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatusR\x06status\"\xc0\x01\n" +
+	",CloudflareZeroTrustDeviceCustomProfileStatus\x12\x8f\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2u.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileOutputsR\aoutputsB\xa4\x04\n" +
 	"Jcom.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1B\bApiProtoP\x01Z\x8e\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustdevicecustomprofile/v1alpha1;cloudflarezerotrustdevicecustomprofilev1alpha1\xa2\x02\x04DPCC\xaa\x02FDev.Planton.Cloudflare.Cloudflarezerotrustdevicecustomprofile.V1alpha1\xca\x02FDev\\Planton\\Cloudflare\\Cloudflarezerotrustdevicecustomprofile\\V1alpha1\xe2\x02RDev\\Planton\\Cloudflare\\Cloudflarezerotrustdevicecustomprofile\\V1alpha1\\GPBMetadata\xea\x02JDev::Planton::Cloudflare::Cloudflarezerotrustdevicecustomprofile::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_api
 
 var file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustDeviceCustomProfile)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile
-	(*CloudflareZeroTrustDeviceCustomProfileStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatus
-	(*shared.CloudResourceMetadata)(nil),                       // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustDeviceCustomProfileSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileSpec
-	(*CloudflareZeroTrustDeviceCustomProfileStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStackOutputs
+	(*CloudflareZeroTrustDeviceCustomProfile)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile
+	(*CloudflareZeroTrustDeviceCustomProfileStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatus
+	(*shared.CatalogObjectMetadata)(nil),                  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustDeviceCustomProfileSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileSpec
+	(*CloudflareZeroTrustDeviceCustomProfileOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile.status:type_name -> dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

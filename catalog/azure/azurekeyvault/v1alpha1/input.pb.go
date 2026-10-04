@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-key-vault stack-input
-type AzureKeyVaultStackInput struct {
+// azure-key-vault iac-input
+type AzureKeyVaultIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AzureKeyVault `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureKeyVaultStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureKeyVaultStackInput) Reset() {
-	*x = AzureKeyVaultStackInput{}
+func (x *AzureKeyVaultIacInput) Reset() {
+	*x = AzureKeyVaultIacInput{}
 	mi := &file_catalog_azure_azurekeyvault_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureKeyVaultStackInput) String() string {
+func (x *AzureKeyVaultIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureKeyVaultStackInput) ProtoMessage() {}
+func (*AzureKeyVaultIacInput) ProtoMessage() {}
 
-func (x *AzureKeyVaultStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureKeyVaultIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurekeyvault_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureKeyVaultStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureKeyVaultStackInput.ProtoReflect.Descriptor instead.
-func (*AzureKeyVaultStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureKeyVaultIacInput.ProtoReflect.Descriptor instead.
+func (*AzureKeyVaultIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvault_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureKeyVaultStackInput) GetTarget() *AzureKeyVault {
+func (x *AzureKeyVaultIacInput) GetTarget() *AzureKeyVault {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureKeyVaultStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureKeyVaultIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurekeyvault_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_azure_azurekeyvault_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/azure/azurekeyvault/v1alpha1/input.proto\x12(dev.planton.azure.azurekeyvault.v1alpha1\x1a.catalog/azure/azurekeyvault/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xbb\x01\n" +
-	"\x17AzureKeyVaultStackInput\x12O\n" +
+	"0catalog/azure/azurekeyvault/v1alpha1/input.proto\x12(dev.planton.azure.azurekeyvault.v1alpha1\x1a.catalog/azure/azurekeyvault/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb9\x01\n" +
+	"\x15AzureKeyVaultIacInput\x12O\n" +
 	"\x06target\x18\x01 \x01(\v27.dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xd8\x02\n" +
 	",com.dev.planton.azure.azurekeyvault.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurekeyvault_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_azure_azurekeyvault_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurekeyvault_v1alpha1_input_proto_goTypes = []any{
-	(*AzureKeyVaultStackInput)(nil),   // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackInput
+	(*AzureKeyVaultIacInput)(nil),     // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultIacInput
 	(*AzureKeyVault)(nil),             // 1: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault
 	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurekeyvault_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackInput.target:type_name -> dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault
-	2, // 1: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultIacInput.target:type_name -> dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault
+	2, // 1: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

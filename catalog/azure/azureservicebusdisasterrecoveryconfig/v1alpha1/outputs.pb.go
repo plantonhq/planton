@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServiceBusDisasterRecoveryConfigStackOutputs** captures the
+// **AzureServiceBusDisasterRecoveryConfigOutputs** captures the
 // outputs of provisioning a Service Bus geo-DR pairing.
 //
 // The alias connection strings are what DR-aware clients should hold:
 // they address the failover-stable alias DNS name, so a failover needs no
 // client reconfiguration. Keys come from the paired authorization rule
 // (alias_authorization_rule_id, defaulting to the namespace root rule).
-type AzureServiceBusDisasterRecoveryConfigStackOutputs struct {
+type AzureServiceBusDisasterRecoveryConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the disaster-recovery config (under
 	// the primary namespace).
@@ -52,20 +52,20 @@ type AzureServiceBusDisasterRecoveryConfigStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) Reset() {
-	*x = AzureServiceBusDisasterRecoveryConfigStackOutputs{}
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) Reset() {
+	*x = AzureServiceBusDisasterRecoveryConfigOutputs{}
 	mi := &file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) String() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusDisasterRecoveryConfigStackOutputs) ProtoMessage() {}
+func (*AzureServiceBusDisasterRecoveryConfigOutputs) ProtoMessage() {}
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,47 +77,47 @@ func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusDisasterRecoveryConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusDisasterRecoveryConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusDisasterRecoveryConfigOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusDisasterRecoveryConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) GetDisasterRecoveryConfigId() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) GetDisasterRecoveryConfigId() string {
 	if x != nil {
 		return x.DisasterRecoveryConfigId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) GetAliasName() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) GetAliasName() string {
 	if x != nil {
 		return x.AliasName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) GetPrimaryConnectionStringAlias() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) GetPrimaryConnectionStringAlias() string {
 	if x != nil {
 		return x.PrimaryConnectionStringAlias
 	}
 	return ""
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) GetSecondaryConnectionStringAlias() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) GetSecondaryConnectionStringAlias() string {
 	if x != nil {
 		return x.SecondaryConnectionStringAlias
 	}
 	return ""
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) GetDefaultPrimaryKey() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) GetDefaultPrimaryKey() string {
 	if x != nil {
 		return x.DefaultPrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackOutputs) GetDefaultSecondaryKey() string {
+func (x *AzureServiceBusDisasterRecoveryConfigOutputs) GetDefaultSecondaryKey() string {
 	if x != nil {
 		return x.DefaultSecondaryKey
 	}
@@ -128,8 +128,8 @@ var File_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_pr
 
 const file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/outputs.proto\x12@dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1\x1a\x1cshared/options/options.proto\"\x9f\x03\n" +
-	"1AzureServiceBusDisasterRecoveryConfigStackOutputs\x12=\n" +
+	"Jcatalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/outputs.proto\x12@dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1\x1a\x1cshared/options/options.proto\"\x9a\x03\n" +
+	",AzureServiceBusDisasterRecoveryConfigOutputs\x12=\n" +
 	"\x1bdisaster_recovery_config_id\x18\x01 \x01(\tR\x18disasterRecoveryConfigId\x12\x1d\n" +
 	"\n" +
 	"alias_name\x18\x02 \x01(\tR\taliasName\x12K\n" +
@@ -153,7 +153,7 @@ func file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_p
 
 var file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServiceBusDisasterRecoveryConfigStackOutputs)(nil), // 0: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigStackOutputs
+	(*AzureServiceBusDisasterRecoveryConfigOutputs)(nil), // 0: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigOutputs
 }
 var file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

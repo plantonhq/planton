@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEbsSnapshotStackOutputs captures the observable state of the
+// AwsEbsSnapshotOutputs captures the observable state of the
 // snapshot after apply.
-type AwsEbsSnapshotStackOutputs struct {
+type AwsEbsSnapshotOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The snapshot's id (snap-...) - what volume restores, copies, and
 	// permission grants reference, and the provider's import ID (volume
@@ -40,20 +40,20 @@ type AwsEbsSnapshotStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEbsSnapshotStackOutputs) Reset() {
-	*x = AwsEbsSnapshotStackOutputs{}
+func (x *AwsEbsSnapshotOutputs) Reset() {
+	*x = AwsEbsSnapshotOutputs{}
 	mi := &file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEbsSnapshotStackOutputs) String() string {
+func (x *AwsEbsSnapshotOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEbsSnapshotStackOutputs) ProtoMessage() {}
+func (*AwsEbsSnapshotOutputs) ProtoMessage() {}
 
-func (x *AwsEbsSnapshotStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEbsSnapshotOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *AwsEbsSnapshotStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEbsSnapshotStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEbsSnapshotStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEbsSnapshotOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEbsSnapshotOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEbsSnapshotStackOutputs) GetSnapshotId() string {
+func (x *AwsEbsSnapshotOutputs) GetSnapshotId() string {
 	if x != nil {
 		return x.SnapshotId
 	}
 	return ""
 }
 
-func (x *AwsEbsSnapshotStackOutputs) GetSnapshotArn() string {
+func (x *AwsEbsSnapshotOutputs) GetSnapshotArn() string {
 	if x != nil {
 		return x.SnapshotArn
 	}
 	return ""
 }
 
-func (x *AwsEbsSnapshotStackOutputs) GetOwnerId() string {
+func (x *AwsEbsSnapshotOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsEbsSnapshotStackOutputs) GetVolumeSizeGb() string {
+func (x *AwsEbsSnapshotOutputs) GetVolumeSizeGb() string {
 	if x != nil {
 		return x.VolumeSizeGb
 	}
@@ -102,8 +102,8 @@ var File_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsebssnapshot/v1alpha1/outputs.proto\x12'dev.planton.aws.awsebssnapshot.v1alpha1\"\xa1\x01\n" +
-	"\x1aAwsEbsSnapshotStackOutputs\x12\x1f\n" +
+	"1catalog/aws/awsebssnapshot/v1alpha1/outputs.proto\x12'dev.planton.aws.awsebssnapshot.v1alpha1\"\x9c\x01\n" +
+	"\x15AwsEbsSnapshotOutputs\x12\x1f\n" +
 	"\vsnapshot_id\x18\x01 \x01(\tR\n" +
 	"snapshotId\x12!\n" +
 	"\fsnapshot_arn\x18\x02 \x01(\tR\vsnapshotArn\x12\x19\n" +
@@ -125,7 +125,7 @@ func file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEbsSnapshotStackOutputs)(nil), // 0: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStackOutputs
+	(*AwsEbsSnapshotOutputs)(nil), // 0: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotOutputs
 }
 var file_catalog_aws_awsebssnapshot_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

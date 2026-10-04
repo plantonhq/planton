@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockCustomModelStackOutputs captures observable identifiers from a
+// AwsBedrockCustomModelOutputs captures observable identifiers from a
 // Bedrock model-customization deployment. These outputs are used by
 // downstream resources (provisioned throughput) to wire dependencies via
 // StringValueOrRef.
-type AwsBedrockCustomModelStackOutputs struct {
+type AwsBedrockCustomModelOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ARN of the resulting custom model - the value
 	// AwsBedrockProvisionedThroughput references to buy serving capacity
@@ -45,20 +45,20 @@ type AwsBedrockCustomModelStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockCustomModelStackOutputs) Reset() {
-	*x = AwsBedrockCustomModelStackOutputs{}
+func (x *AwsBedrockCustomModelOutputs) Reset() {
+	*x = AwsBedrockCustomModelOutputs{}
 	mi := &file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockCustomModelStackOutputs) String() string {
+func (x *AwsBedrockCustomModelOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockCustomModelStackOutputs) ProtoMessage() {}
+func (*AwsBedrockCustomModelOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockCustomModelStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockCustomModelOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *AwsBedrockCustomModelStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockCustomModelStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockCustomModelStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockCustomModelOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockCustomModelOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockCustomModelStackOutputs) GetCustomModelArn() string {
+func (x *AwsBedrockCustomModelOutputs) GetCustomModelArn() string {
 	if x != nil {
 		return x.CustomModelArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockCustomModelStackOutputs) GetCustomModelName() string {
+func (x *AwsBedrockCustomModelOutputs) GetCustomModelName() string {
 	if x != nil {
 		return x.CustomModelName
 	}
 	return ""
 }
 
-func (x *AwsBedrockCustomModelStackOutputs) GetJobArn() string {
+func (x *AwsBedrockCustomModelOutputs) GetJobArn() string {
 	if x != nil {
 		return x.JobArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockCustomModelStackOutputs) GetJobStatus() string {
+func (x *AwsBedrockCustomModelOutputs) GetJobStatus() string {
 	if x != nil {
 		return x.JobStatus
 	}
@@ -107,8 +107,8 @@ var File_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsbedrockcustommodel/v1alpha1/outputs.proto\x12.dev.planton.aws.awsbedrockcustommodel.v1alpha1\"\xb1\x01\n" +
-	"!AwsBedrockCustomModelStackOutputs\x12(\n" +
+	"8catalog/aws/awsbedrockcustommodel/v1alpha1/outputs.proto\x12.dev.planton.aws.awsbedrockcustommodel.v1alpha1\"\xac\x01\n" +
+	"\x1cAwsBedrockCustomModelOutputs\x12(\n" +
 	"\x10custom_model_arn\x18\x01 \x01(\tR\x0ecustomModelArn\x12*\n" +
 	"\x11custom_model_name\x18\x02 \x01(\tR\x0fcustomModelName\x12\x17\n" +
 	"\ajob_arn\x18\x03 \x01(\tR\x06jobArn\x12\x1d\n" +
@@ -130,7 +130,7 @@ func file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockCustomModelStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelStackOutputs
+	(*AwsBedrockCustomModelOutputs)(nil), // 0: dev.planton.aws.awsbedrockcustommodel.v1alpha1.AwsBedrockCustomModelOutputs
 }
 var file_catalog_aws_awsbedrockcustommodel_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

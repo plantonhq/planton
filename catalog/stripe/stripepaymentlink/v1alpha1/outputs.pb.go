@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentLinkStackOutputs identifies the payment link.
+// StripePaymentLinkOutputs identifies the payment link.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_link
-type StripePaymentLinkStackOutputs struct {
+type StripePaymentLinkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the payment link's Stripe id (plink_...). It changes when the link is replaced.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -38,20 +38,20 @@ type StripePaymentLinkStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripePaymentLinkStackOutputs) Reset() {
-	*x = StripePaymentLinkStackOutputs{}
+func (x *StripePaymentLinkOutputs) Reset() {
+	*x = StripePaymentLinkOutputs{}
 	mi := &file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePaymentLinkStackOutputs) String() string {
+func (x *StripePaymentLinkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePaymentLinkStackOutputs) ProtoMessage() {}
+func (*StripePaymentLinkOutputs) ProtoMessage() {}
 
-func (x *StripePaymentLinkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripePaymentLinkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *StripePaymentLinkStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePaymentLinkStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripePaymentLinkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePaymentLinkOutputs.ProtoReflect.Descriptor instead.
+func (*StripePaymentLinkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePaymentLinkStackOutputs) GetId() string {
+func (x *StripePaymentLinkOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripePaymentLinkStackOutputs) GetUrl() string {
+func (x *StripePaymentLinkOutputs) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *StripePaymentLinkStackOutputs) GetActive() bool {
+func (x *StripePaymentLinkOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
@@ -93,8 +93,8 @@ var File_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/stripe/stripepaymentlink/v1alpha1/outputs.proto\x12-dev.planton.stripe.stripepaymentlink.v1alpha1\"Y\n" +
-	"\x1dStripePaymentLinkStackOutputs\x12\x0e\n" +
+	"7catalog/stripe/stripepaymentlink/v1alpha1/outputs.proto\x12-dev.planton.stripe.stripepaymentlink.v1alpha1\"T\n" +
+	"\x18StripePaymentLinkOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12\x16\n" +
 	"\x06active\x18\x03 \x01(\bR\x06activeB\xfc\x02\n" +
@@ -114,7 +114,7 @@ func file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripePaymentLinkStackOutputs)(nil), // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackOutputs
+	(*StripePaymentLinkOutputs)(nil), // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkOutputs
 }
 var file_catalog_stripe_stripepaymentlink_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

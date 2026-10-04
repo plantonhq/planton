@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeEntitlementFeatureStackOutputs identifies the feature.
+// StripeEntitlementFeatureOutputs identifies the feature.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/entitlements_feature
-type StripeEntitlementFeatureStackOutputs struct {
+type StripeEntitlementFeatureOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the feature's Stripe id (feat_...), the value a StripeProduct's features reference.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -36,20 +36,20 @@ type StripeEntitlementFeatureStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeEntitlementFeatureStackOutputs) Reset() {
-	*x = StripeEntitlementFeatureStackOutputs{}
+func (x *StripeEntitlementFeatureOutputs) Reset() {
+	*x = StripeEntitlementFeatureOutputs{}
 	mi := &file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeEntitlementFeatureStackOutputs) String() string {
+func (x *StripeEntitlementFeatureOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeEntitlementFeatureStackOutputs) ProtoMessage() {}
+func (*StripeEntitlementFeatureOutputs) ProtoMessage() {}
 
-func (x *StripeEntitlementFeatureStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeEntitlementFeatureOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *StripeEntitlementFeatureStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeEntitlementFeatureStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeEntitlementFeatureStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeEntitlementFeatureOutputs.ProtoReflect.Descriptor instead.
+func (*StripeEntitlementFeatureOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeEntitlementFeatureStackOutputs) GetId() string {
+func (x *StripeEntitlementFeatureOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeEntitlementFeatureStackOutputs) GetLookupKey() string {
+func (x *StripeEntitlementFeatureOutputs) GetLookupKey() string {
 	if x != nil {
 		return x.LookupKey
 	}
 	return ""
 }
 
-func (x *StripeEntitlementFeatureStackOutputs) GetActive() bool {
+func (x *StripeEntitlementFeatureOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
@@ -91,8 +91,8 @@ var File_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto protoref
 
 const file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/stripe/stripeentitlementfeature/v1alpha1/outputs.proto\x124dev.planton.stripe.stripeentitlementfeature.v1alpha1\"m\n" +
-	"$StripeEntitlementFeatureStackOutputs\x12\x0e\n" +
+	">catalog/stripe/stripeentitlementfeature/v1alpha1/outputs.proto\x124dev.planton.stripe.stripeentitlementfeature.v1alpha1\"h\n" +
+	"\x1fStripeEntitlementFeatureOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"lookup_key\x18\x02 \x01(\tR\tlookupKey\x12\x16\n" +
@@ -113,7 +113,7 @@ func file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeEntitlementFeatureStackOutputs)(nil), // 0: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureStackOutputs
+	(*StripeEntitlementFeatureOutputs)(nil), // 0: dev.planton.stripe.stripeentitlementfeature.v1alpha1.StripeEntitlementFeatureOutputs
 }
 var file_catalog_stripe_stripeentitlementfeature_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

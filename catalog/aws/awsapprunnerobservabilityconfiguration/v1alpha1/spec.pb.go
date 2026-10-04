@@ -40,7 +40,7 @@ const (
 // the resource graph.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsAppRunnerObservabilityConfigurationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the observability configuration will be created.

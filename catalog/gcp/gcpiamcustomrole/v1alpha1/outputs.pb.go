@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP IAM custom role.
-type GcpIamCustomRoleStackOutputs struct {
+type GcpIamCustomRoleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully-qualified role name: projects/<project>/roles/<role_id>.
 	// This is the grantable handle — feed it directly into IAM grants
@@ -39,20 +39,20 @@ type GcpIamCustomRoleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpIamCustomRoleStackOutputs) Reset() {
-	*x = GcpIamCustomRoleStackOutputs{}
+func (x *GcpIamCustomRoleOutputs) Reset() {
+	*x = GcpIamCustomRoleOutputs{}
 	mi := &file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIamCustomRoleStackOutputs) String() string {
+func (x *GcpIamCustomRoleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIamCustomRoleStackOutputs) ProtoMessage() {}
+func (*GcpIamCustomRoleOutputs) ProtoMessage() {}
 
-func (x *GcpIamCustomRoleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpIamCustomRoleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *GcpIamCustomRoleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIamCustomRoleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpIamCustomRoleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIamCustomRoleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpIamCustomRoleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIamCustomRoleStackOutputs) GetName() string {
+func (x *GcpIamCustomRoleOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpIamCustomRoleStackOutputs) GetRoleId() string {
+func (x *GcpIamCustomRoleOutputs) GetRoleId() string {
 	if x != nil {
 		return x.RoleId
 	}
 	return ""
 }
 
-func (x *GcpIamCustomRoleStackOutputs) GetDeleted() bool {
+func (x *GcpIamCustomRoleOutputs) GetDeleted() bool {
 	if x != nil {
 		return x.Deleted
 	}
@@ -94,8 +94,8 @@ var File_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpiamcustomrole/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpiamcustomrole.v1alpha1\"e\n" +
-	"\x1cGcpIamCustomRoleStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpiamcustomrole/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpiamcustomrole.v1alpha1\"`\n" +
+	"\x17GcpIamCustomRoleOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
 	"\arole_id\x18\x02 \x01(\tR\x06roleId\x12\x18\n" +
 	"\adeleted\x18\x03 \x01(\bR\adeletedB\xe3\x02\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpIamCustomRoleStackOutputs)(nil), // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackOutputs
+	(*GcpIamCustomRoleOutputs)(nil), // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleOutputs
 }
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

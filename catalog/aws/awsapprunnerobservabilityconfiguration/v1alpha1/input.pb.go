@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppRunnerObservabilityConfigurationStackInput is the input for the
+// AwsAppRunnerObservabilityConfigurationIacInput is the input for the
 // aws-app-runner-observability-configuration IaC modules.
-type AwsAppRunnerObservabilityConfigurationStackInput struct {
+type AwsAppRunnerObservabilityConfigurationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsAppRunnerObservabilityConfiguration `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsAppRunnerObservabilityConfigurationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackInput) Reset() {
-	*x = AwsAppRunnerObservabilityConfigurationStackInput{}
+func (x *AwsAppRunnerObservabilityConfigurationIacInput) Reset() {
+	*x = AwsAppRunnerObservabilityConfigurationIacInput{}
 	mi := &file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackInput) String() string {
+func (x *AwsAppRunnerObservabilityConfigurationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppRunnerObservabilityConfigurationStackInput) ProtoMessage() {}
+func (*AwsAppRunnerObservabilityConfigurationIacInput) ProtoMessage() {}
 
-func (x *AwsAppRunnerObservabilityConfigurationStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsAppRunnerObservabilityConfigurationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsAppRunnerObservabilityConfigurationStackInput) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppRunnerObservabilityConfigurationStackInput.ProtoReflect.Descriptor instead.
-func (*AwsAppRunnerObservabilityConfigurationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppRunnerObservabilityConfigurationIacInput.ProtoReflect.Descriptor instead.
+func (*AwsAppRunnerObservabilityConfigurationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackInput) GetTarget() *AwsAppRunnerObservabilityConfiguration {
+func (x *AwsAppRunnerObservabilityConfigurationIacInput) GetTarget() *AwsAppRunnerObservabilityConfiguration {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsAppRunnerObservabilityConfigurationIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto
 
 const file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/input.proto\x12?dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1\x1aEcatalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\x80\x02\n" +
-	"0AwsAppRunnerObservabilityConfigurationStackInput\x12\x7f\n" +
+	"Gcatalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/input.proto\x12?dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1\x1aEcatalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xfe\x01\n" +
+	".AwsAppRunnerObservabilityConfigurationIacInput\x12\x7f\n" +
 	"\x06target\x18\x01 \x01(\v2g.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfc\x03\n" +
 	"Ccom.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_prot
 
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_goTypes = []any{
-	(*AwsAppRunnerObservabilityConfigurationStackInput)(nil), // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackInput
-	(*AwsAppRunnerObservabilityConfiguration)(nil),           // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration
-	(*aws.AwsProviderConfig)(nil),                            // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsAppRunnerObservabilityConfigurationIacInput)(nil), // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationIacInput
+	(*AwsAppRunnerObservabilityConfiguration)(nil),         // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration
+	(*aws.AwsProviderConfig)(nil),                          // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackInput.target:type_name -> dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration
-	2, // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationIacInput.target:type_name -> dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration
+	2, // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

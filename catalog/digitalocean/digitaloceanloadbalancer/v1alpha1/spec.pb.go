@@ -193,7 +193,7 @@ type DigitalOceanLoadBalancerSpec struct {
 	// (Optional) Bring-your-own IP: an unassigned BYOIP address on the
 	// account, in the balancer's region, assigned at creation. Consumed only
 	// at create time; when unset DigitalOcean allocates the address. The
-	// assigned address is exported as the ip stack output either way.
+	// assigned address is exported as the ip output either way.
 	Ip string `protobuf:"bytes,23,opt,name=ip,proto3" json:"ip,omitempty"`
 	// (Optional) For GLOBAL balancers: the regional load balancers that
 	// receive the routed traffic, as literal balancer UUIDs or references to

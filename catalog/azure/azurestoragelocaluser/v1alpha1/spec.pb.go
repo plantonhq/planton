@@ -117,7 +117,7 @@ type AzureStorageLocalUserSpec struct {
 	SshKeyEnabled bool `protobuf:"varint,3,opt,name=ssh_key_enabled,json=sshKeyEnabled,proto3" json:"ssh_key_enabled,omitempty"`
 	// Whether the user authenticates with an AZURE-GENERATED password.
 	// Azure mints the password at creation and returns it exactly once --
-	// it lands in the password stack output; there is no way to choose or
+	// it lands in the password output; there is no way to choose or
 	// retrieve it later (flipping this off and on regenerates it). At
 	// least one of ssh_key_enabled / ssh_password_enabled must be on.
 	SshPasswordEnabled bool `protobuf:"varint,4,opt,name=ssh_password_enabled,json=sshPasswordEnabled,proto3" json:"ssh_password_enabled,omitempty"`

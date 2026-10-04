@@ -33,7 +33,7 @@ type KubernetesAuthorizationPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesAuthorizationPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesAuthorizationPolicy) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesAuthorizationPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesAuthorizationPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesAuthorizationPolicy) GetStatus() *KubernetesAuthorizationPoli
 // KubernetesAuthorizationPolicyStatus holds the deployment status and outputs.
 type KubernetesAuthorizationPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesAuthorizationPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesAuthorizationPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesAuthorizationPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesAuthorizationPolicyStatus) GetOutputs() *KubernetesAuthorizationPolicyStackOutputs {
+func (x *KubernetesAuthorizationPolicyStatus) GetOutputs() *KubernetesAuthorizationPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_api_proto_r
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dKubernetesAuthorizationPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12|\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12|\n" +
 	"\x04spec\x18\x04 \x01(\v2`.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12z\n" +
-	"\x06status\x18\x05 \x01(\v2b.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatusR\x06status\"\xaa\x01\n" +
-	"#KubernetesAuthorizationPolicyStatus\x12\x82\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2h.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackOutputsR\aoutputsB\xe4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2b.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatusR\x06status\"\xa4\x01\n" +
+	"#KubernetesAuthorizationPolicyStatus\x12}\n" +
+	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyOutputsR\aoutputsB\xe4\x03\n" +
 	"Acom.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1B\bApiProtoP\x01Z|github.com/plantonhq/planton/catalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1;kubernetesauthorizationpolicyv1alpha1\xa2\x02\x04DPKK\xaa\x02=Dev.Planton.Kubernetes.Kubernetesauthorizationpolicy.V1alpha1\xca\x02=Dev\\Planton\\Kubernetes\\Kubernetesauthorizationpolicy\\V1alpha1\xe2\x02IDev\\Planton\\Kubernetes\\Kubernetesauthorizationpolicy\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Kubernetes::Kubernetesauthorizationpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_api_proto_ra
 
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesAuthorizationPolicy)(nil),             // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy
-	(*KubernetesAuthorizationPolicyStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesAuthorizationPolicySpec)(nil),         // 3: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicySpec
-	(*KubernetesAuthorizationPolicyStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackOutputs
+	(*KubernetesAuthorizationPolicy)(nil),        // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy
+	(*KubernetesAuthorizationPolicyStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesAuthorizationPolicySpec)(nil),    // 3: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicySpec
+	(*KubernetesAuthorizationPolicyOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyOutputs
 }
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy.spec:type_name -> dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicySpec
 	1, // 2: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy.status:type_name -> dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatus
-	4, // 3: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

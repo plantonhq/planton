@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeCouponStackOutputs identifies the coupon.
+// StripeCouponOutputs identifies the coupon.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/coupon
-type StripeCouponStackOutputs struct {
+type StripeCouponOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the coupon's Stripe id, the value a StripePromotionCode, a subscription or a Checkout
 	// session references. It changes when the coupon is replaced.
@@ -36,20 +36,20 @@ type StripeCouponStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeCouponStackOutputs) Reset() {
-	*x = StripeCouponStackOutputs{}
+func (x *StripeCouponOutputs) Reset() {
+	*x = StripeCouponOutputs{}
 	mi := &file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeCouponStackOutputs) String() string {
+func (x *StripeCouponOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeCouponStackOutputs) ProtoMessage() {}
+func (*StripeCouponOutputs) ProtoMessage() {}
 
-func (x *StripeCouponStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeCouponOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *StripeCouponStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeCouponStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeCouponStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeCouponOutputs.ProtoReflect.Descriptor instead.
+func (*StripeCouponOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeCouponStackOutputs) GetId() string {
+func (x *StripeCouponOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeCouponStackOutputs) GetValid() bool {
+func (x *StripeCouponOutputs) GetValid() bool {
 	if x != nil {
 		return x.Valid
 	}
@@ -84,8 +84,8 @@ var File_catalog_stripe_stripecoupon_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/stripe/stripecoupon/v1alpha1/outputs.proto\x12(dev.planton.stripe.stripecoupon.v1alpha1\"@\n" +
-	"\x18StripeCouponStackOutputs\x12\x0e\n" +
+	"2catalog/stripe/stripecoupon/v1alpha1/outputs.proto\x12(dev.planton.stripe.stripecoupon.v1alpha1\";\n" +
+	"\x13StripeCouponOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05valid\x18\x02 \x01(\bR\x05validB\xd9\x02\n" +
 	",com.dev.planton.stripe.stripecoupon.v1alpha1B\fOutputsProtoP\x01ZVgithub.com/plantonhq/planton/catalog/stripe/stripecoupon/v1alpha1;stripecouponv1alpha1\xa2\x02\x04DPSS\xaa\x02(Dev.Planton.Stripe.Stripecoupon.V1alpha1\xca\x02(Dev\\Planton\\Stripe\\Stripecoupon\\V1alpha1\xe2\x024Dev\\Planton\\Stripe\\Stripecoupon\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Stripe::Stripecoupon::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeCouponStackOutputs)(nil), // 0: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponStackOutputs
+	(*StripeCouponOutputs)(nil), // 0: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponOutputs
 }
 var file_catalog_stripe_stripecoupon_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: digitaloceandatabasecluster
 spec:
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "182.7000"
       exclusions:
         - "storage_autoscale is enabled at an 80 percent threshold: each triggered growth step adds additional storage at 0.215 USD/GiB/mo permanently, following actual disk usage no manifest can predict"
-        - read-only replicas, users, logical databases, connection pools, and firewall rules are separate components with their own lifecycles
+        - read-only replicas, users, logical databases, connection pools, and firewall rules are separate kinds with their own lifecycles
       notes: Daily backups with 7-day point-in-time recovery and the weekly maintenance window are included in the node price. The base storage included with db-s-2vcpu-4gb carries no separate charge until autoscale grows past it.
     - preset: 02-postgresql-dev
       region_assumption: nyc3
@@ -83,7 +83,7 @@ spec:
       total_list_cost: "148.8000"
       exclusions:
         - growing storage past the plan's included base bills 0.215 USD/GiB/mo in 30 GiB increments
-        - topics and schema registry subjects are separate free components; the brokers carry the whole bill
+        - topics and schema registry subjects are separate free kinds; the brokers carry the whole bill
       notes: The pricing page publishes the 3-broker plan total, not a per-broker rate -- the division by three is stated arithmetic on the page's verbatim 148.80 USD figure.
     - preset: 05-opensearch
       region_assumption: nyc3

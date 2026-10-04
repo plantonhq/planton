@@ -31,7 +31,7 @@ type AzureAksCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureAksClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureAksCluster) GetKind() string {
 	return ""
 }
 
-func (x *AzureAksCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureAksCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureAksCluster) GetStatus() *AzureAksClusterStatus {
 // azure-aks-cluster status
 type AzureAksClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-aks-cluster stack-outputs
-	Outputs       *AzureAksClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-aks-cluster outputs
+	Outputs       *AzureAksClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureAksClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureakscluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureAksClusterStatus) GetOutputs() *AzureAksClusterStackOutputs {
+func (x *AzureAksClusterStatus) GetOutputs() *AzureAksClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azureakscluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAzureAksClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStatusR\x06status\"z\n" +
-	"\x15AzureAksClusterStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackOutputsR\aoutputsB\xe4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStatusR\x06status\"u\n" +
+	"\x15AzureAksClusterStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterOutputsR\aoutputsB\xe4\x02\n" +
 	".com.dev.planton.azure.azureakscluster.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/azure/azureakscluster/v1alpha1;azureaksclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Azure.Azureakscluster.V1alpha1\xca\x02*Dev\\Planton\\Azure\\Azureakscluster\\V1alpha1\xe2\x026Dev\\Planton\\Azure\\Azureakscluster\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Azure::Azureakscluster::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azureakscluster_v1alpha1_api_proto_msgTypes = make([]prot
 var file_catalog_azure_azureakscluster_v1alpha1_api_proto_goTypes = []any{
 	(*AzureAksCluster)(nil),              // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster
 	(*AzureAksClusterStatus)(nil),        // 1: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureAksClusterSpec)(nil),          // 3: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterSpec
-	(*AzureAksClusterStackOutputs)(nil),  // 4: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackOutputs
+	(*AzureAksClusterOutputs)(nil),       // 4: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterOutputs
 }
 var file_catalog_azure_azureakscluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster.spec:type_name -> dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterSpec
 	1, // 2: dev.planton.azure.azureakscluster.v1alpha1.AzureAksCluster.status:type_name -> dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStatus
-	4, // 3: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStatus.outputs:type_name -> dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackOutputs
+	4, // 3: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStatus.outputs:type_name -> dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

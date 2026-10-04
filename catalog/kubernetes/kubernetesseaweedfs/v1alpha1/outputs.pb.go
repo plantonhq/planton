@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// seaweedfs-kubernetes stack outputs
-type KubernetesSeaweedFsStackOutputs struct {
+// seaweedfs-kubernetes outputs
+type KubernetesSeaweedFsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the store runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -58,20 +58,20 @@ type KubernetesSeaweedFsStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) Reset() {
-	*x = KubernetesSeaweedFsStackOutputs{}
+func (x *KubernetesSeaweedFsOutputs) Reset() {
+	*x = KubernetesSeaweedFsOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) String() string {
+func (x *KubernetesSeaweedFsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSeaweedFsStackOutputs) ProtoMessage() {}
+func (*KubernetesSeaweedFsOutputs) ProtoMessage() {}
 
-func (x *KubernetesSeaweedFsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSeaweedFsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,68 +83,68 @@ func (x *KubernetesSeaweedFsStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSeaweedFsStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesSeaweedFsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSeaweedFsOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesSeaweedFsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetNamespace() string {
+func (x *KubernetesSeaweedFsOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetReleaseName() string {
+func (x *KubernetesSeaweedFsOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetS3Endpoint() string {
+func (x *KubernetesSeaweedFsOutputs) GetS3Endpoint() string {
 	if x != nil {
 		return x.S3Endpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetS3CredentialsSecretName() string {
+func (x *KubernetesSeaweedFsOutputs) GetS3CredentialsSecretName() string {
 	if x != nil {
 		return x.S3CredentialsSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetFilerServiceName() string {
+func (x *KubernetesSeaweedFsOutputs) GetFilerServiceName() string {
 	if x != nil {
 		return x.FilerServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetMasterServiceName() string {
+func (x *KubernetesSeaweedFsOutputs) GetMasterServiceName() string {
 	if x != nil {
 		return x.MasterServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetAdminEndpoint() string {
+func (x *KubernetesSeaweedFsOutputs) GetAdminEndpoint() string {
 	if x != nil {
 		return x.AdminEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetAdminAuthSecretName() string {
+func (x *KubernetesSeaweedFsOutputs) GetAdminAuthSecretName() string {
 	if x != nil {
 		return x.AdminAuthSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesSeaweedFsStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesSeaweedFsOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -155,8 +155,8 @@ var File_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetesseaweedfs/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1\"\xac\x03\n" +
-	"\x1fKubernetesSeaweedFsStackOutputs\x12\x1c\n" +
+	"=catalog/kubernetes/kubernetesseaweedfs/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1\"\xa7\x03\n" +
+	"\x1aKubernetesSeaweedFsOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12\x1f\n" +
 	"\vs3_endpoint\x18\x03 \x01(\tR\n" +
@@ -183,7 +183,7 @@ func file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesSeaweedFsStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStackOutputs
+	(*KubernetesSeaweedFsOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsOutputs
 }
 var file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

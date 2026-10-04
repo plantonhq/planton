@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsGlobalAcceleratorStackInput is the input for the IaC modules that deploy
+// AwsGlobalAcceleratorIacInput is the input for the IaC modules that deploy
 // the Global Accelerator.
-type AwsGlobalAcceleratorStackInput struct {
+type AwsGlobalAcceleratorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsGlobalAccelerator resource to deploy.
 	Target *AwsGlobalAccelerator `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsGlobalAcceleratorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsGlobalAcceleratorStackInput) Reset() {
-	*x = AwsGlobalAcceleratorStackInput{}
+func (x *AwsGlobalAcceleratorIacInput) Reset() {
+	*x = AwsGlobalAcceleratorIacInput{}
 	mi := &file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsGlobalAcceleratorStackInput) String() string {
+func (x *AwsGlobalAcceleratorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsGlobalAcceleratorStackInput) ProtoMessage() {}
+func (*AwsGlobalAcceleratorIacInput) ProtoMessage() {}
 
-func (x *AwsGlobalAcceleratorStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsGlobalAcceleratorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsGlobalAcceleratorStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsGlobalAcceleratorStackInput.ProtoReflect.Descriptor instead.
-func (*AwsGlobalAcceleratorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsGlobalAcceleratorIacInput.ProtoReflect.Descriptor instead.
+func (*AwsGlobalAcceleratorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsGlobalAcceleratorStackInput) GetTarget() *AwsGlobalAccelerator {
+func (x *AwsGlobalAcceleratorIacInput) GetTarget() *AwsGlobalAccelerator {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsGlobalAcceleratorStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsGlobalAcceleratorIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsglobalaccelerator/v1alpha1/input.proto\x12-dev.planton.aws.awsglobalaccelerator.v1alpha1\x1a3catalog/aws/awsglobalaccelerator/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsGlobalAcceleratorStackInput\x12[\n" +
+	"5catalog/aws/awsglobalaccelerator/v1alpha1/input.proto\x12-dev.planton.aws.awsglobalaccelerator.v1alpha1\x1a3catalog/aws/awsglobalaccelerator/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsGlobalAcceleratorIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awsglobalaccelerator.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_goTypes = []any{
-	(*AwsGlobalAcceleratorStackInput)(nil), // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackInput
-	(*AwsGlobalAccelerator)(nil),           // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsGlobalAcceleratorIacInput)(nil), // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorIacInput
+	(*AwsGlobalAccelerator)(nil),         // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackInput.target:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator
-	2, // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorIacInput.target:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAccelerator
+	2, // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -33,7 +33,7 @@ type AwsMemorydbCluster struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the MemoryDB cluster.
 	Spec *AwsMemorydbClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -86,7 +86,7 @@ func (x *AwsMemorydbCluster) GetKind() string {
 	return ""
 }
 
-func (x *AwsMemorydbCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsMemorydbCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,7 +111,7 @@ func (x *AwsMemorydbCluster) GetStatus() *AwsMemorydbClusterStatus {
 type AwsMemorydbClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsMemorydbClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsMemorydbClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AwsMemorydbClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemorydbcluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsMemorydbClusterStatus) GetOutputs() *AwsMemorydbClusterStackOutputs {
+func (x *AwsMemorydbClusterStatus) GetOutputs() *AwsMemorydbClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_aws_awsmemorydbcluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsMemorydbClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsMemorydbClusterStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatusR\x06status\"|\n" +
+	"\x18AwsMemorydbClusterStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awsmemorydbcluster.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsmemorydbcluster/v1alpha1;awsmemorydbclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsmemorydbcluster.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsmemorydbcluster\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsmemorydbcluster\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsmemorydbcluster::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_aws_awsmemorydbcluster_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsmemorydbcluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsmemorydbcluster_v1alpha1_api_proto_goTypes = []any{
-	(*AwsMemorydbCluster)(nil),             // 0: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbCluster
-	(*AwsMemorydbClusterStatus)(nil),       // 1: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsMemorydbClusterSpec)(nil),         // 3: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterSpec
-	(*AwsMemorydbClusterStackOutputs)(nil), // 4: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStackOutputs
+	(*AwsMemorydbCluster)(nil),           // 0: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbCluster
+	(*AwsMemorydbClusterStatus)(nil),     // 1: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsMemorydbClusterSpec)(nil),       // 3: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterSpec
+	(*AwsMemorydbClusterOutputs)(nil),    // 4: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterOutputs
 }
 var file_catalog_aws_awsmemorydbcluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbCluster.spec:type_name -> dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterSpec
 	1, // 2: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbCluster.status:type_name -> dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatus
-	4, // 3: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatus.outputs:type_name -> dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStackOutputs
+	4, // 3: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStatus.outputs:type_name -> dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

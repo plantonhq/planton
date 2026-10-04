@@ -31,7 +31,7 @@ type AzureDnsZone struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureDnsZoneSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureDnsZone) GetKind() string {
 	return ""
 }
 
-func (x *AzureDnsZone) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDnsZone) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureDnsZone) GetStatus() *AzureDnsZoneStatus {
 // azure-dns-zone status
 type AzureDnsZoneStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-dns-zone stack-outputs
-	Outputs       *AzureDnsZoneStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-dns-zone outputs
+	Outputs       *AzureDnsZoneOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureDnsZoneStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurednszone_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDnsZoneStatus) GetOutputs() *AzureDnsZoneStackOutputs {
+func (x *AzureDnsZoneStatus) GetOutputs() *AzureDnsZoneOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurednszone_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fAzureDnsZoneR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStatusR\x06status\"q\n" +
-	"\x12AzureDnsZoneStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStackOutputsR\aoutputsB\xcf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStatusR\x06status\"l\n" +
+	"\x12AzureDnsZoneStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneOutputsR\aoutputsB\xcf\x02\n" +
 	"+com.dev.planton.azure.azurednszone.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/azure/azurednszone/v1alpha1;azurednszonev1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Azure.Azurednszone.V1alpha1\xca\x02'Dev\\Planton\\Azure\\Azurednszone\\V1alpha1\xe2\x023Dev\\Planton\\Azure\\Azurednszone\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Azure::Azurednszone::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azurednszone_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_azure_azurednszone_v1alpha1_api_proto_goTypes = []any{
 	(*AzureDnsZone)(nil),                 // 0: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZone
 	(*AzureDnsZoneStatus)(nil),           // 1: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureDnsZoneSpec)(nil),             // 3: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneSpec
-	(*AzureDnsZoneStackOutputs)(nil),     // 4: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStackOutputs
+	(*AzureDnsZoneOutputs)(nil),          // 4: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneOutputs
 }
 var file_catalog_azure_azurednszone_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZone.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZone.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZone.spec:type_name -> dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneSpec
 	1, // 2: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZone.status:type_name -> dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStatus
-	4, // 3: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStatus.outputs:type_name -> dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStackOutputs
+	4, // 3: dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneStatus.outputs:type_name -> dev.planton.azure.azurednszone.v1alpha1.AzureDnsZoneOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

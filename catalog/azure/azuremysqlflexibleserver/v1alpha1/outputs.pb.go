@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMysqlFlexibleServerStackOutputs** captures the outputs of
+// **AzureMysqlFlexibleServerOutputs** captures the outputs of
 // provisioning an Azure Database for MySQL Flexible Server.
 //
 // `fqdn` + `administrator_login` are what applications need to construct
@@ -29,7 +29,7 @@ const (
 // attaches to or derives from the server: AzurePrivateEndpoint's
 // private_connection_resource_id, and another AzureMysqlFlexibleServer's
 // source_server_id when composing read replicas or restores.
-type AzureMysqlFlexibleServerStackOutputs struct {
+type AzureMysqlFlexibleServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the server.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DBforMySQL/flexibleServers/{name}
@@ -60,20 +60,20 @@ type AzureMysqlFlexibleServerStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) Reset() {
-	*x = AzureMysqlFlexibleServerStackOutputs{}
+func (x *AzureMysqlFlexibleServerOutputs) Reset() {
+	*x = AzureMysqlFlexibleServerOutputs{}
 	mi := &file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) String() string {
+func (x *AzureMysqlFlexibleServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMysqlFlexibleServerStackOutputs) ProtoMessage() {}
+func (*AzureMysqlFlexibleServerOutputs) ProtoMessage() {}
 
-func (x *AzureMysqlFlexibleServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMysqlFlexibleServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,47 +85,47 @@ func (x *AzureMysqlFlexibleServerStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMysqlFlexibleServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMysqlFlexibleServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMysqlFlexibleServerOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMysqlFlexibleServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) GetServerId() string {
+func (x *AzureMysqlFlexibleServerOutputs) GetServerId() string {
 	if x != nil {
 		return x.ServerId
 	}
 	return ""
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) GetServerName() string {
+func (x *AzureMysqlFlexibleServerOutputs) GetServerName() string {
 	if x != nil {
 		return x.ServerName
 	}
 	return ""
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) GetFqdn() string {
+func (x *AzureMysqlFlexibleServerOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) GetAdministratorLogin() string {
+func (x *AzureMysqlFlexibleServerOutputs) GetAdministratorLogin() string {
 	if x != nil {
 		return x.AdministratorLogin
 	}
 	return ""
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) GetDatabaseIds() map[string]string {
+func (x *AzureMysqlFlexibleServerOutputs) GetDatabaseIds() map[string]string {
 	if x != nil {
 		return x.DatabaseIds
 	}
 	return nil
 }
 
-func (x *AzureMysqlFlexibleServerStackOutputs) GetReplicaCapacity() int32 {
+func (x *AzureMysqlFlexibleServerOutputs) GetReplicaCapacity() int32 {
 	if x != nil {
 		return x.ReplicaCapacity
 	}
@@ -136,14 +136,14 @@ var File_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azuremysqlflexibleserver/v1alpha1/outputs.proto\x123dev.planton.azure.azuremysqlflexibleserver.v1alpha1\"\xa4\x03\n" +
-	"$AzureMysqlFlexibleServerStackOutputs\x12\x1b\n" +
+	"=catalog/azure/azuremysqlflexibleserver/v1alpha1/outputs.proto\x123dev.planton.azure.azuremysqlflexibleserver.v1alpha1\"\x9a\x03\n" +
+	"\x1fAzureMysqlFlexibleServerOutputs\x12\x1b\n" +
 	"\tserver_id\x18\x01 \x01(\tR\bserverId\x12\x1f\n" +
 	"\vserver_name\x18\x02 \x01(\tR\n" +
 	"serverName\x12\x12\n" +
 	"\x04fqdn\x18\x03 \x01(\tR\x04fqdn\x12/\n" +
-	"\x13administrator_login\x18\x04 \x01(\tR\x12administratorLogin\x12\x8d\x01\n" +
-	"\fdatabase_ids\x18\x05 \x03(\v2j.dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerStackOutputs.DatabaseIdsEntryR\vdatabaseIds\x12)\n" +
+	"\x13administrator_login\x18\x04 \x01(\tR\x12administratorLogin\x12\x88\x01\n" +
+	"\fdatabase_ids\x18\x05 \x03(\v2e.dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerOutputs.DatabaseIdsEntryR\vdatabaseIds\x12)\n" +
 	"\x10replica_capacity\x18\x06 \x01(\x05R\x0freplicaCapacity\x1a>\n" +
 	"\x10DatabaseIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -164,11 +164,11 @@ func file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMysqlFlexibleServerStackOutputs)(nil), // 0: dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerStackOutputs
-	nil, // 1: dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerStackOutputs.DatabaseIdsEntry
+	(*AzureMysqlFlexibleServerOutputs)(nil), // 0: dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerOutputs
+	nil,                                     // 1: dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerOutputs.DatabaseIdsEntry
 }
 var file_catalog_azure_azuremysqlflexibleserver_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerStackOutputs.database_ids:type_name -> dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerStackOutputs.DatabaseIdsEntry
+	1, // 0: dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerOutputs.database_ids:type_name -> dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerOutputs.DatabaseIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

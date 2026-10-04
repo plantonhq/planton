@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureUserAssignedIdentityStackInput is the input to the IaC modules (Pulumi/Terraform).
+// AzureUserAssignedIdentityIacInput is the input to the IaC modules (Pulumi/Terraform).
 // It contains the target resource definition and Azure provider credentials.
-type AzureUserAssignedIdentityStackInput struct {
+type AzureUserAssignedIdentityIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The User-Assigned Managed Identity resource to deploy.
 	Target *AzureUserAssignedIdentity `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AzureUserAssignedIdentityStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureUserAssignedIdentityStackInput) Reset() {
-	*x = AzureUserAssignedIdentityStackInput{}
+func (x *AzureUserAssignedIdentityIacInput) Reset() {
+	*x = AzureUserAssignedIdentityIacInput{}
 	mi := &file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureUserAssignedIdentityStackInput) String() string {
+func (x *AzureUserAssignedIdentityIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureUserAssignedIdentityStackInput) ProtoMessage() {}
+func (*AzureUserAssignedIdentityIacInput) ProtoMessage() {}
 
-func (x *AzureUserAssignedIdentityStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureUserAssignedIdentityIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureUserAssignedIdentityStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureUserAssignedIdentityStackInput.ProtoReflect.Descriptor instead.
-func (*AzureUserAssignedIdentityStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureUserAssignedIdentityIacInput.ProtoReflect.Descriptor instead.
+func (*AzureUserAssignedIdentityIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureUserAssignedIdentityStackInput) GetTarget() *AzureUserAssignedIdentity {
+func (x *AzureUserAssignedIdentityIacInput) GetTarget() *AzureUserAssignedIdentity {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureUserAssignedIdentityStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureUserAssignedIdentityIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto protorefle
 
 const file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azureuserassignedidentity/v1alpha1/input.proto\x124dev.planton.azure.azureuserassignedidentity.v1alpha1\x1a:catalog/azure/azureuserassignedidentity/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdf\x01\n" +
-	"#AzureUserAssignedIdentityStackInput\x12g\n" +
+	"<catalog/azure/azureuserassignedidentity/v1alpha1/input.proto\x124dev.planton.azure.azureuserassignedidentity.v1alpha1\x1a:catalog/azure/azureuserassignedidentity/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdd\x01\n" +
+	"!AzureUserAssignedIdentityIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xac\x03\n" +
 	"8com.dev.planton.azure.azureuserassignedidentity.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_goTypes = []any{
-	(*AzureUserAssignedIdentityStackInput)(nil), // 0: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityStackInput
-	(*AzureUserAssignedIdentity)(nil),           // 1: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentity
-	(*azure.AzureProviderConfig)(nil),           // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureUserAssignedIdentityIacInput)(nil), // 0: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityIacInput
+	(*AzureUserAssignedIdentity)(nil),         // 1: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentity
+	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureuserassignedidentity_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityStackInput.target:type_name -> dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentity
-	2, // 1: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityIacInput.target:type_name -> dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentity
+	2, // 1: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0ClientSpec defines the configuration for an Auth0 Application (Client).
 In Auth0, "Applications" represent the clients that interact with Auth0 for authentication.
@@ -40,7 +40,7 @@ metadata:
   env: development
   labels:
     purpose: testing
-    component: auth0client
+    catalog-kind: auth0client
 spec:
   application_type: spa
   description: Test SPA Application for Development

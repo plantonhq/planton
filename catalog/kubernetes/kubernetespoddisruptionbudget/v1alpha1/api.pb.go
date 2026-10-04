@@ -39,7 +39,7 @@ type KubernetesPodDisruptionBudget struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the PodDisruptionBudget resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the PodDisruptionBudget.
 	// Defines the protected pod selection and the availability bound.
 	Spec *KubernetesPodDisruptionBudgetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -94,7 +94,7 @@ func (x *KubernetesPodDisruptionBudget) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPodDisruptionBudget) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPodDisruptionBudget) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -123,7 +123,7 @@ type KubernetesPodDisruptionBudgetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the PodDisruptionBudget deployment.
 	// Contains the budget name and namespace.
-	Outputs       *KubernetesPodDisruptionBudgetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesPodDisruptionBudgetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -158,7 +158,7 @@ func (*KubernetesPodDisruptionBudgetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPodDisruptionBudgetStatus) GetOutputs() *KubernetesPodDisruptionBudgetStackOutputs {
+func (x *KubernetesPodDisruptionBudgetStatus) GetOutputs() *KubernetesPodDisruptionBudgetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -176,11 +176,11 @@ const file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_api_proto_r
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dKubernetesPodDisruptionBudgetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12|\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12|\n" +
 	"\x04spec\x18\x04 \x01(\v2`.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12z\n" +
-	"\x06status\x18\x05 \x01(\v2b.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatusR\x06status\"\xaa\x01\n" +
-	"#KubernetesPodDisruptionBudgetStatus\x12\x82\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2h.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackOutputsR\aoutputsB\xe4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2b.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatusR\x06status\"\xa4\x01\n" +
+	"#KubernetesPodDisruptionBudgetStatus\x12}\n" +
+	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetOutputsR\aoutputsB\xe4\x03\n" +
 	"Acom.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1B\bApiProtoP\x01Z|github.com/plantonhq/planton/catalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1;kubernetespoddisruptionbudgetv1alpha1\xa2\x02\x04DPKK\xaa\x02=Dev.Planton.Kubernetes.Kubernetespoddisruptionbudget.V1alpha1\xca\x02=Dev\\Planton\\Kubernetes\\Kubernetespoddisruptionbudget\\V1alpha1\xe2\x02IDev\\Planton\\Kubernetes\\Kubernetespoddisruptionbudget\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Kubernetes::Kubernetespoddisruptionbudget::V1alpha1b\x06proto3"
 
 var (
@@ -197,17 +197,17 @@ func file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_api_proto_ra
 
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPodDisruptionBudget)(nil),             // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget
-	(*KubernetesPodDisruptionBudgetStatus)(nil),       // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPodDisruptionBudgetSpec)(nil),         // 3: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetSpec
-	(*KubernetesPodDisruptionBudgetStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackOutputs
+	(*KubernetesPodDisruptionBudget)(nil),        // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget
+	(*KubernetesPodDisruptionBudgetStatus)(nil),  // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPodDisruptionBudgetSpec)(nil),    // 3: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetSpec
+	(*KubernetesPodDisruptionBudgetOutputs)(nil), // 4: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetOutputs
 }
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget.spec:type_name -> dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetSpec
 	1, // 2: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudget.status:type_name -> dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatus
-	4, // 3: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatus.outputs:type_name -> dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStatus.outputs:type_name -> dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

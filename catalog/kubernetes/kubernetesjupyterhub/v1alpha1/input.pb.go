@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// jupyterhub-kubernetes stack-input
-type KubernetesJupyterHubStackInput struct {
+// jupyterhub-kubernetes iac-input
+type KubernetesJupyterHubIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesJupyterHub `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesJupyterHubStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesJupyterHubStackInput) Reset() {
-	*x = KubernetesJupyterHubStackInput{}
+func (x *KubernetesJupyterHubIacInput) Reset() {
+	*x = KubernetesJupyterHubIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesJupyterHubStackInput) String() string {
+func (x *KubernetesJupyterHubIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesJupyterHubStackInput) ProtoMessage() {}
+func (*KubernetesJupyterHubIacInput) ProtoMessage() {}
 
-func (x *KubernetesJupyterHubStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesJupyterHubIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesJupyterHubStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesJupyterHubStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesJupyterHubStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesJupyterHubIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesJupyterHubIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesJupyterHubStackInput) GetTarget() *KubernetesJupyterHub {
+func (x *KubernetesJupyterHubIacInput) GetTarget() *KubernetesJupyterHub {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesJupyterHubStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesJupyterHubIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto protorefle
 
 const file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesjupyterhub/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1\x1a:catalog/kubernetes/kubernetesjupyterhub/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdf\x01\n" +
-	"\x1eKubernetesJupyterHubStackInput\x12b\n" +
+	"<catalog/kubernetes/kubernetesjupyterhub/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1\x1a:catalog/kubernetes/kubernetesjupyterhub/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdd\x01\n" +
+	"\x1cKubernetesJupyterHubIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesJupyterHubStackInput)(nil),      // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubStackInput
+	(*KubernetesJupyterHubIacInput)(nil),        // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubIacInput
 	(*KubernetesJupyterHub)(nil),                // 1: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHub
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesjupyterhub_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubStackInput.target:type_name -> dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHub
-	2, // 1: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubIacInput.target:type_name -> dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHub
+	2, // 1: dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1.KubernetesJupyterHubIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

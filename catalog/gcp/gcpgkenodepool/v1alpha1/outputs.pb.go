@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeNodePoolStackOutputs captures key info after provisioning a GKE
+// GcpGkeNodePoolOutputs captures key info after provisioning a GKE
 // node pool.
-type GcpGkeNodePoolStackOutputs struct {
+type GcpGkeNodePoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the node pool as created in GKE — the handle gcloud commands
 	// and in-cluster references use. Matches spec.node_pool_name when set,
@@ -57,20 +57,20 @@ type GcpGkeNodePoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGkeNodePoolStackOutputs) Reset() {
-	*x = GcpGkeNodePoolStackOutputs{}
+func (x *GcpGkeNodePoolOutputs) Reset() {
+	*x = GcpGkeNodePoolOutputs{}
 	mi := &file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeNodePoolStackOutputs) String() string {
+func (x *GcpGkeNodePoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeNodePoolStackOutputs) ProtoMessage() {}
+func (*GcpGkeNodePoolOutputs) ProtoMessage() {}
 
-func (x *GcpGkeNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeNodePoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,61 +82,61 @@ func (x *GcpGkeNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeNodePoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGkeNodePoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeNodePoolOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGkeNodePoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetNodePoolName() string {
+func (x *GcpGkeNodePoolOutputs) GetNodePoolName() string {
 	if x != nil {
 		return x.NodePoolName
 	}
 	return ""
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetInstanceGroupUrls() []string {
+func (x *GcpGkeNodePoolOutputs) GetInstanceGroupUrls() []string {
 	if x != nil {
 		return x.InstanceGroupUrls
 	}
 	return nil
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetMinNodes() string {
+func (x *GcpGkeNodePoolOutputs) GetMinNodes() string {
 	if x != nil {
 		return x.MinNodes
 	}
 	return ""
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetMaxNodes() string {
+func (x *GcpGkeNodePoolOutputs) GetMaxNodes() string {
 	if x != nil {
 		return x.MaxNodes
 	}
 	return ""
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetCurrentNodeCount() string {
+func (x *GcpGkeNodePoolOutputs) GetCurrentNodeCount() string {
 	if x != nil {
 		return x.CurrentNodeCount
 	}
 	return ""
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetNodePoolId() string {
+func (x *GcpGkeNodePoolOutputs) GetNodePoolId() string {
 	if x != nil {
 		return x.NodePoolId
 	}
 	return ""
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetLocation() string {
+func (x *GcpGkeNodePoolOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpGkeNodePoolStackOutputs) GetVersion() string {
+func (x *GcpGkeNodePoolOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
@@ -147,8 +147,8 @@ var File_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpgkenodepool/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcpgkenodepool.v1alpha1\"\xb2\x02\n" +
-	"\x1aGcpGkeNodePoolStackOutputs\x12$\n" +
+	"1catalog/gcp/gcpgkenodepool/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcpgkenodepool.v1alpha1\"\xad\x02\n" +
+	"\x15GcpGkeNodePoolOutputs\x12$\n" +
 	"\x0enode_pool_name\x18\x01 \x01(\tR\fnodePoolName\x12.\n" +
 	"\x13instance_group_urls\x18\x02 \x03(\tR\x11instanceGroupUrls\x12\x1b\n" +
 	"\tmin_nodes\x18\x03 \x01(\tR\bminNodes\x12\x1b\n" +
@@ -174,7 +174,7 @@ func file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGkeNodePoolStackOutputs)(nil), // 0: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStackOutputs
+	(*GcpGkeNodePoolOutputs)(nil), // 0: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolOutputs
 }
 var file_catalog_gcp_gcpgkenodepool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

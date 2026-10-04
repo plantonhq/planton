@@ -41,7 +41,7 @@ the endpoint: `authentication_options`, `client_cidr_block`,
 Everything else updates in place.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

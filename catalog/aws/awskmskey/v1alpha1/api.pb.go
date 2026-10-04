@@ -34,7 +34,7 @@ type AwsKmsKey struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining the KMS key's properties and behavior.
 	Spec *AwsKmsKeySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsKmsKey) GetKind() string {
 	return ""
 }
 
-func (x *AwsKmsKey) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsKmsKey) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsKmsKey) GetStatus() *AwsKmsKeyStatus {
 type AwsKmsKeyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsKmsKeyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsKmsKeyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsKmsKeyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskmskey_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsKmsKeyStatus) GetOutputs() *AwsKmsKeyStackOutputs {
+func (x *AwsKmsKeyStatus) GetOutputs() *AwsKmsKeyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awskmskey_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12$\n" +
 	"\x04kind\x18\x02 \x01(\tB\x10\xbaH\rr\v\n" +
 	"\tAwsKmsKeyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12M\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12M\n" +
 	"\x04spec\x18\x04 \x01(\v21.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12K\n" +
-	"\x06status\x18\x05 \x01(\v23.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStatusR\x06status\"f\n" +
-	"\x0fAwsKmsKeyStatus\x12S\n" +
-	"\aoutputs\x18\x01 \x01(\v29.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputsR\aoutputsB\xae\x02\n" +
+	"\x06status\x18\x05 \x01(\v23.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStatusR\x06status\"a\n" +
+	"\x0fAwsKmsKeyStatus\x12N\n" +
+	"\aoutputs\x18\x01 \x01(\v24.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputsR\aoutputsB\xae\x02\n" +
 	"&com.dev.planton.aws.awskmskey.v1alpha1B\bApiProtoP\x01ZMgithub.com/plantonhq/planton/catalog/aws/awskmskey/v1alpha1;awskmskeyv1alpha1\xa2\x02\x04DPAA\xaa\x02\"Dev.Planton.Aws.Awskmskey.V1alpha1\xca\x02\"Dev\\Planton\\Aws\\Awskmskey\\V1alpha1\xe2\x02.Dev\\Planton\\Aws\\Awskmskey\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Aws::Awskmskey::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_aws_awskmskey_v1alpha1_api_proto_msgTypes = make([]protoimpl.Me
 var file_catalog_aws_awskmskey_v1alpha1_api_proto_goTypes = []any{
 	(*AwsKmsKey)(nil),                    // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKey
 	(*AwsKmsKeyStatus)(nil),              // 1: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsKmsKeySpec)(nil),                // 3: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeySpec
-	(*AwsKmsKeyStackOutputs)(nil),        // 4: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs
+	(*AwsKmsKeyOutputs)(nil),             // 4: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs
 }
 var file_catalog_aws_awskmskey_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKey.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKey.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKey.spec:type_name -> dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeySpec
 	1, // 2: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKey.status:type_name -> dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStatus
-	4, // 3: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStatus.outputs:type_name -> dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs
+	4, // 3: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStatus.outputs:type_name -> dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

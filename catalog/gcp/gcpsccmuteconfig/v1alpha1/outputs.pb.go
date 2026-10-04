@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSccMuteConfigStackOutputs carries the rule's identity.
-type GcpSccMuteConfigStackOutputs struct {
+// GcpSccMuteConfigOutputs carries the rule's identity.
+type GcpSccMuteConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// {parent}/locations/{location}/muteConfigs/{mute_config_id}.
@@ -31,20 +31,20 @@ type GcpSccMuteConfigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSccMuteConfigStackOutputs) Reset() {
-	*x = GcpSccMuteConfigStackOutputs{}
+func (x *GcpSccMuteConfigOutputs) Reset() {
+	*x = GcpSccMuteConfigOutputs{}
 	mi := &file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSccMuteConfigStackOutputs) String() string {
+func (x *GcpSccMuteConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSccMuteConfigStackOutputs) ProtoMessage() {}
+func (*GcpSccMuteConfigOutputs) ProtoMessage() {}
 
-func (x *GcpSccMuteConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSccMuteConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *GcpSccMuteConfigStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSccMuteConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSccMuteConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSccMuteConfigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSccMuteConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSccMuteConfigStackOutputs) GetName() string {
+func (x *GcpSccMuteConfigOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -72,8 +72,8 @@ var File_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpsccmuteconfig/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpsccmuteconfig.v1alpha1\"2\n" +
-	"\x1cGcpSccMuteConfigStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpsccmuteconfig/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpsccmuteconfig.v1alpha1\"-\n" +
+	"\x17GcpSccMuteConfigOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04nameB\xe3\x02\n" +
 	"-com.dev.planton.gcp.gcpsccmuteconfig.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpsccmuteconfig/v1alpha1;gcpsccmuteconfigv1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpsccmuteconfig.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpsccmuteconfig\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpsccmuteconfig\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpsccmuteconfig::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSccMuteConfigStackOutputs)(nil), // 0: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigStackOutputs
+	(*GcpSccMuteConfigOutputs)(nil), // 0: dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigOutputs
 }
 var file_catalog_gcp_gcpsccmuteconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

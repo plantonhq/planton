@@ -33,7 +33,7 @@ type KubernetesGatewayClass struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesGatewayClassSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesGatewayClass) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesGatewayClass) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesGatewayClass) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesGatewayClass) GetStatus() *KubernetesGatewayClassStatus {
 // KubernetesGatewayClassStatus holds the deployment status and outputs.
 type KubernetesGatewayClassStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesGatewayClassStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesGatewayClassOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesGatewayClassStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesGatewayClassStatus) GetOutputs() *KubernetesGatewayClassStackOutputs {
+func (x *KubernetesGatewayClassStatus) GetOutputs() *KubernetesGatewayClassOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16KubernetesGatewayClassR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatusR\x06status\"\x94\x01\n" +
-	"\x1cKubernetesGatewayClassStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatusR\x06status\"\x8f\x01\n" +
+	"\x1cKubernetesGatewayClassStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgatewayclass/v1alpha1;kubernetesgatewayclassv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kubernetesgatewayclass.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kubernetesgatewayclass\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kubernetesgatewayclass\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kubernetesgatewayclass::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesGatewayClass)(nil),             // 0: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClass
-	(*KubernetesGatewayClassStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesGatewayClassSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassSpec
-	(*KubernetesGatewayClassStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStackOutputs
+	(*KubernetesGatewayClass)(nil),        // 0: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClass
+	(*KubernetesGatewayClassStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesGatewayClassSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassSpec
+	(*KubernetesGatewayClassOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassOutputs
 }
 var file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClass.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClass.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClass.spec:type_name -> dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassSpec
 	1, // 2: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClass.status:type_name -> dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatus
-	4, // 3: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareAiGatewayStackOutputs captures the observable outputs after
+// CloudflareAiGatewayOutputs captures the observable outputs after
 // creating the gateway.
-type CloudflareAiGatewayStackOutputs struct {
+type CloudflareAiGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The gateway's id (URL slug) -- the segment clients put in the gateway
 	// endpoint URL, and what dynamic-routing objects attach to.
@@ -36,20 +36,20 @@ type CloudflareAiGatewayStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *CloudflareAiGatewayStackOutputs) Reset() {
-	*x = CloudflareAiGatewayStackOutputs{}
+func (x *CloudflareAiGatewayOutputs) Reset() {
+	*x = CloudflareAiGatewayOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareAiGatewayStackOutputs) String() string {
+func (x *CloudflareAiGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareAiGatewayStackOutputs) ProtoMessage() {}
+func (*CloudflareAiGatewayOutputs) ProtoMessage() {}
 
-func (x *CloudflareAiGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareAiGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *CloudflareAiGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareAiGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareAiGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareAiGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareAiGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareAiGatewayStackOutputs) GetGatewayId() string {
+func (x *CloudflareAiGatewayOutputs) GetGatewayId() string {
 	if x != nil {
 		return x.GatewayId
 	}
 	return ""
 }
 
-func (x *CloudflareAiGatewayStackOutputs) GetDynamicRouteIds() map[string]string {
+func (x *CloudflareAiGatewayOutputs) GetDynamicRouteIds() map[string]string {
 	if x != nil {
 		return x.DynamicRouteIds
 	}
@@ -84,11 +84,11 @@ var File_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto protorefl
 
 const file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/cloudflare/cloudflareaigateway/v1alpha1/outputs.proto\x123dev.planton.cloudflare.cloudflareaigateway.v1alpha1\"\x9c\x02\n" +
-	"\x1fCloudflareAiGatewayStackOutputs\x12\x1d\n" +
+	"=catalog/cloudflare/cloudflareaigateway/v1alpha1/outputs.proto\x123dev.planton.cloudflare.cloudflareaigateway.v1alpha1\"\x92\x02\n" +
+	"\x1aCloudflareAiGatewayOutputs\x12\x1d\n" +
 	"\n" +
-	"gateway_id\x18\x01 \x01(\tR\tgatewayId\x12\x95\x01\n" +
-	"\x11dynamic_route_ids\x18\x02 \x03(\v2i.dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackOutputs.DynamicRouteIdsEntryR\x0fdynamicRouteIds\x1aB\n" +
+	"gateway_id\x18\x01 \x01(\tR\tgatewayId\x12\x90\x01\n" +
+	"\x11dynamic_route_ids\x18\x02 \x03(\v2d.dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayOutputs.DynamicRouteIdsEntryR\x0fdynamicRouteIds\x1aB\n" +
 	"\x14DynamicRouteIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa2\x03\n" +
@@ -108,11 +108,11 @@ func file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareAiGatewayStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackOutputs
-	nil,                                     // 1: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackOutputs.DynamicRouteIdsEntry
+	(*CloudflareAiGatewayOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayOutputs
+	nil,                                // 1: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayOutputs.DynamicRouteIdsEntry
 }
 var file_catalog_cloudflare_cloudflareaigateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackOutputs.dynamic_route_ids:type_name -> dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayStackOutputs.DynamicRouteIdsEntry
+	1, // 0: dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayOutputs.dynamic_route_ids:type_name -> dev.planton.cloudflare.cloudflareaigateway.v1alpha1.CloudflareAiGatewayOutputs.DynamicRouteIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

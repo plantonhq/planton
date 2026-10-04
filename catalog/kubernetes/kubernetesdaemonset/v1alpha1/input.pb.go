@@ -22,13 +22,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesDaemonSetStackInput is the input for the Kubernetes DaemonSet IaC module:
+// KubernetesDaemonSetIacInput is the input for the Kubernetes DaemonSet IaC module:
 // the target resource and the provider configuration. The image-pull Secret for a
 // private registry is derived from the target's own spec
 // (`spec.pod.image_registries`), never from an input filled on the workload's behalf.
-type KubernetesDaemonSetStackInput struct {
+type KubernetesDaemonSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource
+	// Target infra-component
 	Target *KubernetesDaemonSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Provider configuration for Kubernetes
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -36,20 +36,20 @@ type KubernetesDaemonSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesDaemonSetStackInput) Reset() {
-	*x = KubernetesDaemonSetStackInput{}
+func (x *KubernetesDaemonSetIacInput) Reset() {
+	*x = KubernetesDaemonSetIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesDaemonSetStackInput) String() string {
+func (x *KubernetesDaemonSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesDaemonSetStackInput) ProtoMessage() {}
+func (*KubernetesDaemonSetIacInput) ProtoMessage() {}
 
-func (x *KubernetesDaemonSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesDaemonSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *KubernetesDaemonSetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesDaemonSetStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesDaemonSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesDaemonSetIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesDaemonSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesDaemonSetStackInput) GetTarget() *KubernetesDaemonSet {
+func (x *KubernetesDaemonSetIacInput) GetTarget() *KubernetesDaemonSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesDaemonSetStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesDaemonSetIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -84,8 +84,8 @@ var File_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesdaemonset/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesdaemonset.v1alpha1\x1a9catalog/kubernetes/kubernetesdaemonset/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdc\x01\n" +
-	"\x1dKubernetesDaemonSetStackInput\x12`\n" +
+	";catalog/kubernetes/kubernetesdaemonset/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesdaemonset.v1alpha1\x1a9catalog/kubernetes/kubernetesdaemonset/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xda\x01\n" +
+	"\x1bKubernetesDaemonSetIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesdaemonset.v1alpha1B\n" +
@@ -105,13 +105,13 @@ func file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesDaemonSetStackInput)(nil),       // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackInput
+	(*KubernetesDaemonSetIacInput)(nil),         // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetIacInput
 	(*KubernetesDaemonSet)(nil),                 // 1: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesdaemonset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackInput.target:type_name -> dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet
-	2, // 1: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetIacInput.target:type_name -> dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSet
+	2, // 1: dev.planton.kubernetes.kubernetesdaemonset.v1alpha1.KubernetesDaemonSetIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

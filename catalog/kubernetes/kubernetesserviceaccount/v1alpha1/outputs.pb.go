@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesServiceAccountStackOutputs** captures observable outputs from a Kubernetes
+// **KubernetesServiceAccountOutputs** captures observable outputs from a Kubernetes
 // ServiceAccount deployment. Downstream resources compose on these handles: workloads set
 // `spec.serviceAccountName`, RBAC grants target the identity, and cloud trust configuration
 // (IAM bindings, trust policies, federated credentials) references the RBAC subject string.
-type KubernetesServiceAccountStackOutputs struct {
+type KubernetesServiceAccountOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The name of the created ServiceAccount — the value workloads set in
@@ -50,20 +50,20 @@ type KubernetesServiceAccountStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceAccountStackOutputs) Reset() {
-	*x = KubernetesServiceAccountStackOutputs{}
+func (x *KubernetesServiceAccountOutputs) Reset() {
+	*x = KubernetesServiceAccountOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceAccountStackOutputs) String() string {
+func (x *KubernetesServiceAccountOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceAccountStackOutputs) ProtoMessage() {}
+func (*KubernetesServiceAccountOutputs) ProtoMessage() {}
 
-func (x *KubernetesServiceAccountStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceAccountOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,33 +75,33 @@ func (x *KubernetesServiceAccountStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceAccountStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceAccountStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceAccountOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceAccountOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceAccountStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesServiceAccountOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
 	return ""
 }
 
-func (x *KubernetesServiceAccountStackOutputs) GetNamespace() string {
+func (x *KubernetesServiceAccountOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesServiceAccountStackOutputs) GetRbacSubject() string {
+func (x *KubernetesServiceAccountOutputs) GetRbacSubject() string {
 	if x != nil {
 		return x.RbacSubject
 	}
 	return ""
 }
 
-func (x *KubernetesServiceAccountStackOutputs) GetWorkloadIdentityHandle() string {
+func (x *KubernetesServiceAccountOutputs) GetWorkloadIdentityHandle() string {
 	if x != nil {
 		return x.WorkloadIdentityHandle
 	}
@@ -112,8 +112,8 @@ var File_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesserviceaccount/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1\"\xd3\x01\n" +
-	"$KubernetesServiceAccountStackOutputs\x120\n" +
+	"Bcatalog/kubernetes/kubernetesserviceaccount/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1\"\xce\x01\n" +
+	"\x1fKubernetesServiceAccountOutputs\x120\n" +
 	"\x14service_account_name\x18\x01 \x01(\tR\x12serviceAccountName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12!\n" +
 	"\frbac_subject\x18\x03 \x01(\tR\vrbacSubject\x128\n" +
@@ -134,7 +134,7 @@ func file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesServiceAccountStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountStackOutputs
+	(*KubernetesServiceAccountOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountOutputs
 }
 var file_catalog_kubernetes_kubernetesserviceaccount_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

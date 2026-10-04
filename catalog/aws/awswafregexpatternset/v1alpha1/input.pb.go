@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsWafRegexPatternSetStackInput is the input for the
+// AwsWafRegexPatternSetIacInput is the input for the
 // aws-waf-regex-pattern-set IaC modules.
-type AwsWafRegexPatternSetStackInput struct {
+type AwsWafRegexPatternSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsWafRegexPatternSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsWafRegexPatternSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsWafRegexPatternSetStackInput) Reset() {
-	*x = AwsWafRegexPatternSetStackInput{}
+func (x *AwsWafRegexPatternSetIacInput) Reset() {
+	*x = AwsWafRegexPatternSetIacInput{}
 	mi := &file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsWafRegexPatternSetStackInput) String() string {
+func (x *AwsWafRegexPatternSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsWafRegexPatternSetStackInput) ProtoMessage() {}
+func (*AwsWafRegexPatternSetIacInput) ProtoMessage() {}
 
-func (x *AwsWafRegexPatternSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsWafRegexPatternSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsWafRegexPatternSetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsWafRegexPatternSetStackInput.ProtoReflect.Descriptor instead.
-func (*AwsWafRegexPatternSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsWafRegexPatternSetIacInput.ProtoReflect.Descriptor instead.
+func (*AwsWafRegexPatternSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsWafRegexPatternSetStackInput) GetTarget() *AwsWafRegexPatternSet {
+func (x *AwsWafRegexPatternSetIacInput) GetTarget() *AwsWafRegexPatternSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsWafRegexPatternSetStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsWafRegexPatternSetIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awswafregexpatternset_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awswafregexpatternset/v1alpha1/input.proto\x12.dev.planton.aws.awswafregexpatternset.v1alpha1\x1a4catalog/aws/awswafregexpatternset/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsWafRegexPatternSetStackInput\x12]\n" +
+	"6catalog/aws/awswafregexpatternset/v1alpha1/input.proto\x12.dev.planton.aws.awswafregexpatternset.v1alpha1\x1a4catalog/aws/awswafregexpatternset/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsWafRegexPatternSetIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awswafregexpatternset.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_goTypes = []any{
-	(*AwsWafRegexPatternSetStackInput)(nil), // 0: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetStackInput
-	(*AwsWafRegexPatternSet)(nil),           // 1: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSet
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsWafRegexPatternSetIacInput)(nil), // 0: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetIacInput
+	(*AwsWafRegexPatternSet)(nil),         // 1: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSet
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awswafregexpatternset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetStackInput.target:type_name -> dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSet
-	2, // 1: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetIacInput.target:type_name -> dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSet
+	2, // 1: dev.planton.aws.awswafregexpatternset.v1alpha1.AwsWafRegexPatternSetIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -34,7 +34,7 @@ type AwsEksFargateProfile struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining how the profile is provisioned.
 	Spec *AwsEksFargateProfileSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsEksFargateProfile) GetKind() string {
 	return ""
 }
 
-func (x *AwsEksFargateProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEksFargateProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsEksFargateProfile) GetStatus() *AwsEksFargateProfileStatus {
 type AwsEksFargateProfileStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsEksFargateProfileStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsEksFargateProfileOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsEksFargateProfileStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksfargateprofile_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEksFargateProfileStatus) GetOutputs() *AwsEksFargateProfileStackOutputs {
+func (x *AwsEksFargateProfileStatus) GetOutputs() *AwsEksFargateProfileOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awseksfargateprofile_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AwsEksFargateProfileR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatusR\x06status\"\x87\x01\n" +
-	"\x1aAwsEksFargateProfileStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatusR\x06status\"\x82\x01\n" +
+	"\x1aAwsEksFargateProfileStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.aws.awseksfargateprofile.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/aws/awseksfargateprofile/v1alpha1;awseksfargateprofilev1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Aws.Awseksfargateprofile.V1alpha1\xca\x02-Dev\\Planton\\Aws\\Awseksfargateprofile\\V1alpha1\xe2\x029Dev\\Planton\\Aws\\Awseksfargateprofile\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Aws::Awseksfargateprofile::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_aws_awseksfargateprofile_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awseksfargateprofile_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awseksfargateprofile_v1alpha1_api_proto_goTypes = []any{
-	(*AwsEksFargateProfile)(nil),             // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile
-	(*AwsEksFargateProfileStatus)(nil),       // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsEksFargateProfileSpec)(nil),         // 3: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpec
-	(*AwsEksFargateProfileStackOutputs)(nil), // 4: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackOutputs
+	(*AwsEksFargateProfile)(nil),         // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile
+	(*AwsEksFargateProfileStatus)(nil),   // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsEksFargateProfileSpec)(nil),     // 3: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpec
+	(*AwsEksFargateProfileOutputs)(nil),  // 4: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileOutputs
 }
 var file_catalog_aws_awseksfargateprofile_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile.spec:type_name -> dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpec
 	1, // 2: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfile.status:type_name -> dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatus
-	4, // 3: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatus.outputs:type_name -> dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackOutputs
+	4, // 3: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStatus.outputs:type_name -> dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

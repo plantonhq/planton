@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-elastic-file-system stack-input
-type AwsElasticFileSystemStackInput struct {
+// aws-elastic-file-system iac-input
+type AwsElasticFileSystemIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsElasticFileSystem `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsElasticFileSystemStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsElasticFileSystemStackInput) Reset() {
-	*x = AwsElasticFileSystemStackInput{}
+func (x *AwsElasticFileSystemIacInput) Reset() {
+	*x = AwsElasticFileSystemIacInput{}
 	mi := &file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsElasticFileSystemStackInput) String() string {
+func (x *AwsElasticFileSystemIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsElasticFileSystemStackInput) ProtoMessage() {}
+func (*AwsElasticFileSystemIacInput) ProtoMessage() {}
 
-func (x *AwsElasticFileSystemStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsElasticFileSystemIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsElasticFileSystemStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsElasticFileSystemStackInput.ProtoReflect.Descriptor instead.
-func (*AwsElasticFileSystemStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsElasticFileSystemIacInput.ProtoReflect.Descriptor instead.
+func (*AwsElasticFileSystemIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsElasticFileSystemStackInput) GetTarget() *AwsElasticFileSystem {
+func (x *AwsElasticFileSystemIacInput) GetTarget() *AwsElasticFileSystem {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsElasticFileSystemStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsElasticFileSystemIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awselasticfilesystem_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awselasticfilesystem/v1alpha1/input.proto\x12-dev.planton.aws.awselasticfilesystem.v1alpha1\x1a3catalog/aws/awselasticfilesystem/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsElasticFileSystemStackInput\x12[\n" +
+	"5catalog/aws/awselasticfilesystem/v1alpha1/input.proto\x12-dev.planton.aws.awselasticfilesystem.v1alpha1\x1a3catalog/aws/awselasticfilesystem/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsElasticFileSystemIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awselasticfilesystem.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_goTypes = []any{
-	(*AwsElasticFileSystemStackInput)(nil), // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackInput
-	(*AwsElasticFileSystem)(nil),           // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystem
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsElasticFileSystemIacInput)(nil), // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemIacInput
+	(*AwsElasticFileSystem)(nil),         // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystem
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awselasticfilesystem_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackInput.target:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystem
-	2, // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemIacInput.target:type_name -> dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystem
+	2, // 1: dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

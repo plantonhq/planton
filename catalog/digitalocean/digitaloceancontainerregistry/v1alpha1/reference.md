@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanContainerRegistrySpec defines the configuration for a DigitalOcean Container
 Registry (DOCR), modeling the provider's full surface: the registry itself plus the optional
@@ -26,7 +26,7 @@ accounts.
 #
 # Document 2 -- a production-shaped registry: basic tier, pinned region, and
 # minted docker credentials (push access, 30-day expiry) exported through the
-# docker_credentials stack output.
+# docker_credentials output.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanContainerRegistry
 metadata:
@@ -118,7 +118,7 @@ Allowed values (use exactly as shown):
 
 (Optional) Docker credentials to mint for this registry. When set, both provisioners
 create a credential (a base64-encoded Docker `config.json`) exported through the
-`docker_credentials` stack output. When omitted, no credential is created -- the secure
+`docker_credentials` output. When omitted, no credential is created -- the secure
 default, since an unconfigured credential would otherwise live for ~50 years.
 
 ### spec.dockerCredentials.write

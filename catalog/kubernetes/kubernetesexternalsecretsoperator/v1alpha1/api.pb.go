@@ -31,7 +31,7 @@ type KubernetesExternalSecretsOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesExternalSecretsOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesExternalSecretsOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesExternalSecretsOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesExternalSecretsOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesExternalSecretsOperator) GetStatus() *KubernetesExternalSecre
 // kubernetes-external-secrets-operator status.
 type KubernetesExternalSecretsOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesExternalSecretsOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesExternalSecretsOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesExternalSecretsOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesExternalSecretsOperatorStatus) GetOutputs() *KubernetesExternalSecretsOperatorStackOutputs {
+func (x *KubernetesExternalSecretsOperatorStatus) GetOutputs() *KubernetesExternalSecretsOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_api_pro
 	"apiVersion\x12<\n" +
 	"\x04kind\x18\x02 \x01(\tB(\xbaH%r#\n" +
 	"!KubernetesExternalSecretsOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x84\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x84\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2h.dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x82\x01\n" +
-	"\x06status\x18\x05 \x01(\v2j.dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatusR\x06status\"\xb6\x01\n" +
-	"'KubernetesExternalSecretsOperatorStatus\x12\x8a\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2p.dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStackOutputsR\aoutputsB\x81\x04\n" +
+	"\x06status\x18\x05 \x01(\v2j.dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatusR\x06status\"\xb1\x01\n" +
+	"'KubernetesExternalSecretsOperatorStatus\x12\x85\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2k.dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorOutputsR\aoutputsB\x81\x04\n" +
 	"Ecom.dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1B\bApiProtoP\x01Z\x84\x01github.com/plantonhq/planton/catalog/kubernetes/kubernetesexternalsecretsoperator/v1alpha1;kubernetesexternalsecretsoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02ADev.Planton.Kubernetes.Kubernetesexternalsecretsoperator.V1alpha1\xca\x02ADev\\Planton\\Kubernetes\\Kubernetesexternalsecretsoperator\\V1alpha1\xe2\x02MDev\\Planton\\Kubernetes\\Kubernetesexternalsecretsoperator\\V1alpha1\\GPBMetadata\xea\x02EDev::Planton::Kubernetes::Kubernetesexternalsecretsoperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_api_prot
 
 var file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesExternalSecretsOperator)(nil),             // 0: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperator
-	(*KubernetesExternalSecretsOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),                  // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesExternalSecretsOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorSpec
-	(*KubernetesExternalSecretsOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStackOutputs
+	(*KubernetesExternalSecretsOperator)(nil),        // 0: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperator
+	(*KubernetesExternalSecretsOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),             // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesExternalSecretsOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorSpec
+	(*KubernetesExternalSecretsOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperator.spec:type_name -> dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperator.status:type_name -> dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

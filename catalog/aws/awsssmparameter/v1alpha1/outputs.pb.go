@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmParameterStackOutputs captures the observable state of the
+// AwsSsmParameterOutputs captures the observable state of the
 // parameter after apply.
-type AwsSsmParameterStackOutputs struct {
+type AwsSsmParameterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The parameter's name (also the provider's import ID; ARNs import
 	// too).
@@ -39,20 +39,20 @@ type AwsSsmParameterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSsmParameterStackOutputs) Reset() {
-	*x = AwsSsmParameterStackOutputs{}
+func (x *AwsSsmParameterOutputs) Reset() {
+	*x = AwsSsmParameterOutputs{}
 	mi := &file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmParameterStackOutputs) String() string {
+func (x *AwsSsmParameterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmParameterStackOutputs) ProtoMessage() {}
+func (*AwsSsmParameterOutputs) ProtoMessage() {}
 
-func (x *AwsSsmParameterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmParameterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsSsmParameterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmParameterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSsmParameterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmParameterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSsmParameterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmParameterStackOutputs) GetParameterName() string {
+func (x *AwsSsmParameterOutputs) GetParameterName() string {
 	if x != nil {
 		return x.ParameterName
 	}
 	return ""
 }
 
-func (x *AwsSsmParameterStackOutputs) GetParameterArn() string {
+func (x *AwsSsmParameterOutputs) GetParameterArn() string {
 	if x != nil {
 		return x.ParameterArn
 	}
 	return ""
 }
 
-func (x *AwsSsmParameterStackOutputs) GetVersion() string {
+func (x *AwsSsmParameterOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AwsSsmParameterStackOutputs) GetTier() string {
+func (x *AwsSsmParameterOutputs) GetTier() string {
 	if x != nil {
 		return x.Tier
 	}
@@ -101,8 +101,8 @@ var File_catalog_aws_awsssmparameter_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsssmparameter/v1alpha1/outputs.proto\x12(dev.planton.aws.awsssmparameter.v1alpha1\"\x97\x01\n" +
-	"\x1bAwsSsmParameterStackOutputs\x12%\n" +
+	"2catalog/aws/awsssmparameter/v1alpha1/outputs.proto\x12(dev.planton.aws.awsssmparameter.v1alpha1\"\x92\x01\n" +
+	"\x16AwsSsmParameterOutputs\x12%\n" +
 	"\x0eparameter_name\x18\x01 \x01(\tR\rparameterName\x12#\n" +
 	"\rparameter_arn\x18\x02 \x01(\tR\fparameterArn\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x12\n" +
@@ -123,7 +123,7 @@ func file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSsmParameterStackOutputs)(nil), // 0: dev.planton.aws.awsssmparameter.v1alpha1.AwsSsmParameterStackOutputs
+	(*AwsSsmParameterOutputs)(nil), // 0: dev.planton.aws.awsssmparameter.v1alpha1.AwsSsmParameterOutputs
 }
 var file_catalog_aws_awsssmparameter_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

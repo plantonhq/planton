@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareSnippetRulesStackOutputs captures the observable outputs after
+// CloudflareSnippetRulesOutputs captures the observable outputs after
 // applying a zone's snippet routing table.
-type CloudflareSnippetRulesStackOutputs struct {
+type CloudflareSnippetRulesOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The zone whose snippet routing table is managed. The table is a zone
 	// singleton -- the zone ID is its identity.
@@ -32,20 +32,20 @@ type CloudflareSnippetRulesStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareSnippetRulesStackOutputs) Reset() {
-	*x = CloudflareSnippetRulesStackOutputs{}
+func (x *CloudflareSnippetRulesOutputs) Reset() {
+	*x = CloudflareSnippetRulesOutputs{}
 	mi := &file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareSnippetRulesStackOutputs) String() string {
+func (x *CloudflareSnippetRulesOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareSnippetRulesStackOutputs) ProtoMessage() {}
+func (*CloudflareSnippetRulesOutputs) ProtoMessage() {}
 
-func (x *CloudflareSnippetRulesStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareSnippetRulesOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *CloudflareSnippetRulesStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareSnippetRulesStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareSnippetRulesStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareSnippetRulesOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareSnippetRulesOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareSnippetRulesStackOutputs) GetZoneId() string {
+func (x *CloudflareSnippetRulesOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -73,8 +73,8 @@ var File_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto protor
 
 const file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/cloudflare/cloudflaresnippetrules/v1alpha1/outputs.proto\x126dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1\"=\n" +
-	"\"CloudflareSnippetRulesStackOutputs\x12\x17\n" +
+	"@catalog/cloudflare/cloudflaresnippetrules/v1alpha1/outputs.proto\x126dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1\"8\n" +
+	"\x1dCloudflareSnippetRulesOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneIdB\xb7\x03\n" +
 	":com.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1B\fOutputsProtoP\x01Zngithub.com/plantonhq/planton/catalog/cloudflare/cloudflaresnippetrules/v1alpha1;cloudflaresnippetrulesv1alpha1\xa2\x02\x04DPCC\xaa\x026Dev.Planton.Cloudflare.Cloudflaresnippetrules.V1alpha1\xca\x026Dev\\Planton\\Cloudflare\\Cloudflaresnippetrules\\V1alpha1\xe2\x02BDev\\Planton\\Cloudflare\\Cloudflaresnippetrules\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Cloudflare::Cloudflaresnippetrules::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareSnippetRulesStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStackOutputs
+	(*CloudflareSnippetRulesOutputs)(nil), // 0: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesOutputs
 }
 var file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

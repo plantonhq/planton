@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-certificate stack-input
-type DigitalOceanCertificateStackInput struct {
+// digital-ocean-certificate iac-input
+type DigitalOceanCertificateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanCertificate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanCertificateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanCertificateStackInput) Reset() {
-	*x = DigitalOceanCertificateStackInput{}
+func (x *DigitalOceanCertificateIacInput) Reset() {
+	*x = DigitalOceanCertificateIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanCertificateStackInput) String() string {
+func (x *DigitalOceanCertificateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanCertificateStackInput) ProtoMessage() {}
+func (*DigitalOceanCertificateIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanCertificateStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanCertificateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanCertificateStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanCertificateStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanCertificateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanCertificateIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanCertificateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanCertificateStackInput) GetTarget() *DigitalOceanCertificate {
+func (x *DigitalOceanCertificateIacInput) GetTarget() *DigitalOceanCertificate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanCertificateStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanCertificateIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto proto
 
 const file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceancertificate/v1alpha1/input.proto\x129dev.planton.digitalocean.digitaloceancertificate.v1alpha1\x1a?catalog/digitalocean/digitaloceancertificate/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xee\x01\n" +
-	"!DigitalOceanCertificateStackInput\x12j\n" +
+	"Acatalog/digitalocean/digitaloceancertificate/v1alpha1/input.proto\x129dev.planton.digitalocean.digitaloceancertificate.v1alpha1\x1a?catalog/digitalocean/digitaloceancertificate/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xec\x01\n" +
+	"\x1fDigitalOceanCertificateIacInput\x12j\n" +
 	"\x06target\x18\x01 \x01(\v2R.dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xc8\x03\n" +
 	"=com.dev.planton.digitalocean.digitaloceancertificate.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_rawD
 
 var file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanCertificateStackInput)(nil),       // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStackInput
+	(*DigitalOceanCertificateIacInput)(nil),         // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateIacInput
 	(*DigitalOceanCertificate)(nil),                 // 1: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceancertificate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStackInput.target:type_name -> dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate
-	2, // 1: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateIacInput.target:type_name -> dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificate
+	2, // 1: dev.planton.digitalocean.digitaloceancertificate.v1alpha1.DigitalOceanCertificateIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

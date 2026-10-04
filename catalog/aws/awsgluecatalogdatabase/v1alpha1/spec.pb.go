@@ -49,7 +49,7 @@ const (
 //     (ForceNew). Naming constraints: 1-255 characters, and AWS rejects
 //     uppercase letters; use lowercase letters, numbers, and underscores.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsGlueCatalogDatabaseSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

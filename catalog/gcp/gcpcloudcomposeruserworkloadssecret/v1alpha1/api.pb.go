@@ -31,7 +31,7 @@ type GcpCloudComposerUserWorkloadsSecret struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpCloudComposerUserWorkloadsSecretSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpCloudComposerUserWorkloadsSecret) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecret) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudComposerUserWorkloadsSecret) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpCloudComposerUserWorkloadsSecret) GetStatus() *GcpCloudComposerUserW
 // gcp-cloud-composer-user-workloads-secret status
 type GcpCloudComposerUserWorkloadsSecretStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpCloudComposerUserWorkloadsSecretStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpCloudComposerUserWorkloadsSecretOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpCloudComposerUserWorkloadsSecretStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStatus) GetOutputs() *GcpCloudComposerUserWorkloadsSecretStackOutputs {
+func (x *GcpCloudComposerUserWorkloadsSecretStatus) GetOutputs() *GcpCloudComposerUserWorkloadsSecretOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_api_proto_ra
 	"apiVersion\x12>\n" +
 	"\x04kind\x18\x02 \x01(\tB*\xbaH'r%\n" +
 	"#GcpCloudComposerUserWorkloadsSecretR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2e.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x7f\n" +
-	"\x06status\x18\x05 \x01(\v2g.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatusR\x06status\"\xb5\x01\n" +
-	")GcpCloudComposerUserWorkloadsSecretStatus\x12\x87\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2m.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackOutputsR\aoutputsB\xe5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2g.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatusR\x06status\"\xb0\x01\n" +
+	")GcpCloudComposerUserWorkloadsSecretStatus\x12\x82\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2h.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretOutputsR\aoutputsB\xe5\x03\n" +
 	"@com.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1B\bApiProtoP\x01Z\x81\x01github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1;gcpcloudcomposeruserworkloadssecretv1alpha1\xa2\x02\x04DPGG\xaa\x02<Dev.Planton.Gcp.Gcpcloudcomposeruserworkloadssecret.V1alpha1\xca\x02<Dev\\Planton\\Gcp\\Gcpcloudcomposeruserworkloadssecret\\V1alpha1\xe2\x02HDev\\Planton\\Gcp\\Gcpcloudcomposeruserworkloadssecret\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Gcp::Gcpcloudcomposeruserworkloadssecret::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_api_proto_raw
 
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCloudComposerUserWorkloadsSecret)(nil),             // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret
-	(*GcpCloudComposerUserWorkloadsSecretStatus)(nil),       // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatus
-	(*shared.CloudResourceMetadata)(nil),                    // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCloudComposerUserWorkloadsSecretSpec)(nil),         // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretSpec
-	(*GcpCloudComposerUserWorkloadsSecretStackOutputs)(nil), // 4: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackOutputs
+	(*GcpCloudComposerUserWorkloadsSecret)(nil),        // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret
+	(*GcpCloudComposerUserWorkloadsSecretStatus)(nil),  // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatus
+	(*shared.CatalogObjectMetadata)(nil),               // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCloudComposerUserWorkloadsSecretSpec)(nil),    // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretSpec
+	(*GcpCloudComposerUserWorkloadsSecretOutputs)(nil), // 4: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretOutputs
 }
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret.spec:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretSpec
 	1, // 2: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret.status:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatus
-	4, // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatus.outputs:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStatus.outputs:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

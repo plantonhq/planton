@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningOnlineEndpointStackOutputs** captures the
+// **AzureMachineLearningOnlineEndpointOutputs** captures the
 // outputs of provisioning a Machine Learning online endpoint.
 //
 // Scoring keys are deliberately NOT outputs: ARM never returns key
@@ -30,7 +30,7 @@ const (
 // initial_auth_keys block already lets a deployment bring its own
 // keys from a secret store. Read service-minted keys with
 // `az ml online-endpoint get-credentials`.
-type AzureMachineLearningOnlineEndpointStackOutputs struct {
+type AzureMachineLearningOnlineEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the online endpoint.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/onlineEndpoints/{name}
@@ -51,20 +51,20 @@ type AzureMachineLearningOnlineEndpointStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) Reset() {
-	*x = AzureMachineLearningOnlineEndpointStackOutputs{}
+func (x *AzureMachineLearningOnlineEndpointOutputs) Reset() {
+	*x = AzureMachineLearningOnlineEndpointOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) String() string {
+func (x *AzureMachineLearningOnlineEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningOnlineEndpointStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningOnlineEndpointOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningOnlineEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,40 +76,40 @@ func (x *AzureMachineLearningOnlineEndpointStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningOnlineEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningOnlineEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningOnlineEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningOnlineEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) GetOnlineEndpointId() string {
+func (x *AzureMachineLearningOnlineEndpointOutputs) GetOnlineEndpointId() string {
 	if x != nil {
 		return x.OnlineEndpointId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) GetOnlineEndpointName() string {
+func (x *AzureMachineLearningOnlineEndpointOutputs) GetOnlineEndpointName() string {
 	if x != nil {
 		return x.OnlineEndpointName
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) GetScoringUri() string {
+func (x *AzureMachineLearningOnlineEndpointOutputs) GetScoringUri() string {
 	if x != nil {
 		return x.ScoringUri
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) GetSwaggerUri() string {
+func (x *AzureMachineLearningOnlineEndpointOutputs) GetSwaggerUri() string {
 	if x != nil {
 		return x.SwaggerUri
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningOnlineEndpointStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureMachineLearningOnlineEndpointOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -120,8 +120,8 @@ var File_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto
 
 const file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/azure/azuremachinelearningonlineendpoint/v1alpha1/outputs.proto\x12=dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1\"\xa4\x02\n" +
-	".AzureMachineLearningOnlineEndpointStackOutputs\x12,\n" +
+	"Gcatalog/azure/azuremachinelearningonlineendpoint/v1alpha1/outputs.proto\x12=dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1\"\x9f\x02\n" +
+	")AzureMachineLearningOnlineEndpointOutputs\x12,\n" +
 	"\x12online_endpoint_id\x18\x01 \x01(\tR\x10onlineEndpointId\x120\n" +
 	"\x14online_endpoint_name\x18\x02 \x01(\tR\x12onlineEndpointName\x12\x1f\n" +
 	"\vscoring_uri\x18\x03 \x01(\tR\n" +
@@ -145,7 +145,7 @@ func file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_prot
 
 var file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningOnlineEndpointStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointStackOutputs
+	(*AzureMachineLearningOnlineEndpointOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1.AzureMachineLearningOnlineEndpointOutputs
 }
 var file_catalog_azure_azuremachinelearningonlineendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

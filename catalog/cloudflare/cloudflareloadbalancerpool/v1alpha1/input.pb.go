@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-load-balancer-pool stack-input
-type CloudflareLoadBalancerPoolStackInput struct {
+// cloudflare-load-balancer-pool iac-input
+type CloudflareLoadBalancerPoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareLoadBalancerPool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareLoadBalancerPoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareLoadBalancerPoolStackInput) Reset() {
-	*x = CloudflareLoadBalancerPoolStackInput{}
+func (x *CloudflareLoadBalancerPoolIacInput) Reset() {
+	*x = CloudflareLoadBalancerPoolIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareLoadBalancerPoolStackInput) String() string {
+func (x *CloudflareLoadBalancerPoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareLoadBalancerPoolStackInput) ProtoMessage() {}
+func (*CloudflareLoadBalancerPoolIacInput) ProtoMessage() {}
 
-func (x *CloudflareLoadBalancerPoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareLoadBalancerPoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareLoadBalancerPoolStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareLoadBalancerPoolStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareLoadBalancerPoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareLoadBalancerPoolIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareLoadBalancerPoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareLoadBalancerPoolStackInput) GetTarget() *CloudflareLoadBalancerPool {
+func (x *CloudflareLoadBalancerPoolIacInput) GetTarget() *CloudflareLoadBalancerPool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareLoadBalancerPoolStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareLoadBalancerPoolIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto prot
 
 const file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/cloudflare/cloudflareloadbalancerpool/v1alpha1/input.proto\x12:dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1\x1a@catalog/cloudflare/cloudflareloadbalancerpool/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf1\x01\n" +
-	"$CloudflareLoadBalancerPoolStackInput\x12n\n" +
+	"Bcatalog/cloudflare/cloudflareloadbalancerpool/v1alpha1/input.proto\x12:dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1\x1a@catalog/cloudflare/cloudflareloadbalancerpool/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xef\x01\n" +
+	"\"CloudflareLoadBalancerPoolIacInput\x12n\n" +
 	"\x06target\x18\x01 \x01(\v2V.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xd1\x03\n" +
 	">com.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_raw
 
 var file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareLoadBalancerPoolStackInput)(nil), // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStackInput
-	(*CloudflareLoadBalancerPool)(nil),           // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool
-	(*cloudflare.CloudflareProviderConfig)(nil),  // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareLoadBalancerPoolIacInput)(nil),  // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolIacInput
+	(*CloudflareLoadBalancerPool)(nil),          // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool
+	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStackInput.target:type_name -> dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool
-	2, // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolIacInput.target:type_name -> dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool
+	2, // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

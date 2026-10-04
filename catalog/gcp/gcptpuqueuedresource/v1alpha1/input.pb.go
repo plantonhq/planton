@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-tpu-queued-resource stack-input
-type GcpTpuQueuedResourceStackInput struct {
+// gcp-tpu-queued-resource iac-input
+type GcpTpuQueuedResourceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpTpuQueuedResource `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpTpuQueuedResourceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpTpuQueuedResourceStackInput) Reset() {
-	*x = GcpTpuQueuedResourceStackInput{}
+func (x *GcpTpuQueuedResourceIacInput) Reset() {
+	*x = GcpTpuQueuedResourceIacInput{}
 	mi := &file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTpuQueuedResourceStackInput) String() string {
+func (x *GcpTpuQueuedResourceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTpuQueuedResourceStackInput) ProtoMessage() {}
+func (*GcpTpuQueuedResourceIacInput) ProtoMessage() {}
 
-func (x *GcpTpuQueuedResourceStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpTpuQueuedResourceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpTpuQueuedResourceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTpuQueuedResourceStackInput.ProtoReflect.Descriptor instead.
-func (*GcpTpuQueuedResourceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTpuQueuedResourceIacInput.ProtoReflect.Descriptor instead.
+func (*GcpTpuQueuedResourceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTpuQueuedResourceStackInput) GetTarget() *GcpTpuQueuedResource {
+func (x *GcpTpuQueuedResourceIacInput) GetTarget() *GcpTpuQueuedResource {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpTpuQueuedResourceStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpTpuQueuedResourceIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcptpuqueuedresource/v1alpha1/input.proto\x12-dev.planton.gcp.gcptpuqueuedresource.v1alpha1\x1a3catalog/gcp/gcptpuqueuedresource/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xca\x01\n" +
-	"\x1eGcpTpuQueuedResourceStackInput\x12[\n" +
+	"5catalog/gcp/gcptpuqueuedresource/v1alpha1/input.proto\x12-dev.planton.gcp.gcptpuqueuedresource.v1alpha1\x1a3catalog/gcp/gcptpuqueuedresource/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc8\x01\n" +
+	"\x1cGcpTpuQueuedResourceIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.gcp.gcptpuqueuedresource.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_goTypes = []any{
-	(*GcpTpuQueuedResourceStackInput)(nil), // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackInput
-	(*GcpTpuQueuedResource)(nil),           // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource
-	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpTpuQueuedResourceIacInput)(nil), // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceIacInput
+	(*GcpTpuQueuedResource)(nil),         // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource
+	(*gcp.GcpProviderConfig)(nil),        // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcptpuqueuedresource_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackInput.target:type_name -> dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource
-	2, // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceIacInput.target:type_name -> dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResource
+	2, // 1: dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

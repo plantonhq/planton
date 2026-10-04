@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageLocalUserStackOutputs** captures the outputs of
+// **AzureStorageLocalUserOutputs** captures the outputs of
 // provisioning a storage local user. The password is the user's login
 // secret: Planton keeps it in the organization's secret store, and the output
 // holds a reference -- hand the password to the partner over a secure channel.
-type AzureStorageLocalUserStackOutputs struct {
+type AzureStorageLocalUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The local user's Azure Resource Manager ID.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/localUsers/{name}
@@ -56,20 +56,20 @@ type AzureStorageLocalUserStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageLocalUserStackOutputs) Reset() {
-	*x = AzureStorageLocalUserStackOutputs{}
+func (x *AzureStorageLocalUserOutputs) Reset() {
+	*x = AzureStorageLocalUserOutputs{}
 	mi := &file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageLocalUserStackOutputs) String() string {
+func (x *AzureStorageLocalUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageLocalUserStackOutputs) ProtoMessage() {}
+func (*AzureStorageLocalUserOutputs) ProtoMessage() {}
 
-func (x *AzureStorageLocalUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageLocalUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *AzureStorageLocalUserStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageLocalUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageLocalUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageLocalUserOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageLocalUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageLocalUserStackOutputs) GetLocalUserId() string {
+func (x *AzureStorageLocalUserOutputs) GetLocalUserId() string {
 	if x != nil {
 		return x.LocalUserId
 	}
 	return ""
 }
 
-func (x *AzureStorageLocalUserStackOutputs) GetUserName() string {
+func (x *AzureStorageLocalUserOutputs) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
 	return ""
 }
 
-func (x *AzureStorageLocalUserStackOutputs) GetSftpUsername() string {
+func (x *AzureStorageLocalUserOutputs) GetSftpUsername() string {
 	if x != nil {
 		return x.SftpUsername
 	}
 	return ""
 }
 
-func (x *AzureStorageLocalUserStackOutputs) GetSid() string {
+func (x *AzureStorageLocalUserOutputs) GetSid() string {
 	if x != nil {
 		return x.Sid
 	}
 	return ""
 }
 
-func (x *AzureStorageLocalUserStackOutputs) GetPassword() string {
+func (x *AzureStorageLocalUserOutputs) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *AzureStorageLocalUserStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageLocalUserOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -132,8 +132,8 @@ var File_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurestoragelocaluser/v1alpha1/outputs.proto\x120dev.planton.azure.azurestoragelocaluser.v1alpha1\x1a\x1cshared/options/options.proto\"\xef\x01\n" +
-	"!AzureStorageLocalUserStackOutputs\x12\"\n" +
+	":catalog/azure/azurestoragelocaluser/v1alpha1/outputs.proto\x120dev.planton.azure.azurestoragelocaluser.v1alpha1\x1a\x1cshared/options/options.proto\"\xea\x01\n" +
+	"\x1cAzureStorageLocalUserOutputs\x12\"\n" +
 	"\rlocal_user_id\x18\x01 \x01(\tR\vlocalUserId\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\x12#\n" +
 	"\rsftp_username\x18\x03 \x01(\tR\fsftpUsername\x12\x10\n" +
@@ -156,7 +156,7 @@ func file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageLocalUserStackOutputs)(nil), // 0: dev.planton.azure.azurestoragelocaluser.v1alpha1.AzureStorageLocalUserStackOutputs
+	(*AzureStorageLocalUserOutputs)(nil), // 0: dev.planton.azure.azurestoragelocaluser.v1alpha1.AzureStorageLocalUserOutputs
 }
 var file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

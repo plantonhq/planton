@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventgridDomainStackOutputs** captures the outputs from
+// **AzureEventgridDomainOutputs** captures the outputs from
 // provisioning an Azure Event Grid domain.
-type AzureEventgridDomainStackOutputs struct {
+type AzureEventgridDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The domain's Azure Resource Manager ID.
 	DomainId string `protobuf:"bytes,1,opt,name=domain_id,json=domainId,proto3" json:"domain_id,omitempty"`
@@ -49,20 +49,20 @@ type AzureEventgridDomainStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureEventgridDomainStackOutputs) Reset() {
-	*x = AzureEventgridDomainStackOutputs{}
+func (x *AzureEventgridDomainOutputs) Reset() {
+	*x = AzureEventgridDomainOutputs{}
 	mi := &file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridDomainStackOutputs) String() string {
+func (x *AzureEventgridDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridDomainStackOutputs) ProtoMessage() {}
+func (*AzureEventgridDomainOutputs) ProtoMessage() {}
 
-func (x *AzureEventgridDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,47 +74,47 @@ func (x *AzureEventgridDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventgridDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventgridDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridDomainStackOutputs) GetDomainId() string {
+func (x *AzureEventgridDomainOutputs) GetDomainId() string {
 	if x != nil {
 		return x.DomainId
 	}
 	return ""
 }
 
-func (x *AzureEventgridDomainStackOutputs) GetDomainName() string {
+func (x *AzureEventgridDomainOutputs) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AzureEventgridDomainStackOutputs) GetEndpoint() string {
+func (x *AzureEventgridDomainOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AzureEventgridDomainStackOutputs) GetPrimaryAccessKey() string {
+func (x *AzureEventgridDomainOutputs) GetPrimaryAccessKey() string {
 	if x != nil {
 		return x.PrimaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureEventgridDomainStackOutputs) GetSecondaryAccessKey() string {
+func (x *AzureEventgridDomainOutputs) GetSecondaryAccessKey() string {
 	if x != nil {
 		return x.SecondaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureEventgridDomainStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureEventgridDomainOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -125,8 +125,8 @@ var File_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureeventgriddomain/v1alpha1/outputs.proto\x12/dev.planton.azure.azureeventgriddomain.v1alpha1\x1a\x1cshared/options/options.proto\"\x9c\x02\n" +
-	" AzureEventgridDomainStackOutputs\x12\x1b\n" +
+	"9catalog/azure/azureeventgriddomain/v1alpha1/outputs.proto\x12/dev.planton.azure.azureeventgriddomain.v1alpha1\x1a\x1cshared/options/options.proto\"\x97\x02\n" +
+	"\x1bAzureEventgridDomainOutputs\x12\x1b\n" +
 	"\tdomain_id\x18\x01 \x01(\tR\bdomainId\x12\x1f\n" +
 	"\vdomain_name\x18\x02 \x01(\tR\n" +
 	"domainName\x12\x1a\n" +
@@ -150,7 +150,7 @@ func file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventgridDomainStackOutputs)(nil), // 0: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainStackOutputs
+	(*AzureEventgridDomainOutputs)(nil), // 0: dev.planton.azure.azureeventgriddomain.v1alpha1.AzureEventgridDomainOutputs
 }
 var file_catalog_azure_azureeventgriddomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

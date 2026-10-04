@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudTrailEventDataStoreStackInput is the input for the IaC
+// AwsCloudTrailEventDataStoreIacInput is the input for the IaC
 // modules that manage a CloudTrail Lake event data store.
-type AwsCloudTrailEventDataStoreStackInput struct {
+type AwsCloudTrailEventDataStoreIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudTrailEventDataStore resource to deploy.
 	Target *AwsCloudTrailEventDataStore `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudTrailEventDataStoreStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudTrailEventDataStoreStackInput) Reset() {
-	*x = AwsCloudTrailEventDataStoreStackInput{}
+func (x *AwsCloudTrailEventDataStoreIacInput) Reset() {
+	*x = AwsCloudTrailEventDataStoreIacInput{}
 	mi := &file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudTrailEventDataStoreStackInput) String() string {
+func (x *AwsCloudTrailEventDataStoreIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudTrailEventDataStoreStackInput) ProtoMessage() {}
+func (*AwsCloudTrailEventDataStoreIacInput) ProtoMessage() {}
 
-func (x *AwsCloudTrailEventDataStoreStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudTrailEventDataStoreIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudTrailEventDataStoreStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudTrailEventDataStoreStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudTrailEventDataStoreStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudTrailEventDataStoreIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudTrailEventDataStoreIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudTrailEventDataStoreStackInput) GetTarget() *AwsCloudTrailEventDataStore {
+func (x *AwsCloudTrailEventDataStoreIacInput) GetTarget() *AwsCloudTrailEventDataStore {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudTrailEventDataStoreStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudTrailEventDataStoreIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto protorefle
 
 const file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/aws/awscloudtraileventdatastore/v1alpha1/input.proto\x124dev.planton.aws.awscloudtraileventdatastore.v1alpha1\x1a:catalog/aws/awscloudtraileventdatastore/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdf\x01\n" +
-	"%AwsCloudTrailEventDataStoreStackInput\x12i\n" +
+	"<catalog/aws/awscloudtraileventdatastore/v1alpha1/input.proto\x124dev.planton.aws.awscloudtraileventdatastore.v1alpha1\x1a:catalog/aws/awscloudtraileventdatastore/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdd\x01\n" +
+	"#AwsCloudTrailEventDataStoreIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"8com.dev.planton.aws.awscloudtraileventdatastore.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudTrailEventDataStoreStackInput)(nil), // 0: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreStackInput
-	(*AwsCloudTrailEventDataStore)(nil),           // 1: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStore
-	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudTrailEventDataStoreIacInput)(nil), // 0: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreIacInput
+	(*AwsCloudTrailEventDataStore)(nil),         // 1: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStore
+	(*aws.AwsProviderConfig)(nil),               // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudtraileventdatastore_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreStackInput.target:type_name -> dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStore
-	2, // 1: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreIacInput.target:type_name -> dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStore
+	2, // 1: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

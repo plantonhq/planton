@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsmanagedprometheus
 spec:
@@ -20,7 +20,7 @@ spec:
         - ingestion bills $0.90 per 10 million samples (first 2-billion monthly tier) only when workloads remote-write or a collector feeds the workspace -- this manifest wires no writer, so the count is workload-decided
         - storage accumulates at $0.03 per GB-month, prorated hourly and billed only when metrics arrive; the pinned 90-day retention scales the standing GB once ingestion starts
         - the platform-slos rule namespace (a recording rule and an error-rate alert) evaluates as PromQL on schedule, billing query samples processed at $0.10 per billion -- effectively zero over an empty workspace, small but real once series exist (AWS's own always-on alerting-rule example lands at $0.04 per month)
-        - alertmanager notifications ride the SNS topic named in the definition, which bills as its own component
+        - alertmanager notifications ride the SNS topic named in the definition, which bills as its own kind
         - the AWS Free Tier table (40 M samples, 200 B QSP, 10 GB) may absorb early usage where the account is eligible
       notes: Zero committed cost -- the workspace, its rule file, and its alertmanager document carry no existence fee; every dollar waits on the first remote-write. The zero is commitment-absence, not a free service.
     - preset: 02-governed-multi-team

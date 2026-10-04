@@ -31,7 +31,7 @@ type AwsFsxOntapStorageVirtualMachine struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsFsxOntapStorageVirtualMachineSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsFsxOntapStorageVirtualMachine) GetKind() string {
 	return ""
 }
 
-func (x *AwsFsxOntapStorageVirtualMachine) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsFsxOntapStorageVirtualMachine) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsFsxOntapStorageVirtualMachine) GetStatus() *AwsFsxOntapStorageVirtua
 // aws-fsx-ontap-storage-virtual-machine status
 type AwsFsxOntapStorageVirtualMachineStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsFsxOntapStorageVirtualMachineStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsFsxOntapStorageVirtualMachineOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsFsxOntapStorageVirtualMachineStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsFsxOntapStorageVirtualMachineStatus) GetOutputs() *AwsFsxOntapStorageVirtualMachineStackOutputs {
+func (x *AwsFsxOntapStorageVirtualMachineStatus) GetOutputs() *AwsFsxOntapStorageVirtualMachineOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_api_proto_rawDe
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" AwsFsxOntapStorageVirtualMachineR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatusR\x06status\"\xac\x01\n" +
-	"&AwsFsxOntapStorageVirtualMachineStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatusR\x06status\"\xa6\x01\n" +
+	"&AwsFsxOntapStorageVirtualMachineStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineOutputsR\aoutputsB\xcf\x03\n" +
 	"=com.dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/aws/awsfsxontapstoragevirtualmachine/v1alpha1;awsfsxontapstoragevirtualmachinev1alpha1\xa2\x02\x04DPAA\xaa\x029Dev.Planton.Aws.Awsfsxontapstoragevirtualmachine.V1alpha1\xca\x029Dev\\Planton\\Aws\\Awsfsxontapstoragevirtualmachine\\V1alpha1\xe2\x02EDev\\Planton\\Aws\\Awsfsxontapstoragevirtualmachine\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Aws::Awsfsxontapstoragevirtualmachine::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_api_proto_rawDes
 
 var file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_api_proto_goTypes = []any{
-	(*AwsFsxOntapStorageVirtualMachine)(nil),             // 0: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachine
-	(*AwsFsxOntapStorageVirtualMachineStatus)(nil),       // 1: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsFsxOntapStorageVirtualMachineSpec)(nil),         // 3: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineSpec
-	(*AwsFsxOntapStorageVirtualMachineStackOutputs)(nil), // 4: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStackOutputs
+	(*AwsFsxOntapStorageVirtualMachine)(nil),        // 0: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachine
+	(*AwsFsxOntapStorageVirtualMachineStatus)(nil),  // 1: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsFsxOntapStorageVirtualMachineSpec)(nil),    // 3: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineSpec
+	(*AwsFsxOntapStorageVirtualMachineOutputs)(nil), // 4: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineOutputs
 }
 var file_catalog_aws_awsfsxontapstoragevirtualmachine_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachine.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachine.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachine.spec:type_name -> dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineSpec
 	1, // 2: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachine.status:type_name -> dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatus
-	4, // 3: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatus.outputs:type_name -> dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStackOutputs
+	4, // 3: dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineStatus.outputs:type_name -> dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1.AwsFsxOntapStorageVirtualMachineOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

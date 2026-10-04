@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiPersistentResourceStackOutputs captures the resource's
+// GcpVertexAiPersistentResourceOutputs captures the resource's
 // identity -- what a training job's persistent_resource_id names -- and
 // its state.
-type GcpVertexAiPersistentResourceStackOutputs struct {
+type GcpVertexAiPersistentResourceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/persistentResources/{persistent_resource_id}.
@@ -40,20 +40,20 @@ type GcpVertexAiPersistentResourceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) Reset() {
-	*x = GcpVertexAiPersistentResourceStackOutputs{}
+func (x *GcpVertexAiPersistentResourceOutputs) Reset() {
+	*x = GcpVertexAiPersistentResourceOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) String() string {
+func (x *GcpVertexAiPersistentResourceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiPersistentResourceStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiPersistentResourceOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiPersistentResourceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *GcpVertexAiPersistentResourceStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiPersistentResourceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiPersistentResourceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiPersistentResourceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiPersistentResourceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) GetName() string {
+func (x *GcpVertexAiPersistentResourceOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) GetPersistentResourceId() string {
+func (x *GcpVertexAiPersistentResourceOutputs) GetPersistentResourceId() string {
 	if x != nil {
 		return x.PersistentResourceId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) GetLocation() string {
+func (x *GcpVertexAiPersistentResourceOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiPersistentResourceStackOutputs) GetState() string {
+func (x *GcpVertexAiPersistentResourceOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -102,8 +102,8 @@ var File_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpvertexaipersistentresource/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1\"\xa7\x01\n" +
-	")GcpVertexAiPersistentResourceStackOutputs\x12\x12\n" +
+	"@catalog/gcp/gcpvertexaipersistentresource/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1\"\xa2\x01\n" +
+	"$GcpVertexAiPersistentResourceOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x124\n" +
 	"\x16persistent_resource_id\x18\x02 \x01(\tR\x14persistentResourceId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12\x14\n" +
@@ -124,7 +124,7 @@ func file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiPersistentResourceStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStackOutputs
+	(*GcpVertexAiPersistentResourceOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceOutputs
 }
 var file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

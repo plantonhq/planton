@@ -24,7 +24,7 @@ const (
 // *
 // Outputs exported after the Tekton installation converges — the
 // handles downstream resources and humans compose against.
-type KubernetesTektonStackOutputs struct {
+type KubernetesTektonOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the Tekton components run in (the TektonConfig
@@ -51,20 +51,20 @@ type KubernetesTektonStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesTektonStackOutputs) Reset() {
-	*x = KubernetesTektonStackOutputs{}
+func (x *KubernetesTektonOutputs) Reset() {
+	*x = KubernetesTektonOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTektonStackOutputs) String() string {
+func (x *KubernetesTektonOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTektonStackOutputs) ProtoMessage() {}
+func (*KubernetesTektonOutputs) ProtoMessage() {}
 
-func (x *KubernetesTektonStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTektonOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,40 +76,40 @@ func (x *KubernetesTektonStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTektonStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTektonStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTektonOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTektonOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTektonStackOutputs) GetNamespace() string {
+func (x *KubernetesTektonOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesTektonStackOutputs) GetProfile() string {
+func (x *KubernetesTektonOutputs) GetProfile() string {
 	if x != nil {
 		return x.Profile
 	}
 	return ""
 }
 
-func (x *KubernetesTektonStackOutputs) GetDashboardService() string {
+func (x *KubernetesTektonOutputs) GetDashboardService() string {
 	if x != nil {
 		return x.DashboardService
 	}
 	return ""
 }
 
-func (x *KubernetesTektonStackOutputs) GetDashboardKubeEndpoint() string {
+func (x *KubernetesTektonOutputs) GetDashboardKubeEndpoint() string {
 	if x != nil {
 		return x.DashboardKubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesTektonStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesTektonOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -120,8 +120,8 @@ var File_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetestekton/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetestekton.v1alpha1\"\xed\x01\n" +
-	"\x1cKubernetesTektonStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetestekton/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetestekton.v1alpha1\"\xe8\x01\n" +
+	"\x17KubernetesTektonOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aprofile\x18\x02 \x01(\tR\aprofile\x12+\n" +
 	"\x11dashboard_service\x18\x03 \x01(\tR\x10dashboardService\x126\n" +
@@ -143,7 +143,7 @@ func file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTektonStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonStackOutputs
+	(*KubernetesTektonOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestekton.v1alpha1.KubernetesTektonOutputs
 }
 var file_catalog_kubernetes_kubernetestekton_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

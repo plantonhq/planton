@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanUptimeCheckSpec models the digitalocean_uptime_check resource
 surface plus its digitalocean_uptime_alert rows: an availability /

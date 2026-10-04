@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorFirewallPolicyStackOutputs** captures the outputs of
+// **AzureFrontDoorFirewallPolicyOutputs** captures the outputs of
 // provisioning an Azure Front Door WAF policy.
-type AzureFrontDoorFirewallPolicyStackOutputs struct {
+type AzureFrontDoorFirewallPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the WAF policy -- what
 	// AzureFrontDoorSecurityPolicy's firewall_policy_id references to
@@ -37,20 +37,20 @@ type AzureFrontDoorFirewallPolicyStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorFirewallPolicyStackOutputs) Reset() {
-	*x = AzureFrontDoorFirewallPolicyStackOutputs{}
+func (x *AzureFrontDoorFirewallPolicyOutputs) Reset() {
+	*x = AzureFrontDoorFirewallPolicyOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorFirewallPolicyStackOutputs) String() string {
+func (x *AzureFrontDoorFirewallPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorFirewallPolicyStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorFirewallPolicyOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorFirewallPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorFirewallPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AzureFrontDoorFirewallPolicyStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorFirewallPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorFirewallPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorFirewallPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorFirewallPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorFirewallPolicyStackOutputs) GetFirewallPolicyId() string {
+func (x *AzureFrontDoorFirewallPolicyOutputs) GetFirewallPolicyId() string {
 	if x != nil {
 		return x.FirewallPolicyId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorFirewallPolicyStackOutputs) GetFirewallPolicyName() string {
+func (x *AzureFrontDoorFirewallPolicyOutputs) GetFirewallPolicyName() string {
 	if x != nil {
 		return x.FirewallPolicyName
 	}
@@ -85,8 +85,8 @@ var File_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azurefrontdoorfirewallpolicy/v1alpha1/outputs.proto\x127dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1\"\x8a\x01\n" +
-	"(AzureFrontDoorFirewallPolicyStackOutputs\x12,\n" +
+	"Acatalog/azure/azurefrontdoorfirewallpolicy/v1alpha1/outputs.proto\x127dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1\"\x85\x01\n" +
+	"#AzureFrontDoorFirewallPolicyOutputs\x12,\n" +
 	"\x12firewall_policy_id\x18\x01 \x01(\tR\x10firewallPolicyId\x120\n" +
 	"\x14firewall_policy_name\x18\x02 \x01(\tR\x12firewallPolicyNameB\xc3\x03\n" +
 	";com.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azurefrontdoorfirewallpolicy/v1alpha1;azurefrontdoorfirewallpolicyv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azurefrontdoorfirewallpolicy.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azurefrontdoorfirewallpolicy\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azurefrontdoorfirewallpolicy\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azurefrontdoorfirewallpolicy::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorFirewallPolicyStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStackOutputs
+	(*AzureFrontDoorFirewallPolicyOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyOutputs
 }
 var file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

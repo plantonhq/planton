@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Workload Identity Pool Provider.
-type GcpWorkloadIdentityPoolProviderStackOutputs struct {
+type GcpWorkloadIdentityPoolProviderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full resource name:
 	// projects/<project_number>/locations/global/workloadIdentityPools/<pool_id>/providers/<provider_id>.
@@ -42,20 +42,20 @@ type GcpWorkloadIdentityPoolProviderStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackOutputs) Reset() {
-	*x = GcpWorkloadIdentityPoolProviderStackOutputs{}
+func (x *GcpWorkloadIdentityPoolProviderOutputs) Reset() {
+	*x = GcpWorkloadIdentityPoolProviderOutputs{}
 	mi := &file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackOutputs) String() string {
+func (x *GcpWorkloadIdentityPoolProviderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpWorkloadIdentityPoolProviderStackOutputs) ProtoMessage() {}
+func (*GcpWorkloadIdentityPoolProviderOutputs) ProtoMessage() {}
 
-func (x *GcpWorkloadIdentityPoolProviderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpWorkloadIdentityPoolProviderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *GcpWorkloadIdentityPoolProviderStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpWorkloadIdentityPoolProviderStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpWorkloadIdentityPoolProviderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpWorkloadIdentityPoolProviderOutputs.ProtoReflect.Descriptor instead.
+func (*GcpWorkloadIdentityPoolProviderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackOutputs) GetName() string {
+func (x *GcpWorkloadIdentityPoolProviderOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackOutputs) GetWorkloadIdentityPoolProviderId() string {
+func (x *GcpWorkloadIdentityPoolProviderOutputs) GetWorkloadIdentityPoolProviderId() string {
 	if x != nil {
 		return x.WorkloadIdentityPoolProviderId
 	}
 	return ""
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackOutputs) GetState() string {
+func (x *GcpWorkloadIdentityPoolProviderOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -97,8 +97,8 @@ var File_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto prot
 
 const file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/outputs.proto\x128dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1\"\xa3\x01\n" +
-	"+GcpWorkloadIdentityPoolProviderStackOutputs\x12\x12\n" +
+	"Bcatalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/outputs.proto\x128dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1\"\x9e\x01\n" +
+	"&GcpWorkloadIdentityPoolProviderOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12J\n" +
 	"\"workload_identity_pool_provider_id\x18\x02 \x01(\tR\x1eworkloadIdentityPoolProviderId\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05stateB\xcc\x03\n" +
@@ -118,7 +118,7 @@ func file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_raw
 
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpWorkloadIdentityPoolProviderStackOutputs)(nil), // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackOutputs
+	(*GcpWorkloadIdentityPoolProviderOutputs)(nil), // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderOutputs
 }
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

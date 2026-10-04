@@ -31,7 +31,7 @@ type KubernetesMetricsServer struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesMetricsServerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesMetricsServer) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesMetricsServer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesMetricsServer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesMetricsServer) GetStatus() *KubernetesMetricsServerStatus {
 // kubernetes-metrics-server status.
 type KubernetesMetricsServerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesMetricsServerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesMetricsServerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesMetricsServerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesMetricsServerStatus) GetOutputs() *KubernetesMetricsServerStackOutputs {
+func (x *KubernetesMetricsServerStatus) GetOutputs() *KubernetesMetricsServerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesMetricsServerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesMetricsServerStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesMetricsServerStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesmetricsserver/v1alpha1;kubernetesmetricsserverv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesmetricsserver.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesmetricsserver\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesmetricsserver\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesmetricsserver::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesMetricsServer)(nil),             // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer
-	(*KubernetesMetricsServerStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesMetricsServerSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec
-	(*KubernetesMetricsServerStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackOutputs
+	(*KubernetesMetricsServer)(nil),        // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer
+	(*KubernetesMetricsServerStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesMetricsServerSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec
+	(*KubernetesMetricsServerOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerOutputs
 }
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer.spec:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec
 	1, // 2: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServer.status:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatus
-	4, // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

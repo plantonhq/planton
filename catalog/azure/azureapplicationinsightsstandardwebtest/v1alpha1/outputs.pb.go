@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureApplicationInsightsStandardWebTestStackOutputs** captures the
+// **AzureApplicationInsightsStandardWebTestOutputs** captures the
 // outputs of provisioning an Application Insights Standard Web Test.
-type AzureApplicationInsightsStandardWebTestStackOutputs struct {
+type AzureApplicationInsightsStandardWebTestOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the web test. This is the seam an
 	// AzureMonitorMetricAlert references (web_test_id) to alert on the test's
@@ -39,20 +39,20 @@ type AzureApplicationInsightsStandardWebTestStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackOutputs) Reset() {
-	*x = AzureApplicationInsightsStandardWebTestStackOutputs{}
+func (x *AzureApplicationInsightsStandardWebTestOutputs) Reset() {
+	*x = AzureApplicationInsightsStandardWebTestOutputs{}
 	mi := &file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackOutputs) String() string {
+func (x *AzureApplicationInsightsStandardWebTestOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureApplicationInsightsStandardWebTestStackOutputs) ProtoMessage() {}
+func (*AzureApplicationInsightsStandardWebTestOutputs) ProtoMessage() {}
 
-func (x *AzureApplicationInsightsStandardWebTestStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureApplicationInsightsStandardWebTestOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AzureApplicationInsightsStandardWebTestStackOutputs) ProtoReflect() pro
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureApplicationInsightsStandardWebTestStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureApplicationInsightsStandardWebTestStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureApplicationInsightsStandardWebTestOutputs.ProtoReflect.Descriptor instead.
+func (*AzureApplicationInsightsStandardWebTestOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackOutputs) GetWebTestId() string {
+func (x *AzureApplicationInsightsStandardWebTestOutputs) GetWebTestId() string {
 	if x != nil {
 		return x.WebTestId
 	}
 	return ""
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackOutputs) GetWebTestName() string {
+func (x *AzureApplicationInsightsStandardWebTestOutputs) GetWebTestName() string {
 	if x != nil {
 		return x.WebTestName
 	}
 	return ""
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStackOutputs) GetSyntheticMonitorId() string {
+func (x *AzureApplicationInsightsStandardWebTestOutputs) GetSyntheticMonitorId() string {
 	if x != nil {
 		return x.SyntheticMonitorId
 	}
@@ -94,8 +94,8 @@ var File_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_
 
 const file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/outputs.proto\x12Bdev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1\"\xab\x01\n" +
-	"3AzureApplicationInsightsStandardWebTestStackOutputs\x12\x1e\n" +
+	"Lcatalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/outputs.proto\x12Bdev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1\"\xa6\x01\n" +
+	".AzureApplicationInsightsStandardWebTestOutputs\x12\x1e\n" +
 	"\vweb_test_id\x18\x01 \x01(\tR\twebTestId\x12\"\n" +
 	"\rweb_test_name\x18\x02 \x01(\tR\vwebTestName\x120\n" +
 	"\x14synthetic_monitor_id\x18\x03 \x01(\tR\x12syntheticMonitorIdB\x91\x04\n" +
@@ -115,7 +115,7 @@ func file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs
 
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureApplicationInsightsStandardWebTestStackOutputs)(nil), // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackOutputs
+	(*AzureApplicationInsightsStandardWebTestOutputs)(nil), // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestOutputs
 }
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

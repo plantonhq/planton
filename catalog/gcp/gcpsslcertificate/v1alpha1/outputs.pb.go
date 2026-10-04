@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a self-managed GCP SSL certificate.
 // The private key is write-only in GCP and deliberately never appears here.
-type GcpSslCertificateStackOutputs struct {
+type GcpSslCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the SSL certificate. This is the value a target HTTPS
 	// (or SSL) proxy references in its ssl_certificates list — the composition
@@ -47,20 +47,20 @@ type GcpSslCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSslCertificateStackOutputs) Reset() {
-	*x = GcpSslCertificateStackOutputs{}
+func (x *GcpSslCertificateOutputs) Reset() {
+	*x = GcpSslCertificateOutputs{}
 	mi := &file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSslCertificateStackOutputs) String() string {
+func (x *GcpSslCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSslCertificateStackOutputs) ProtoMessage() {}
+func (*GcpSslCertificateOutputs) ProtoMessage() {}
 
-func (x *GcpSslCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSslCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,40 +72,40 @@ func (x *GcpSslCertificateStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSslCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSslCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSslCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSslCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSslCertificateStackOutputs) GetSelfLink() string {
+func (x *GcpSslCertificateOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpSslCertificateStackOutputs) GetCertificateName() string {
+func (x *GcpSslCertificateOutputs) GetCertificateName() string {
 	if x != nil {
 		return x.CertificateName
 	}
 	return ""
 }
 
-func (x *GcpSslCertificateStackOutputs) GetCertificateId() string {
+func (x *GcpSslCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *GcpSslCertificateStackOutputs) GetExpireTime() string {
+func (x *GcpSslCertificateOutputs) GetExpireTime() string {
 	if x != nil {
 		return x.ExpireTime
 	}
 	return ""
 }
 
-func (x *GcpSslCertificateStackOutputs) GetRegion() string {
+func (x *GcpSslCertificateOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -116,8 +116,8 @@ var File_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpsslcertificate/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpsslcertificate.v1alpha1\"\xc7\x01\n" +
-	"\x1dGcpSslCertificateStackOutputs\x12\x1b\n" +
+	"4catalog/gcp/gcpsslcertificate/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpsslcertificate.v1alpha1\"\xc2\x01\n" +
+	"\x18GcpSslCertificateOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12)\n" +
 	"\x10certificate_name\x18\x02 \x01(\tR\x0fcertificateName\x12%\n" +
 	"\x0ecertificate_id\x18\x03 \x01(\tR\rcertificateId\x12\x1f\n" +
@@ -140,7 +140,7 @@ func file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSslCertificateStackOutputs)(nil), // 0: dev.planton.gcp.gcpsslcertificate.v1alpha1.GcpSslCertificateStackOutputs
+	(*GcpSslCertificateOutputs)(nil), // 0: dev.planton.gcp.gcpsslcertificate.v1alpha1.GcpSslCertificateOutputs
 }
 var file_catalog_gcp_gcpsslcertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

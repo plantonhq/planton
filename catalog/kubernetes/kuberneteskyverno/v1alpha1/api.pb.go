@@ -38,7 +38,7 @@ type KubernetesKyverno struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKyvernoSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -91,7 +91,7 @@ func (x *KubernetesKyverno) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKyverno) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKyverno) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,8 +115,8 @@ func (x *KubernetesKyverno) GetStatus() *KubernetesKyvernoStatus {
 // KubernetesKyvernoStatus describes the observed state of the engine.
 type KubernetesKyvernoStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKyvernoStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKyvernoOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*KubernetesKyvernoStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskyverno_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKyvernoStatus) GetOutputs() *KubernetesKyvernoStackOutputs {
+func (x *KubernetesKyvernoStatus) GetOutputs() *KubernetesKyvernoOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_kubernetes_kuberneteskyverno_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11KubernetesKyvernoR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatusR\x06status\"\x85\x01\n" +
-	"\x17KubernetesKyvernoStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatusR\x06status\"\x80\x01\n" +
+	"\x17KubernetesKyvernoStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoOutputsR\aoutputsB\x90\x03\n" +
 	"5com.dev.planton.kubernetes.kuberneteskyverno.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskyverno/v1alpha1;kuberneteskyvernov1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kuberneteskyverno.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kuberneteskyverno\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kuberneteskyverno\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kuberneteskyverno::V1alpha1b\x06proto3"
 
 var (
@@ -190,17 +190,17 @@ func file_catalog_kubernetes_kuberneteskyverno_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kuberneteskyverno_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskyverno_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKyverno)(nil),             // 0: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyverno
-	(*KubernetesKyvernoStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKyvernoSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoSpec
-	(*KubernetesKyvernoStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStackOutputs
+	(*KubernetesKyverno)(nil),            // 0: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyverno
+	(*KubernetesKyvernoStatus)(nil),      // 1: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKyvernoSpec)(nil),        // 3: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoSpec
+	(*KubernetesKyvernoOutputs)(nil),     // 4: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoOutputs
 }
 var file_catalog_kubernetes_kuberneteskyverno_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyverno.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyverno.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyverno.spec:type_name -> dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyverno.status:type_name -> dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

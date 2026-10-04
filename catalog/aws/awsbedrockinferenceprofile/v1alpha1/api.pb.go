@@ -34,7 +34,7 @@ type AwsBedrockInferenceProfile struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the inference profile.
 	Spec *AwsBedrockInferenceProfileSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -87,7 +87,7 @@ func (x *AwsBedrockInferenceProfile) GetKind() string {
 	return ""
 }
 
-func (x *AwsBedrockInferenceProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBedrockInferenceProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ func (x *AwsBedrockInferenceProfile) GetStatus() *AwsBedrockInferenceProfileStat
 type AwsBedrockInferenceProfileStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsBedrockInferenceProfileStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsBedrockInferenceProfileOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsBedrockInferenceProfileStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBedrockInferenceProfileStatus) GetOutputs() *AwsBedrockInferenceProfileStackOutputs {
+func (x *AwsBedrockInferenceProfileStatus) GetOutputs() *AwsBedrockInferenceProfileOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAwsBedrockInferenceProfileR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatusR\x06status\"\x99\x01\n" +
-	" AwsBedrockInferenceProfileStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatusR\x06status\"\x94\x01\n" +
+	" AwsBedrockInferenceProfileStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/aws/awsbedrockinferenceprofile/v1alpha1;awsbedrockinferenceprofilev1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Aws.Awsbedrockinferenceprofile.V1alpha1\xca\x023Dev\\Planton\\Aws\\Awsbedrockinferenceprofile\\V1alpha1\xe2\x02?Dev\\Planton\\Aws\\Awsbedrockinferenceprofile\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Aws::Awsbedrockinferenceprofile::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBedrockInferenceProfile)(nil),             // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile
-	(*AwsBedrockInferenceProfileStatus)(nil),       // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBedrockInferenceProfileSpec)(nil),         // 3: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileSpec
-	(*AwsBedrockInferenceProfileStackOutputs)(nil), // 4: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackOutputs
+	(*AwsBedrockInferenceProfile)(nil),        // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile
+	(*AwsBedrockInferenceProfileStatus)(nil),  // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBedrockInferenceProfileSpec)(nil),    // 3: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileSpec
+	(*AwsBedrockInferenceProfileOutputs)(nil), // 4: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileOutputs
 }
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile.spec:type_name -> dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileSpec
 	1, // 2: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile.status:type_name -> dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatus
-	4, // 3: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatus.outputs:type_name -> dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackOutputs
+	4, // 3: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStatus.outputs:type_name -> dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

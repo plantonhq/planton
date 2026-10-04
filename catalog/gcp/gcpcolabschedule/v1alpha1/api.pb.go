@@ -31,7 +31,7 @@ type GcpColabSchedule struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpColabScheduleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpColabSchedule) GetKind() string {
 	return ""
 }
 
-func (x *GcpColabSchedule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpColabSchedule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpColabSchedule) GetStatus() *GcpColabScheduleStatus {
 // gcp-colab-schedule status
 type GcpColabScheduleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpColabScheduleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpColabScheduleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpColabScheduleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabschedule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpColabScheduleStatus) GetOutputs() *GcpColabScheduleStackOutputs {
+func (x *GcpColabScheduleStatus) GetOutputs() *GcpColabScheduleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcolabschedule_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10GcpColabScheduleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStatusR\x06status\"{\n" +
-	"\x16GcpColabScheduleStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStatusR\x06status\"v\n" +
+	"\x16GcpColabScheduleStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.gcp.gcpcolabschedule.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpcolabschedule/v1alpha1;gcpcolabschedulev1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpcolabschedule.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpcolabschedule\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpcolabschedule\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpcolabschedule::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpcolabschedule_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_api_proto_goTypes = []any{
 	(*GcpColabSchedule)(nil),             // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule
 	(*GcpColabScheduleStatus)(nil),       // 1: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpColabScheduleSpec)(nil),         // 3: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleSpec
-	(*GcpColabScheduleStackOutputs)(nil), // 4: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackOutputs
+	(*GcpColabScheduleOutputs)(nil),      // 4: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleOutputs
 }
 var file_catalog_gcp_gcpcolabschedule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule.spec:type_name -> dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleSpec
 	1, // 2: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedule.status:type_name -> dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStatus
-	4, // 3: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStatus.outputs:type_name -> dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStackOutputs
+	4, // 3: dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleStatus.outputs:type_name -> dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

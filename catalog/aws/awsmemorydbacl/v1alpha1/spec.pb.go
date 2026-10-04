@@ -48,7 +48,7 @@ const (
 //     authentication) always exists in the account and is referenced by name —
 //     it is never modeled as a resource.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsMemorydbAclSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the ACL is created. Must match the region of every

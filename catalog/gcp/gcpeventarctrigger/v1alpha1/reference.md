@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpEventarcTriggerSpec defines an Eventarc trigger — the routing rule
 "when THIS event happens, call THAT service": events matching the
@@ -373,7 +373,7 @@ standard labels by the module).
 
 Receive events from an Eventarc SaaS PARTNER (e.g. Datadog): the
 module creates the partner channel alongside the trigger and wires the
-trigger to it. The channel's activation_token stack output must be
+trigger to it. The channel's activation_token output must be
 handed to the partner to complete the handshake — until then the
 channel stays PENDING and delivers nothing.
 

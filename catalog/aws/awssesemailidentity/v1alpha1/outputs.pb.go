@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSesEmailIdentityStackOutputs captures the observable identifiers and
+// AwsSesEmailIdentityOutputs captures the observable identifiers and
 // verification state of the SES email identity.
-type AwsSesEmailIdentityStackOutputs struct {
+type AwsSesEmailIdentityOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the identity -- the resource for
 	// identity-policy grants and IAM statements that scope sending.
@@ -50,20 +50,20 @@ type AwsSesEmailIdentityStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) Reset() {
-	*x = AwsSesEmailIdentityStackOutputs{}
+func (x *AwsSesEmailIdentityOutputs) Reset() {
+	*x = AwsSesEmailIdentityOutputs{}
 	mi := &file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) String() string {
+func (x *AwsSesEmailIdentityOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSesEmailIdentityStackOutputs) ProtoMessage() {}
+func (*AwsSesEmailIdentityOutputs) ProtoMessage() {}
 
-func (x *AwsSesEmailIdentityStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSesEmailIdentityOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,40 +75,40 @@ func (x *AwsSesEmailIdentityStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSesEmailIdentityStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSesEmailIdentityStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSesEmailIdentityOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSesEmailIdentityOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) GetIdentityArn() string {
+func (x *AwsSesEmailIdentityOutputs) GetIdentityArn() string {
 	if x != nil {
 		return x.IdentityArn
 	}
 	return ""
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) GetEmailIdentity() string {
+func (x *AwsSesEmailIdentityOutputs) GetEmailIdentity() string {
 	if x != nil {
 		return x.EmailIdentity
 	}
 	return ""
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) GetIdentityType() string {
+func (x *AwsSesEmailIdentityOutputs) GetIdentityType() string {
 	if x != nil {
 		return x.IdentityType
 	}
 	return ""
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) GetVerificationStatus() string {
+func (x *AwsSesEmailIdentityOutputs) GetVerificationStatus() string {
 	if x != nil {
 		return x.VerificationStatus
 	}
 	return ""
 }
 
-func (x *AwsSesEmailIdentityStackOutputs) GetDkimTokens() []string {
+func (x *AwsSesEmailIdentityOutputs) GetDkimTokens() []string {
 	if x != nil {
 		return x.DkimTokens
 	}
@@ -119,8 +119,8 @@ var File_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awssesemailidentity/v1alpha1/outputs.proto\x12,dev.planton.aws.awssesemailidentity.v1alpha1\"\xe2\x01\n" +
-	"\x1fAwsSesEmailIdentityStackOutputs\x12!\n" +
+	"6catalog/aws/awssesemailidentity/v1alpha1/outputs.proto\x12,dev.planton.aws.awssesemailidentity.v1alpha1\"\xdd\x01\n" +
+	"\x1aAwsSesEmailIdentityOutputs\x12!\n" +
 	"\fidentity_arn\x18\x01 \x01(\tR\videntityArn\x12%\n" +
 	"\x0eemail_identity\x18\x02 \x01(\tR\remailIdentity\x12#\n" +
 	"\ridentity_type\x18\x03 \x01(\tR\fidentityType\x12/\n" +
@@ -143,7 +143,7 @@ func file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSesEmailIdentityStackOutputs)(nil), // 0: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStackOutputs
+	(*AwsSesEmailIdentityOutputs)(nil), // 0: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityOutputs
 }
 var file_catalog_aws_awssesemailidentity_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

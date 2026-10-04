@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP service connection policy.
-type GcpServiceConnectionPolicyStackOutputs struct {
+type GcpServiceConnectionPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified policy resource path
 	// (projects/{project}/locations/{location}/serviceConnectionPolicies/{name}).
@@ -42,20 +42,20 @@ type GcpServiceConnectionPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpServiceConnectionPolicyStackOutputs) Reset() {
-	*x = GcpServiceConnectionPolicyStackOutputs{}
+func (x *GcpServiceConnectionPolicyOutputs) Reset() {
+	*x = GcpServiceConnectionPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServiceConnectionPolicyStackOutputs) String() string {
+func (x *GcpServiceConnectionPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServiceConnectionPolicyStackOutputs) ProtoMessage() {}
+func (*GcpServiceConnectionPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpServiceConnectionPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpServiceConnectionPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *GcpServiceConnectionPolicyStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServiceConnectionPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpServiceConnectionPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServiceConnectionPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpServiceConnectionPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServiceConnectionPolicyStackOutputs) GetPolicyId() string {
+func (x *GcpServiceConnectionPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *GcpServiceConnectionPolicyStackOutputs) GetName() string {
+func (x *GcpServiceConnectionPolicyOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpServiceConnectionPolicyStackOutputs) GetInfrastructure() string {
+func (x *GcpServiceConnectionPolicyOutputs) GetInfrastructure() string {
 	if x != nil {
 		return x.Infrastructure
 	}
 	return ""
 }
 
-func (x *GcpServiceConnectionPolicyStackOutputs) GetEtag() string {
+func (x *GcpServiceConnectionPolicyOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -104,8 +104,8 @@ var File_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpserviceconnectionpolicy/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1\"\x95\x01\n" +
-	"&GcpServiceConnectionPolicyStackOutputs\x12\x1b\n" +
+	"=catalog/gcp/gcpserviceconnectionpolicy/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1\"\x90\x01\n" +
+	"!GcpServiceConnectionPolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12&\n" +
 	"\x0einfrastructure\x18\x03 \x01(\tR\x0einfrastructure\x12\x12\n" +
@@ -126,7 +126,7 @@ func file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpServiceConnectionPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1.GcpServiceConnectionPolicyStackOutputs
+	(*GcpServiceConnectionPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1.GcpServiceConnectionPolicyOutputs
 }
 var file_catalog_gcp_gcpserviceconnectionpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

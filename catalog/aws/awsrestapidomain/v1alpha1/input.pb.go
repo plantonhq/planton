@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRestApiDomainStackInput is the input for the IaC modules that
+// AwsRestApiDomainIacInput is the input for the IaC modules that
 // deploy the custom domain.
-type AwsRestApiDomainStackInput struct {
+type AwsRestApiDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsRestApiDomain resource to deploy.
 	Target *AwsRestApiDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsRestApiDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRestApiDomainStackInput) Reset() {
-	*x = AwsRestApiDomainStackInput{}
+func (x *AwsRestApiDomainIacInput) Reset() {
+	*x = AwsRestApiDomainIacInput{}
 	mi := &file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRestApiDomainStackInput) String() string {
+func (x *AwsRestApiDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRestApiDomainStackInput) ProtoMessage() {}
+func (*AwsRestApiDomainIacInput) ProtoMessage() {}
 
-func (x *AwsRestApiDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRestApiDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsRestApiDomainStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRestApiDomainStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRestApiDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRestApiDomainIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRestApiDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRestApiDomainStackInput) GetTarget() *AwsRestApiDomain {
+func (x *AwsRestApiDomainIacInput) GetTarget() *AwsRestApiDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRestApiDomainStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRestApiDomainIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsrestapidomain_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsrestapidomain/v1alpha1/input.proto\x12)dev.planton.aws.awsrestapidomain.v1alpha1\x1a/catalog/aws/awsrestapidomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbe\x01\n" +
-	"\x1aAwsRestApiDomainStackInput\x12S\n" +
+	"1catalog/aws/awsrestapidomain/v1alpha1/input.proto\x12)dev.planton.aws.awsrestapidomain.v1alpha1\x1a/catalog/aws/awsrestapidomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbc\x01\n" +
+	"\x18AwsRestApiDomainIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe1\x02\n" +
 	"-com.dev.planton.aws.awsrestapidomain.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRestApiDomainStackInput)(nil), // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackInput
-	(*AwsRestApiDomain)(nil),           // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain
-	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRestApiDomainIacInput)(nil), // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainIacInput
+	(*AwsRestApiDomain)(nil),         // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain
+	(*aws.AwsProviderConfig)(nil),    // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsrestapidomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackInput.target:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain
-	2, // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainIacInput.target:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomain
+	2, // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

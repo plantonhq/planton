@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupRestoreTestingPlanStackOutputs captures the observable
+// AwsBackupRestoreTestingPlanOutputs captures the observable
 // state of the restore testing plan after apply.
-type AwsBackupRestoreTestingPlanStackOutputs struct {
+type AwsBackupRestoreTestingPlanOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The restore testing plan's ARN. (The plan and its selections
 	// import by name - the plan's name is its identity; AWS assigns no
@@ -33,20 +33,20 @@ type AwsBackupRestoreTestingPlanStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AwsBackupRestoreTestingPlanStackOutputs) Reset() {
-	*x = AwsBackupRestoreTestingPlanStackOutputs{}
+func (x *AwsBackupRestoreTestingPlanOutputs) Reset() {
+	*x = AwsBackupRestoreTestingPlanOutputs{}
 	mi := &file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupRestoreTestingPlanStackOutputs) String() string {
+func (x *AwsBackupRestoreTestingPlanOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupRestoreTestingPlanStackOutputs) ProtoMessage() {}
+func (*AwsBackupRestoreTestingPlanOutputs) ProtoMessage() {}
 
-func (x *AwsBackupRestoreTestingPlanStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupRestoreTestingPlanOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *AwsBackupRestoreTestingPlanStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupRestoreTestingPlanStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBackupRestoreTestingPlanStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupRestoreTestingPlanOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBackupRestoreTestingPlanOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupRestoreTestingPlanStackOutputs) GetRestoreTestingPlanArn() string {
+func (x *AwsBackupRestoreTestingPlanOutputs) GetRestoreTestingPlanArn() string {
 	if x != nil {
 		return x.RestoreTestingPlanArn
 	}
@@ -74,8 +74,8 @@ var File_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awsbackuprestoretestingplan/v1alpha1/outputs.proto\x124dev.planton.aws.awsbackuprestoretestingplan.v1alpha1\"b\n" +
-	"'AwsBackupRestoreTestingPlanStackOutputs\x127\n" +
+	">catalog/aws/awsbackuprestoretestingplan/v1alpha1/outputs.proto\x124dev.planton.aws.awsbackuprestoretestingplan.v1alpha1\"]\n" +
+	"\"AwsBackupRestoreTestingPlanOutputs\x127\n" +
 	"\x18restore_testing_plan_arn\x18\x01 \x01(\tR\x15restoreTestingPlanArnB\xb0\x03\n" +
 	"8com.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awsbackuprestoretestingplan/v1alpha1;awsbackuprestoretestingplanv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awsbackuprestoretestingplan.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awsbackuprestoretestingplan\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awsbackuprestoretestingplan\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awsbackuprestoretestingplan::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBackupRestoreTestingPlanStackOutputs)(nil), // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackOutputs
+	(*AwsBackupRestoreTestingPlanOutputs)(nil), // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanOutputs
 }
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

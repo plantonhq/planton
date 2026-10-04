@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: shared/cloudresourcekind/cloud_resource_kind.proto
+// source: shared/catalogkind/catalog_kind.proto
 
-package cloudresourcekind
+package catalogkind
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -22,389 +22,389 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CloudResourceKind int32
+type CatalogKind int32
 
 const (
 	// 0: Default/unspecified
-	CloudResourceKind_unspecified CloudResourceKind = 0
+	CatalogKind_unspecified CatalogKind = 0
 	// 1–49: Test/dev/custom
-	CloudResourceKind_TestCloudResourceGeneric    CloudResourceKind = 1
-	CloudResourceKind_TestCloudResourceKubernetes CloudResourceKind = 2
+	CatalogKind_TestCatalogKindGeneric    CatalogKind = 1
+	CatalogKind_TestCatalogKindKubernetes CatalogKind = 2
 	// 1000–1999: AWS resources
 	// AwsSubnet is a prerequisite because an ALB requires at least two subnets
 	// in different availability zones -- the spec's subnet references must
 	// resolve before the load balancer can be created.
-	CloudResourceKind_AwsAlb             CloudResourceKind = 1000
-	CloudResourceKind_AwsCertManagerCert CloudResourceKind = 1001
-	CloudResourceKind_AwsCloudFront      CloudResourceKind = 1002
-	CloudResourceKind_AwsDynamodb        CloudResourceKind = 1003
-	CloudResourceKind_AwsEcrRepo         CloudResourceKind = 1004
-	CloudResourceKind_AwsEcsCluster      CloudResourceKind = 1005
+	CatalogKind_AwsAlb             CatalogKind = 1000
+	CatalogKind_AwsCertManagerCert CatalogKind = 1001
+	CatalogKind_AwsCloudFront      CatalogKind = 1002
+	CatalogKind_AwsDynamodb        CatalogKind = 1003
+	CatalogKind_AwsEcrRepo         CatalogKind = 1004
+	CatalogKind_AwsEcsCluster      CatalogKind = 1005
 	// AwsEcsCluster, AwsEcsTaskDefinition, and AwsSubnet are prerequisites
 	// because a service schedules a referenced task-definition revision into
 	// a referenced live cluster and places task network interfaces into
 	// referenced subnets -- all three references must resolve first.
-	CloudResourceKind_AwsEcsService CloudResourceKind = 1006
+	CatalogKind_AwsEcsService CatalogKind = 1006
 	// AwsSubnet and AwsIamRole are prerequisites because the control plane
 	// attaches its network interfaces into referenced subnets and assumes a
 	// referenced cluster role that must already carry AmazonEKSClusterPolicy.
-	CloudResourceKind_AwsEksCluster  CloudResourceKind = 1007
-	CloudResourceKind_AwsIamRole     CloudResourceKind = 1008
-	CloudResourceKind_AwsLambda      CloudResourceKind = 1009
-	CloudResourceKind_AwsRdsCluster  CloudResourceKind = 1010
-	CloudResourceKind_AwsRdsInstance CloudResourceKind = 1011
-	CloudResourceKind_AwsRoute53Zone CloudResourceKind = 1012
-	CloudResourceKind_AwsS3Bucket    CloudResourceKind = 1013
+	CatalogKind_AwsEksCluster  CatalogKind = 1007
+	CatalogKind_AwsIamRole     CatalogKind = 1008
+	CatalogKind_AwsLambda      CatalogKind = 1009
+	CatalogKind_AwsRdsCluster  CatalogKind = 1010
+	CatalogKind_AwsRdsInstance CatalogKind = 1011
+	CatalogKind_AwsRoute53Zone CatalogKind = 1012
+	CatalogKind_AwsS3Bucket    CatalogKind = 1013
 	// AwsVpc is a prerequisite because a target group's health checks and
 	// target registrations live inside one VPC -- the spec's vpc_id reference
 	// must resolve before the group can be created.
-	CloudResourceKind_AwsLbTargetGroup CloudResourceKind = 1014
+	CatalogKind_AwsLbTargetGroup CatalogKind = 1014
 	// AwsVpc is a prerequisite because every security group is created in a
 	// VPC; the E2E install profile resolves vpc_id against the VPC prerequisite.
-	CloudResourceKind_AwsSecurityGroup CloudResourceKind = 1015
-	CloudResourceKind_AwsVpc           CloudResourceKind = 1016
+	CatalogKind_AwsSecurityGroup CatalogKind = 1015
+	CatalogKind_AwsVpc           CatalogKind = 1016
 	// AwsEksCluster is a prerequisite because nodes register with a live
 	// control plane; AwsIamRole and AwsSubnet back the node role and worker
 	// subnet references.
-	CloudResourceKind_AwsEksNodeGroup CloudResourceKind = 1017
-	CloudResourceKind_AwsIamUser      CloudResourceKind = 1018
-	CloudResourceKind_AwsKmsKey       CloudResourceKind = 1019
-	CloudResourceKind_AwsEc2Instance  CloudResourceKind = 1020
+	CatalogKind_AwsEksNodeGroup CatalogKind = 1017
+	CatalogKind_AwsIamUser      CatalogKind = 1018
+	CatalogKind_AwsKmsKey       CatalogKind = 1019
+	CatalogKind_AwsEc2Instance  CatalogKind = 1020
 	// Every Client VPN endpoint requires an ACM server certificate at create
 	// time; the imported self-signed fixture satisfies it. Subnets/VPC are
 	// optional composition (a zero-association endpoint is valid) -- composed
 	// scenarios declare them via the e2e-prerequisites annotation.
-	CloudResourceKind_AwsClientVpn  CloudResourceKind = 1021
-	CloudResourceKind_AwsDocumentDb CloudResourceKind = 1022
+	CatalogKind_AwsClientVpn  CatalogKind = 1021
+	CatalogKind_AwsDocumentDb CatalogKind = 1022
 	// AwsRoute53Zone is a prerequisite because every record lives inside a
 	// hosted zone -- the spec's zone_id reference must resolve before the
 	// record can be created.
-	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 1023
+	CatalogKind_AwsRoute53DnsRecord CatalogKind = 1023
 	// AwsS3Bucket is a prerequisite because the object set's bucket reference
 	// is required -- objects cannot exist without the bucket that holds them.
-	CloudResourceKind_AwsS3ObjectSet     CloudResourceKind = 1024
-	CloudResourceKind_AwsSqsQueue        CloudResourceKind = 1025
-	CloudResourceKind_AwsSnsTopic        CloudResourceKind = 1026
-	CloudResourceKind_AwsEventBridgeBus  CloudResourceKind = 1027
-	CloudResourceKind_AwsEventBridgeRule CloudResourceKind = 1028
-	CloudResourceKind_AwsIamOidcProvider CloudResourceKind = 1029
-	CloudResourceKind_AwsIamPolicy       CloudResourceKind = 1030
+	CatalogKind_AwsS3ObjectSet     CatalogKind = 1024
+	CatalogKind_AwsSqsQueue        CatalogKind = 1025
+	CatalogKind_AwsSnsTopic        CatalogKind = 1026
+	CatalogKind_AwsEventBridgeBus  CatalogKind = 1027
+	CatalogKind_AwsEventBridgeRule CatalogKind = 1028
+	CatalogKind_AwsIamOidcProvider CatalogKind = 1029
+	CatalogKind_AwsIamPolicy       CatalogKind = 1030
 	// AwsIamRole is a prerequisite because an instance profile is a wrapper that
 	// must contain a role to be useful -- the profile's spec requires a role
 	// reference, so the role must be deployed first.
-	CloudResourceKind_AwsIamInstanceProfile CloudResourceKind = 1031
+	CatalogKind_AwsIamInstanceProfile CatalogKind = 1031
 	// AwsAlb and AwsLbTargetGroup are prerequisites because a listener is an
 	// attachment point on a load balancer and its default action almost always
 	// forwards to a target group -- both references must resolve before the
 	// listener can be created.
-	CloudResourceKind_AwsLbListener CloudResourceKind = 1032
+	CatalogKind_AwsLbListener CatalogKind = 1032
 	// AwsLbListener is a prerequisite because a rule only exists as an
 	// attachment on a listener -- the listener_arn reference must resolve
 	// before the rule can be created.
-	CloudResourceKind_AwsLbListenerRule CloudResourceKind = 1033
-	CloudResourceKind_AwsLaunchTemplate CloudResourceKind = 1034
+	CatalogKind_AwsLbListenerRule CatalogKind = 1033
+	CatalogKind_AwsLaunchTemplate CatalogKind = 1034
 	// AwsSubnet and AwsLaunchTemplate are prerequisites because a group
 	// cannot exist without subnets to place capacity in and a launch
 	// template to launch from -- the spec's subnets and launch_template
 	// references must resolve before the group can be created.
-	CloudResourceKind_AwsAutoScalingGroup CloudResourceKind = 1035
+	CatalogKind_AwsAutoScalingGroup CatalogKind = 1035
 	// AwsEksCluster is a prerequisite because an add-on installs onto a live
 	// control plane -- the spec's cluster_name reference must resolve before
 	// the add-on can be created.
-	CloudResourceKind_AwsEksAddon CloudResourceKind = 1036
+	CatalogKind_AwsEksAddon CatalogKind = 1036
 	// AwsEksCluster, AwsIamRole, and AwsSubnet are prerequisites because a
 	// Fargate profile attaches to a live control plane, runs pods as a
 	// referenced pod-execution role, and launches them into referenced
 	// private subnets -- all three references must resolve first.
-	CloudResourceKind_AwsEksFargateProfile CloudResourceKind = 1037
+	CatalogKind_AwsEksFargateProfile CatalogKind = 1037
 	// AwsEksCluster and AwsIamRole are prerequisites because an access entry
 	// grants a referenced IAM principal access to a live control plane --
 	// both references must resolve before the entry can be created.
-	CloudResourceKind_AwsEksAccessEntry CloudResourceKind = 1038
+	CatalogKind_AwsEksAccessEntry CatalogKind = 1038
 	// AwsIamRole is a prerequisite because the kind's default posture --
 	// Fargate with the awslogs logging default -- is rejected by AWS at
 	// registration time without an execution role the agent can assume.
-	CloudResourceKind_AwsEcsTaskDefinition CloudResourceKind = 1039
-	CloudResourceKind_AwsHttpApiGateway    CloudResourceKind = 1040
+	CatalogKind_AwsEcsTaskDefinition CatalogKind = 1039
+	CatalogKind_AwsHttpApiGateway    CatalogKind = 1040
 	// AwsIamRole is a prerequisite because a state machine cannot be created
 	// without an execution role it can assume -- the spec's role_arn reference
 	// must resolve before the CreateStateMachine call.
-	CloudResourceKind_AwsStepFunction CloudResourceKind = 1041
+	CatalogKind_AwsStepFunction CatalogKind = 1041
 	// AwsSubnet is a prerequisite because a VPC link is a set of managed ENIs
 	// provisioned into referenced subnets -- the subnet references must resolve
 	// before the link can be created. Security groups are optional on the link,
 	// so they compose per-scenario rather than as a registry prerequisite.
-	CloudResourceKind_AwsHttpApiVpcLink CloudResourceKind = 1156
+	CatalogKind_AwsHttpApiVpcLink CatalogKind = 1156
 	// AwsCertManagerCert is a prerequisite because a custom domain cannot be
 	// created without a TLS certificate in the same region covering the domain
 	// -- the spec's certificate_arn reference must resolve first.
-	CloudResourceKind_AwsHttpApiDomain CloudResourceKind = 1157
+	CatalogKind_AwsHttpApiDomain CatalogKind = 1157
 	// AwsVpcEndpoint's composed E2E scenarios reference the AwsVpc
 	// prerequisite's outputs (vpc_id + default_route_table_id for gateway
 	// endpoints) and the AwsSubnet pair's subnet_id outputs (interface
 	// endpoints), so both are genuine deploy-order prerequisites.
-	CloudResourceKind_AwsVpcEndpoint     CloudResourceKind = 1042
-	CloudResourceKind_AwsElasticacheUser CloudResourceKind = 1043
+	CatalogKind_AwsVpcEndpoint     CatalogKind = 1042
+	CatalogKind_AwsElasticacheUser CatalogKind = 1043
 	// AwsElasticacheUser is a genuine prerequisite: AWS refuses to create a
 	// user group that does not contain a user named "default", so a group's
 	// composed E2E scenario must resolve a deployed user's outputs.
-	CloudResourceKind_AwsElasticacheUserGroup        CloudResourceKind = 1044
-	CloudResourceKind_AwsRedshiftServerlessNamespace CloudResourceKind = 1045
+	CatalogKind_AwsElasticacheUserGroup        CatalogKind = 1044
+	CatalogKind_AwsRedshiftServerlessNamespace CatalogKind = 1045
 	// The namespace is a genuine prerequisite: a workgroup attaches to
 	// exactly one namespace by name at create time, so its composed E2E
 	// scenario must resolve a deployed namespace's outputs. AwsSubnet is a
 	// prerequisite because Redshift Serverless requires the workgroup's
 	// subnets to span three availability zones.
-	CloudResourceKind_AwsRedshiftServerlessWorkgroup CloudResourceKind = 1046
+	CatalogKind_AwsRedshiftServerlessWorkgroup CatalogKind = 1046
 	// AwsSubnet is a prerequisite because the module builds an ElastiCache
 	// subnet group from referenced subnets -- the spec's subnet references
 	// must resolve before the replication group can deploy.
-	CloudResourceKind_AwsRedisElasticache      CloudResourceKind = 1050
-	CloudResourceKind_AwsOpenSearchDomain      CloudResourceKind = 1051
-	CloudResourceKind_AwsMemcachedElasticache  CloudResourceKind = 1052
-	CloudResourceKind_AwsServerlessElasticache CloudResourceKind = 1053
+	CatalogKind_AwsRedisElasticache      CatalogKind = 1050
+	CatalogKind_AwsOpenSearchDomain      CatalogKind = 1051
+	CatalogKind_AwsMemcachedElasticache  CatalogKind = 1052
+	CatalogKind_AwsServerlessElasticache CatalogKind = 1053
 	// AwsSubnet is a prerequisite because an NLB requires at least one subnet
 	// mapping -- the spec's subnet references must resolve before the load
 	// balancer can be created.
-	CloudResourceKind_AwsNlb               CloudResourceKind = 1080
-	CloudResourceKind_AwsElasticIp         CloudResourceKind = 1081
-	CloudResourceKind_AwsTransitGateway    CloudResourceKind = 1082
-	CloudResourceKind_AwsGlobalAccelerator CloudResourceKind = 1083
-	CloudResourceKind_AwsSubnet            CloudResourceKind = 1084
-	CloudResourceKind_AwsInternetGateway   CloudResourceKind = 1085
+	CatalogKind_AwsNlb               CatalogKind = 1080
+	CatalogKind_AwsElasticIp         CatalogKind = 1081
+	CatalogKind_AwsTransitGateway    CatalogKind = 1082
+	CatalogKind_AwsGlobalAccelerator CatalogKind = 1083
+	CatalogKind_AwsSubnet            CatalogKind = 1084
+	CatalogKind_AwsInternetGateway   CatalogKind = 1085
 	// AwsInternetGateway is a prerequisite because a public NAT gateway can only
 	// become available once the VPC it sits in has an internet gateway attached
 	// (AWS rejects the create otherwise) -- so the gateway must be deployed first.
 	// AwsVpc is a prerequisite because a REGIONAL NAT gateway (availability_mode
 	// = regional) references the VPC directly instead of a subnet.
-	CloudResourceKind_AwsNatGateway                CloudResourceKind = 1086
-	CloudResourceKind_AwsEgressOnlyInternetGateway CloudResourceKind = 1087
+	CatalogKind_AwsNatGateway                CatalogKind = 1086
+	CatalogKind_AwsEgressOnlyInternetGateway CatalogKind = 1087
 	// AwsSubnet and AwsSecurityGroup are prerequisites because mount targets
 	// (required, min 1) place the file system's NFS endpoints into subnets and
 	// attach security groups -- both references must resolve before the
 	// CreateMountTarget calls.
-	CloudResourceKind_AwsElasticFileSystem CloudResourceKind = 1090
+	CatalogKind_AwsElasticFileSystem CatalogKind = 1090
 	// AwsElasticFileSystem is a prerequisite because an access point is created
 	// INTO a file system -- the spec's required file_system_id reference must
 	// resolve before the CreateAccessPoint call.
-	CloudResourceKind_AwsEfsAccessPoint       CloudResourceKind = 1160
-	CloudResourceKind_AwsFsxLustreFileSystem  CloudResourceKind = 1091
-	CloudResourceKind_AwsFsxOpenzfsFileSystem CloudResourceKind = 1092
+	CatalogKind_AwsEfsAccessPoint       CatalogKind = 1160
+	CatalogKind_AwsFsxLustreFileSystem  CatalogKind = 1091
+	CatalogKind_AwsFsxOpenzfsFileSystem CatalogKind = 1092
 	// Every Windows file system must join an Active Directory domain; the
 	// directory itself is external infrastructure (AWS Managed Microsoft AD or
 	// a self-managed domain), so only the network dependency is a declarable
 	// prerequisite.
-	CloudResourceKind_AwsFsxWindowsFileSystem          CloudResourceKind = 1093
-	CloudResourceKind_AwsFsxOntapFileSystem            CloudResourceKind = 1094
-	CloudResourceKind_AwsFsxOntapStorageVirtualMachine CloudResourceKind = 1095
-	CloudResourceKind_AwsFsxOntapVolume                CloudResourceKind = 1096
-	CloudResourceKind_AwsFsxDataRepositoryAssociation  CloudResourceKind = 1175
-	CloudResourceKind_AwsCognitoUserPool               CloudResourceKind = 1100
+	CatalogKind_AwsFsxWindowsFileSystem          CatalogKind = 1093
+	CatalogKind_AwsFsxOntapFileSystem            CatalogKind = 1094
+	CatalogKind_AwsFsxOntapStorageVirtualMachine CatalogKind = 1095
+	CatalogKind_AwsFsxOntapVolume                CatalogKind = 1096
+	CatalogKind_AwsFsxDataRepositoryAssociation  CatalogKind = 1175
+	CatalogKind_AwsCognitoUserPool               CatalogKind = 1100
 	// AwsCognitoUserPool is a prerequisite because an identity provider is
 	// created INTO a pool -- the spec's required user_pool_id reference must
 	// resolve before the CreateIdentityProvider call.
-	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 1102
+	CatalogKind_AwsCognitoIdentityProvider CatalogKind = 1102
 	// AwsCognitoUserPool is a prerequisite because an app client is created
 	// INTO a pool -- the spec's required user_pool_id reference must resolve
 	// before the CreateUserPoolClient call.
-	CloudResourceKind_AwsCognitoUserPoolClient CloudResourceKind = 1158
+	CatalogKind_AwsCognitoUserPoolClient CatalogKind = 1158
 	// AwsCognitoUserPool is a prerequisite because a resource server is created
 	// INTO a pool -- the spec's required user_pool_id reference must resolve
 	// before the CreateResourceServer call.
-	CloudResourceKind_AwsCognitoResourceServer    CloudResourceKind = 1159
-	CloudResourceKind_AwsWafWebAcl                CloudResourceKind = 1101
-	CloudResourceKind_AwsWafIpSet                 CloudResourceKind = 1161
-	CloudResourceKind_AwsWafRegexPatternSet       CloudResourceKind = 1162
-	CloudResourceKind_AwsCloudwatchLogGroup       CloudResourceKind = 1110
-	CloudResourceKind_AwsCloudwatchAlarm          CloudResourceKind = 1111
-	CloudResourceKind_AwsCloudwatchCompositeAlarm CloudResourceKind = 1155
-	CloudResourceKind_AwsKinesisStream            CloudResourceKind = 1060
+	CatalogKind_AwsCognitoResourceServer    CatalogKind = 1159
+	CatalogKind_AwsWafWebAcl                CatalogKind = 1101
+	CatalogKind_AwsWafIpSet                 CatalogKind = 1161
+	CatalogKind_AwsWafRegexPatternSet       CatalogKind = 1162
+	CatalogKind_AwsCloudwatchLogGroup       CatalogKind = 1110
+	CatalogKind_AwsCloudwatchAlarm          CatalogKind = 1111
+	CatalogKind_AwsCloudwatchCompositeAlarm CatalogKind = 1155
+	CatalogKind_AwsKinesisStream            CatalogKind = 1060
 	// Every Firehose destination requires an S3 configuration (the primary
 	// target for extended_s3; the failed/all-document backup for the rest)
 	// and an IAM role Firehose assumes to write to it, so both are hard
 	// deploy prerequisites.
-	CloudResourceKind_AwsKinesisFirehose CloudResourceKind = 1061
+	CatalogKind_AwsKinesisFirehose CatalogKind = 1061
 	// A consumer registers against exactly one stream and cannot exist
 	// without it.
-	CloudResourceKind_AwsKinesisStreamConsumer CloudResourceKind = 1062
-	CloudResourceKind_AwsAthenaWorkgroup       CloudResourceKind = 1063
-	CloudResourceKind_AwsGlueCatalogDatabase   CloudResourceKind = 1064
-	CloudResourceKind_AwsRedshiftCluster       CloudResourceKind = 1065
+	CatalogKind_AwsKinesisStreamConsumer CatalogKind = 1062
+	CatalogKind_AwsAthenaWorkgroup       CatalogKind = 1063
+	CatalogKind_AwsGlueCatalogDatabase   CatalogKind = 1064
+	CatalogKind_AwsRedshiftCluster       CatalogKind = 1065
 	// AI/ML
 	// A domain cannot exist without VPC subnets and a SageMaker execution role
 	// (default_user_settings.execution_role_arn is required), so both are hard
 	// deploy prerequisites.
-	CloudResourceKind_AwsSagemakerDomain CloudResourceKind = 1070
+	CatalogKind_AwsSagemakerDomain CatalogKind = 1070
 	// A service can run entirely on companion defaults, so the App Runner
 	// family's kinds are dependency-free leaves except the VPC connector
 	// (which cannot exist without subnets and security groups). A service's
 	// companion references (auto scaling / VPC connector / observability /
 	// WAF) are optional composition -- scenarios declare them via the
 	// e2e-prerequisites annotation.
-	CloudResourceKind_AwsAppRunnerService                    CloudResourceKind = 1120
-	CloudResourceKind_AwsAppRunnerAutoScalingConfiguration   CloudResourceKind = 1168
-	CloudResourceKind_AwsAppRunnerVpcConnector               CloudResourceKind = 1169
-	CloudResourceKind_AwsAppRunnerObservabilityConfiguration CloudResourceKind = 1170
+	CatalogKind_AwsAppRunnerService                    CatalogKind = 1120
+	CatalogKind_AwsAppRunnerAutoScalingConfiguration   CatalogKind = 1168
+	CatalogKind_AwsAppRunnerVpcConnector               CatalogKind = 1169
+	CatalogKind_AwsAppRunnerObservabilityConfiguration CatalogKind = 1170
 	// AwsTransitGateway is a prerequisite because an attachment cannot exist
 	// without the gateway it attaches to; AwsSubnet because the attachment
 	// provisions an ENI into at least one subnet (the VPC arrives transitively
 	// through the subnet's own prerequisites).
-	CloudResourceKind_AwsTransitGatewayVpcAttachment CloudResourceKind = 1171
+	CatalogKind_AwsTransitGatewayVpcAttachment CatalogKind = 1171
 	// Only the gateway is a hard prerequisite: a route table can exist empty.
 	// Associations, propagations, and routes referencing attachments are
 	// optional composition -- scenarios declare them via the e2e-prerequisites
 	// annotation.
-	CloudResourceKind_AwsTransitGatewayRouteTable CloudResourceKind = 1172
+	CatalogKind_AwsTransitGatewayRouteTable CatalogKind = 1172
 	// A MANAGED compute environment always launches into VPC subnets, so the
 	// subnet is a hard deploy prerequisite (security groups are required only
 	// for the Fargate types -- scenario-declared, not a registry edge).
-	CloudResourceKind_AwsBatchComputeEnvironment CloudResourceKind = 1121
+	CatalogKind_AwsBatchComputeEnvironment CatalogKind = 1121
 	// A job queue cannot exist without at least one VALID compute environment
 	// to map onto.
-	CloudResourceKind_AwsBatchJobQueue         CloudResourceKind = 1163
-	CloudResourceKind_AwsBatchSchedulingPolicy CloudResourceKind = 1164
-	CloudResourceKind_AwsBatchJobDefinition    CloudResourceKind = 1165
+	CatalogKind_AwsBatchJobQueue         CatalogKind = 1163
+	CatalogKind_AwsBatchSchedulingPolicy CatalogKind = 1164
+	CatalogKind_AwsBatchJobDefinition    CatalogKind = 1165
 	// CI/CD
-	CloudResourceKind_AwsCodeBuildProject CloudResourceKind = 1130
-	CloudResourceKind_AwsCodePipeline     CloudResourceKind = 1131
+	CatalogKind_AwsCodeBuildProject CatalogKind = 1130
+	CatalogKind_AwsCodePipeline     CatalogKind = 1131
 	// Workflow / Orchestration
 	// AwsSubnet and AwsSecurityGroup are prerequisites because the environment's
 	// network interfaces are placed in referenced private subnets and AWS
 	// requires at least one attached security group at creation.
-	CloudResourceKind_AwsMwaaEnvironment CloudResourceKind = 1140
+	CatalogKind_AwsMwaaEnvironment CatalogKind = 1140
 	// Graph Database
-	CloudResourceKind_AwsNeptuneCluster CloudResourceKind = 1141
+	CatalogKind_AwsNeptuneCluster CatalogKind = 1141
 	// A cluster always launches into a subnet group; the subnets are the hard
 	// deploy prerequisite. The ACL it attaches is optional composition (the
 	// built-in "open-access" ACL needs no resource) -- scenarios declare the
 	// ACL/user chain via the e2e-prerequisites annotation.
-	CloudResourceKind_AwsMemorydbCluster CloudResourceKind = 1142
-	CloudResourceKind_AwsMemorydbUser    CloudResourceKind = 1173
+	CatalogKind_AwsMemorydbCluster CatalogKind = 1142
+	CatalogKind_AwsMemorydbUser    CatalogKind = 1173
 	// An empty ACL is valid (MemoryDB has no mandatory "default" member), so
 	// the user is optional composition -- the composed scenario declares it via
 	// the e2e-prerequisites annotation, never a registry edge.
-	CloudResourceKind_AwsMemorydbAcl CloudResourceKind = 1174
+	CatalogKind_AwsMemorydbAcl CatalogKind = 1174
 	// Streaming
 	// AwsSubnet and AwsSecurityGroup are prerequisites because brokers are
 	// placed in referenced subnets and AWS requires at least one attached
 	// security group at creation.
-	CloudResourceKind_AwsMskCluster CloudResourceKind = 1150
+	CatalogKind_AwsMskCluster CatalogKind = 1150
 	// AwsSubnet is a prerequisite because the serverless cluster's network
 	// interfaces are placed in referenced subnets (security groups are optional
 	// -- AWS attaches the VPC default group when none are referenced).
-	CloudResourceKind_AwsMskServerlessCluster CloudResourceKind = 1151
+	CatalogKind_AwsMskServerlessCluster CatalogKind = 1151
 	// AwsLambda is a prerequisite because a mapping cannot exist without the
 	// function it invokes (a required reference). Event sources (SQS, Kinesis,
 	// DynamoDB, MSK) are optional composition -- scenarios declare them via the
 	// e2e-prerequisites annotation rather than taxing every consumer's chain.
-	CloudResourceKind_AwsLambdaEventSourceMapping CloudResourceKind = 1152
+	CatalogKind_AwsLambdaEventSourceMapping CatalogKind = 1152
 	// AwsSnsTopic is a prerequisite because a subscription cannot exist without
 	// the topic it subscribes to (a required reference). Endpoints (SQS queues,
 	// Lambda functions, Firehose streams) are optional composition -- scenarios
 	// declare them via the e2e-prerequisites annotation rather than taxing
 	// every consumer's chain.
-	CloudResourceKind_AwsSnsSubscription CloudResourceKind = 1153
+	CatalogKind_AwsSnsSubscription CatalogKind = 1153
 	// AwsSubnet is a prerequisite because the runner appliance places its
 	// network interfaces into referenced subnets -- the placement reference
 	// must resolve before the appliance can deploy.
-	CloudResourceKind_AwsPlantonRunner      CloudResourceKind = 1154
-	CloudResourceKind_AwsRoute53HealthCheck CloudResourceKind = 1176
+	CatalogKind_AwsPlantonRunner      CatalogKind = 1154
+	CatalogKind_AwsRoute53HealthCheck CatalogKind = 1176
 	// Both SES kinds are dependency-free leaves: an identity's configuration
 	// set is optional composition (scenarios declare it via the
 	// e2e-prerequisites annotation), and a configuration set's event
 	// destinations reference other kinds only optionally.
-	CloudResourceKind_AwsSesConfigurationSet CloudResourceKind = 1166
-	CloudResourceKind_AwsSesEmailIdentity    CloudResourceKind = 1167
+	CatalogKind_AwsSesConfigurationSet CatalogKind = 1166
+	CatalogKind_AwsSesEmailIdentity    CatalogKind = 1167
 	// A dependency-free leaf: the KMS key, rotation Lambda, and external
 	// rotation role references are all optional composition -- scenarios
 	// declare them via the e2e-prerequisites annotation, never registry
 	// edges.
-	CloudResourceKind_AwsSecretsManagerSecret CloudResourceKind = 1180
+	CatalogKind_AwsSecretsManagerSecret CatalogKind = 1180
 	// A dependency-free leaf: the collection-scoped encryption/network/
 	// data-access/retention policies are module-rendered, and the KMS key
 	// and data-access principal references are optional composition
 	// (e2e-prerequisites annotation).
-	CloudResourceKind_AwsOpenSearchServerlessCollection CloudResourceKind = 1185
+	CatalogKind_AwsOpenSearchServerlessCollection CatalogKind = 1185
 	// A dependency-free leaf: the KMS key reference is optional composition
 	// (e2e-prerequisites annotation); published versions are folded
 	// satellites of the guardrail itself.
-	CloudResourceKind_AwsBedrockGuardrail CloudResourceKind = 1190
+	CatalogKind_AwsBedrockGuardrail CatalogKind = 1190
 	// AwsIamRole is a prerequisite because Bedrock assumes the job role to
 	// read training data and write outputs; the S3 locations and KMS key
 	// are optional composition (e2e-prerequisites annotation).
-	CloudResourceKind_AwsBedrockCustomModel CloudResourceKind = 1191
+	CatalogKind_AwsBedrockCustomModel CatalogKind = 1191
 	// A dependency-free leaf: the model source is a foundation model or an
 	// AWS system-defined cross-region profile, never a customer resource.
-	CloudResourceKind_AwsBedrockInferenceProfile CloudResourceKind = 1192
+	CatalogKind_AwsBedrockInferenceProfile CatalogKind = 1192
 	// A dependency-free leaf in the registry: capacity is typically bought
 	// for an AwsBedrockCustomModel (the default reference), but foundation
 	// model ARNs are equally legal, so the edge is optional composition.
-	CloudResourceKind_AwsBedrockProvisionedThroughput CloudResourceKind = 1193
+	CatalogKind_AwsBedrockProvisionedThroughput CatalogKind = 1193
 	// A dependency-free leaf: the agreement covers an AWS-listed foundation
 	// model, never a customer resource.
-	CloudResourceKind_AwsBedrockModelAccess CloudResourceKind = 1194
+	CatalogKind_AwsBedrockModelAccess CatalogKind = 1194
 	// Region settings singleton (one invocation-logging configuration per
 	// account+region; identity = the region). Delivery destinations are
 	// optional references (at least one of CloudWatch/S3, enforced by CEL),
 	// so prerequisites stay empty and E2E fixtures ride scenario annotations.
-	CloudResourceKind_AwsBedrockInvocationLogging CloudResourceKind = 1195
+	CatalogKind_AwsBedrockInvocationLogging CatalogKind = 1195
 	// AwsIamRole is a prerequisite because the Bedrock service assumes the
 	// agent resource role to invoke models, action-group Lambdas, and
 	// knowledge bases; the guardrail, KMS key, provisioned throughput, and
 	// collaborator/knowledge-base edges are optional composition
 	// (e2e-prerequisites annotation). Action groups, aliases, collaborators,
 	// and knowledge-base associations are folded satellites of the agent.
-	CloudResourceKind_AwsBedrockAgent CloudResourceKind = 1200
+	CatalogKind_AwsBedrockAgent CatalogKind = 1200
 	// AwsIamRole is a prerequisite because the Bedrock service assumes the
 	// knowledge-base role to read data sources, call the embedding model,
 	// and read/write the vector store; the vector-store and data-source
 	// reference edges (OpenSearch, S3, Secrets Manager, ...) are optional
 	// composition (e2e-prerequisites annotation). Data sources are folded
 	// satellites of the knowledge base.
-	CloudResourceKind_AwsBedrockKnowledgeBase CloudResourceKind = 1201
+	CatalogKind_AwsBedrockKnowledgeBase CatalogKind = 1201
 	// AwsIamRole is a prerequisite because the Bedrock service assumes the
 	// flow execution role to invoke the models, agents, knowledge bases,
 	// and Lambdas its nodes reference; the node-level reference edges are
 	// optional composition (e2e-prerequisites annotation).
-	CloudResourceKind_AwsBedrockFlow CloudResourceKind = 1202
+	CatalogKind_AwsBedrockFlow CatalogKind = 1202
 	// A dependency-free leaf: variants target AWS-listed foundation models
 	// by ID; targeting another agent's alias is optional composition
 	// (e2e-prerequisites annotation).
-	CloudResourceKind_AwsBedrockPrompt CloudResourceKind = 1203
+	CatalogKind_AwsBedrockPrompt CatalogKind = 1203
 	// AwsIamRole is a prerequisite because the AgentCore service assumes
 	// the runtime role to pull the container image or read the S3 code
 	// bundle and to run the hosted agent; the code-bundle S3 bucket and
 	// VPC placement edges are optional composition (e2e-prerequisites
 	// annotation). Endpoints and the runtime's resource policy are folded
 	// satellites of the runtime.
-	CloudResourceKind_AwsBedrockAgentCoreRuntime CloudResourceKind = 1210
+	CatalogKind_AwsBedrockAgentCoreRuntime CatalogKind = 1210
 	// AwsIamRole is a prerequisite because the gateway assumes its role to
 	// reach targets (invoke Lambdas, sign SigV4 requests); the target and
 	// credential-provider reference edges (runtime, Lambda, Identity
 	// providers, policy engine) are optional composition
 	// (e2e-prerequisites annotation). Targets are folded satellites of the
 	// gateway - AWS deletes them before the gateway at destroy.
-	CloudResourceKind_AwsBedrockAgentCoreGateway CloudResourceKind = 1211
+	CatalogKind_AwsBedrockAgentCoreGateway CatalogKind = 1211
 	// A dependency-free leaf for built-in strategies: the execution role
 	// (custom strategies, Kinesis delivery), KMS key, and Kinesis stream
 	// edges are optional composition (e2e-prerequisites annotation).
 	// Strategies are folded satellites of the memory - AWS serializes
 	// their changes through the parent.
-	CloudResourceKind_AwsBedrockAgentCoreMemory CloudResourceKind = 1212
+	CatalogKind_AwsBedrockAgentCoreMemory CatalogKind = 1212
 	// A dependency-free leaf: workload identities, credential providers,
 	// and the Cedar policy engine with its policies are all name-keyed
 	// arms of one identity-and-access bundle; the KMS key edge is optional
 	// composition (e2e-prerequisites annotation). The account/region
 	// token-vault CMK is deliberately NOT modeled here (settings
 	// singleton).
-	CloudResourceKind_AwsBedrockAgentCoreIdentity CloudResourceKind = 1213
+	CatalogKind_AwsBedrockAgentCoreIdentity CatalogKind = 1213
 	// A dependency-free leaf in the SANDBOX/PUBLIC postures: the execution
 	// role (recordings, certificates), S3, Secrets Manager, and VPC edges
 	// are optional composition (e2e-prerequisites annotation). Browsers,
 	// profiles, and code interpreters are name-keyed arms of one tools
 	// bundle; AWS exposes no update - every field change recreates the
 	// tool.
-	CloudResourceKind_AwsBedrockAgentCoreTools CloudResourceKind = 1214
+	CatalogKind_AwsBedrockAgentCoreTools CatalogKind = 1214
 	// The AgentCore Evaluations bundle - evaluators (LLM-judge or
 	// Lambda scorers), harnesses (repeatable agent test benches), and
 	// online evaluation configs (continuous scoring of sampled
@@ -412,169 +412,169 @@ const (
 	// agent runtime to exist. No registry prerequisite: every arm is
 	// optional, so no dependency is required for the kind to function
 	// (scenarios compose IAM roles via annotations).
-	CloudResourceKind_AwsBedrockAgentCoreEvaluation CloudResourceKind = 1215
+	CatalogKind_AwsBedrockAgentCoreEvaluation CatalogKind = 1215
 	// Account/region settings singleton: sets the KMS key on the ONE
 	// default AgentCore token vault. The KMS reference is conditional on
 	// key_type (CEL-enforced), so prerequisites stay empty and E2E
 	// fixtures ride scenario annotations.
-	CloudResourceKind_AwsBedrockAgentCoreTokenVault CloudResourceKind = 1216
+	CatalogKind_AwsBedrockAgentCoreTokenVault CatalogKind = 1216
 	// The immutable serving definition (container image + artifacts +
 	// execution role) that endpoints deploy - one container or an
 	// inference pipeline.
-	CloudResourceKind_AwsSagemakerModel CloudResourceKind = 1220
+	CatalogKind_AwsSagemakerModel CatalogKind = 1220
 	// A real-time inference endpoint WITH its folded endpoint
 	// configuration - the configuration is immutable upstream, so the
 	// modules roll name-suffixed configurations create-before-destroy
 	// and repoint the endpoint.
-	CloudResourceKind_AwsSagemakerEndpoint CloudResourceKind = 1221
+	CatalogKind_AwsSagemakerEndpoint CatalogKind = 1221
 	// A managed Jupyter notebook EC2 instance with its folded lifecycle
 	// configuration (bootstrap scripts).
-	CloudResourceKind_AwsSagemakerNotebookInstance CloudResourceKind = 1222
+	CatalogKind_AwsSagemakerNotebookInstance CatalogKind = 1222
 	// A Feature Store feature group - online and/or offline stores over
 	// a declared feature schema.
-	CloudResourceKind_AwsSagemakerFeatureGroup CloudResourceKind = 1223
+	CatalogKind_AwsSagemakerFeatureGroup CatalogKind = 1223
 	// A model registry package group with its folded resource policy -
 	// model package VERSIONS register into it imperatively (training
 	// pipelines), never declaratively.
-	CloudResourceKind_AwsSagemakerModelRegistry CloudResourceKind = 1224
+	CatalogKind_AwsSagemakerModelRegistry CatalogKind = 1224
 	// An ML workflow DAG (the SageMaker pipeline-definition JSON) that
 	// executions run against - free to create, billed per execution.
-	CloudResourceKind_AwsSagemakerPipeline CloudResourceKind = 1225
+	CatalogKind_AwsSagemakerPipeline CatalogKind = 1225
 	// A named registry entry exposing YOUR container images to Studio,
 	// with folded AWS-numbered versions (append-only by position).
-	CloudResourceKind_AwsSagemakerImage CloudResourceKind = 1226
+	CatalogKind_AwsSagemakerImage CatalogKind = 1226
 	// The classic hourly-billed managed MLflow tracking server (~25 min
 	// to provision; billed hourly from creation whether or not anyone is
 	// tracking). The serverless successor is AwsSagemakerMlflowApp.
-	CloudResourceKind_AwsSagemakerMlflowServer CloudResourceKind = 1227
+	CatalogKind_AwsSagemakerMlflowServer CatalogKind = 1227
 	// The serverless MLflow 3.x deployment (billed per use) - standalone,
 	// associating with SageMaker domains; NOT a tracking-server
 	// satellite.
-	CloudResourceKind_AwsSagemakerMlflowApp CloudResourceKind = 1228
+	CatalogKind_AwsSagemakerMlflowApp CatalogKind = 1228
 	// A full REST API (API Gateway v1): the resource/method tree with
 	// inline integrations (or an imported OpenAPI document), one stage
 	// with an explicit hash-triggered deployment, and the API-scoped
 	// satellites (authorizers, models, validators, gateway responses,
 	// policy, documentation, client certificate). Self-contained: a
 	// MOCK-integration API needs no other resource.
-	CloudResourceKind_AwsRestApiGateway CloudResourceKind = 1230
+	CatalogKind_AwsRestApiGateway CatalogKind = 1230
 	// A custom domain for REST APIs with base-path mappings and - for
 	// PRIVATE domains - VPC-endpoint access associations. AwsCertManagerCert
 	// is a prerequisite because the domain cannot be created without a
 	// TLS certificate covering it.
-	CloudResourceKind_AwsRestApiDomain CloudResourceKind = 1231
+	CatalogKind_AwsRestApiDomain CatalogKind = 1231
 	// A usage plan metering REST API consumers - stage coverage, quota,
 	// throttles, and the API keys it admits. No registry prerequisite: a
 	// plan is valid with no stage coverage (scenarios compose the REST
 	// API via annotations).
-	CloudResourceKind_AwsRestApiUsagePlan CloudResourceKind = 1232
+	CatalogKind_AwsRestApiUsagePlan CatalogKind = 1232
 	// A REST API VPC link fronting an internal Network Load Balancer so
 	// REST integrations reach private services. AwsNlb is a prerequisite
 	// because AWS rejects link creation without the target balancer.
-	CloudResourceKind_AwsRestApiVpcLink CloudResourceKind = 1233
+	CatalogKind_AwsRestApiVpcLink CatalogKind = 1233
 	// Region settings singleton (one API Gateway account object per
 	// account+region; identity = the region). The CloudWatch role is an
 	// optional reference (unset = the explicit no-logging posture), so
 	// prerequisites stay empty and E2E fixtures ride scenario annotations.
-	CloudResourceKind_AwsApiGatewayAccountSettings CloudResourceKind = 1234
+	CatalogKind_AwsApiGatewayAccountSettings CatalogKind = 1234
 	// The account's API audit trail. AwsS3Bucket is a prerequisite
 	// because AWS rejects trail creation without a delivery bucket
 	// carrying the CloudTrail service-principal policy. 1240 opens the
 	// governance sub-band (1240-1249).
-	CloudResourceKind_AwsCloudTrail CloudResourceKind = 1240
+	CatalogKind_AwsCloudTrail CatalogKind = 1240
 	// Region singleton (one AWS Config recorder per region, named
 	// "default" by AWS; identity = the region). AwsIamRole is a
 	// prerequisite because the recorder cannot exist without its
 	// service role.
-	CloudResourceKind_AwsConfigRecorder CloudResourceKind = 1241
+	CatalogKind_AwsConfigRecorder CatalogKind = 1241
 	// One AWS Config compliance rule (managed, custom-lambda, or
 	// custom-policy; account- or organization-scoped) with optional
 	// auto-remediation. Managed rules need no prerequisites; the
 	// custom-lambda arm's function reference is conditional, so E2E
 	// fixtures ride scenario annotations.
-	CloudResourceKind_AwsConfigRule CloudResourceKind = 1242
+	CatalogKind_AwsConfigRule CatalogKind = 1242
 	// Region singleton (AWS allows one GuardDuty detector per
 	// account+region; the detector has no name - identity = the
 	// region). Satellite references (S3 export bucket, KMS key) are
 	// conditional, so E2E fixtures ride scenario annotations.
-	CloudResourceKind_AwsGuardDuty CloudResourceKind = 1243
+	CatalogKind_AwsGuardDuty CatalogKind = 1243
 	// CloudTrail Lake: a queryable, immutable event data store with its
 	// own retention and billing lifecycle - no trail required. The KMS
 	// key reference is conditional, so E2E fixtures ride scenario
 	// annotations.
-	CloudResourceKind_AwsCloudTrailEventDataStore CloudResourceKind = 1244
+	CatalogKind_AwsCloudTrailEventDataStore CatalogKind = 1244
 	// AWS Config cross-account/cross-region aggregation: the aggregator
 	// (collector side) and/or the reciprocal authorization grants
 	// (source-account side). Works with zero recorders; the org-source
 	// role reference is conditional, so E2E fixtures ride scenario
 	// annotations.
-	CloudResourceKind_AwsConfigAggregator CloudResourceKind = 1245
+	CatalogKind_AwsConfigAggregator CatalogKind = 1245
 	// An AWS Config conformance pack (account- or organization-scoped):
 	// a template bundle that creates its own Config rules. Deployment
 	// requires an active Config recorder in the region (a service-side
 	// requirement, not a spec reference), so E2E fixtures ride scenario
 	// annotations.
-	CloudResourceKind_AwsConfigConformancePack CloudResourceKind = 1246
+	CatalogKind_AwsConfigConformancePack CatalogKind = 1246
 	// GuardDuty Malware Protection for S3: scans new objects in one
 	// bucket - a standalone plan protecting a bucket, not a detector
 	// satellite (its schema carries no detector reference). The
 	// execution role and the protected bucket are required references.
-	CloudResourceKind_AwsGuardDutyMalwareProtectionPlan CloudResourceKind = 1247
+	CatalogKind_AwsGuardDutyMalwareProtectionPlan CatalogKind = 1247
 	// An AWS Backup vault - the encrypted container recovery points
 	// live in, as either a standard vault (with its lock, access
 	// policy, and notification satellites) or a logically air-gapped
 	// vault (AWS's own VaultType discriminator). The KMS and SNS
 	// references are conditional, so E2E fixtures ride scenario
 	// annotations. 1250 opens the backup sub-band (1250-1259).
-	CloudResourceKind_AwsBackupVault CloudResourceKind = 1250
+	CatalogKind_AwsBackupVault CatalogKind = 1250
 	// An AWS Backup plan: scheduled backup rules plus the resource
 	// selections that assign resources to them. AwsBackupVault is a
 	// prerequisite because every rule requires a target vault; the
 	// selections' IAM role is conditional and rides scenario
 	// annotations.
-	CloudResourceKind_AwsBackupPlan CloudResourceKind = 1251
+	CatalogKind_AwsBackupPlan CatalogKind = 1251
 	// A Backup Audit Manager framework: compliance controls evaluating
 	// backup posture. No schema-required references (the Config
 	// recorder its evaluations need is a lane fixture, not a spec
 	// reference).
-	CloudResourceKind_AwsBackupFramework CloudResourceKind = 1252
+	CatalogKind_AwsBackupFramework CatalogKind = 1252
 	// A Backup Audit Manager report plan: scheduled compliance/job
 	// reports delivered to S3. AwsS3Bucket is a prerequisite because
 	// the delivery channel's bucket is required.
-	CloudResourceKind_AwsBackupReportPlan CloudResourceKind = 1253
+	CatalogKind_AwsBackupReportPlan CatalogKind = 1253
 	// An AWS Backup restore testing plan with its folded selections:
 	// scheduled restore tests proving recovery points actually restore.
 	// Vault targeting accepts the "*" wildcard, so fixtures are
 	// conditional and ride scenario annotations.
-	CloudResourceKind_AwsBackupRestoreTestingPlan CloudResourceKind = 1254
+	CatalogKind_AwsBackupRestoreTestingPlan CatalogKind = 1254
 	// Account/region settings singleton for AWS Backup: the account's
 	// global settings (cross-account backup) and the region's
 	// resource-type opt-in/management preferences. Both provider
 	// deletes are no-ops - settings persist after destroy.
-	CloudResourceKind_AwsBackupSettings CloudResourceKind = 1255
+	CatalogKind_AwsBackupSettings CatalogKind = 1255
 	// An SSM Parameter Store entry (String/StringList/SecureString).
 	// The parameter's name is an explicit spec field - names are
 	// hierarchical paths ("/prod/db/url") metadata.name cannot carry.
 	// The KMS reference is conditional (SecureString only), so E2E
 	// fixtures ride scenario annotations. 1260 opens the SSM sub-band
 	// (1260-1269).
-	CloudResourceKind_AwsSsmParameter CloudResourceKind = 1260
+	CatalogKind_AwsSsmParameter CatalogKind = 1260
 	// A customer-owned SSM document (Command/Automation/Session/...):
 	// reusable action definitions managed nodes and automations execute.
 	// State Manager associations are their own AwsSsmAssociation kind -
 	// an association binds ANY document (AWS-managed included), so it is
 	// not this document's satellite.
-	CloudResourceKind_AwsSsmDocument CloudResourceKind = 1261
+	CatalogKind_AwsSsmDocument CatalogKind = 1261
 	// An SSM maintenance window with its folded target registrations and
 	// tasks (Run Command / Automation / Lambda / Step Functions) - the
 	// targets and tasks are true window satellites (ForceNew window_id
 	// edges). Identity is the AWS-generated "mw-..." id.
-	CloudResourceKind_AwsSsmMaintenanceWindow CloudResourceKind = 1262
+	CatalogKind_AwsSsmMaintenanceWindow CatalogKind = 1262
 	// An SSM patch baseline with its folded patch-group registrations
 	// and the account/region default-baseline designation (delete
 	// RESTORES AWS's own predefined default for the OS). Identity is the
 	// AWS-generated "pb-..." id.
-	CloudResourceKind_AwsSsmPatchBaseline CloudResourceKind = 1263
+	CatalogKind_AwsSsmPatchBaseline CatalogKind = 1263
 	// A State Manager association: the binding of an SSM document to
 	// targets on a schedule. Split from the document kind because the
 	// document reference is a free string with no structural edge -
@@ -582,7 +582,7 @@ const (
 	// (AWS-RunShellScript, ...) with no user document anywhere, so no
 	// registry prerequisite either. Identity is the AWS-generated
 	// association UUID.
-	CloudResourceKind_AwsSsmAssociation CloudResourceKind = 1264
+	CatalogKind_AwsSsmAssociation CatalogKind = 1264
 	// THE AWS Organization of the deploying account - creating it makes
 	// the caller the management account. Trusted service access,
 	// delegated administrators, the org's singleton resource policy, and
@@ -601,7 +601,7 @@ const (
 	// names the organization too, but a policy is a guard applied from
 	// above, never a resident, and its attachment reference is
 	// containment-exempt on its spec.
-	CloudResourceKind_AwsOrganization CloudResourceKind = 1270
+	CatalogKind_AwsOrganization CatalogKind = 1270
 	// An organizational unit in the org's OU tree. The display name is
 	// an explicit spec field (OU names allow spaces metadata.name cannot
 	// carry); the parent reference (root or parent OU) is required and
@@ -613,20 +613,20 @@ const (
 	// and stands beside the room (containment-exempt on the policy's
 	// spec): one policy attaches to many units and cannot live in all of
 	// them.
-	CloudResourceKind_AwsOrganizationalUnit CloudResourceKind = 1271
+	CatalogKind_AwsOrganizationalUnit CatalogKind = 1271
 	// A MEMBER account of the organization: creation, OU placement, and
 	// the account-level settings satellites (alternate/primary contacts,
 	// opt-in region enablement) fold onto the created account's ID.
 	// Destroy is never a clean delete (remove-from-org or ~90-day
 	// close) - taught on the spec. No registry prerequisite by the
 	// schema-required-only rule (the OU parent reference is optional).
-	CloudResourceKind_AwsOrganizationAccount CloudResourceKind = 1272
+	CatalogKind_AwsOrganizationAccount CatalogKind = 1272
 	// An Organizations policy (SCP and its twelve sibling types) with
 	// its folded attachments to roots, OUs, and member accounts. The
 	// policy type must be enabled on the organization first; AWS-managed
 	// policies are never adopted. No registry prerequisite by the
 	// schema-required-only rule (attachments are optional).
-	CloudResourceKind_AwsOrganizationPolicy CloudResourceKind = 1273
+	CatalogKind_AwsOrganizationPolicy CatalogKind = 1273
 	// A Budgets budget (COST/USAGE/RI/Savings Plans coverage and
 	// utilization) with its folded budget actions as name-keyed
 	// satellites - an action exists only on its budget and fires an
@@ -634,52 +634,52 @@ const (
 	// when a threshold breaches. Budgets is account-global (served from
 	// us-east-1; the spec region is the provider endpoint). 1280 opens
 	// the cost-management sub-band (1280-1289).
-	CloudResourceKind_AwsBudget CloudResourceKind = 1280
+	CatalogKind_AwsBudget CatalogKind = 1280
 	// A Cost Explorer anomaly monitor (DIMENSIONAL over one dimension,
 	// or CUSTOM over a CE expression) with its folded alert
 	// subscriptions - a subscription's monitor list is the structural
 	// edge that makes it this monitor's satellite. Account-global; AWS
 	// identifies both by ARN.
-	CloudResourceKind_AwsCostAnomalyMonitor CloudResourceKind = 1281
+	CatalogKind_AwsCostAnomalyMonitor CatalogKind = 1281
 	// A Cost Explorer cost category: ordered rules (regular expression
 	// rules or inherited-value rules) over the recursive CE expression
 	// tree, plus split-charge rules. The account's cost-allocation-tag
 	// activation toggle is deliberately NOT folded here - it is a
 	// per-tag-key account feature with no edge to any category, so many
 	// category instances would fight over one account object.
-	CloudResourceKind_AwsCostCategory CloudResourceKind = 1282
+	CatalogKind_AwsCostCategory CatalogKind = 1282
 	// An IAM group with its folded declarative membership (the
 	// authoritative users list) and group policies - name-keyed inline
 	// documents plus managed-policy attachments. IAM is global; identity
 	// is the group name (renames update in place, the ARN recomputes).
 	// 1290 opens the IAM P1 sub-band (1290-1299).
-	CloudResourceKind_AwsIamGroup CloudResourceKind = 1290
+	CatalogKind_AwsIamGroup CatalogKind = 1290
 	// An IAM SAML identity provider: the account's federation trust
 	// anchor, created from the IdP's metadata XML (a public document
 	// carrying certificates, not a secret). Identity is the provider
 	// ARN; the name is write-once.
-	CloudResourceKind_AwsIamSamlProvider CloudResourceKind = 1291
+	CatalogKind_AwsIamSamlProvider CatalogKind = 1291
 	// Account settings singleton for IAM (a GLOBAL service - one object
 	// per ACCOUNT, not per region): the sign-in alias, the password
 	// policy, and the STS global-endpoint token version. Destroy
 	// contracts DIFFER per arm (each taught on its arm): the alias truly
 	// deletes, the password policy resets to AWS defaults, the STS
 	// preference is a no-op delete that persists.
-	CloudResourceKind_AwsIamAccountSettings CloudResourceKind = 1292
+	CatalogKind_AwsIamAccountSettings CatalogKind = 1292
 	// A CloudWatch dashboard: one named dashboard whose widget layout is
 	// the dashboard-body JSON document (modeled as a typed Struct, the
 	// catalog's uniform policy-document idiom). Dashboards are untaggable
 	// at AWS. Identity is the dashboard name; every change is an in-place
 	// PutDashboard upsert. 1300 opens the CloudWatch observability P1
 	// sub-band (1300-1309).
-	CloudResourceKind_AwsCloudwatchDashboard CloudResourceKind = 1300
+	CatalogKind_AwsCloudwatchDashboard CatalogKind = 1300
 	// CloudWatch Synthetics: a canary (a scheduled scripted probe running
 	// from an S3-staged code bundle under an execution role, writing run
 	// artifacts to S3) plus the grouping surface - owned groups and the
 	// canary's group associations (joins by group NAME, so shared groups
 	// are referenced, never fought over). A groups-only instance manages
 	// shared groups with no canary.
-	CloudResourceKind_AwsCloudwatchSynthetics CloudResourceKind = 1301
+	CatalogKind_AwsCloudwatchSynthetics CatalogKind = 1301
 	// CloudWatch Logs delivery: the two ways logs leave CloudWatch. The
 	// vended-log arm pivots on a delivery SOURCE (one AWS resource whose
 	// service vends logs) with name-keyed deliveries fanning out to
@@ -687,23 +687,23 @@ const (
 	// each created inline or referenced by ARN. The cross-account arm is
 	// the legacy Kinesis subscription destination with its access policy
 	// (whose delete is a no-op at AWS - the policy persists).
-	CloudResourceKind_AwsCloudwatchLogDelivery CloudResourceKind = 1302
+	CatalogKind_AwsCloudwatchLogDelivery CatalogKind = 1302
 	// A CloudWatch Logs account-level policy: one policy object per
 	// (name, type) pair per region - data protection, subscription
 	// filter, field index, transformer, or metric extraction - applied
 	// account-wide, optionally narrowed by selection criteria. Standalone
 	// account configuration, never a per-log-group satellite.
-	CloudResourceKind_AwsCloudwatchLogAccountPolicy CloudResourceKind = 1303
+	CatalogKind_AwsCloudwatchLogAccountPolicy CatalogKind = 1303
 	// A CloudWatch Logs anomaly detector: one detector trains over a
 	// LIST of log groups (multi-parent scope - never a single group's
 	// satellite), surfacing anomalies on a chosen evaluation frequency
 	// with a bounded visibility window.
-	CloudResourceKind_AwsCloudwatchLogAnomalyDetector CloudResourceKind = 1304
+	CatalogKind_AwsCloudwatchLogAnomalyDetector CatalogKind = 1304
 	// A CloudWatch Logs resource policy: the account-scoped named policy
 	// (or resource-scoped policy on one log group ARN) that grants AWS
 	// services permission to write logs - Route53 query logging,
 	// EventBridge, and friends. Exactly one scope per instance.
-	CloudResourceKind_AwsCloudwatchLogResourcePolicy CloudResourceKind = 1305
+	CatalogKind_AwsCloudwatchLogResourcePolicy CatalogKind = 1305
 	// An Amazon Managed Prometheus workspace with its folded satellites:
 	// workspace configuration (retention, label-set limits - a
 	// created-via-update singleton whose delete is a no-op at AWS), the
@@ -712,14 +712,14 @@ const (
 	// policy, and alias-keyed anomaly detectors. Scrapers are deliberately
 	// NOT folded here - a scraper can target CloudWatch with zero AMP
 	// workspaces, so it is its own kind.
-	CloudResourceKind_AwsManagedPrometheus CloudResourceKind = 1306
+	CatalogKind_AwsManagedPrometheus CatalogKind = 1306
 	// An Amazon Managed Prometheus scraper: the agentless collector.
 	// Source is an EKS cluster or a bare VPC placement (both
 	// replace-on-change); destination is an AMP workspace or a CloudWatch
 	// dataset. Carries its own scraper logging configuration satellite.
 	// Scrape configuration is optional on the EKS arm (AWS publishes a
 	// default, resolved at deploy) and required on the VPC arm.
-	CloudResourceKind_AwsManagedPrometheusScraper CloudResourceKind = 1307
+	CatalogKind_AwsManagedPrometheusScraper CatalogKind = 1307
 	// An EventBridge Pipe: one point-to-point integration reading from
 	// one source (SQS, Kinesis, DynamoDB streams, MSK or self-managed
 	// Kafka, ActiveMQ/RabbitMQ), optionally filtering and enriching
@@ -728,20 +728,20 @@ const (
 	// EventBridge buses, HTTP via API destinations). The source is fixed
 	// for life (replace-on-change); the target swaps in place. 1310
 	// opens the EventBridge extras P1 sub-band (1310-1319).
-	CloudResourceKind_AwsEventBridgePipe CloudResourceKind = 1310
+	CatalogKind_AwsEventBridgePipe CatalogKind = 1310
 	// An EventBridge Scheduler schedule: cron/rate/one-time invocation of
 	// one target under an execution role, with flexible time windows,
 	// retry policy, and a dead-letter queue. The schedule GROUP is folded
 	// own-XOR-existing (a name-and-tags container - the provider's own
 	// update path is tags-only); unset means AWS's default group.
-	CloudResourceKind_AwsEventBridgeScheduler CloudResourceKind = 1311
+	CatalogKind_AwsEventBridgeScheduler CatalogKind = 1311
 	// An EventBridge API destination with its connection: the
 	// authenticated HTTP(S) endpoint rules, pipes, and schedules invoke.
 	// Two independently deployable arms - the CONNECTION (the shareable
 	// auth trust anchor: api-key, basic, or OAuth credentials that AWS
 	// stores in Secrets Manager) and the DESTINATION (endpoint + method +
 	// rate limit) whose connection is owned inline or referenced by ARN.
-	CloudResourceKind_AwsEventBridgeApiDestination CloudResourceKind = 1312
+	CatalogKind_AwsEventBridgeApiDestination CatalogKind = 1312
 	// A VPC peering connection, as a request-XOR-accept mode union: the
 	// REQUEST arm creates the peering from its VPC toward a peer VPC
 	// (same-account auto-accept supported; cross-account/cross-region
@@ -749,70 +749,70 @@ const (
 	// pending connection by ID from the accepter side. DNS-resolution
 	// options fold into both arms. 1320 opens the VPC networking P1
 	// sub-band (1320-1329).
-	CloudResourceKind_AwsVpcPeering CloudResourceKind = 1320
+	CatalogKind_AwsVpcPeering CatalogKind = 1320
 	// A network ACL: the stateless subnet-level firewall - ordered
 	// ingress/egress rules (allow or deny, evaluated by rule number) and
 	// the subnet associations, all folded in-line as the single
 	// declarative owner (the standalone rule/association resources are
 	// the same payload and fight the in-line form).
-	CloudResourceKind_AwsNetworkAcl CloudResourceKind = 1321
+	CatalogKind_AwsNetworkAcl CatalogKind = 1321
 	// A customer-managed prefix list: a named, versioned set of CIDR
 	// blocks that security-group rules, NACL rules, and route tables
 	// reference as one object. Entries fold in-line; max_entries is the
 	// capacity contract (referencing consumes that many rule slots
 	// regardless of how many entries exist).
-	CloudResourceKind_AwsManagedPrefixList CloudResourceKind = 1322
+	CatalogKind_AwsManagedPrefixList CatalogKind = 1322
 	// A standalone EBS volume as a create-XOR-copy union (fresh in a
 	// zone, or cloned from another volume) with attachments managed
 	// in-line. 1330 opens the block & object storage sub-band
 	// (1330-1339).
-	CloudResourceKind_AwsEbsVolume CloudResourceKind = 1330
+	CatalogKind_AwsEbsVolume CatalogKind = 1330
 	// An EBS snapshot as a three-way source union (snapshot a volume,
 	// copy a snapshot, or import a disk image) with archive tiering,
 	// fast snapshot restore, and cross-account share grants in-line.
-	CloudResourceKind_AwsEbsSnapshot CloudResourceKind = 1331
+	CatalogKind_AwsEbsSnapshot CatalogKind = 1331
 	// An S3 directory bucket (S3 Express One Zone): single-AZ,
 	// single-digit-millisecond object storage. The modules derive the
 	// mandated "{name}--{zone_id}--x-s3" bucket name.
-	CloudResourceKind_AwsS3DirectoryBucket CloudResourceKind = 1332
+	CatalogKind_AwsS3DirectoryBucket CatalogKind = 1332
 	// An S3 table bucket (S3 Tables - managed Apache Iceberg storage)
 	// with its namespaces, tables, policies, and replication folded
 	// in-line as the single declarative owner.
-	CloudResourceKind_AwsS3TableBucket CloudResourceKind = 1333
+	CatalogKind_AwsS3TableBucket CatalogKind = 1333
 	// An S3 vector bucket (AI embedding storage with similarity query)
 	// with its vector indexes folded in-line - the natural backend for
 	// Bedrock knowledge bases.
-	CloudResourceKind_AwsS3VectorBucket CloudResourceKind = 1334
+	CatalogKind_AwsS3VectorBucket CatalogKind = 1334
 	// A Data Lifecycle Manager policy: account-level, tag-targeted
 	// snapshot/AMI automation (create, retain, archive, copy
 	// cross-region, share, deprecate) as a default-XOR-custom mode
 	// union. AwsIamRole is a prerequisite because DLM acts through a
 	// required execution role.
-	CloudResourceKind_AwsDlmLifecyclePolicy CloudResourceKind = 1335
+	CatalogKind_AwsDlmLifecyclePolicy CatalogKind = 1335
 	// A Route 53 Resolver endpoint (the hybrid-DNS bridge between a VPC
 	// and outside networks) with its forwarding rules and their VPC
 	// associations managed in-line. Subnets place the ENIs and security
 	// groups guard them - both schema-required. 1340 opens the DNS &
 	// service discovery sub-band (1340-1349).
-	CloudResourceKind_AwsRoute53ResolverEndpoint CloudResourceKind = 1340
+	CatalogKind_AwsRoute53ResolverEndpoint CatalogKind = 1340
 	// A Route 53 Resolver DNS Firewall rule group with its domain
 	// lists, filtering rules, and VPC associations managed in-line -
 	// the DNS-layer block/allow policy for VPC egress queries. AwsVpc
 	// is a prerequisite because the association arm filters a
 	// referenced VPC.
-	CloudResourceKind_AwsRoute53ResolverFirewall CloudResourceKind = 1341
+	CatalogKind_AwsRoute53ResolverFirewall CatalogKind = 1341
 	// A Resolver query logging configuration (every DNS query VPCs make
 	// through the resolver, to CloudWatch Logs / S3 / Firehose) with
 	// its VPC associations managed in-line. AwsVpc is a prerequisite
 	// because the association arm logs a referenced VPC.
-	CloudResourceKind_AwsRoute53ResolverQueryLog CloudResourceKind = 1342
+	CatalogKind_AwsRoute53ResolverQueryLog CatalogKind = 1342
 	// An AWS Cloud Map namespace (HTTP-XOR-private-DNS-XOR-public-DNS)
 	// with its discoverable services and statically registered
 	// instances managed in-line - the service-discovery registry ECS
 	// and custom applications look each other up in. AwsVpc is a
 	// prerequisite because the private-DNS arm binds its hosted zone to
 	// a referenced VPC.
-	CloudResourceKind_AwsCloudMapNamespace CloudResourceKind = 1343
+	CatalogKind_AwsCloudMapNamespace CatalogKind = 1343
 	// An AppSync API - AWS's managed API service, as a GraphQL API
 	// (SDL schema, resolvers over data sources, caching, the MERGED
 	// federation variant) XOR an Events API (real-time pub/sub over
@@ -821,14 +821,14 @@ const (
 	// Every backend reference (data source targets, roles, the
 	// certificate) is optional, so no registry prerequisite - lanes
 	// exercise the fixture-free arms.
-	CloudResourceKind_AwsAppSyncApi CloudResourceKind = 1350
+	CatalogKind_AwsAppSyncApi CatalogKind = 1350
 	// A Lambda layer version - a shared code archive (libraries, custom
 	// runtimes) functions attach by ARN - with its cross-account and
 	// organization share grants managed in-line. The archive lives in
 	// S3 (an optional reference, so no registry prerequisite - lanes
 	// compose their own bucket fixture). 1351 sits in the app & data
 	// services sub-band (1350-1359; 1350 opens it with AwsAppSyncApi).
-	CloudResourceKind_AwsLambdaLayer CloudResourceKind = 1351
+	CatalogKind_AwsLambdaLayer CatalogKind = 1351
 	// An RDS Proxy - the managed connection pool between
 	// connection-hungry applications and a database - with its
 	// connection-pool tuning, additional endpoints, and database target
@@ -836,292 +836,292 @@ const (
 	// assumes a required role to read database credentials from Secrets
 	// Manager; AwsSubnet because the proxy's network interfaces require
 	// at least two subnets.
-	CloudResourceKind_AwsRdsProxy CloudResourceKind = 1352
+	CatalogKind_AwsRdsProxy CatalogKind = 1352
 	// An Aurora DSQL cluster - serverless, PostgreSQL-compatible
 	// distributed SQL with active-active multi-region pairing managed
 	// in-line. No prerequisites: a single-region cluster deploys from
 	// defaults alone (the KMS and peer references are optional arms).
-	CloudResourceKind_AwsAuroraDsql CloudResourceKind = 1353
+	CatalogKind_AwsAuroraDsql CatalogKind = 1353
 	// Region settings singleton (one private ECR registry per
 	// account+region): the registry policy, scanning configuration,
 	// replication rules, pull-through cache rules, repository creation
 	// templates, account settings, and pull-time update exclusions.
 	// Repository-scoped surface stays on AwsEcrRepo.
-	CloudResourceKind_AwsEcrRegistrySettings CloudResourceKind = 1354
+	CatalogKind_AwsEcrRegistrySettings CatalogKind = 1354
 	// An AWS Private Certificate Authority with composed activation (a
 	// ROOT self-signs at apply; a subordinate activates from a parent
 	// AwsPrivateCa), issued certificates, the ACM renewal permission,
 	// and the resource policy managed in-line. No prerequisites: the
 	// S3 (CRL) and parent-CA references are optional arms.
-	CloudResourceKind_AwsPrivateCa CloudResourceKind = 1355
+	CatalogKind_AwsPrivateCa CatalogKind = 1355
 	// Account/region settings singleton (one SES account object per
 	// account+region): the suppression list and VDM posture. 1360 opens
 	// the SES P1 sub-band (1360-1369).
-	CloudResourceKind_AwsSesAccountSettings CloudResourceKind = 1360
+	CatalogKind_AwsSesAccountSettings CatalogKind = 1360
 	// 2000–2999: Azure resources
-	CloudResourceKind_AzureResourceGroup CloudResourceKind = 2000
+	CatalogKind_AzureResourceGroup CatalogKind = 2000
 	// AzureResourceGroup is the only required parent: the cluster is created
 	// inside a referenced resource group. Subnet is optional on the default
 	// node pool (AKS provisions managed networking when unset).
-	CloudResourceKind_AzureAksCluster CloudResourceKind = 2001
+	CatalogKind_AzureAksCluster CatalogKind = 2001
 	// AzureAksCluster is a prerequisite because a node pool attaches to an
 	// existing cluster by ARM ID; the resource group chains transitively.
-	CloudResourceKind_AzureAksNodePool CloudResourceKind = 2002
+	CatalogKind_AzureAksNodePool CatalogKind = 2002
 	// AzureResourceGroup is a prerequisite because a container registry is
 	// created inside a resource group.
-	CloudResourceKind_AzureContainerRegistry CloudResourceKind = 2003
+	CatalogKind_AzureContainerRegistry CatalogKind = 2003
 	// AzureResourceGroup is a prerequisite because the DNS zone is created
 	// inside a referenced resource group that must already exist.
-	CloudResourceKind_AzureDnsZone CloudResourceKind = 2004
+	CatalogKind_AzureDnsZone CatalogKind = 2004
 	// AzureResourceGroup is a prerequisite because a key vault is created
 	// inside a referenced resource group in composed environments.
-	CloudResourceKind_AzureKeyVault CloudResourceKind = 2005
+	CatalogKind_AzureKeyVault CatalogKind = 2005
 	// AzureResourceGroup is a prerequisite because a virtual network is created
 	// inside a referenced resource group in composed environments.
-	CloudResourceKind_AzureVirtualNetwork CloudResourceKind = 2006
+	CatalogKind_AzureVirtualNetwork CatalogKind = 2006
 	// AzureResourceGroup is a prerequisite because a NAT gateway is created
 	// inside a referenced resource group in composed environments.
-	CloudResourceKind_AzureNatGateway CloudResourceKind = 2007
+	CatalogKind_AzureNatGateway CatalogKind = 2007
 	// AzureNetworkInterface is a prerequisite because a virtual machine
 	// attaches at least one NIC (the subnet, network, and resource group
 	// chain transitively through the NIC's own prerequisites).
-	CloudResourceKind_AzureVirtualMachine CloudResourceKind = 2008
+	CatalogKind_AzureVirtualMachine CatalogKind = 2008
 	// AzureResourceGroup is a prerequisite because a storage account is
 	// created inside a referenced resource group in composed environments.
-	CloudResourceKind_AzureStorageAccount CloudResourceKind = 2009
+	CatalogKind_AzureStorageAccount CatalogKind = 2009
 	// AzureDnsZone is a prerequisite because a record set is created inside
 	// a referenced zone (the resource group chains transitively through the
 	// zone). Public DNS zone names are not globally unique, so a shared
 	// zone fixture is safe to recreate across scenarios.
-	CloudResourceKind_AzureDnsRecord CloudResourceKind = 2010
+	CatalogKind_AzureDnsRecord CatalogKind = 2010
 	// AzureVirtualNetwork is a prerequisite because a subnet is an ARM child
 	// of a referenced network -- the network must exist before the subnet can
 	// be written. (The resource group arrives transitively through the
 	// network's own prerequisite declaration.)
-	CloudResourceKind_AzureSubnet CloudResourceKind = 2011
+	CatalogKind_AzureSubnet CatalogKind = 2011
 	// AzureResourceGroup is a prerequisite because a network security group is
 	// created inside a referenced resource group in composed environments.
-	CloudResourceKind_AzureNetworkSecurityGroup CloudResourceKind = 2012
+	CatalogKind_AzureNetworkSecurityGroup CatalogKind = 2012
 	// AzureResourceGroup is a prerequisite because a public IP is created
 	// inside a referenced resource group in composed environments.
-	CloudResourceKind_AzurePublicIp CloudResourceKind = 2013
+	CatalogKind_AzurePublicIp CatalogKind = 2013
 	// AzureSubnet is a prerequisite because a private endpoint draws its
 	// private IP from a referenced subnet (the virtual network and resource
 	// group chain transitively through the subnet's own prerequisite). The
 	// connection target is polymorphic and the DNS zones / ASGs are optional,
 	// so none of those are prerequisites.
-	CloudResourceKind_AzurePrivateEndpoint CloudResourceKind = 2014
+	CatalogKind_AzurePrivateEndpoint CatalogKind = 2014
 	// AzureResourceGroup is a prerequisite because a private DNS zone is created
 	// inside a referenced resource group in composed environments.
-	CloudResourceKind_AzurePrivateDnsZone CloudResourceKind = 2015
+	CatalogKind_AzurePrivateDnsZone CatalogKind = 2015
 	// AzureSubnet is a prerequisite because a gateway cannot exist without
 	// its dedicated gateway_ip_configuration subnet (the network and
 	// resource group chain transitively through the subnet's own
 	// prerequisites); public frontends additionally reference a public IP,
 	// but private-only gateways are legal, so it is not a registry
 	// prerequisite.
-	CloudResourceKind_AzureApplicationGateway CloudResourceKind = 2016
+	CatalogKind_AzureApplicationGateway CatalogKind = 2016
 	// AzureResourceGroup is a prerequisite because a load balancer is
 	// created inside a referenced resource group (frontends additionally
 	// reference subnets or public IPs, but neither is universally
 	// required, so they are not registry prerequisites).
-	CloudResourceKind_AzureLoadBalancer CloudResourceKind = 2017
+	CatalogKind_AzureLoadBalancer CatalogKind = 2017
 	// AzureResourceGroup is a prerequisite because a route table is created
 	// inside a referenced resource group in composed environments.
-	CloudResourceKind_AzureRouteTable CloudResourceKind = 2018
+	CatalogKind_AzureRouteTable CatalogKind = 2018
 	// AzurePrivateDnsZone and AzureVirtualNetwork are prerequisites because a
 	// virtual network link is a child resource of a referenced zone and binds
 	// it to a referenced network -- both must exist before the link can be
 	// written. (The resource group arrives transitively through the zone's and
 	// network's own prerequisite declarations.)
-	CloudResourceKind_AzurePrivateDnsZoneVirtualNetworkLink CloudResourceKind = 2019
+	CatalogKind_AzurePrivateDnsZoneVirtualNetworkLink CatalogKind = 2019
 	// AzureVirtualNetwork is a prerequisite because a peering is an ARM child
 	// of its local network and binds it to a remote network -- the local
 	// network must exist before the peering can be written. (The resource
 	// group arrives transitively through the network's own prerequisite
 	// declaration.)
-	CloudResourceKind_AzureVirtualNetworkPeering CloudResourceKind = 2020
+	CatalogKind_AzureVirtualNetworkPeering CatalogKind = 2020
 	// AzureResourceGroup is a prerequisite because a public IP prefix is
 	// created inside a referenced resource group in composed environments.
-	CloudResourceKind_AzurePublicIpPrefix CloudResourceKind = 2021
+	CatalogKind_AzurePublicIpPrefix CatalogKind = 2021
 	// AzureSubnet is a prerequisite because a network interface's IP
 	// configurations deploy into a subnet (the virtual network and resource
 	// group chain transitively through the subnet's own prerequisite).
-	CloudResourceKind_AzureNetworkInterface CloudResourceKind = 2022
+	CatalogKind_AzureNetworkInterface CatalogKind = 2022
 	// AzureResourceGroup is a prerequisite because a managed disk is created
 	// inside a resource group.
-	CloudResourceKind_AzureManagedDisk CloudResourceKind = 2023
+	CatalogKind_AzureManagedDisk CatalogKind = 2023
 	// AzureSubnet is a prerequisite because every scale-set instance's
 	// network interface deploys into a subnet (the virtual network and
 	// resource group chain transitively through the subnet's own
 	// prerequisite).
-	CloudResourceKind_AzureVirtualMachineScaleSet CloudResourceKind = 2024
+	CatalogKind_AzureVirtualMachineScaleSet CatalogKind = 2024
 	// AzureKeyVault is a prerequisite because a key is a data-plane object
 	// inside a referenced vault -- the vault must exist before the key can be
 	// written (the resource group chains transitively through the vault's own
 	// prerequisite).
-	CloudResourceKind_AzureKeyVaultKey CloudResourceKind = 2025
+	CatalogKind_AzureKeyVaultKey CatalogKind = 2025
 	// AzureKeyVault is a prerequisite because a certificate is a data-plane
 	// object inside a referenced vault -- the vault must exist before the
 	// certificate can be enrolled or imported (the resource group chains
 	// transitively through the vault's own prerequisite).
-	CloudResourceKind_AzureKeyVaultCertificate CloudResourceKind = 2026
+	CatalogKind_AzureKeyVaultCertificate CatalogKind = 2026
 	// AzureKeyVault is a prerequisite because a secret is a data-plane
 	// object inside a referenced vault -- the vault must exist before the
 	// secret can be written (the resource group chains transitively
 	// through the vault's own prerequisite). Part of the Key Vault family
 	// (2005, 2025-2026) despite the out-of-run number -- enum numbers are
 	// pinned by the registry snapshot; never renumber.
-	CloudResourceKind_AzureKeyVaultSecret CloudResourceKind = 2183
+	CatalogKind_AzureKeyVaultSecret CatalogKind = 2183
 	// AzureResourceGroup is a prerequisite because a WAF policy is created
 	// inside a referenced resource group; the Application Gateways that
 	// attach the policy reference it, never the reverse.
-	CloudResourceKind_AzureWebApplicationFirewallPolicy CloudResourceKind = 2027
+	CatalogKind_AzureWebApplicationFirewallPolicy CatalogKind = 2027
 	// AzureResourceGroup is a prerequisite because an application security
 	// group is created inside a referenced resource group; network
 	// interfaces, scale-set IP configurations, and NSG security rules
 	// reference the group, never the reverse.
-	CloudResourceKind_AzureApplicationSecurityGroup CloudResourceKind = 2028
+	CatalogKind_AzureApplicationSecurityGroup CatalogKind = 2028
 	// AzureKeyVaultKey is a prerequisite because a disk encryption set wraps
 	// customer data with a referenced key -- the key (and its vault, which
 	// chains transitively) must exist before the set can resolve the key URL
 	// at create time.
-	CloudResourceKind_AzureDiskEncryptionSet CloudResourceKind = 2029
+	CatalogKind_AzureDiskEncryptionSet CatalogKind = 2029
 	// AzureResourceGroup is a prerequisite because a server is created inside
 	// a referenced resource group (VNet injection additionally references a
 	// delegated subnet and a private DNS zone, but neither is universally
 	// required, so they are not registry prerequisites).
-	CloudResourceKind_AzurePostgresqlFlexibleServer CloudResourceKind = 2030
+	CatalogKind_AzurePostgresqlFlexibleServer CatalogKind = 2030
 	// AzureResourceGroup is a prerequisite because the cache is created inside
 	// a referenced resource group (VNet injection additionally references a
 	// dedicated subnet, but only the Premium tier supports it, so it is not a
 	// registry prerequisite).
-	CloudResourceKind_AzureRedisCache CloudResourceKind = 2031
+	CatalogKind_AzureRedisCache CatalogKind = 2031
 	// AzureResourceGroup is a prerequisite because the account is created
 	// inside a referenced resource group.
-	CloudResourceKind_AzureCosmosdbAccount CloudResourceKind = 2032
+	CatalogKind_AzureCosmosdbAccount CatalogKind = 2032
 	// AzureResourceGroup is a prerequisite because the logical server is
 	// created inside a referenced resource group.
-	CloudResourceKind_AzureMssqlServer CloudResourceKind = 2033
+	CatalogKind_AzureMssqlServer CatalogKind = 2033
 	// AzureResourceGroup is a prerequisite because a server is created inside
 	// a referenced resource group (VNet injection additionally references a
 	// delegated subnet and a private DNS zone, but neither is universally
 	// required, so they are not registry prerequisites).
-	CloudResourceKind_AzureMysqlFlexibleServer CloudResourceKind = 2034
+	CatalogKind_AzureMysqlFlexibleServer CatalogKind = 2034
 	// The parent logical server is referenced via server_id, not auto-deployed:
 	// E2E scenarios declare their own server fixture (minimal-server.yaml or
 	// the pool-attach chain through AzureMssqlElasticPool) so sequential
 	// subtests never destroy and recreate the same globally unique server_name.
-	CloudResourceKind_AzureMssqlDatabase CloudResourceKind = 2035
+	CatalogKind_AzureMssqlDatabase CatalogKind = 2035
 	// AzureMssqlServer is a prerequisite because every elastic pool lives on
 	// a referenced logical server (the server's resource group is transitive).
-	CloudResourceKind_AzureMssqlElasticPool CloudResourceKind = 2036
+	CatalogKind_AzureMssqlElasticPool CatalogKind = 2036
 	// The target and linked caches are referenced via ARM ids, not
 	// auto-deployed: caches are the slowest-provisioning resources in the
 	// Azure catalog and their names are globally unique, so E2E scenarios
 	// declare their own cache fixtures instead of a registry prerequisite
 	// recreating a shared one per run.
-	CloudResourceKind_AzureRedisLinkedServer CloudResourceKind = 2037
+	CatalogKind_AzureRedisLinkedServer CatalogKind = 2037
 	// The parent cache is referenced via redis_cache_id, not auto-deployed:
 	// caches are the slowest-provisioning resources in the Azure catalog and
 	// their names are globally unique, so E2E scenarios declare their own
 	// cache fixtures instead of a registry prerequisite recreating a shared
 	// one per run.
-	CloudResourceKind_AzureRedisCacheAccessPolicy CloudResourceKind = 2038
+	CatalogKind_AzureRedisCacheAccessPolicy CatalogKind = 2038
 	// The parent cache is referenced via redis_cache_id, not auto-deployed:
 	// caches are the slowest-provisioning resources in the Azure catalog and
 	// their names are globally unique, so E2E scenarios declare their own
 	// cache fixtures instead of a registry prerequisite recreating a shared
 	// one per run.
-	CloudResourceKind_AzureRedisCacheAccessPolicyAssignment CloudResourceKind = 2039
+	CatalogKind_AzureRedisCacheAccessPolicyAssignment CatalogKind = 2039
 	// AzureResourceGroup is a prerequisite because the environment is created
 	// inside a referenced resource group that must already exist.
-	CloudResourceKind_AzureContainerAppEnvironment CloudResourceKind = 2040
+	CatalogKind_AzureContainerAppEnvironment CatalogKind = 2040
 	// AzureContainerAppEnvironment is a prerequisite because every app runs
 	// inside a referenced environment (the resource group arrives
 	// transitively through it).
-	CloudResourceKind_AzureContainerApp CloudResourceKind = 2041
+	CatalogKind_AzureContainerApp CatalogKind = 2041
 	// AzureResourceGroup is a prerequisite because the plan is created inside
 	// a referenced resource group that must already exist.
-	CloudResourceKind_AzureServicePlan CloudResourceKind = 2042
+	CatalogKind_AzureServicePlan CatalogKind = 2042
 	// AzureServicePlan is a prerequisite because a function app runs on a
 	// referenced plan (the resource group arrives transitively through the
 	// plan). The required storage account is deliberately NOT a registry
 	// prerequisite: storage-account names are globally unique, so scenarios
 	// bring their own scenario-local account fixtures.
-	CloudResourceKind_AzureFunctionApp CloudResourceKind = 2043
+	CatalogKind_AzureFunctionApp CatalogKind = 2043
 	// AzureServicePlan is a prerequisite because a web app runs on a
 	// referenced plan (the resource group arrives transitively through the
 	// plan).
-	CloudResourceKind_AzureLinuxWebApp CloudResourceKind = 2044
+	CatalogKind_AzureLinuxWebApp CatalogKind = 2044
 	// AzureContainerAppEnvironment is a prerequisite because a job runs
 	// inside a referenced environment (the resource group arrives
 	// transitively through it).
-	CloudResourceKind_AzureContainerAppJob CloudResourceKind = 2045
+	CatalogKind_AzureContainerAppJob CatalogKind = 2045
 	// AzureContainerAppEnvironment is a prerequisite because the storage
 	// registration lives on a referenced environment. The Azure Files
 	// share and storage account are deliberately NOT registry
 	// prerequisites: storage-account names are globally unique, so
 	// scenarios bring their own scenario-local account + share fixtures.
-	CloudResourceKind_AzureContainerAppEnvironmentStorage CloudResourceKind = 2046
+	CatalogKind_AzureContainerAppEnvironmentStorage CatalogKind = 2046
 	// AzureContainerAppEnvironment is a prerequisite because the Dapr
-	// component is registered on a referenced environment.
-	CloudResourceKind_AzureContainerAppEnvironmentDaprComponent CloudResourceKind = 2047
+	// kind is registered on a referenced environment.
+	CatalogKind_AzureContainerAppEnvironmentDaprComponent CatalogKind = 2047
 	// AzureContainerAppEnvironment is a prerequisite because the
 	// certificate is stored on a referenced environment.
-	CloudResourceKind_AzureContainerAppEnvironmentCertificate CloudResourceKind = 2048
+	CatalogKind_AzureContainerAppEnvironmentCertificate CatalogKind = 2048
 	// AzureContainerAppEnvironment is a prerequisite because the managed
 	// certificate is provisioned on a referenced environment.
-	CloudResourceKind_AzureContainerAppEnvironmentManagedCertificate CloudResourceKind = 2049
+	CatalogKind_AzureContainerAppEnvironmentManagedCertificate CatalogKind = 2049
 	// AzureResourceGroup is a prerequisite because the workspace is created
 	// inside a referenced resource group that must already exist.
-	CloudResourceKind_AzureLogAnalyticsWorkspace CloudResourceKind = 2050
+	CatalogKind_AzureLogAnalyticsWorkspace CatalogKind = 2050
 	// AzureLogAnalyticsWorkspace is a prerequisite because workspace-based
 	// Application Insights stores its telemetry in a referenced workspace
 	// (the resource group chains transitively through the workspace).
-	CloudResourceKind_AzureApplicationInsights CloudResourceKind = 2051
+	CatalogKind_AzureApplicationInsights CatalogKind = 2051
 	// AzureLogAnalyticsWorkspace is a prerequisite because the setting's
 	// scenarios route a fixture workspace's telemetry (the workspace doubles
 	// as target and destination); the target itself is polymorphic.
-	CloudResourceKind_AzureMonitorDiagnosticSetting CloudResourceKind = 2052
+	CatalogKind_AzureMonitorDiagnosticSetting CatalogKind = 2052
 	// AzureResourceGroup is a prerequisite because the action group is
 	// created inside a referenced resource group that must already exist.
-	CloudResourceKind_AzureMonitorActionGroup CloudResourceKind = 2053
+	CatalogKind_AzureMonitorActionGroup CatalogKind = 2053
 	// AzureMonitorActionGroup is a prerequisite because a metric alert's
 	// actions fire into a referenced action group (the resource group chains
 	// transitively); alert scopes are polymorphic.
-	CloudResourceKind_AzureMonitorMetricAlert CloudResourceKind = 2054
+	CatalogKind_AzureMonitorMetricAlert CatalogKind = 2054
 	// AzureLogAnalyticsWorkspace is a prerequisite because the rule queries a
 	// referenced workspace scope; AzureMonitorActionGroup because its action
 	// fires into a referenced action group.
-	CloudResourceKind_AzureMonitorScheduledQueryAlert CloudResourceKind = 2055
+	CatalogKind_AzureMonitorScheduledQueryAlert CatalogKind = 2055
 	// AzureMonitorActionGroup is a prerequisite because an activity log
 	// alert's actions fire into a referenced action group (the resource
 	// group chains transitively). The alert itself is subscription-global
 	// and its scopes are polymorphic.
-	CloudResourceKind_AzureMonitorActivityLogAlert CloudResourceKind = 2056
+	CatalogKind_AzureMonitorActivityLogAlert CatalogKind = 2056
 	// AzureApplicationInsights is a prerequisite because a standard web test
 	// binds to a referenced Application Insights component (the resource
-	// group chains transitively through the component).
-	CloudResourceKind_AzureApplicationInsightsStandardWebTest CloudResourceKind = 2057
+	// group chains transitively through the kind).
+	CatalogKind_AzureApplicationInsightsStandardWebTest CatalogKind = 2057
 	// AzureResourceGroup is a prerequisite because the identity is created
 	// inside a referenced resource group that must already exist.
-	CloudResourceKind_AzureUserAssignedIdentity CloudResourceKind = 2060
+	CatalogKind_AzureUserAssignedIdentity CatalogKind = 2060
 	// AzureResourceGroup and AzureUserAssignedIdentity are prerequisites because
 	// an assignment grants a role at a referenced scope (most commonly a resource
 	// group) to a referenced principal (most commonly a managed identity) -- both
 	// must exist before the grant can be written.
-	CloudResourceKind_AzureRoleAssignment CloudResourceKind = 2061
+	CatalogKind_AzureRoleAssignment CatalogKind = 2061
 	// AzureResourceGroup is a prerequisite because a custom role definition is
 	// created at a referenced scope, most commonly a resource group in composed
 	// environments -- the scope must exist before the definition can be written.
-	CloudResourceKind_AzureRoleDefinition CloudResourceKind = 2062
+	CatalogKind_AzureRoleDefinition CatalogKind = 2062
 	// AzureUserAssignedIdentity is the prerequisite because a federated identity
 	// credential is a child resource of a referenced managed identity -- the
 	// identity must exist before the credential can be written on it. (The
 	// resource group arrives transitively through the identity's own
 	// prerequisite declaration.)
-	CloudResourceKind_AzureFederatedIdentityCredential CloudResourceKind = 2063
+	CatalogKind_AzureFederatedIdentityCredential CatalogKind = 2063
 	// AzureResourceGroup is a prerequisite because a Service Bus namespace is
 	// created inside a referenced resource group in composed environments.
 	// The namespace is the container every Service Bus messaging entity
@@ -1130,7 +1130,7 @@ const (
 	// prerequisite: namespace names are globally unique with a post-delete
 	// name hold, so E2E composes them with scenario-local namespace
 	// fixtures instead of a shared recreate-per-scenario prerequisite.
-	CloudResourceKind_AzureServiceBusNamespace CloudResourceKind = 2070
+	CatalogKind_AzureServiceBusNamespace CatalogKind = 2070
 	// AzureResourceGroup is a prerequisite because an Event Hub namespace is
 	// created inside a referenced resource group in composed environments.
 	// The namespace is the container every Event Hubs entity (event hub,
@@ -1140,25 +1140,25 @@ const (
 	// with a post-delete name hold, so E2E composes them with scenario-local
 	// namespace fixtures instead of a shared recreate-per-scenario
 	// prerequisite.
-	CloudResourceKind_AzureEventHubNamespace                CloudResourceKind = 2071
-	CloudResourceKind_AzureServiceBusQueue                  CloudResourceKind = 2072
-	CloudResourceKind_AzureServiceBusTopic                  CloudResourceKind = 2073
-	CloudResourceKind_AzureServiceBusSubscription           CloudResourceKind = 2074
-	CloudResourceKind_AzureServiceBusAuthorizationRule      CloudResourceKind = 2075
-	CloudResourceKind_AzureServiceBusDisasterRecoveryConfig CloudResourceKind = 2076
-	CloudResourceKind_AzureEventHub                         CloudResourceKind = 2077
-	CloudResourceKind_AzureEventHubConsumerGroup            CloudResourceKind = 2078
-	CloudResourceKind_AzureEventHubAuthorizationRule        CloudResourceKind = 2079
+	CatalogKind_AzureEventHubNamespace                CatalogKind = 2071
+	CatalogKind_AzureServiceBusQueue                  CatalogKind = 2072
+	CatalogKind_AzureServiceBusTopic                  CatalogKind = 2073
+	CatalogKind_AzureServiceBusSubscription           CatalogKind = 2074
+	CatalogKind_AzureServiceBusAuthorizationRule      CatalogKind = 2075
+	CatalogKind_AzureServiceBusDisasterRecoveryConfig CatalogKind = 2076
+	CatalogKind_AzureEventHub                         CatalogKind = 2077
+	CatalogKind_AzureEventHubConsumerGroup            CatalogKind = 2078
+	CatalogKind_AzureEventHubAuthorizationRule        CatalogKind = 2079
 	// AzureResourceGroup is a prerequisite because a Front Door profile is
 	// created inside a referenced resource group in composed environments.
 	// The profile is the container every Front Door delivery resource
 	// (endpoint, origin group, origin, route) nests under.
-	CloudResourceKind_AzureFrontDoorProfile CloudResourceKind = 2080
+	CatalogKind_AzureFrontDoorProfile CatalogKind = 2080
 	// AzureFrontDoorProfile is a prerequisite because an endpoint is an ARM
 	// child of a referenced profile -- the profile must exist before the
 	// endpoint can be written. (The resource group arrives transitively
 	// through the profile's own prerequisite declaration.)
-	CloudResourceKind_AzureFrontDoorEndpoint CloudResourceKind = 2081
+	CatalogKind_AzureFrontDoorEndpoint CatalogKind = 2081
 	// AzureFrontDoorProfile is a prerequisite because an origin group is an
 	// ARM child of a referenced profile. A container kind: every origin is an
 	// ARM child of its origin group, so on a diagram the origins stand inside
@@ -1166,42 +1166,42 @@ const (
 	// A route or a rule that forwards TO an origin group lives in its endpoint
 	// or its rule set, never in the group, and those references say so with
 	// containment_exempt.
-	CloudResourceKind_AzureFrontDoorOriginGroup CloudResourceKind = 2082
+	CatalogKind_AzureFrontDoorOriginGroup CatalogKind = 2082
 	// AzureFrontDoorOriginGroup is a prerequisite because an origin is an
 	// ARM child of a referenced origin group (the profile and resource
 	// group chain transitively).
-	CloudResourceKind_AzureFrontDoorOrigin CloudResourceKind = 2083
+	CatalogKind_AzureFrontDoorOrigin CatalogKind = 2083
 	// A route attaches to an endpoint (its ARM parent) and forwards to an
 	// origin group whose origins must exist before ARM accepts the route --
 	// so both the endpoint and the origin chain are genuine deploy-order
 	// prerequisites.
-	CloudResourceKind_AzureFrontDoorRoute CloudResourceKind = 2084
+	CatalogKind_AzureFrontDoorRoute CatalogKind = 2084
 	// AzureFrontDoorProfile is a prerequisite because a rule set is an ARM
 	// child of a referenced profile. The rules live inside the set (they
 	// form one ordered policy document); routes attach the set by ARM ID.
-	CloudResourceKind_AzureFrontDoorRuleSet CloudResourceKind = 2085
+	CatalogKind_AzureFrontDoorRuleSet CatalogKind = 2085
 	// AzureFrontDoorProfile is a prerequisite because a custom domain is an
 	// ARM child of a referenced profile. The DNS zone and (for
 	// bring-your-own certificates) the Front Door secret are optional
 	// references, not deploy-order prerequisites.
-	CloudResourceKind_AzureFrontDoorCustomDomain CloudResourceKind = 2086
+	CatalogKind_AzureFrontDoorCustomDomain CatalogKind = 2086
 	// AzureFrontDoorSecret is a prerequisite-light kind: only the profile
 	// (its ARM parent) must exist. The Key Vault certificate it wraps is a
 	// reference resolved before the module runs; its vault chain is
 	// exercised through scenario-local fixtures in E2E.
-	CloudResourceKind_AzureFrontDoorSecret CloudResourceKind = 2087
+	CatalogKind_AzureFrontDoorSecret CatalogKind = 2087
 	// AzureResourceGroup is a prerequisite because the Front Door WAF
 	// policy is created inside a referenced resource group -- it is a
 	// GLOBAL resource, not a profile child (a different ARM type than the
 	// regional Application Gateway WAF policy). Security policies attach
 	// it to profiles; the policy itself depends on nothing else.
-	CloudResourceKind_AzureFrontDoorFirewallPolicy CloudResourceKind = 2088
+	CatalogKind_AzureFrontDoorFirewallPolicy CatalogKind = 2088
 	// A security policy is an ARM child of a profile that associates a
 	// referenced WAF policy with referenced domains -- so the endpoint
 	// (the default-domain association target; the profile arrives
 	// transitively through it) and the WAF policy are genuine
 	// deploy-order prerequisites.
-	CloudResourceKind_AzureFrontDoorSecurityPolicy CloudResourceKind = 2089 // --- Storage data services ---
+	CatalogKind_AzureFrontDoorSecurityPolicy CatalogKind = 2089 // --- Storage data services ---
 	// None of the storage data-service kinds declares a registry
 	// prerequisite on AzureStorageAccount: account names are GLOBALLY
 	// unique and Azure holds a just-deleted name, so a
@@ -1209,14 +1209,14 @@ const (
 	// declare scenario-local account fixtures instead. Deploy ordering in
 	// composed environments still flows from the storage_account_id
 	// reference itself.
-	CloudResourceKind_AzureStorageContainer              CloudResourceKind = 2090
-	CloudResourceKind_AzureStorageShare                  CloudResourceKind = 2091
-	CloudResourceKind_AzureStorageQueue                  CloudResourceKind = 2092
-	CloudResourceKind_AzureStorageTable                  CloudResourceKind = 2093
-	CloudResourceKind_AzureStorageEncryptionScope        CloudResourceKind = 2094
-	CloudResourceKind_AzureStorageDataLakeGen2Filesystem CloudResourceKind = 2095
-	CloudResourceKind_AzureStorageLocalUser              CloudResourceKind = 2096
-	CloudResourceKind_AzureStorageObjectReplication      CloudResourceKind = 2097
+	CatalogKind_AzureStorageContainer              CatalogKind = 2090
+	CatalogKind_AzureStorageShare                  CatalogKind = 2091
+	CatalogKind_AzureStorageQueue                  CatalogKind = 2092
+	CatalogKind_AzureStorageTable                  CatalogKind = 2093
+	CatalogKind_AzureStorageEncryptionScope        CatalogKind = 2094
+	CatalogKind_AzureStorageDataLakeGen2Filesystem CatalogKind = 2095
+	CatalogKind_AzureStorageLocalUser              CatalogKind = 2096
+	CatalogKind_AzureStorageObjectReplication      CatalogKind = 2097
 	// None of the Cosmos DB data-service kinds declares a registry
 	// prerequisite on AzureCosmosdbAccount: account names are GLOBALLY
 	// unique DNS labels, so a recreate-per-scenario fixture would risk
@@ -1224,12 +1224,12 @@ const (
 	// account fixtures instead. Deploy ordering in composed environments
 	// still flows from the cosmosdb_account_id / parent-database
 	// references themselves.
-	CloudResourceKind_AzureCosmosdbSqlDatabase       CloudResourceKind = 2100
-	CloudResourceKind_AzureCosmosdbSqlContainer      CloudResourceKind = 2101
-	CloudResourceKind_AzureCosmosdbMongoDatabase     CloudResourceKind = 2102
-	CloudResourceKind_AzureCosmosdbMongoCollection   CloudResourceKind = 2103
-	CloudResourceKind_AzureCosmosdbSqlRoleDefinition CloudResourceKind = 2104
-	CloudResourceKind_AzureCosmosdbSqlRoleAssignment CloudResourceKind = 2105
+	CatalogKind_AzureCosmosdbSqlDatabase       CatalogKind = 2100
+	CatalogKind_AzureCosmosdbSqlContainer      CatalogKind = 2101
+	CatalogKind_AzureCosmosdbMongoDatabase     CatalogKind = 2102
+	CatalogKind_AzureCosmosdbMongoCollection   CatalogKind = 2103
+	CatalogKind_AzureCosmosdbSqlRoleDefinition CatalogKind = 2104
+	CatalogKind_AzureCosmosdbSqlRoleAssignment CatalogKind = 2105
 	// AzureResourceGroup is the cluster's only registry prerequisite: the
 	// cluster is created inside a referenced resource group. The
 	// geo-replication and access-policy-assignment children declare NO
@@ -1238,39 +1238,39 @@ const (
 	// scenario-local cluster fixtures instead of recreating a shared one
 	// per scenario. Deploy ordering in composed environments still flows
 	// from the managed_redis_id references themselves.
-	CloudResourceKind_AzureManagedRedis                       CloudResourceKind = 2110
-	CloudResourceKind_AzureManagedRedisGeoReplication         CloudResourceKind = 2111
-	CloudResourceKind_AzureManagedRedisAccessPolicyAssignment CloudResourceKind = 2112
-	CloudResourceKind_AzureEventHubDisasterRecoveryConfig     CloudResourceKind = 2120
-	CloudResourceKind_AzureEventHubSchemaGroup                CloudResourceKind = 2121
+	CatalogKind_AzureManagedRedis                       CatalogKind = 2110
+	CatalogKind_AzureManagedRedisGeoReplication         CatalogKind = 2111
+	CatalogKind_AzureManagedRedisAccessPolicyAssignment CatalogKind = 2112
+	CatalogKind_AzureEventHubDisasterRecoveryConfig     CatalogKind = 2120
+	CatalogKind_AzureEventHubSchemaGroup                CatalogKind = 2121
 	// AzureResourceGroup is a prerequisite because a dedicated Event Hubs
 	// cluster is created inside a referenced resource group in composed
 	// environments. Note: clusters cannot be deleted for 4 hours after
 	// creation (Azure's moratorium), so E2E treats this kind as
 	// offline-gated.
-	CloudResourceKind_AzureEventHubCluster                     CloudResourceKind = 2122
-	CloudResourceKind_AzureEventHubNamespaceCustomerManagedKey CloudResourceKind = 2123
+	CatalogKind_AzureEventHubCluster                     CatalogKind = 2122
+	CatalogKind_AzureEventHubNamespaceCustomerManagedKey CatalogKind = 2123
 	// AzureMssqlServer is a prerequisite because a failover group is created
 	// on a referenced primary logical server and points at a partner server;
 	// the primary (and its resource group, which chains transitively) must
 	// exist before the group can be written.
-	CloudResourceKind_AzureMssqlFailoverGroup CloudResourceKind = 2124
+	CatalogKind_AzureMssqlFailoverGroup CatalogKind = 2124
 	// AzureContainerApp is a prerequisite because the domain binding lives
 	// in a referenced app's ingress configuration (the environment and
 	// resource group chain transitively through the app).
-	CloudResourceKind_AzureContainerAppCustomDomain CloudResourceKind = 2125
-	CloudResourceKind_AzureFirewallPolicy           CloudResourceKind = 2130
+	CatalogKind_AzureContainerAppCustomDomain CatalogKind = 2125
+	CatalogKind_AzureFirewallPolicy           CatalogKind = 2130
 	// AzureFirewallPolicy is a prerequisite because a rule collection group
 	// is a child document of a referenced policy (the resource group chains
 	// transitively through the policy).
-	CloudResourceKind_AzureFirewallPolicyRuleCollectionGroup CloudResourceKind = 2131
+	CatalogKind_AzureFirewallPolicyRuleCollectionGroup CatalogKind = 2131
 	// AzureSubnet is a prerequisite because a VNet-deployed firewall's data
 	// path lives in a dedicated subnet that must be named exactly
 	// "AzureFirewallSubnet" (the virtual network and resource group chain
 	// transitively through the subnet). The E2E install profile publishes a
 	// fixture subnet with that exact name and a /26 prefix.
-	CloudResourceKind_AzureFirewall CloudResourceKind = 2132
-	CloudResourceKind_AzureIpGroup  CloudResourceKind = 2133
+	CatalogKind_AzureFirewall CatalogKind = 2132
+	CatalogKind_AzureIpGroup  CatalogKind = 2133
 	// AzureSubnet is a prerequisite because every virtual network gateway
 	// lives in a dedicated subnet named exactly "GatewaySubnet" (the
 	// virtual network and resource group chain transitively through the
@@ -1280,13 +1280,13 @@ const (
 	// configuration; the address install profile publishes a dedicated
 	// zone-redundant instance (a gateway binds its address exclusively,
 	// and the AZ gateway SKUs require zones on it).
-	CloudResourceKind_AzureVirtualNetworkGateway CloudResourceKind = 2140
+	CatalogKind_AzureVirtualNetworkGateway CatalogKind = 2140
 	// Both gateways are prerequisites: a connection joins a virtual
 	// network gateway to a far side, and the site-to-site far side is a
 	// local network gateway (the GatewaySubnet, VNet, and resource group
 	// chain transitively through the virtual network gateway).
-	CloudResourceKind_AzureVirtualNetworkGatewayConnection CloudResourceKind = 2141
-	CloudResourceKind_AzureLocalNetworkGateway             CloudResourceKind = 2142
+	CatalogKind_AzureVirtualNetworkGatewayConnection CatalogKind = 2141
+	CatalogKind_AzureLocalNetworkGateway             CatalogKind = 2142
 	// AzureSubnet is the sole prerequisite: every NAT ip configuration
 	// draws its address from a subnet with private-link-service network
 	// policies disabled (the subnet install profile publishes a fixture
@@ -1296,26 +1296,26 @@ const (
 	// balancer frontend OR fixed destination IP), so scenarios that use
 	// the load-balancer shape declare it via the
 	// planton.dev/e2e-prerequisites annotation instead.
-	CloudResourceKind_AzurePrivateLinkService  CloudResourceKind = 2143
-	CloudResourceKind_AzureExpressRouteCircuit CloudResourceKind = 2144
+	CatalogKind_AzurePrivateLinkService  CatalogKind = 2143
+	CatalogKind_AzureExpressRouteCircuit CatalogKind = 2144
 	// The circuit is the prerequisite: a peering is an ARM child of the
 	// circuit, addressed by the circuit's name (the resource group chains
 	// transitively through the circuit).
-	CloudResourceKind_AzureExpressRouteCircuitPeering CloudResourceKind = 2145
+	CatalogKind_AzureExpressRouteCircuitPeering CatalogKind = 2145
 	// The hub is the prerequisite: ARM requires an ExpressRoute Gateway
 	// to be deployed INTO a Virtual WAN hub (the WAN and resource group
 	// chain transitively through the hub).
-	CloudResourceKind_AzureExpressRouteGateway CloudResourceKind = 2146
+	CatalogKind_AzureExpressRouteGateway CatalogKind = 2146
 	// ExpressRoute Port: your own physical port pair on a Microsoft edge
 	// router (ExpressRoute Direct), from whose bandwidth circuits are
 	// carved. Self-contained -- only the resource group is required.
-	CloudResourceKind_AzureExpressRoutePort CloudResourceKind = 2147
+	CatalogKind_AzureExpressRoutePort CatalogKind = 2147
 	// Virtual WAN: the umbrella of Azure's managed hub-and-spoke
 	// networking, under which virtual hubs and their gateways are
 	// created. Self-contained -- only the resource group is required.
 	// A container: its hubs and its branch sites are created into it, so
 	// on a diagram the WAN is the room they stand in.
-	CloudResourceKind_AzureVirtualWan CloudResourceKind = 2148
+	CatalogKind_AzureVirtualWan CatalogKind = 2148
 	// The WAN is the prerequisite: this kind models the Virtual WAN hub
 	// (virtual_wan_id is required; standalone hubs are the legacy Route
 	// Server construction, which has its own ARM surface). The resource
@@ -1323,26 +1323,26 @@ const (
 	// the hub's VPN, ExpressRoute, and point-to-site gateways and its
 	// spoke connections INTO the hub, so on a diagram the hub is the room
 	// they stand in.
-	CloudResourceKind_AzureVirtualHub CloudResourceKind = 2149
+	CatalogKind_AzureVirtualHub CatalogKind = 2149
 	// Both sides of the attachment are prerequisites: the hub being
 	// joined and the spoke virtual network being attached.
-	CloudResourceKind_AzureVirtualHubConnection CloudResourceKind = 2150
+	CatalogKind_AzureVirtualHubConnection CatalogKind = 2150
 	// The hub is the prerequisite: ARM deploys a Virtual WAN VPN gateway
 	// INTO a virtual hub (virtual_hub_id is required and immutable; the
 	// WAN and resource group chain transitively through the hub). ARM
 	// allows one VPN gateway per hub.
-	CloudResourceKind_AzureVpnGateway CloudResourceKind = 2151
+	CatalogKind_AzureVpnGateway CatalogKind = 2151
 	// Both ends of the tunnel are prerequisites: a connection is an ARM
 	// child of the VPN gateway and pins each of its links to a specific
 	// link of the remote VPN site (the hub, WAN, and resource group
 	// chain transitively through the gateway).
-	CloudResourceKind_AzureVpnGatewayConnection CloudResourceKind = 2152
+	CatalogKind_AzureVpnGatewayConnection CatalogKind = 2152
 	// The WAN is the prerequisite: a VPN site is the Virtual WAN world's
 	// address-book entry for one branch location (virtual_wan_id is
 	// required; the classic-world sibling without a WAN is
 	// AzureLocalNetworkGateway). The resource group chains transitively
 	// through the WAN.
-	CloudResourceKind_AzureVpnSite CloudResourceKind = 2153
+	CatalogKind_AzureVpnSite CatalogKind = 2153
 	// The hub and the server configuration are both prerequisites: a
 	// point-to-site VPN gateway deploys INTO a virtual hub (one P2S
 	// gateway per hub, a slot separate from the hub's site-to-site VPN
@@ -1350,13 +1350,13 @@ const (
 	// that defines how its users authenticate -- both ARM-required and
 	// fixed at creation. The WAN and resource group chain transitively
 	// through the hub.
-	CloudResourceKind_AzurePointToSiteVpnGateway CloudResourceKind = 2154
+	CatalogKind_AzurePointToSiteVpnGateway CatalogKind = 2154
 	// Self-contained -- only the resource group is required: a VPN
 	// server configuration is the reusable "who may connect and how"
 	// authentication policy (Entra ID / certificate / RADIUS) that
 	// point-to-site VPN gateways attach to; it references no other
 	// Azure resource.
-	CloudResourceKind_AzureVpnServerConfiguration CloudResourceKind = 2155
+	CatalogKind_AzureVpnServerConfiguration CatalogKind = 2155
 	// Self-contained -- only the resource group is required: an Azure
 	// AI services account (Azure OpenAI, the multi-service AIServices
 	// account, the single-service accounts) needs no other Azure
@@ -1368,14 +1368,14 @@ const (
 	// diagram draws them inside it. The subnets the account admits
 	// through its network ACLs or injects agent compute into are access,
 	// never placement (containment_exempt on those fields).
-	CloudResourceKind_AzureCognitiveAccount CloudResourceKind = 2160
+	CatalogKind_AzureCognitiveAccount CatalogKind = 2160
 	// An ARM child of its account: a model deployment (which model
 	// runs, at which throughput class) exists only on an Azure AI
 	// services account of kind "OpenAI" or "AIServices".
-	CloudResourceKind_AzureCognitiveDeployment CloudResourceKind = 2161
+	CatalogKind_AzureCognitiveDeployment CatalogKind = 2161
 	// An ARM child of its account: an AI Foundry project exists only
 	// on an "AIServices"-kind account with project management enabled.
-	CloudResourceKind_AzureCognitiveAccountProject CloudResourceKind = 2162
+	CatalogKind_AzureCognitiveAccountProject CatalogKind = 2162
 	// The workspace REQUIRES all three companion services at creation
 	// (default storage, secrets vault, telemetry) -- genuine
 	// deploy-order prerequisites, each with its own fixture profile.
@@ -1385,18 +1385,18 @@ const (
 	// so a diagram draws them inside it. The companion services it
 	// names are reaches (containment_exempt on those fields), and so is
 	// the subnet its serverless compute or a compute's nodes attach to.
-	CloudResourceKind_AzureMachineLearningWorkspace CloudResourceKind = 2163
+	CatalogKind_AzureMachineLearningWorkspace CatalogKind = 2163
 	// An ARM child of its workspace. The storage target (container,
 	// filesystem or share) is scenario-declared via the
 	// e2e-prerequisites annotation -- only the blob scenario needs a
 	// container, so it is not a kind-wide prerequisite.
-	CloudResourceKind_AzureMachineLearningDatastore CloudResourceKind = 2164
+	CatalogKind_AzureMachineLearningDatastore CatalogKind = 2164
 	// An ARM child of its workspace (.../computes/{name}) -- the
 	// auto-scaling pool of VMs training jobs run on.
-	CloudResourceKind_AzureMachineLearningComputeCluster CloudResourceKind = 2165
+	CatalogKind_AzureMachineLearningComputeCluster CatalogKind = 2165
 	// An ARM child of its workspace (.../computes/{name}) -- a single
 	// always-on VM serving as one data scientist's cloud workstation.
-	CloudResourceKind_AzureMachineLearningComputeInstance CloudResourceKind = 2166
+	CatalogKind_AzureMachineLearningComputeInstance CatalogKind = 2166
 	// The hub REQUIRES both companion services at creation (secrets
 	// vault, default storage) -- genuine deploy-order prerequisites,
 	// each with its own fixture profile.
@@ -1405,11 +1405,11 @@ const (
 	// carries none), so a diagram draws the projects inside the hub. The
 	// vault and storage account the hub names are reaches
 	// (containment_exempt on those fields).
-	CloudResourceKind_AzureAiFoundry CloudResourceKind = 2167
+	CatalogKind_AzureAiFoundry CatalogKind = 2167
 	// Deploys into its hub's resource group (the provider derives the
 	// group from the hub reference -- the project spec carries none).
-	CloudResourceKind_AzureAiFoundryProject CloudResourceKind = 2168
-	CloudResourceKind_AzureSearchService    CloudResourceKind = 2169
+	CatalogKind_AzureAiFoundryProject CatalogKind = 2168
+	CatalogKind_AzureSearchService    CatalogKind = 2169
 	// An ARM child of its workspace (.../onlineEndpoints/{name}) -- the
 	// stable scoring address applications call. azurerm carries no ML
 	// endpoint resources; the modules write the raw ARM shape at a
@@ -1419,10 +1419,10 @@ const (
 	// (.../onlineEndpoints/{endpoint}/deployments/{name}) and cannot
 	// exist without it, so a diagram draws the deployments inside the
 	// endpoint, inside the workspace.
-	CloudResourceKind_AzureMachineLearningOnlineEndpoint CloudResourceKind = 2170
+	CatalogKind_AzureMachineLearningOnlineEndpoint CatalogKind = 2170
 	// An ARM child of its endpoint (.../deployments/{name}) -- the
 	// running copy of a model the endpoint's traffic map routes to.
-	CloudResourceKind_AzureMachineLearningOnlineDeployment CloudResourceKind = 2171
+	CatalogKind_AzureMachineLearningOnlineDeployment CatalogKind = 2171
 	// An ARM child of its workspace (.../batchEndpoints/{name}) -- the
 	// stable address batch scoring jobs are submitted to. azurerm
 	// carries no ML endpoint resources; the modules write the raw ARM
@@ -1433,27 +1433,27 @@ const (
 	// so a diagram draws the deployments inside the endpoint, inside
 	// the workspace. The compute cluster a deployment runs on is a
 	// reach, not a room.
-	CloudResourceKind_AzureMachineLearningBatchEndpoint CloudResourceKind = 2172
+	CatalogKind_AzureMachineLearningBatchEndpoint CatalogKind = 2172
 	// An ARM child of its endpoint (.../deployments/{name}) -- the
 	// job recipe (model, compute, batching behavior) the endpoint's
 	// default-deployment pointer routes submissions to.
-	CloudResourceKind_AzureMachineLearningBatchDeployment CloudResourceKind = 2173
+	CatalogKind_AzureMachineLearningBatchDeployment CatalogKind = 2173
 	// The Recovery Services vault (Microsoft.RecoveryServices/vaults) --
 	// the safe that classic Azure Backup data and Site Recovery
 	// configuration live in. Backup policies and protected items are
 	// ARM children of a vault, so the vault is a container kind: a diagram
 	// draws them inside it, as the portal's own blades do.
-	CloudResourceKind_AzureRecoveryServicesVault CloudResourceKind = 2175
+	CatalogKind_AzureRecoveryServicesVault CatalogKind = 2175
 	// An ARM child of its vault (.../backupPolicies/{name}) -- the
 	// schedule and retention rules that govern IaaS VM backups.
-	CloudResourceKind_AzureBackupPolicyVm CloudResourceKind = 2176
+	CatalogKind_AzureBackupPolicyVm CatalogKind = 2176
 	// An ARM child of its vault (.../protectedItems/...) -- the binding
 	// that puts one virtual machine under a backup policy's protection.
-	CloudResourceKind_AzureBackupProtectedVm CloudResourceKind = 2177
+	CatalogKind_AzureBackupProtectedVm CatalogKind = 2177
 	// An ARM child of its vault (.../backupPolicies/{name}) -- the
 	// schedule and retention rules that govern Azure Files share
 	// backups (snapshot or vaulted).
-	CloudResourceKind_AzureBackupPolicyFileShare CloudResourceKind = 2178
+	CatalogKind_AzureBackupPolicyFileShare CatalogKind = 2178
 	// An ARM child of its vault (.../protectedItems/AzureFileShare;...)
 	// -- the binding that puts one Azure Files share under a backup
 	// policy's protection. The share's storage account must already be
@@ -1463,20 +1463,20 @@ const (
 	// unregisters FIRST -- Azure Backup holds a DoNotDelete lock on a
 	// registered storage account, and a share delete under that lock
 	// fails ScopeLocked.
-	CloudResourceKind_AzureBackupProtectedFileShare CloudResourceKind = 2179
+	CatalogKind_AzureBackupProtectedFileShare CatalogKind = 2179
 	// The Data Protection backup vault (Microsoft.DataProtection/
 	// backupVaults) -- the safe that MODERN Azure Backup data lives in
 	// (managed disks, blob storage, AKS clusters, MySQL/PostgreSQL
 	// flexible servers, Data Lake storage). Backup policies and backup
 	// instances are ARM children of a vault, so the vault is a container
 	// kind: a diagram draws them inside it, as the portal's own blades do.
-	CloudResourceKind_AzureDataProtectionBackupVault CloudResourceKind = 2180
+	CatalogKind_AzureDataProtectionBackupVault CatalogKind = 2180
 	// An ARM child of its vault (.../backupPolicies/{name}) -- the
 	// schedule and retention rules for ONE Data Protection datasource
 	// type (blob storage, disk, Kubernetes cluster, MySQL/PostgreSQL
 	// flexible server, or Data Lake storage), modeled as one kind with
 	// variant blocks.
-	CloudResourceKind_AzureDataProtectionBackupPolicy CloudResourceKind = 2181
+	CatalogKind_AzureDataProtectionBackupPolicy CatalogKind = 2181
 	// An ARM child of its vault (.../backupInstances/{name}) -- the
 	// binding that puts ONE datasource (a managed disk, a storage
 	// account's blob services, an AKS cluster, a MySQL/PostgreSQL
@@ -1484,7 +1484,7 @@ const (
 	// Protection backup policy, modeled as one kind with variant
 	// blocks. The vault's managed identity must hold the datasource
 	// roles Azure Backup requires BEFORE the instance is created.
-	CloudResourceKind_AzureDataProtectionBackupInstance CloudResourceKind = 2182
+	CatalogKind_AzureDataProtectionBackupInstance CatalogKind = 2182
 	// AzureSubnet and AzurePublicIp are prerequisites because a
 	// dedicated-infrastructure Bastion host (Basic/Standard/Premium --
 	// the default shapes) deploys into a subnet named exactly
@@ -1492,7 +1492,7 @@ const (
 	// EXCLUSIVELY (the virtual network and resource group chain
 	// transitively through the subnet). The Developer SKU instead
 	// attaches to a virtual network directly and uses neither.
-	CloudResourceKind_AzureBastionHost CloudResourceKind = 2184
+	CatalogKind_AzureBastionHost CatalogKind = 2184
 	// AzureVirtualNetwork and AzureStorageAccount are prerequisites
 	// because a flow log records a network-scoped target (a virtual
 	// network in the common case; subnets and network interfaces chain
@@ -1502,24 +1502,24 @@ const (
 	// the moment the region hosts a virtual network, and the flow log
 	// references it by name. Traffic Analytics' Log Analytics workspace
 	// is an optional arm, declared by scenarios that use it.
-	CloudResourceKind_AzureNetworkWatcherFlowLog CloudResourceKind = 2185
+	CatalogKind_AzureNetworkWatcherFlowLog CatalogKind = 2185
 	// AzureVirtualNetwork and AzureSubnet are prerequisites because a
 	// DNS Private Resolver anchors to a referenced virtual network (at
 	// most ONE resolver per network -- Azure enforces it) and each of
 	// its inbound/outbound endpoints occupies its own dedicated subnet
 	// delegated to "Microsoft.Network/dnsResolvers" (the resource group
 	// chains transitively through the network and subnets).
-	CloudResourceKind_AzurePrivateDnsResolver CloudResourceKind = 2186
+	CatalogKind_AzurePrivateDnsResolver CatalogKind = 2186
 	// AzurePrivateDnsResolver is a prerequisite because a DNS
 	// forwarding ruleset steers a resolver's OUTBOUND endpoints -- it
 	// binds their ARM ids (at most 2, same resolver) at creation. (The
 	// resource group and network chain transitively through the
 	// resolver's own prerequisite declarations.)
-	CloudResourceKind_AzurePrivateDnsResolverForwardingRuleset CloudResourceKind = 2187
+	CatalogKind_AzurePrivateDnsResolverForwardingRuleset CatalogKind = 2187
 	// AzurePrivateDnsZone is a prerequisite because every record set is
 	// created inside a referenced private DNS zone (the resource group
 	// chains transitively through the zone's own prerequisite).
-	CloudResourceKind_AzurePrivateDnsRecord CloudResourceKind = 2188
+	CatalogKind_AzurePrivateDnsRecord CatalogKind = 2188
 	// AzureResourceGroup is a prerequisite because a Traffic Manager
 	// profile is created inside a referenced resource group (the profile
 	// itself is a global service -- the group only holds its metadata
@@ -1528,18 +1528,18 @@ const (
 	// steers traffic to them. A nested endpoint that points AT another
 	// profile lives in its own parent profile, never in the one it targets,
 	// and that reference says so with containment_exempt.
-	CloudResourceKind_AzureTrafficManagerProfile CloudResourceKind = 2189
+	CatalogKind_AzureTrafficManagerProfile CatalogKind = 2189
 	// AzureTrafficManagerProfile is a prerequisite because every
 	// endpoint is created inside a referenced profile -- it is the
 	// destination a profile steers traffic to (the resource group chains
 	// transitively through the profile's own prerequisite).
-	CloudResourceKind_AzureTrafficManagerEndpoint CloudResourceKind = 2190
+	CatalogKind_AzureTrafficManagerEndpoint CatalogKind = 2190
 	// AzureResourceGroup is a prerequisite because an autoscale setting
 	// is created inside a referenced resource group. The scalable TARGET
 	// it controls is a no-default reference (many kinds can be scaled),
 	// so no target kind is declared here -- scenarios declare their own
 	// target fixture.
-	CloudResourceKind_AzureMonitorAutoscaleSetting CloudResourceKind = 2191
+	CatalogKind_AzureMonitorAutoscaleSetting CatalogKind = 2191
 	// The Azure Monitor data collection rule (DCR) -- the routing table
 	// declaring what telemetry the Azure Monitor Agent collects and
 	// where it lands. AzureResourceGroup is a prerequisite because a
@@ -1548,7 +1548,7 @@ const (
 	// destination a rule routes to (the smoke scenario's shape).
 	// Machines attach to a rule with
 	// AzureMonitorDataCollectionRuleAssociation resources.
-	CloudResourceKind_AzureMonitorDataCollectionRule CloudResourceKind = 2192
+	CatalogKind_AzureMonitorDataCollectionRule CatalogKind = 2192
 	// The Azure Event Grid custom topic -- the HTTPS endpoint an
 	// application publishes its own events to, fanned out to handlers by
 	// event subscriptions. One topic is one event stream with its own
@@ -1561,7 +1561,7 @@ const (
 	// publishes to or subscribes from a topic while living elsewhere (a
 	// Data Factory trigger, an Event Grid namespace's MQTT route) says so
 	// with containment_exempt.
-	CloudResourceKind_AzureEventgridTopic CloudResourceKind = 2193
+	CatalogKind_AzureEventgridTopic CatalogKind = 2193
 	// The Azure Event Grid domain -- ONE publishing endpoint and one
 	// pair of access keys serving many event streams (domain topics),
 	// the multi-tenant pattern. Topics inside the domain are
@@ -1569,7 +1569,7 @@ const (
 	// AzureEventgridDomainTopic resources. A container kind: every domain
 	// topic is an ARM child of its domain ({domain_id}/topics/{name}), so
 	// on a diagram the domain is the room its tenant streams stand in.
-	CloudResourceKind_AzureEventgridDomain CloudResourceKind = 2194
+	CatalogKind_AzureEventgridDomain CatalogKind = 2194
 	// The Azure Event Grid system topic -- the subscription surface for
 	// events AZURE ITSELF publishes about one of your resources (a
 	// storage account's blob events, a resource group's lifecycle
@@ -1578,38 +1578,38 @@ const (
 	// container kind: every subscription on a system topic is an ARM child
 	// created under it ({system_topic_id}/eventSubscriptions/{name}), so on
 	// a diagram the system topic is the room its subscriptions stand in.
-	CloudResourceKind_AzureEventgridSystemTopic CloudResourceKind = 2195
+	CatalogKind_AzureEventgridSystemTopic CatalogKind = 2195
 	// The Azure Event Grid event subscription -- the delivery
 	// instruction routing events from a source (a custom topic, domain,
 	// domain topic, system topic, resource group, or subscription) to a
 	// handler (a Function, Event Hub, Service Bus queue/topic, storage
 	// queue, hybrid connection, or webhook), with filtering, retry, and
 	// dead-letter behavior.
-	CloudResourceKind_AzureEventgridEventSubscription CloudResourceKind = 2196
+	CatalogKind_AzureEventgridEventSubscription CatalogKind = 2196
 	// The Azure Event Grid namespace -- the capacity-scaled hub of the
 	// newer Event Grid: hosts CloudEvents namespace topics and an
 	// optional MQTT broker behind one set of regional endpoints, sized
 	// in throughput units. A container kind: every namespace topic is an
 	// ARM child of its namespace ({namespace_id}/topics/{name}), so on a
 	// diagram the namespace is the room its streams stand in.
-	CloudResourceKind_AzureEventgridNamespace CloudResourceKind = 2197
+	CatalogKind_AzureEventgridNamespace CatalogKind = 2197
 	// The Azure Data Factory -- the workspace every other Data Factory
 	// resource lives inside: pipelines, data flows, linked services,
 	// datasets, triggers, and integration runtimes are all created
 	// against a factory's ARM ID. A container kind for exactly that
 	// reason: those six kinds are ARM children of the factory, so on a
 	// diagram the factory is the room they stand in.
-	CloudResourceKind_AzureDataFactory CloudResourceKind = 2198
+	CatalogKind_AzureDataFactory CatalogKind = 2198
 	// One unit of work inside an Azure Data Factory
 	// ({factory_id}/pipelines/{name}) -- an ordered set of activities
 	// that executes as a whole when triggered.
-	CloudResourceKind_AzureDataFactoryPipeline CloudResourceKind = 2199
+	CatalogKind_AzureDataFactoryPipeline CatalogKind = 2199
 	// A Data Factory data flow ({factory_id}/dataflows/{name}) -- a
 	// visually-designed data transformation executed on managed Spark,
 	// or, as a flowlet, a reusable snippet other data flows embed. One
 	// kind covers both provider forms (they share one schema and one
 	// name namespace inside the factory).
-	CloudResourceKind_AzureDataFactoryDataFlow CloudResourceKind = 2200
+	CatalogKind_AzureDataFactoryDataFlow CatalogKind = 2200
 	// A Data Factory linked service
 	// ({factory_id}/linkedservices/{name}) -- a saved connection in the
 	// factory's address book: where an external system lives and how to
@@ -1617,7 +1617,7 @@ const (
 	// models as a first-class resource (storage, SQL family, Cosmos DB,
 	// Databricks, Key Vault, SFTP, web APIs, and more) as variants in
 	// one factory-scoped name namespace, plus the raw-JSON custom form.
-	CloudResourceKind_AzureDataFactoryLinkedService CloudResourceKind = 2201
+	CatalogKind_AzureDataFactoryLinkedService CatalogKind = 2201
 	// A Data Factory dataset ({factory_id}/datasets/{name}) -- a named
 	// view of data inside a system a linked service already connects
 	// to: which container and path, which table, which file format.
@@ -1625,14 +1625,14 @@ const (
 	// dataset resource (delimited text/CSV, JSON, Parquet, binary,
 	// blob, HTTP, the SQL family, Snowflake, Cosmos DB) as variants in
 	// one factory-scoped name namespace, plus the raw-JSON custom form.
-	CloudResourceKind_AzureDataFactoryDataset CloudResourceKind = 2202
+	CatalogKind_AzureDataFactoryDataset CatalogKind = 2202
 	// A Data Factory trigger ({factory_id}/triggers/{name}) -- the
 	// instruction that starts pipelines automatically: on a clock
 	// schedule, per contiguous tumbling window, on storage blob events,
 	// or on Event Grid custom events. One kind covers all four provider
 	// trigger resources as variants (one ARM namespace, one
 	// started/stopped lifecycle).
-	CloudResourceKind_AzureDataFactoryTrigger CloudResourceKind = 2203
+	CatalogKind_AzureDataFactoryTrigger CatalogKind = 2203
 	// A Data Factory integration runtime
 	// ({factory_id}/integrationRuntimes/{name}) -- the compute engine a
 	// factory's pipelines, data flows, and copy activities run on. One
@@ -1641,7 +1641,7 @@ const (
 	// managed SSIS package runtime, and the self-hosted agent
 	// registration (which issues the authorization keys agents join
 	// with).
-	CloudResourceKind_AzureDataFactoryIntegrationRuntime CloudResourceKind = 2204
+	CatalogKind_AzureDataFactoryIntegrationRuntime CatalogKind = 2204
 	// The Azure Compute Gallery -- the shared library an organization
 	// keeps its approved VM images in. Image definitions
 	// (AzureComputeGalleryImage) live inside it; VMs and scale sets
@@ -1651,29 +1651,29 @@ const (
 	// inside the library that publishes them. The image ids a VM, a scale
 	// set, or a disk boots from are plain strings and never place anything
 	// inside the gallery.
-	CloudResourceKind_AzureComputeGallery CloudResourceKind = 2205
+	CatalogKind_AzureComputeGallery CatalogKind = 2205
 	// A gallery image ({gallery_id}/images/{name}) -- one image
 	// definition inside a Compute Gallery (marketplace-style identity,
 	// OS type, security posture) plus its published versions, each
 	// replicated to its own target regions. VMs deploy from a version's
 	// ARM ID or from the definition's ID to get the latest version.
-	CloudResourceKind_AzureComputeGalleryImage CloudResourceKind = 2206
+	CatalogKind_AzureComputeGalleryImage CatalogKind = 2206
 	// The availability set -- the classic pre-zones placement grouping
 	// that spreads VMs across separate fault and update domains so one
 	// hardware failure or maintenance window cannot take them all down.
 	// VMs join the set at creation.
-	CloudResourceKind_AzureAvailabilitySet CloudResourceKind = 2207
+	CatalogKind_AzureAvailabilitySet CatalogKind = 2207
 	// The managed disk snapshot -- a point-in-time copy of a disk used
 	// for backup, cloning, and as the source of gallery image versions.
 	// Incremental snapshots store only the delta since the previous
 	// snapshot of the same disk.
-	CloudResourceKind_AzureDiskSnapshot CloudResourceKind = 2208
+	CatalogKind_AzureDiskSnapshot CatalogKind = 2208
 	// The Azure Container Instance container group -- serverless
 	// containers billed per second: one or more containers sharing a
 	// lifecycle, network, and volumes (plus one-shot init containers),
 	// with no cluster or VM to manage. Public, subnet-private, or
 	// IP-less postures.
-	CloudResourceKind_AzureContainerInstance CloudResourceKind = 2209
+	CatalogKind_AzureContainerInstance CatalogKind = 2209
 	// The Azure Function App on the Flex Consumption plan -- Azure's
 	// newest serverless Functions hosting model: per-instance memory
 	// selection, a configurable scale-out ceiling, always-ready instance
@@ -1684,24 +1684,24 @@ const (
 	// cost), so scenarios bring their own plan fixture -- the same
 	// reasoning that keeps the globally-unique storage account
 	// scenario-local for AzureFunctionApp.
-	CloudResourceKind_AzureFunctionAppFlexConsumption CloudResourceKind = 2210
+	CatalogKind_AzureFunctionAppFlexConsumption CatalogKind = 2210
 	// The Azure Cosmos DB for MongoDB vCore cluster -- Azure's modern
 	// managed MongoDB: a real MongoDB engine on dedicated vCore tiers
 	// with sharding, zone-redundant HA, and point-in-time restore.
-	CloudResourceKind_AzureMongoCluster CloudResourceKind = 2211
+	CatalogKind_AzureMongoCluster CatalogKind = 2211
 	// The Microsoft Fabric capacity -- the billing and compute anchor of
 	// Microsoft Fabric: workspaces assign themselves to a capacity, and
 	// its F-SKU sets how much compute every workload on it shares.
 	// azurerm's entire Fabric surface is this one resource (workspaces
 	// and items live in Microsoft's dedicated fabric provider).
-	CloudResourceKind_AzureFabricCapacity CloudResourceKind = 2212
+	CatalogKind_AzureFabricCapacity CatalogKind = 2212
 	// Registers a storage account with a Recovery Services vault as a
 	// backup container (.../protectionContainers/StorageContainer;...)
 	// -- one registration per storage-account-and-vault pair, required
 	// BEFORE any of the account's file shares can be protected. Part of
 	// the backup family (2175-2179) despite the out-of-run number --
 	// enum numbers are pinned by the registry snapshot; never renumber.
-	CloudResourceKind_AzureBackupContainerStorageAccount CloudResourceKind = 2213
+	CatalogKind_AzureBackupContainerStorageAccount CatalogKind = 2213
 	// The Data Protection Resource Guard (Microsoft.DataProtection/
 	// resourceGuards) -- the approval gate behind Multi-User
 	// Authorization: privileged vault operations (disabling soft delete,
@@ -1710,7 +1710,7 @@ const (
 	// reference a guard by its ARM ID. Part of the backup family
 	// (2175-2182) despite the out-of-run number -- enum numbers are
 	// pinned by the registry snapshot; never renumber.
-	CloudResourceKind_AzureDataProtectionResourceGuard CloudResourceKind = 2214
+	CatalogKind_AzureDataProtectionResourceGuard CatalogKind = 2214
 	// The attachment that makes a DNS forwarding ruleset take effect in
 	// one virtual network ({ruleset_id}/virtualNetworkLinks/{name}) --
 	// one link per ruleset-network pair, up to 500 per ruleset, spokes
@@ -1719,7 +1719,7 @@ const (
 	// Part of the DNS Private Resolver family (2186-2187) despite the
 	// out-of-run number -- enum numbers are pinned by the registry
 	// snapshot; never renumber.
-	CloudResourceKind_AzurePrivateDnsResolverVirtualNetworkLink CloudResourceKind = 2215
+	CatalogKind_AzurePrivateDnsResolverVirtualNetworkLink CatalogKind = 2215
 	// The attachment that puts ONE machine under an Azure Monitor data
 	// collection rule ({target_id}/providers/Microsoft.Insights/
 	// dataCollectionRuleAssociations/{name}) -- an extension resource on
@@ -1731,7 +1731,7 @@ const (
 	// own install manifest. Part of the Monitor family (2191-2192)
 	// despite the out-of-run number -- enum numbers are pinned by the
 	// registry snapshot; never renumber.
-	CloudResourceKind_AzureMonitorDataCollectionRuleAssociation CloudResourceKind = 2216
+	CatalogKind_AzureMonitorDataCollectionRuleAssociation CatalogKind = 2216
 	// One named event stream inside an Azure Event Grid domain
 	// ({domain_id}/topics/{name}) -- the per-tenant mailbox of the
 	// multi-tenant pattern: many per domain, each with its own
@@ -1741,7 +1741,7 @@ const (
 	// Part of the Event Grid family (2193-2194) despite the out-of-run
 	// number -- enum numbers are pinned by the registry snapshot; never
 	// renumber.
-	CloudResourceKind_AzureEventgridDomainTopic CloudResourceKind = 2217
+	CatalogKind_AzureEventgridDomainTopic CatalogKind = 2217
 	// One named CloudEvents stream inside an Azure Event Grid namespace
 	// ({namespace_id}/topics/{name}) -- many per namespace, publishers
 	// and teams creating and deleting their own against the shared
@@ -1750,7 +1750,7 @@ const (
 	// Part of the Event Grid family (2193-2197) despite the out-of-run
 	// number -- enum numbers are pinned by the registry snapshot; never
 	// renumber.
-	CloudResourceKind_AzureEventgridNamespaceTopic CloudResourceKind = 2218
+	CatalogKind_AzureEventgridNamespaceTopic CatalogKind = 2218
 	// Grants one Microsoft Entra principal access to an Azure Cosmos DB
 	// for MongoDB vCore cluster ({cluster_id}/users/{object_id}) -- an
 	// access binding, not a password user: many per cluster, principals
@@ -1759,14 +1759,14 @@ const (
 	// Part of the Mongo vCore family (2211) despite the out-of-run
 	// number -- enum numbers are pinned by the registry snapshot; never
 	// renumber.
-	CloudResourceKind_AzureMongoClusterUser CloudResourceKind = 2219
+	CatalogKind_AzureMongoClusterUser CatalogKind = 2219
 	// AzureContainerAppEnvironment is a prerequisite because the runner
 	// appliance is a Container App, and every Container App runs inside an
 	// environment -- the environment reference must resolve before the
 	// appliance can deploy.
-	CloudResourceKind_AzurePlantonRunner CloudResourceKind = 2220
+	CatalogKind_AzurePlantonRunner CatalogKind = 2220
 	// 3000–3999: GCP resources
-	CloudResourceKind_GcpArtifactRegistryRepo CloudResourceKind = 3000
+	CatalogKind_GcpArtifactRegistryRepo CatalogKind = 3000
 	// The URL map is the parent a proxy cannot exist without; the classic
 	// compute certificate kinds and the SSL policy are the fixture parents the
 	// committed scenarios attach. The Certificate Manager certificate list
@@ -1774,207 +1774,207 @@ const (
 	// internal ALB) is optional composition -- a scenario that arms it declares
 	// GcpCertManagerCert via the e2e-prerequisites annotation, never a registry
 	// edge that would tax every proxy and forwarding-rule chain.
-	CloudResourceKind_GcpTargetHttpsProxy           CloudResourceKind = 3001
-	CloudResourceKind_GcpCloudFunction              CloudResourceKind = 3002
-	CloudResourceKind_GcpCloudRun                   CloudResourceKind = 3003
-	CloudResourceKind_GcpCloudSql                   CloudResourceKind = 3004
-	CloudResourceKind_GcpDnsZone                    CloudResourceKind = 3005
-	CloudResourceKind_GcpGcsBucket                  CloudResourceKind = 3006
-	CloudResourceKind_GcpGkeCluster                 CloudResourceKind = 3007
-	CloudResourceKind_GcpIamCustomRole              CloudResourceKind = 3008
-	CloudResourceKind_GcpProject                    CloudResourceKind = 3009
-	CloudResourceKind_GcpVpcNetwork                 CloudResourceKind = 3010
-	CloudResourceKind_GcpSubnetwork                 CloudResourceKind = 3011
-	CloudResourceKind_GcpRouterNat                  CloudResourceKind = 3012
-	CloudResourceKind_GcpGkeNodePool                CloudResourceKind = 3013
-	CloudResourceKind_GcpServiceAccount             CloudResourceKind = 3014
-	CloudResourceKind_GcpGkeWorkloadIdentityBinding CloudResourceKind = 3015
-	CloudResourceKind_GcpCertManagerCert            CloudResourceKind = 3016
-	CloudResourceKind_GcpComputeInstance            CloudResourceKind = 3017
-	CloudResourceKind_GcpDnsRecord                  CloudResourceKind = 3018
-	CloudResourceKind_GcpProjectIamMember           CloudResourceKind = 3019
-	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 3020
-	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 3021
-	CloudResourceKind_GcpCloudArmorPolicy           CloudResourceKind = 3022
-	CloudResourceKind_GcpHealthCheck                CloudResourceKind = 3023
-	CloudResourceKind_GcpBackendBucket              CloudResourceKind = 3024
-	CloudResourceKind_GcpBackendService             CloudResourceKind = 3025
-	CloudResourceKind_GcpRegionNetworkEndpointGroup CloudResourceKind = 3026
-	CloudResourceKind_GcpUrlMap                     CloudResourceKind = 3027
-	CloudResourceKind_GcpManagedSslCertificate      CloudResourceKind = 3028
-	CloudResourceKind_GcpTargetHttpProxy            CloudResourceKind = 3029
-	CloudResourceKind_GcpAlloydbCluster             CloudResourceKind = 3030
-	CloudResourceKind_GcpRedisInstance              CloudResourceKind = 3031
-	CloudResourceKind_GcpFirestoreDatabase          CloudResourceKind = 3032
-	CloudResourceKind_GcpSpannerInstance            CloudResourceKind = 3033
-	CloudResourceKind_GcpSpannerDatabase            CloudResourceKind = 3034
-	CloudResourceKind_GcpBigtableInstance           CloudResourceKind = 3035
-	CloudResourceKind_GcpMemorystoreInstance        CloudResourceKind = 3036
-	CloudResourceKind_GcpCloudSqlDatabase           CloudResourceKind = 3037
-	CloudResourceKind_GcpCloudSqlUser               CloudResourceKind = 3038
-	CloudResourceKind_GcpAlloydbInstance            CloudResourceKind = 3039
-	CloudResourceKind_GcpAlloydbUser                CloudResourceKind = 3040
-	CloudResourceKind_GcpSpannerBackupSchedule      CloudResourceKind = 3041
-	CloudResourceKind_GcpBigtableTable              CloudResourceKind = 3042
-	CloudResourceKind_GcpFirestoreBackupSchedule    CloudResourceKind = 3043
-	CloudResourceKind_GcpFirestoreIndex             CloudResourceKind = 3044
-	CloudResourceKind_GcpBigQueryDataset            CloudResourceKind = 3050
-	CloudResourceKind_GcpDataprocCluster            CloudResourceKind = 3051
-	CloudResourceKind_GcpDataprocAutoscalingPolicy  CloudResourceKind = 3052
-	CloudResourceKind_GcpBigQueryTable              CloudResourceKind = 3053
+	CatalogKind_GcpTargetHttpsProxy           CatalogKind = 3001
+	CatalogKind_GcpCloudFunction              CatalogKind = 3002
+	CatalogKind_GcpCloudRun                   CatalogKind = 3003
+	CatalogKind_GcpCloudSql                   CatalogKind = 3004
+	CatalogKind_GcpDnsZone                    CatalogKind = 3005
+	CatalogKind_GcpGcsBucket                  CatalogKind = 3006
+	CatalogKind_GcpGkeCluster                 CatalogKind = 3007
+	CatalogKind_GcpIamCustomRole              CatalogKind = 3008
+	CatalogKind_GcpProject                    CatalogKind = 3009
+	CatalogKind_GcpVpcNetwork                 CatalogKind = 3010
+	CatalogKind_GcpSubnetwork                 CatalogKind = 3011
+	CatalogKind_GcpRouterNat                  CatalogKind = 3012
+	CatalogKind_GcpGkeNodePool                CatalogKind = 3013
+	CatalogKind_GcpServiceAccount             CatalogKind = 3014
+	CatalogKind_GcpGkeWorkloadIdentityBinding CatalogKind = 3015
+	CatalogKind_GcpCertManagerCert            CatalogKind = 3016
+	CatalogKind_GcpComputeInstance            CatalogKind = 3017
+	CatalogKind_GcpDnsRecord                  CatalogKind = 3018
+	CatalogKind_GcpProjectIamMember           CatalogKind = 3019
+	CatalogKind_GcpFirewallRule               CatalogKind = 3020
+	CatalogKind_GcpGlobalAddress              CatalogKind = 3021
+	CatalogKind_GcpCloudArmorPolicy           CatalogKind = 3022
+	CatalogKind_GcpHealthCheck                CatalogKind = 3023
+	CatalogKind_GcpBackendBucket              CatalogKind = 3024
+	CatalogKind_GcpBackendService             CatalogKind = 3025
+	CatalogKind_GcpRegionNetworkEndpointGroup CatalogKind = 3026
+	CatalogKind_GcpUrlMap                     CatalogKind = 3027
+	CatalogKind_GcpManagedSslCertificate      CatalogKind = 3028
+	CatalogKind_GcpTargetHttpProxy            CatalogKind = 3029
+	CatalogKind_GcpAlloydbCluster             CatalogKind = 3030
+	CatalogKind_GcpRedisInstance              CatalogKind = 3031
+	CatalogKind_GcpFirestoreDatabase          CatalogKind = 3032
+	CatalogKind_GcpSpannerInstance            CatalogKind = 3033
+	CatalogKind_GcpSpannerDatabase            CatalogKind = 3034
+	CatalogKind_GcpBigtableInstance           CatalogKind = 3035
+	CatalogKind_GcpMemorystoreInstance        CatalogKind = 3036
+	CatalogKind_GcpCloudSqlDatabase           CatalogKind = 3037
+	CatalogKind_GcpCloudSqlUser               CatalogKind = 3038
+	CatalogKind_GcpAlloydbInstance            CatalogKind = 3039
+	CatalogKind_GcpAlloydbUser                CatalogKind = 3040
+	CatalogKind_GcpSpannerBackupSchedule      CatalogKind = 3041
+	CatalogKind_GcpBigtableTable              CatalogKind = 3042
+	CatalogKind_GcpFirestoreBackupSchedule    CatalogKind = 3043
+	CatalogKind_GcpFirestoreIndex             CatalogKind = 3044
+	CatalogKind_GcpBigQueryDataset            CatalogKind = 3050
+	CatalogKind_GcpDataprocCluster            CatalogKind = 3051
+	CatalogKind_GcpDataprocAutoscalingPolicy  CatalogKind = 3052
+	CatalogKind_GcpBigQueryTable              CatalogKind = 3053
 	// A BigQuery capacity commitment: slots bought for a fixed term in an
 	// administration project and location, pooled across every reservation
 	// there. A purchase Google will not delete before its term ends.
-	CloudResourceKind_GcpBigQueryCapacityCommitment CloudResourceKind = 3054
+	CatalogKind_GcpBigQueryCapacityCommitment CatalogKind = 3054
 	// A BigQuery reservation group: reservations that share idle slots with
 	// each other first. Reservations reference it.
-	CloudResourceKind_GcpBigQueryReservationGroup CloudResourceKind = 3055
+	CatalogKind_GcpBigQueryReservationGroup CatalogKind = 3055
 	// A Datastream connection profile: where one source database or
 	// destination is and how Datastream signs in. Streams reference a source
 	// and a destination profile; one profile serves many streams.
-	CloudResourceKind_GcpDatastreamConnectionProfile CloudResourceKind = 3056
+	CatalogKind_GcpDatastreamConnectionProfile CatalogKind = 3056
 	// A Datastream private connection: the VPC peering or Private Service
 	// Connect interface through which Datastream reaches private databases,
 	// shared by every profile that reaches that network.
-	CloudResourceKind_GcpDatastreamPrivateConnection CloudResourceKind = 3057
-	CloudResourceKind_GcpPubSubTopic                 CloudResourceKind = 3060
-	CloudResourceKind_GcpPubSubSubscription          CloudResourceKind = 3061
-	CloudResourceKind_GcpCloudTasksQueue             CloudResourceKind = 3062
-	CloudResourceKind_GcpCloudSchedulerJob           CloudResourceKind = 3063
-	CloudResourceKind_GcpPubSubSchema                CloudResourceKind = 3064
+	CatalogKind_GcpDatastreamPrivateConnection CatalogKind = 3057
+	CatalogKind_GcpPubSubTopic                 CatalogKind = 3060
+	CatalogKind_GcpPubSubSubscription          CatalogKind = 3061
+	CatalogKind_GcpCloudTasksQueue             CatalogKind = 3062
+	CatalogKind_GcpCloudSchedulerJob           CatalogKind = 3063
+	CatalogKind_GcpPubSubSchema                CatalogKind = 3064
 	// One additive grant on a topic. Its own kind, not a field on the topic,
 	// because the identities that most need it (a logging sink's writer, a
 	// Security Command Center export's publisher) belong to resources that
 	// name the topic themselves; a grant on the topic that referenced them
 	// back would be a dependency cycle.
-	CloudResourceKind_GcpPubSubTopicIamMember CloudResourceKind = 3065
-	CloudResourceKind_GcpVertexAiNotebook     CloudResourceKind = 3070
-	CloudResourceKind_GcpVertexAiEndpoint     CloudResourceKind = 3071
-	CloudResourceKind_GcpVertexAiIndex        CloudResourceKind = 3072
+	CatalogKind_GcpPubSubTopicIamMember CatalogKind = 3065
+	CatalogKind_GcpVertexAiNotebook     CatalogKind = 3070
+	CatalogKind_GcpVertexAiEndpoint     CatalogKind = 3071
+	CatalogKind_GcpVertexAiIndex        CatalogKind = 3072
 	// Vector Search IndexEndpoint — distinct from the online-prediction
 	// GcpVertexAiEndpoint (671); different GCP resources, different kinds.
-	CloudResourceKind_GcpVertexAiIndexEndpoint               CloudResourceKind = 3073
-	CloudResourceKind_GcpVertexAiDeployedIndex               CloudResourceKind = 3074
-	CloudResourceKind_GcpCloudComposerEnvironment            CloudResourceKind = 3080
-	CloudResourceKind_GcpCloudComposerUserWorkloadsSecret    CloudResourceKind = 3081
-	CloudResourceKind_GcpCloudComposerUserWorkloadsConfigMap CloudResourceKind = 3082
-	CloudResourceKind_GcpKmsKeyRing                          CloudResourceKind = 3090
-	CloudResourceKind_GcpKmsKey                              CloudResourceKind = 3091
-	CloudResourceKind_GcpKmsKeyIamMember                     CloudResourceKind = 3092
-	CloudResourceKind_GcpFilestoreInstance                   CloudResourceKind = 3100
+	CatalogKind_GcpVertexAiIndexEndpoint               CatalogKind = 3073
+	CatalogKind_GcpVertexAiDeployedIndex               CatalogKind = 3074
+	CatalogKind_GcpCloudComposerEnvironment            CatalogKind = 3080
+	CatalogKind_GcpCloudComposerUserWorkloadsSecret    CatalogKind = 3081
+	CatalogKind_GcpCloudComposerUserWorkloadsConfigMap CatalogKind = 3082
+	CatalogKind_GcpKmsKeyRing                          CatalogKind = 3090
+	CatalogKind_GcpKmsKey                              CatalogKind = 3091
+	CatalogKind_GcpKmsKeyIamMember                     CatalogKind = 3092
+	CatalogKind_GcpFilestoreInstance                   CatalogKind = 3100
 	// 3101–3109: IAM/identity family (overflow block; the 3000–3022
 	// foundation/security sub-band is fully allocated)
-	CloudResourceKind_GcpWorkloadIdentityPool         CloudResourceKind = 3101
-	CloudResourceKind_GcpWorkloadIdentityPoolProvider CloudResourceKind = 3102
-	CloudResourceKind_GcpServiceAccountIamMember      CloudResourceKind = 3103
+	CatalogKind_GcpWorkloadIdentityPool         CatalogKind = 3101
+	CatalogKind_GcpWorkloadIdentityPoolProvider CatalogKind = 3102
+	CatalogKind_GcpServiceAccountIamMember      CatalogKind = 3103
 	// One additive grant on a bucket, for a grantee that depends on the
 	// bucket itself (a logging sink writing into it): the bucket's own
 	// iam_members cannot reference such an identity without a cycle.
-	CloudResourceKind_GcpGcsBucketIamMember CloudResourceKind = 3104
+	CatalogKind_GcpGcsBucketIamMember CatalogKind = 3104
 	// 3110–3119: networking/load-balancer family (overflow block; the 3023–3029
 	// LB sub-band is fully allocated)
-	CloudResourceKind_GcpGlobalForwardingRule        CloudResourceKind = 3110
-	CloudResourceKind_GcpSslPolicy                   CloudResourceKind = 3111
-	CloudResourceKind_GcpSslCertificate              CloudResourceKind = 3112
-	CloudResourceKind_GcpServiceNetworkingConnection CloudResourceKind = 3113
-	CloudResourceKind_GcpAddress                     CloudResourceKind = 3114
-	CloudResourceKind_GcpServiceConnectionPolicy     CloudResourceKind = 3115
-	CloudResourceKind_GcpCertManagerDnsAuthorization CloudResourceKind = 3116
+	CatalogKind_GcpGlobalForwardingRule        CatalogKind = 3110
+	CatalogKind_GcpSslPolicy                   CatalogKind = 3111
+	CatalogKind_GcpSslCertificate              CatalogKind = 3112
+	CatalogKind_GcpServiceNetworkingConnection CatalogKind = 3113
+	CatalogKind_GcpAddress                     CatalogKind = 3114
+	CatalogKind_GcpServiceConnectionPolicy     CatalogKind = 3115
+	CatalogKind_GcpCertManagerDnsAuthorization CatalogKind = 3116
 	// GcpCertManagerCert is a prerequisite because a map entry binds
 	// hostnames to EXISTING certificates — the canonical map references a
 	// certificate fixture's resource name.
-	CloudResourceKind_GcpCertificateMap CloudResourceKind = 3117
+	CatalogKind_GcpCertificateMap CatalogKind = 3117
 	// The CA certificates a load balancer validates client certificates
 	// against (mutual TLS). Its own kind: TLS policies reference it, never a
 	// certificate.
-	CloudResourceKind_GcpCertManagerTrustConfig CloudResourceKind = 3118
+	CatalogKind_GcpCertManagerTrustConfig CatalogKind = 3118
 	// How Google-managed certificates are issued from a private CA pool. Its
 	// own kind: many certificates share one config by name.
-	CloudResourceKind_GcpCertManagerIssuanceConfig CloudResourceKind = 3119
+	CatalogKind_GcpCertManagerIssuanceConfig CatalogKind = 3119
 	// 3120–3129: GCP serverless overflow
-	CloudResourceKind_GcpCloudRunJob            CloudResourceKind = 3120
-	CloudResourceKind_GcpServerlessVpcConnector CloudResourceKind = 3121
+	CatalogKind_GcpCloudRunJob            CatalogKind = 3120
+	CatalogKind_GcpServerlessVpcConnector CatalogKind = 3121
 	// Cloud Run's no-ingress shape: a pool of always-running container
 	// instances (queue consumers, schedulers, background workers) that
 	// scales manually or by the owner's own signal instead of by requests.
 	// The proof deploys direct-VPC egress onto the prerequisite network.
-	CloudResourceKind_GcpCloudRunWorkerPool CloudResourceKind = 3122
+	CatalogKind_GcpCloudRunWorkerPool CatalogKind = 3122
 	// 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that
 	// holds GcpComputeInstance is fully allocated)
-	CloudResourceKind_GcpComputeDisk CloudResourceKind = 3130
+	CatalogKind_GcpComputeDisk CatalogKind = 3130
 	// GcpVpcNetwork is a prerequisite because the canonical group runs its
 	// fleet on a dedicated custom-mode VPC — a managed instance group's
 	// template must attach every VM to a network, and the default VPC is
 	// never assumed.
-	CloudResourceKind_GcpComputeMig CloudResourceKind = 3131
+	CatalogKind_GcpComputeMig CatalogKind = 3131
 	// 3140–3149: GCP observability & log routing
-	CloudResourceKind_GcpMonitoringNotificationChannel CloudResourceKind = 3140
+	CatalogKind_GcpMonitoringNotificationChannel CatalogKind = 3140
 	// GcpMonitoringNotificationChannel is a prerequisite because the policy's
 	// canonical shape references a channel to notify — a policy without a
 	// delivery endpoint measures but never pages.
-	CloudResourceKind_GcpMonitoringAlertPolicy CloudResourceKind = 3141
-	CloudResourceKind_GcpMonitoringUptimeCheck CloudResourceKind = 3142
+	CatalogKind_GcpMonitoringAlertPolicy CatalogKind = 3141
+	CatalogKind_GcpMonitoringUptimeCheck CatalogKind = 3142
 	// GcpGcsBucket is a prerequisite because the canonical sink exports to a
 	// Cloud Storage bucket — the cheapest destination that proves the whole
 	// writer-identity grant flow.
-	CloudResourceKind_GcpLoggingSink         CloudResourceKind = 3143
-	CloudResourceKind_GcpMonitoringDashboard CloudResourceKind = 3144
-	CloudResourceKind_GcpMonitoringSlo       CloudResourceKind = 3145
-	CloudResourceKind_GcpLogBucket           CloudResourceKind = 3146
-	CloudResourceKind_GcpLogMetric           CloudResourceKind = 3147
+	CatalogKind_GcpLoggingSink         CatalogKind = 3143
+	CatalogKind_GcpMonitoringDashboard CatalogKind = 3144
+	CatalogKind_GcpMonitoringSlo       CatalogKind = 3145
+	CatalogKind_GcpLogBucket           CatalogKind = 3146
+	CatalogKind_GcpLogMetric           CatalogKind = 3147
 	// 3150–3159: GCP security & identity
 	// GcpServiceAccount is a prerequisite because the canonical secret grants
 	// secretAccessor to a workload service account — the access story the
 	// kind exists to model.
-	CloudResourceKind_GcpSecretManagerSecret    CloudResourceKind = 3150
-	CloudResourceKind_GcpIdentityPlatformConfig CloudResourceKind = 3151
+	CatalogKind_GcpSecretManagerSecret    CatalogKind = 3150
+	CatalogKind_GcpIdentityPlatformConfig CatalogKind = 3151
 	// GcpIdentityPlatformConfig is a prerequisite because tenants exist only
 	// in projects whose Identity Platform config enables
 	// multi_tenant.allow_tenants — a tenant without the initialized,
 	// tenant-enabled project config cannot be created at all.
-	CloudResourceKind_GcpIdentityPlatformTenant CloudResourceKind = 3152
-	CloudResourceKind_GcpIamOauthClient         CloudResourceKind = 3153
-	CloudResourceKind_GcpIamDenyPolicy          CloudResourceKind = 3154
+	CatalogKind_GcpIdentityPlatformTenant CatalogKind = 3152
+	CatalogKind_GcpIamOauthClient         CatalogKind = 3153
+	CatalogKind_GcpIamDenyPolicy          CatalogKind = 3154
 	// 3160–3169: GCP serverless edge
 	// GcpCloudRun is a prerequisite because a domain mapping exists only to
 	// point a verified domain at a running Cloud Run service — the route it
 	// maps must already exist for the mapping to be created at all.
-	CloudResourceKind_GcpCloudRunDomainMapping CloudResourceKind = 3160
-	CloudResourceKind_GcpWorkflow              CloudResourceKind = 3161
+	CatalogKind_GcpCloudRunDomainMapping CatalogKind = 3160
+	CatalogKind_GcpWorkflow              CatalogKind = 3161
 	// GcpCloudRun is a prerequisite because the canonical trigger routes a
 	// Pub/Sub messagePublished event to a Cloud Run service — the
 	// destination story the kind exists to model.
-	CloudResourceKind_GcpEventarcTrigger    CloudResourceKind = 3162
-	CloudResourceKind_GcpEventarcMessageBus CloudResourceKind = 3163
-	CloudResourceKind_GcpPlantonRunner      CloudResourceKind = 3164
+	CatalogKind_GcpEventarcTrigger    CatalogKind = 3162
+	CatalogKind_GcpEventarcMessageBus CatalogKind = 3163
+	CatalogKind_GcpPlantonRunner      CatalogKind = 3164
 	// 3170–3179: GCP organization & governance (folders, org policies, tags,
 	// budgets, identity groups, API keys, KMS Autokey)
 	// GcpFolder is a container: the hierarchy node projects, sub-folders,
 	// policies, and tag bindings are placed inside.
-	CloudResourceKind_GcpFolder     CloudResourceKind = 3170
-	CloudResourceKind_GcpOrgPolicy  CloudResourceKind = 3171
-	CloudResourceKind_GcpTagKey     CloudResourceKind = 3172
-	CloudResourceKind_GcpTagValue   CloudResourceKind = 3173
-	CloudResourceKind_GcpTagBinding CloudResourceKind = 3174
+	CatalogKind_GcpFolder     CatalogKind = 3170
+	CatalogKind_GcpOrgPolicy  CatalogKind = 3171
+	CatalogKind_GcpTagKey     CatalogKind = 3172
+	CatalogKind_GcpTagValue   CatalogKind = 3173
+	CatalogKind_GcpTagBinding CatalogKind = 3174
 	// A spending guardrail on a Cloud Billing account: amount, period,
 	// filters, thresholds, and where the alerts go. Lives on the billing
 	// account, so no project prerequisite; the proof lane needs a billing
 	// account the harness identity can administer.
-	CloudResourceKind_GcpBillingBudget CloudResourceKind = 3175
+	CatalogKind_GcpBillingBudget CatalogKind = 3175
 	// A Google Group in Cloud Identity or Workspace with its memberships
 	// folded in -- the unit IAM bindings should name. Lives under a Cloud
 	// Identity customer, beside the service accounts and workload identity
 	// pools in the identity service group.
-	CloudResourceKind_GcpCloudIdentityGroup CloudResourceKind = 3176
-	CloudResourceKind_GcpApiKey             CloudResourceKind = 3177
+	CatalogKind_GcpCloudIdentityGroup CatalogKind = 3176
+	CatalogKind_GcpApiKey             CatalogKind = 3177
 	// Cloud KMS Autokey switched on for a folder or a project: where the
 	// customer-managed keys GcpKmsKeyHandle requests are created. A security
 	// control, so it groups with the KMS kinds rather than the hierarchy.
-	CloudResourceKind_GcpKmsAutokeyConfig CloudResourceKind = 3178
+	CatalogKind_GcpKmsAutokeyConfig CatalogKind = 3178
 	// A custom constraint is a DEFINITION the organization owns; the
 	// GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
 	// bindings reference a custom role.
-	CloudResourceKind_GcpOrgPolicyCustomConstraint CloudResourceKind = 3179
+	CatalogKind_GcpOrgPolicyCustomConstraint CatalogKind = 3179
 	// 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN,
 	// firewall policies, PSC, network endpoint groups).
 	// HA VPN is two kinds: the gateway (with its Cloud Router) is declared
@@ -1987,26 +1987,26 @@ const (
 	// attached to that project's VPC networks (globally or per region). Each
 	// folds its rules and associations -- a rule is keyed by priority inside
 	// its policy and an association is the edge that makes the policy act.
-	CloudResourceKind_GcpSharedVpcHost              CloudResourceKind = 3180
-	CloudResourceKind_GcpSharedVpcServiceProject    CloudResourceKind = 3181
-	CloudResourceKind_GcpVpcPeering                 CloudResourceKind = 3182
-	CloudResourceKind_GcpHaVpnGateway               CloudResourceKind = 3183
-	CloudResourceKind_GcpHierarchicalFirewallPolicy CloudResourceKind = 3184
-	CloudResourceKind_GcpNetworkFirewallPolicy      CloudResourceKind = 3185
-	CloudResourceKind_GcpHaVpnConnection            CloudResourceKind = 3188
+	CatalogKind_GcpSharedVpcHost              CatalogKind = 3180
+	CatalogKind_GcpSharedVpcServiceProject    CatalogKind = 3181
+	CatalogKind_GcpVpcPeering                 CatalogKind = 3182
+	CatalogKind_GcpHaVpnGateway               CatalogKind = 3183
+	CatalogKind_GcpHierarchicalFirewallPolicy CatalogKind = 3184
+	CatalogKind_GcpNetworkFirewallPolicy      CatalogKind = 3185
+	CatalogKind_GcpHaVpnConnection            CatalogKind = 3188
 	// The producer half of Private Service Connect: publishes an internal
 	// load balancer's regional forwarding rule through NAT subnets so
 	// consumers in other VPCs reach it over a PSC endpoint (a regional
 	// GcpGlobalForwardingRule with an empty scheme targeting this
 	// attachment). The proof chain deploys the internal passthrough load
 	// balancer and the PSC NAT subnet as fixtures on the prerequisite network.
-	CloudResourceKind_GcpPscServiceAttachment CloudResourceKind = 3186
+	CatalogKind_GcpPscServiceAttachment CatalogKind = 3186
 	// Zonal (VM, hybrid, internet) and global (internet) network endpoint
 	// groups behind a `zone` selector; serverless, PSC, and regional
 	// internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof
 	// attaches a GcpComputeInstance fixture as an endpoint on the
 	// prerequisite network.
-	CloudResourceKind_GcpNetworkEndpointGroup CloudResourceKind = 3187
+	CatalogKind_GcpNetworkEndpointGroup CatalogKind = 3187
 	// 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka,
 	// BigQuery connections and reservations, Datastream)
 	// Memorystore for Redis Cluster: the sharded, horizontally scaled Redis.
@@ -2015,27 +2015,27 @@ const (
 	// gcp-memorystore-redis class on the network in the cluster's region --
 	// the prerequisite; its proof pin carries that class beside the network
 	// and subnet pins.
-	CloudResourceKind_GcpRedisCluster CloudResourceKind = 3190
+	CatalogKind_GcpRedisCluster CatalogKind = 3190
 	// Managed Service for Apache Kafka: a Google-operated broker fleet in one
 	// region, reachable from the VPC subnets it is attached to -- the
 	// prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so
 	// the teams that own them declare them without editing the cluster.
-	CloudResourceKind_GcpManagedKafkaCluster CloudResourceKind = 3191
-	CloudResourceKind_GcpManagedKafkaTopic   CloudResourceKind = 3192
+	CatalogKind_GcpManagedKafkaCluster CatalogKind = 3191
+	CatalogKind_GcpManagedKafkaTopic   CatalogKind = 3192
 	// Kafka Connect workers attached to a Kafka cluster: a separate
 	// project-and-location root that names the cluster it serves.
-	CloudResourceKind_GcpManagedKafkaConnectCluster CloudResourceKind = 3193
+	CatalogKind_GcpManagedKafkaConnectCluster CatalogKind = 3193
 	// BigQuery's link to data outside its own storage (Cloud SQL, Spanner,
 	// AWS and Azure through Omni, Google resources through a managed service
 	// account, the Connector framework, Spark procedures).
-	CloudResourceKind_GcpBigQueryConnection CloudResourceKind = 3194
+	CatalogKind_GcpBigQueryConnection CatalogKind = 3194
 	// A BigQuery slot reservation with the assignments that route projects,
 	// folders, or an organization onto it.
-	CloudResourceKind_GcpBigQueryReservation CloudResourceKind = 3195
+	CatalogKind_GcpBigQueryReservation CatalogKind = 3195
 	// A Datastream stream: continuous change data capture from one source
 	// database into BigQuery or Cloud Storage, through a source and a
 	// destination connection profile.
-	CloudResourceKind_GcpDatastreamStream CloudResourceKind = 3196
+	CatalogKind_GcpDatastreamStream CatalogKind = 3196
 	// The Private Service Connect connections a consumer builds by hand
 	// (forwarding rules in other VPCs or projects) registered on a Redis
 	// Cluster, as one set: Google's resource replaces the cluster's whole
@@ -2043,12 +2043,12 @@ const (
 	// cluster is the honest grain. Its own kind because every connection
 	// names a forwarding rule that targets one of the cluster's service
 	// attachments -- a fold would depend on its own output.
-	CloudResourceKind_GcpRedisClusterEndpointSet CloudResourceKind = 3197
+	CatalogKind_GcpRedisClusterEndpointSet CatalogKind = 3197
 	// The access rules for one resource pattern (a topic, a consumer group,
 	// a prefix, the cluster) on a Kafka cluster.
-	CloudResourceKind_GcpManagedKafkaAcl CloudResourceKind = 3198
+	CatalogKind_GcpManagedKafkaAcl CatalogKind = 3198
 	// One data pipeline running on a Kafka Connect cluster.
-	CloudResourceKind_GcpManagedKafkaConnector CloudResourceKind = 3199
+	CatalogKind_GcpManagedKafkaConnector CatalogKind = 3199
 	// 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine,
 	// Vector Search, and the rest of the Vertex AI and generative-AI
 	// building blocks). The pre-existing Vertex AI kinds -- endpoint, index,
@@ -2057,430 +2057,430 @@ const (
 	// Vertex AI Agent Engine: the managed runtime an AI agent runs in --
 	// built from source or a container, hosted with its own identity and
 	// autoscaling, with an optional Memory Bank of long-term memories.
-	CloudResourceKind_GcpVertexAiAgentEngine CloudResourceKind = 3200
+	CatalogKind_GcpVertexAiAgentEngine CatalogKind = 3200
 	// A Model Garden or Hugging Face model deployed to a Vertex AI endpoint
 	// in one step; every argument is immutable, so a change redeploys.
-	CloudResourceKind_GcpVertexAiModelGardenDeployment CloudResourceKind = 3201
+	CatalogKind_GcpVertexAiModelGardenDeployment CatalogKind = 3201
 	// The per-project, per-location tier of Vertex AI RAG Engine's managed
 	// vector database: a singleton Google owns, updated in place.
-	CloudResourceKind_GcpVertexAiRagEngineConfig CloudResourceKind = 3202
+	CatalogKind_GcpVertexAiRagEngineConfig CatalogKind = 3202
 	// 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp
 	// bridges provider 8.x (the resource has no SDK type today).
 	// A Vector Search collection -- a schema'd store of data objects with
 	// vector fields -- together with the approximate-nearest-neighbor indexes
 	// built over those fields (folded: one collection owns them).
-	CloudResourceKind_GcpVectorSearchCollection CloudResourceKind = 3204
+	CatalogKind_GcpVectorSearchCollection CatalogKind = 3204
 	// Vertex AI Search (the Discovery Engine API behind the console's AI
 	// Applications / Gemini Enterprise): a data store is the corpus --
 	// structured records, unstructured documents, or a public website --
 	// with its schema, crawl patterns, and sitemaps folded in.
-	CloudResourceKind_GcpVertexAiSearchDataStore CloudResourceKind = 3205
+	CatalogKind_GcpVertexAiSearchDataStore CatalogKind = 3205
 	// The app over one or more data stores -- a search, chat, or
 	// recommendation engine -- with its serving controls, serving config,
 	// search widget, and assistants folded in. Its data stores are
 	// prerequisites: an engine cannot exist without one.
-	CloudResourceKind_GcpVertexAiSearchEngine CloudResourceKind = 3206
+	CatalogKind_GcpVertexAiSearchEngine CatalogKind = 3206
 	// Vertex AI Feature Store: a feature group registers the features of
 	// some entities that live in a BigQuery table or view -- the features
 	// themselves folded in. Online stores serve them through feature views.
-	CloudResourceKind_GcpVertexAiFeatureGroup CloudResourceKind = 3207
+	CatalogKind_GcpVertexAiFeatureGroup CatalogKind = 3207
 	// The low-latency serving layer of Vertex AI Feature Store (Bigtable or
 	// Optimized storage), with the feature views it serves folded in.
-	CloudResourceKind_GcpVertexAiFeatureOnlineStore CloudResourceKind = 3208
+	CatalogKind_GcpVertexAiFeatureOnlineStore CatalogKind = 3208
 	// A Vertex AI managed dataset: the registered container training,
 	// AutoML, labeling, and evaluation read their examples from.
-	CloudResourceKind_GcpVertexAiDataset CloudResourceKind = 3209
+	CatalogKind_GcpVertexAiDataset CatalogKind = 3209
 	// A managed Vertex AI TensorBoard training jobs stream metrics into, with
 	// the experiments and runs declared in it folded in.
-	CloudResourceKind_GcpVertexAiTensorboard CloudResourceKind = 3210
+	CatalogKind_GcpVertexAiTensorboard CatalogKind = 3210
 	// A long-running cluster Vertex AI keeps provisioned so training jobs and
 	// Ray on Vertex AI start in seconds and scarce accelerators stay held
 	// between jobs.
-	CloudResourceKind_GcpVertexAiPersistentResource CloudResourceKind = 3211
+	CatalogKind_GcpVertexAiPersistentResource CatalogKind = 3211
 	// A Model Armor template: the named safety filters (prompt injection and
 	// jailbreak, Responsible AI content, sensitive data, malicious URLs) an
 	// AI application screens prompts and responses through.
-	CloudResourceKind_GcpModelArmorTemplate CloudResourceKind = 3212
+	CatalogKind_GcpModelArmorTemplate CatalogKind = 3212
 	// A Document AI processor: a managed model that turns documents into
 	// structured data (OCR, forms, invoices, IDs), with its default version.
-	CloudResourceKind_GcpDocumentAiProcessor CloudResourceKind = 3213
+	CatalogKind_GcpDocumentAiProcessor CatalogKind = 3213
 	// A Colab Enterprise runtime template: the machine, network, image, and
 	// security settings every notebook runtime created from it gets.
-	CloudResourceKind_GcpColabRuntimeTemplate CloudResourceKind = 3214
+	CatalogKind_GcpColabRuntimeTemplate CatalogKind = 3214
 	// A Colab Enterprise runtime: a notebook VM assigned to one user, built
 	// from a runtime template and started or stopped on purpose.
-	CloudResourceKind_GcpColabRuntime CloudResourceKind = 3215
+	CatalogKind_GcpColabRuntime CatalogKind = 3215
 	// A Vertex AI schedule: a cron that launches a Colab Enterprise notebook
 	// run or a Vertex AI Pipelines run.
-	CloudResourceKind_GcpColabSchedule CloudResourceKind = 3216
+	CatalogKind_GcpColabSchedule CatalogKind = 3216
 	// A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs.
 	// Beta-only in Google's provider (a recorded google-beta admission).
-	CloudResourceKind_GcpTpuVm CloudResourceKind = 3217
+	CatalogKind_GcpTpuVm CatalogKind = 3217
 	// A Dialogflow CX conversational agent with the infrastructure its
 	// console-authored content uses folded in: webhooks, tools and their
 	// frozen versions, flow versions, the environments that pin them, and
 	// generative settings per language.
-	CloudResourceKind_GcpDialogflowCxAgent CloudResourceKind = 3218
+	CatalogKind_GcpDialogflowCxAgent CatalogKind = 3218
 	// A data connector is a COLLECTION of data stores Google syncs from a
 	// source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
 	// Drive, ...) on a schedule -- a different root from a data store, which
 	// is why it is its own kind. Engines search its stores by naming the
 	// collection.
-	CloudResourceKind_GcpVertexAiSearchDataConnector CloudResourceKind = 3219
+	CatalogKind_GcpVertexAiSearchDataConnector CatalogKind = 3219
 	// A Model Armor floor setting: the minimum safety screening a project,
 	// folder, or organization enforces on its templates and directly on
 	// Vertex AI and Google MCP server traffic. A different parent from a
 	// template (and a singleton Google never deletes), which is why it is
 	// its own kind.
-	CloudResourceKind_GcpModelArmorFloorSetting CloudResourceKind = 3220
+	CatalogKind_GcpModelArmorFloorSetting CatalogKind = 3220
 	// A Cloud TPU queued resource: a request that waits for TPU capacity and
 	// then provisions the nodes it describes. A different root from a TPU VM
 	// that owns many nodes, which is why it is its own kind. Beta-only in
 	// Google's provider (a recorded google-beta admission).
-	CloudResourceKind_GcpTpuQueuedResource CloudResourceKind = 3221
+	CatalogKind_GcpTpuQueuedResource CatalogKind = 3221
 	// Dialogflow CX security settings: the redaction, retention, audio-export,
 	// and Insights-export policy agents in one project and location apply to
 	// their conversations. A different root from an agent, referenced by
 	// agents and shared among them, which is why it is its own kind.
-	CloudResourceKind_GcpDialogflowCxSecuritySettings CloudResourceKind = 3222
+	CatalogKind_GcpDialogflowCxSecuritySettings CatalogKind = 3222
 	// 3230–3239: GCP security (Certificate Authority Service, Cloud KMS
 	// Autokey handles, Security Command Center, Binary Authorization)
 	// A Certificate Authority Service CA pool: the trust anchor and issuance
 	// policy its certificate authorities and certificates live inside.
-	CloudResourceKind_GcpPrivateCaPool CloudResourceKind = 3230
+	CatalogKind_GcpPrivateCaPool CatalogKind = 3230
 	// An Autokey key handle: asks Autokey for a customer-managed key for one
 	// resource type in one project and location; the resource it protects
 	// names the key the handle returns.
-	CloudResourceKind_GcpKmsKeyHandle CloudResourceKind = 3231
+	CatalogKind_GcpKmsKeyHandle CatalogKind = 3231
 	// Security Command Center streaming notifications to Pub/Sub at a
 	// project, folder, or organization.
-	CloudResourceKind_GcpSccNotificationConfig CloudResourceKind = 3232
+	CatalogKind_GcpSccNotificationConfig CatalogKind = 3232
 	// A Security Command Center mute rule at a project, folder, or
 	// organization.
-	CloudResourceKind_GcpSccMuteConfig CloudResourceKind = 3233
+	CatalogKind_GcpSccMuteConfig CatalogKind = 3233
 	// A continuous Security Command Center findings export to a BigQuery
 	// dataset at a project, folder, or organization.
-	CloudResourceKind_GcpSccBigQueryExport CloudResourceKind = 3234
+	CatalogKind_GcpSccBigQueryExport CatalogKind = 3234
 	// A project's Binary Authorization policy: which container images GKE
 	// admits, per cluster. A project singleton.
-	CloudResourceKind_GcpBinaryAuthorizationPolicy CloudResourceKind = 3235
+	CatalogKind_GcpBinaryAuthorizationPolicy CatalogKind = 3235
 	// A Binary Authorization attestor with its Artifact Analysis note: the
 	// public keys that verify image attestations a policy requires.
-	CloudResourceKind_GcpBinaryAuthorizationAttestor CloudResourceKind = 3236
+	CatalogKind_GcpBinaryAuthorizationAttestor CatalogKind = 3236
 	// A certificate authority in a CA pool: a self-signed root, or a
 	// subordinate signed by another authority or an outside CA. Its own kind
 	// because a pool rotates through several and a subordinate references
 	// its parent.
-	CloudResourceKind_GcpPrivateCaCertificateAuthority CloudResourceKind = 3237
+	CatalogKind_GcpPrivateCaCertificateAuthority CatalogKind = 3237
 	// A certificate template: a reusable certificate shape in a project and
 	// location that certificates in any pool there reference.
-	CloudResourceKind_GcpPrivateCaCertificateTemplate CloudResourceKind = 3238
+	CatalogKind_GcpPrivateCaCertificateTemplate CatalogKind = 3238
 	// A certificate issued from a CA pool for a key its owner holds; destroy
 	// revokes it.
-	CloudResourceKind_GcpPrivateCaCertificate CloudResourceKind = 3239
+	CatalogKind_GcpPrivateCaCertificate CatalogKind = 3239
 	// 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build,
 	// Cloud Deploy)
 	// GcpGkeFleet is the container a fleet's scopes, namespaces, memberships,
 	// and features live in: the project's one fleet is the room, and a team
 	// scope or a fleet-wide feature is what is placed inside it.
-	CloudResourceKind_GcpGkeFleet CloudResourceKind = 3240
+	CatalogKind_GcpGkeFleet CatalogKind = 3240
 	// The three fleet children name GcpGkeFleet as their prerequisite: Google
 	// requires the fleet before a scope, a fleet declared after a cluster
 	// registers collides with the fleet that registration created implicitly,
 	// and a feature configures the fleet it lives in. A chart that references
 	// the fleet's project_id output orders each child after it.
-	CloudResourceKind_GcpGkeFleetFeature    CloudResourceKind = 3241
-	CloudResourceKind_GcpGkeFleetScope      CloudResourceKind = 3242
-	CloudResourceKind_GcpGkeFleetMembership CloudResourceKind = 3243
+	CatalogKind_GcpGkeFleetFeature    CatalogKind = 3241
+	CatalogKind_GcpGkeFleetScope      CatalogKind = 3242
+	CatalogKind_GcpGkeFleetMembership CatalogKind = 3243
 	// A Compute Engine custom image: the golden boot image VMs, instance
 	// templates, and disks start from, rolled forward through image families.
-	CloudResourceKind_GcpComputeImage CloudResourceKind = 3244
+	CatalogKind_GcpComputeImage CatalogKind = 3244
 	// GcpCloudBuildConnection is the container a code host's repositories
 	// live in: the connection to GitHub, GitLab, or Bitbucket is the room,
 	// and each linked repository is what is placed inside it.
-	CloudResourceKind_GcpCloudBuildConnection CloudResourceKind = 3245
+	CatalogKind_GcpCloudBuildConnection CatalogKind = 3245
 	// A repository is created under its connection and cannot exist without
 	// it.
-	CloudResourceKind_GcpCloudBuildRepository CloudResourceKind = 3246
+	CatalogKind_GcpCloudBuildRepository CatalogKind = 3246
 	// A Cloud Build trigger: what starts a build (a code event, a Pub/Sub
 	// message, a webhook, or a manual run) and what the build does.
-	CloudResourceKind_GcpCloudBuildTrigger CloudResourceKind = 3247
+	CatalogKind_GcpCloudBuildTrigger CatalogKind = 3247
 	// A Cloud Deploy delivery pipeline: the ordered stages a release is
 	// promoted through, with the automations that drive it.
-	CloudResourceKind_GcpDeliveryPipeline CloudResourceKind = 3248
+	CatalogKind_GcpDeliveryPipeline CatalogKind = 3248
 	// A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster,
 	// a Cloud Run location, a fleet cluster, several targets at once, or a
 	// custom target).
-	CloudResourceKind_GcpDeployTarget CloudResourceKind = 3249
+	CatalogKind_GcpDeployTarget CatalogKind = 3249
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
 	// "Firebase on this project" is the room, the Android/Apple/Web apps are
 	// what is placed inside it.
-	CloudResourceKind_GcpFirebaseProject CloudResourceKind = 3250
+	CatalogKind_GcpFirebaseProject CatalogKind = 3250
 	// The three app registrations exist only inside a Firebase-enabled
 	// project, so each names GcpFirebaseProject as its prerequisite: the E2E
 	// harness deploys the enablement first, and a chart that references the
 	// enablement's project_id output orders the registration after it.
-	CloudResourceKind_GcpFirebaseAndroidApp CloudResourceKind = 3251
-	CloudResourceKind_GcpFirebaseAppleApp   CloudResourceKind = 3252
-	CloudResourceKind_GcpFirebaseWebApp     CloudResourceKind = 3253
+	CatalogKind_GcpFirebaseAndroidApp CatalogKind = 3251
+	CatalogKind_GcpFirebaseAppleApp   CatalogKind = 3252
+	CatalogKind_GcpFirebaseWebApp     CatalogKind = 3253
 	// 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud
 	// Deploy resources many pipelines share)
 	// A private Cloud Build worker pool: build machines many triggers and
 	// Cloud Deploy targets share, optionally on a private network.
-	CloudResourceKind_GcpCloudBuildWorkerPool CloudResourceKind = 3260
+	CatalogKind_GcpCloudBuildWorkerPool CatalogKind = 3260
 	// A Cloud Deploy deploy policy: rollout restrictions (freeze windows)
 	// that apply to every pipeline and target its selectors match.
-	CloudResourceKind_GcpDeployPolicy CloudResourceKind = 3261
+	CatalogKind_GcpDeployPolicy CatalogKind = 3261
 	// A Cloud Deploy custom target type: how to render and deploy to a
 	// target Google does not deploy natively; many targets share one.
-	CloudResourceKind_GcpDeployCustomTargetType CloudResourceKind = 3262
+	CatalogKind_GcpDeployCustomTargetType CatalogKind = 3262
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
 	// analytics & ML; 4190–4199 reserved for growth)
 	// 4000–4029: Kubernetes building blocks (core API primitives)
-	CloudResourceKind_KubernetesNamespace      CloudResourceKind = 4000
-	CloudResourceKind_KubernetesDeployment     CloudResourceKind = 4001
-	CloudResourceKind_KubernetesStatefulSet    CloudResourceKind = 4002
-	CloudResourceKind_KubernetesDaemonSet      CloudResourceKind = 4003
-	CloudResourceKind_KubernetesJob            CloudResourceKind = 4004
-	CloudResourceKind_KubernetesCronJob        CloudResourceKind = 4005
-	CloudResourceKind_KubernetesService        CloudResourceKind = 4006
-	CloudResourceKind_KubernetesSecret         CloudResourceKind = 4007
-	CloudResourceKind_KubernetesManifest       CloudResourceKind = 4008
-	CloudResourceKind_KubernetesHelmRelease    CloudResourceKind = 4009
-	CloudResourceKind_KubernetesConfigMap      CloudResourceKind = 4010
-	CloudResourceKind_KubernetesServiceAccount CloudResourceKind = 4011
+	CatalogKind_KubernetesNamespace      CatalogKind = 4000
+	CatalogKind_KubernetesDeployment     CatalogKind = 4001
+	CatalogKind_KubernetesStatefulSet    CatalogKind = 4002
+	CatalogKind_KubernetesDaemonSet      CatalogKind = 4003
+	CatalogKind_KubernetesJob            CatalogKind = 4004
+	CatalogKind_KubernetesCronJob        CatalogKind = 4005
+	CatalogKind_KubernetesService        CatalogKind = 4006
+	CatalogKind_KubernetesSecret         CatalogKind = 4007
+	CatalogKind_KubernetesManifest       CatalogKind = 4008
+	CatalogKind_KubernetesHelmRelease    CatalogKind = 4009
+	CatalogKind_KubernetesConfigMap      CatalogKind = 4010
+	CatalogKind_KubernetesServiceAccount CatalogKind = 4011
 	// Bundles the RBAC grant grain (Role/ClusterRole + its binding) into one
-	// component: "grant these permissions to these subjects in this scope".
-	CloudResourceKind_KubernetesRbac                  CloudResourceKind = 4012
-	CloudResourceKind_KubernetesIngress               CloudResourceKind = 4013
-	CloudResourceKind_KubernetesNetworkPolicy         CloudResourceKind = 4014
-	CloudResourceKind_KubernetesPersistentVolumeClaim CloudResourceKind = 4015
-	CloudResourceKind_KubernetesStorageClass          CloudResourceKind = 4016
+	// kind: "grant these permissions to these subjects in this scope".
+	CatalogKind_KubernetesRbac                  CatalogKind = 4012
+	CatalogKind_KubernetesIngress               CatalogKind = 4013
+	CatalogKind_KubernetesNetworkPolicy         CatalogKind = 4014
+	CatalogKind_KubernetesPersistentVolumeClaim CatalogKind = 4015
+	CatalogKind_KubernetesStorageClass          CatalogKind = 4016
 	// Manages the namespace-governance pair: the ResourceQuota plus an
 	// optional companion LimitRange (per-object defaults/bounds) — two API
 	// objects, one governance story.
-	CloudResourceKind_KubernetesResourceQuota           CloudResourceKind = 4017
-	CloudResourceKind_KubernetesPriorityClass           CloudResourceKind = 4018
-	CloudResourceKind_KubernetesPodDisruptionBudget     CloudResourceKind = 4019
-	CloudResourceKind_KubernetesHorizontalPodAutoscaler CloudResourceKind = 4020
+	CatalogKind_KubernetesResourceQuota           CatalogKind = 4017
+	CatalogKind_KubernetesPriorityClass           CatalogKind = 4018
+	CatalogKind_KubernetesPodDisruptionBudget     CatalogKind = 4019
+	CatalogKind_KubernetesHorizontalPodAutoscaler CatalogKind = 4020
 	// 4030–4069: Kubernetes foundation addons (certs, DNS, secrets, ingress, Gateway API, mesh, CNI/autoscaling/DR)
-	CloudResourceKind_KubernetesCertManager CloudResourceKind = 4030
+	CatalogKind_KubernetesCertManager CatalogKind = 4030
 	// KubernetesCertManager is a prerequisite for the three cert-manager CR
 	// kinds below: ClusterIssuer/Issuer/Certificate are cert-manager custom
 	// resources — without the controller and its CRDs they cannot be applied.
-	CloudResourceKind_KubernetesClusterIssuer           CloudResourceKind = 4031
-	CloudResourceKind_KubernetesIssuer                  CloudResourceKind = 4032
-	CloudResourceKind_KubernetesCertificate             CloudResourceKind = 4033
-	CloudResourceKind_KubernetesExternalDns             CloudResourceKind = 4034
-	CloudResourceKind_KubernetesExternalSecretsOperator CloudResourceKind = 4035
+	CatalogKind_KubernetesClusterIssuer           CatalogKind = 4031
+	CatalogKind_KubernetesIssuer                  CatalogKind = 4032
+	CatalogKind_KubernetesCertificate             CatalogKind = 4033
+	CatalogKind_KubernetesExternalDns             CatalogKind = 4034
+	CatalogKind_KubernetesExternalSecretsOperator CatalogKind = 4035
 	// KubernetesExternalSecretsOperator is a prerequisite for the three
 	// external-secrets CR kinds below: ClusterSecretStore/SecretStore/
 	// ExternalSecret are external-secrets custom resources — without the
 	// operator and its CRDs they cannot be applied.
-	CloudResourceKind_KubernetesClusterSecretStore CloudResourceKind = 4036
-	CloudResourceKind_KubernetesSecretStore        CloudResourceKind = 4037
-	CloudResourceKind_KubernetesExternalSecret     CloudResourceKind = 4038
-	CloudResourceKind_KubernetesIngressNginx       CloudResourceKind = 4039
-	CloudResourceKind_KubernetesGatewayApiCrds     CloudResourceKind = 4040
-	CloudResourceKind_KubernetesGatewayClass       CloudResourceKind = 4041
-	CloudResourceKind_KubernetesGateway            CloudResourceKind = 4042
-	CloudResourceKind_KubernetesListenerSet        CloudResourceKind = 4043
-	CloudResourceKind_KubernetesHttpRoute          CloudResourceKind = 4044
-	CloudResourceKind_KubernetesGrpcRoute          CloudResourceKind = 4045
-	CloudResourceKind_KubernetesTcpRoute           CloudResourceKind = 4046
-	CloudResourceKind_KubernetesUdpRoute           CloudResourceKind = 4047
-	CloudResourceKind_KubernetesTlsRoute           CloudResourceKind = 4048
-	CloudResourceKind_KubernetesReferenceGrant     CloudResourceKind = 4049
-	CloudResourceKind_KubernetesBackendTlsPolicy   CloudResourceKind = 4050
-	CloudResourceKind_KubernetesIstioBaseCrds      CloudResourceKind = 4051
-	CloudResourceKind_KubernetesIstio              CloudResourceKind = 4052
-	// Istio API components (mesh traffic policy, security, telemetry). The seven typed
+	CatalogKind_KubernetesClusterSecretStore CatalogKind = 4036
+	CatalogKind_KubernetesSecretStore        CatalogKind = 4037
+	CatalogKind_KubernetesExternalSecret     CatalogKind = 4038
+	CatalogKind_KubernetesIngressNginx       CatalogKind = 4039
+	CatalogKind_KubernetesGatewayApiCrds     CatalogKind = 4040
+	CatalogKind_KubernetesGatewayClass       CatalogKind = 4041
+	CatalogKind_KubernetesGateway            CatalogKind = 4042
+	CatalogKind_KubernetesListenerSet        CatalogKind = 4043
+	CatalogKind_KubernetesHttpRoute          CatalogKind = 4044
+	CatalogKind_KubernetesGrpcRoute          CatalogKind = 4045
+	CatalogKind_KubernetesTcpRoute           CatalogKind = 4046
+	CatalogKind_KubernetesUdpRoute           CatalogKind = 4047
+	CatalogKind_KubernetesTlsRoute           CatalogKind = 4048
+	CatalogKind_KubernetesReferenceGrant     CatalogKind = 4049
+	CatalogKind_KubernetesBackendTlsPolicy   CatalogKind = 4050
+	CatalogKind_KubernetesIstioBaseCrds      CatalogKind = 4051
+	CatalogKind_KubernetesIstio              CatalogKind = 4052
+	// Istio API kinds (mesh traffic policy, security, telemetry). The seven typed
 	// resources below (4053–4059) require the Istio CRDs on the cluster, provided by the
 	// lightweight CRDs-only KubernetesIstioBaseCrds (851) — NOT the full mesh
 	// KubernetesIstio (852).
-	CloudResourceKind_KubernetesDestinationRule       CloudResourceKind = 4053
-	CloudResourceKind_KubernetesServiceEntry          CloudResourceKind = 4054
-	CloudResourceKind_KubernetesPeerAuthentication    CloudResourceKind = 4055
-	CloudResourceKind_KubernetesRequestAuthentication CloudResourceKind = 4056
-	CloudResourceKind_KubernetesAuthorizationPolicy   CloudResourceKind = 4057
-	CloudResourceKind_KubernetesTelemetry             CloudResourceKind = 4058
-	CloudResourceKind_KubernetesEnvoyFilter           CloudResourceKind = 4059
-	CloudResourceKind_KubernetesMetricsServer         CloudResourceKind = 4060
-	CloudResourceKind_KubernetesCilium                CloudResourceKind = 4061
-	CloudResourceKind_KubernetesKeda                  CloudResourceKind = 4062
-	CloudResourceKind_KubernetesKarpenter             CloudResourceKind = 4063
-	CloudResourceKind_KubernetesKarpenterNodePool     CloudResourceKind = 4064
-	CloudResourceKind_KubernetesKarpenterEc2NodeClass CloudResourceKind = 4065
-	CloudResourceKind_KubernetesClusterAutoscaler     CloudResourceKind = 4066
-	CloudResourceKind_KubernetesVelero                CloudResourceKind = 4067
+	CatalogKind_KubernetesDestinationRule       CatalogKind = 4053
+	CatalogKind_KubernetesServiceEntry          CatalogKind = 4054
+	CatalogKind_KubernetesPeerAuthentication    CatalogKind = 4055
+	CatalogKind_KubernetesRequestAuthentication CatalogKind = 4056
+	CatalogKind_KubernetesAuthorizationPolicy   CatalogKind = 4057
+	CatalogKind_KubernetesTelemetry             CatalogKind = 4058
+	CatalogKind_KubernetesEnvoyFilter           CatalogKind = 4059
+	CatalogKind_KubernetesMetricsServer         CatalogKind = 4060
+	CatalogKind_KubernetesCilium                CatalogKind = 4061
+	CatalogKind_KubernetesKeda                  CatalogKind = 4062
+	CatalogKind_KubernetesKarpenter             CatalogKind = 4063
+	CatalogKind_KubernetesKarpenterNodePool     CatalogKind = 4064
+	CatalogKind_KubernetesKarpenterEc2NodeClass CatalogKind = 4065
+	CatalogKind_KubernetesClusterAutoscaler     CatalogKind = 4066
+	CatalogKind_KubernetesVelero                CatalogKind = 4067
 	// 4070–4079: Kubernetes observability
-	CloudResourceKind_KubernetesKubePrometheusStack CloudResourceKind = 4070
-	CloudResourceKind_KubernetesGrafana             CloudResourceKind = 4071
+	CatalogKind_KubernetesKubePrometheusStack CatalogKind = 4070
+	CatalogKind_KubernetesGrafana             CatalogKind = 4071
 	// KubernetesClickHouse is a prerequisite because SigNoz stores every
 	// trace, metric and log in ClickHouse and deploys none of its own —
 	// the telemetry store is composed, never bundled.
-	CloudResourceKind_KubernetesSignoz CloudResourceKind = 4072
-	CloudResourceKind_KubernetesLoki   CloudResourceKind = 4073
-	CloudResourceKind_KubernetesTempo  CloudResourceKind = 4074
+	CatalogKind_KubernetesSignoz CatalogKind = 4072
+	CatalogKind_KubernetesLoki   CatalogKind = 4073
+	CatalogKind_KubernetesTempo  CatalogKind = 4074
 	// The operator's admission webhooks (failurePolicy Fail) are served
 	// with a cert-manager Certificate in the default posture —
 	// cert-manager must be running before the operator installs.
-	CloudResourceKind_KubernetesOtelOperator  CloudResourceKind = 4075
-	CloudResourceKind_KubernetesOtelCollector CloudResourceKind = 4076
+	CatalogKind_KubernetesOtelOperator  CatalogKind = 4075
+	CatalogKind_KubernetesOtelCollector CatalogKind = 4076
 	// KubernetesKubePrometheusStack is a prerequisite because it installs the
 	// monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the
 	// Prometheus that scrapes through it.
-	CloudResourceKind_KubernetesServiceMonitor CloudResourceKind = 4077
+	CatalogKind_KubernetesServiceMonitor CatalogKind = 4077
 	// KubernetesKubePrometheusStack is a prerequisite because it installs the
 	// monitoring.coreos.com CRDs the PodMonitor is an instance of, and the
 	// Prometheus that scrapes through it.
-	CloudResourceKind_KubernetesPodMonitor CloudResourceKind = 4078
+	CatalogKind_KubernetesPodMonitor CatalogKind = 4078
 	// KubernetesKubePrometheusStack is a prerequisite because it installs the
 	// monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the
 	// Prometheus that evaluates it.
-	CloudResourceKind_KubernetesPrometheusRule CloudResourceKind = 4079
+	CatalogKind_KubernetesPrometheusRule CatalogKind = 4079
 	// 4080–4099: Kubernetes security, policy, and identity
-	CloudResourceKind_KubernetesKyverno    CloudResourceKind = 4080
-	CloudResourceKind_KubernetesGatekeeper CloudResourceKind = 4081
+	CatalogKind_KubernetesKyverno    CatalogKind = 4080
+	CatalogKind_KubernetesGatekeeper CatalogKind = 4081
 	// Keycloak declarations compose the official Keycloak Operator (which
 	// reconciles the Keycloak CR this kind renders) and, on the recommended
 	// postgres vendor, a KubernetesPostgres database — both must resolve
 	// before the CR can converge.
-	CloudResourceKind_KubernetesKeycloak CloudResourceKind = 4090
-	CloudResourceKind_KubernetesOpenBao  CloudResourceKind = 4091
+	CatalogKind_KubernetesKeycloak CatalogKind = 4090
+	CatalogKind_KubernetesOpenBao  CatalogKind = 4091
 	// OpenFGA requires a datastore; the recommended arm composes a
 	// KubernetesPostgres database (the sandbox memory arm needs nothing,
 	// but the registry declares the shape real deployments require).
-	CloudResourceKind_KubernetesOpenFga          CloudResourceKind = 4092
-	CloudResourceKind_KubernetesKeycloakOperator CloudResourceKind = 4093
+	CatalogKind_KubernetesOpenFga          CatalogKind = 4092
+	CatalogKind_KubernetesKeycloakOperator CatalogKind = 4093
 	// 4100–4129: Kubernetes data platforms
-	CloudResourceKind_KubernetesCloudNativePgOperator CloudResourceKind = 4100
-	CloudResourceKind_KubernetesPostgres              CloudResourceKind = 4101
-	CloudResourceKind_KubernetesValkey                CloudResourceKind = 4102
-	CloudResourceKind_KubernetesPerconaMysqlOperator  CloudResourceKind = 4103
-	CloudResourceKind_KubernetesMysql                 CloudResourceKind = 4104
-	CloudResourceKind_KubernetesPerconaMongoOperator  CloudResourceKind = 4105
-	CloudResourceKind_KubernetesMongodb               CloudResourceKind = 4106
-	CloudResourceKind_KubernetesStrimziKafkaOperator  CloudResourceKind = 4107
+	CatalogKind_KubernetesCloudNativePgOperator CatalogKind = 4100
+	CatalogKind_KubernetesPostgres              CatalogKind = 4101
+	CatalogKind_KubernetesValkey                CatalogKind = 4102
+	CatalogKind_KubernetesPerconaMysqlOperator  CatalogKind = 4103
+	CatalogKind_KubernetesMysql                 CatalogKind = 4104
+	CatalogKind_KubernetesPerconaMongoOperator  CatalogKind = 4105
+	CatalogKind_KubernetesMongodb               CatalogKind = 4106
+	CatalogKind_KubernetesStrimziKafkaOperator  CatalogKind = 4107
 	// container_kind: a Strimzi Kafka cluster is a place in the provider's
 	// own model — KafkaTopic and KafkaUser declarations BELONG to one cluster
 	// (the strimzi.io/cluster label) and are drawn inside its box. Clients
 	// that merely talk to the cluster (Connect, MirrorMaker2, UI, Karapace)
 	// carry containment_exempt on their bootstrap/trust references.
-	CloudResourceKind_KubernetesKafka      CloudResourceKind = 4108
-	CloudResourceKind_KubernetesKafkaTopic CloudResourceKind = 4109
-	CloudResourceKind_KubernetesKafkaUser  CloudResourceKind = 4110
+	CatalogKind_KubernetesKafka      CatalogKind = 4108
+	CatalogKind_KubernetesKafkaTopic CatalogKind = 4109
+	CatalogKind_KubernetesKafkaUser  CatalogKind = 4110
 	// container_kind: a Connect cluster hosts the connectors deployed INTO
 	// it (KafkaConnector's strimzi.io/cluster label names its Connect
 	// cluster) — the same room shape as KubernetesKafka above.
-	CloudResourceKind_KubernetesKafkaConnect       CloudResourceKind = 4111
-	CloudResourceKind_KubernetesKafkaConnector     CloudResourceKind = 4112
-	CloudResourceKind_KubernetesKafkaMirrorMaker2  CloudResourceKind = 4113
-	CloudResourceKind_KubernetesKarapace           CloudResourceKind = 4114
-	CloudResourceKind_KubernetesKafkaUi            CloudResourceKind = 4115
-	CloudResourceKind_KubernetesOpenSearchOperator CloudResourceKind = 4116
-	CloudResourceKind_KubernetesOpenSearch         CloudResourceKind = 4117
-	CloudResourceKind_KubernetesAltinityOperator   CloudResourceKind = 4118
-	CloudResourceKind_KubernetesClickHouse         CloudResourceKind = 4119
-	CloudResourceKind_KubernetesSolrOperator       CloudResourceKind = 4120
-	CloudResourceKind_KubernetesSolr               CloudResourceKind = 4121
-	CloudResourceKind_KubernetesNeo4j              CloudResourceKind = 4122
-	CloudResourceKind_KubernetesSeaweedFs          CloudResourceKind = 4123
-	CloudResourceKind_KubernetesQdrant             CloudResourceKind = 4124
+	CatalogKind_KubernetesKafkaConnect       CatalogKind = 4111
+	CatalogKind_KubernetesKafkaConnector     CatalogKind = 4112
+	CatalogKind_KubernetesKafkaMirrorMaker2  CatalogKind = 4113
+	CatalogKind_KubernetesKarapace           CatalogKind = 4114
+	CatalogKind_KubernetesKafkaUi            CatalogKind = 4115
+	CatalogKind_KubernetesOpenSearchOperator CatalogKind = 4116
+	CatalogKind_KubernetesOpenSearch         CatalogKind = 4117
+	CatalogKind_KubernetesAltinityOperator   CatalogKind = 4118
+	CatalogKind_KubernetesClickHouse         CatalogKind = 4119
+	CatalogKind_KubernetesSolrOperator       CatalogKind = 4120
+	CatalogKind_KubernetesSolr               CatalogKind = 4121
+	CatalogKind_KubernetesNeo4j              CatalogKind = 4122
+	CatalogKind_KubernetesSeaweedFs          CatalogKind = 4123
+	CatalogKind_KubernetesQdrant             CatalogKind = 4124
 	// The RabbitMQ Cluster Operator's release manifest ships admission
 	// webhooks whose serving certificate is a cert-manager Certificate —
 	// cert-manager must be running before the operator installs.
-	CloudResourceKind_KubernetesRabbitMqOperator CloudResourceKind = 4125
-	CloudResourceKind_KubernetesRabbitMq         CloudResourceKind = 4126
+	CatalogKind_KubernetesRabbitMqOperator CatalogKind = 4125
+	CatalogKind_KubernetesRabbitMq         CatalogKind = 4126
 	// The Barman Cloud plugin is CloudNativePG's object-store backup path,
 	// installed as its own Helm release beside the operator. It registers
 	// with the operator over CNPG-I and issues its TLS through cert-manager,
 	// so both are prerequisites: nothing to register with, or no
 	// certificates, and the release never becomes ready.
-	CloudResourceKind_KubernetesCnpgBarmanCloudPlugin CloudResourceKind = 4127
+	CatalogKind_KubernetesCnpgBarmanCloudPlugin CatalogKind = 4127
 	// 4130–4149: Kubernetes analytics and ML
 	// KubernetesPostgres is a prerequisite because Airflow's metadata
 	// database composes a KubernetesPostgres by default (the spec's FK
 	// defaults resolve onto its outputs) and the migration Job needs the
 	// database reachable before the server components start.
-	CloudResourceKind_KubernetesAirflow         CloudResourceKind = 4130
-	CloudResourceKind_KubernetesSparkOperator   CloudResourceKind = 4131
-	CloudResourceKind_KubernetesKubeRayOperator CloudResourceKind = 4132
+	CatalogKind_KubernetesAirflow         CatalogKind = 4130
+	CatalogKind_KubernetesSparkOperator   CatalogKind = 4131
+	CatalogKind_KubernetesKubeRayOperator CatalogKind = 4132
 	// KubernetesKubeRayOperator is a prerequisite because this kind declares
 	// the RayCluster custom resource that only the operator's CRDs admit and
 	// only the operator reconciles into head and worker pods.
-	CloudResourceKind_KubernetesRayCluster CloudResourceKind = 4133
+	CatalogKind_KubernetesRayCluster CatalogKind = 4133
 	// KubernetesCertManager is a prerequisite because the Flink operator's
 	// chart, with its default-on admission webhook, renders cert-manager
 	// Issuer/Certificate resources and trusts the API server through
 	// cert-manager's CA injection — there is no self-signed fallback at the
 	// pinned chart, and the webhooks are fail-closed.
-	CloudResourceKind_KubernetesFlinkOperator CloudResourceKind = 4134
+	CatalogKind_KubernetesFlinkOperator CatalogKind = 4134
 	// KubernetesFlinkOperator is a prerequisite because this kind declares
 	// the FlinkDeployment custom resource that only the operator's CRDs
 	// admit and only the operator reconciles into a running Flink cluster.
-	CloudResourceKind_KubernetesFlinkDeployment CloudResourceKind = 4135
+	CatalogKind_KubernetesFlinkDeployment CatalogKind = 4135
 	// KubernetesPostgres is a prerequisite because JupyterHub's hub database
 	// composes a KubernetesPostgres in its external-database arm (the spec's
 	// FK defaults resolve onto its outputs) and the hub pod mounts that
 	// database's credential Secret before it can start.
-	CloudResourceKind_KubernetesJupyterHub CloudResourceKind = 4136
+	CatalogKind_KubernetesJupyterHub CatalogKind = 4136
 	// KubernetesPostgres is a prerequisite because MLflow's backend store
 	// composes a KubernetesPostgres in its production arm (FK defaults onto
 	// its outputs; the module composes the connection URI from its credential
 	// Secret), and KubernetesSeaweedFs because the artifact store's
 	// S3-compatible arm FK-defaults onto the SeaweedFS endpoint and
 	// credential Secret.
-	CloudResourceKind_KubernetesMlflow CloudResourceKind = 4137
+	CatalogKind_KubernetesMlflow CatalogKind = 4137
 	// KubernetesPostgres is a prerequisite because Trino's postgres
 	// catalogs compose a KubernetesPostgres (the catalog host and
 	// credential FK-default onto its outputs), and the pods read that
 	// database's credential Secret to resolve catalog passwords from
 	// environment.
-	CloudResourceKind_KubernetesTrino CloudResourceKind = 4138
+	CatalogKind_KubernetesTrino CatalogKind = 4138
 	// KubernetesPostgres is a prerequisite because Superset's REQUIRED
 	// metadata database composes a KubernetesPostgres (FK defaults onto
 	// its outputs; the module composes the environment Secret from its
 	// credential Secret), and KubernetesValkey because the cache/broker
 	// arm FK-defaults onto a KubernetesValkey's service and password
 	// Secret.
-	CloudResourceKind_KubernetesSuperset CloudResourceKind = 4139
+	CatalogKind_KubernetesSuperset CatalogKind = 4139
 	// 4150–4169: Kubernetes GitOps and CI/CD
-	CloudResourceKind_KubernetesArgocd         CloudResourceKind = 4150
-	CloudResourceKind_KubernetesArgoWorkflows  CloudResourceKind = 4151
-	CloudResourceKind_KubernetesTektonOperator CloudResourceKind = 4152
+	CatalogKind_KubernetesArgocd         CatalogKind = 4150
+	CatalogKind_KubernetesArgoWorkflows  CatalogKind = 4151
+	CatalogKind_KubernetesTektonOperator CatalogKind = 4152
 	// KubernetesTektonOperator is a prerequisite because this kind declares
 	// the TektonConfig custom resource that only the operator's CRDs admit
 	// and only the operator reconciles into running components.
-	CloudResourceKind_KubernetesTekton                      CloudResourceKind = 4153
-	CloudResourceKind_KubernetesGhaRunnerScaleSetController CloudResourceKind = 4154
+	CatalogKind_KubernetesTekton                      CatalogKind = 4153
+	CatalogKind_KubernetesGhaRunnerScaleSetController CatalogKind = 4154
 	// KubernetesGhaRunnerScaleSetController is a prerequisite because this
 	// kind renders an AutoscalingRunnerSet custom resource that only the
 	// controller's CRDs admit and only the controller reconciles into
 	// listener and runner pods.
-	CloudResourceKind_KubernetesGhaRunnerScaleSet CloudResourceKind = 4155
-	CloudResourceKind_KubernetesHarbor            CloudResourceKind = 4156
-	CloudResourceKind_KubernetesJenkins           CloudResourceKind = 4157
+	CatalogKind_KubernetesGhaRunnerScaleSet CatalogKind = 4155
+	CatalogKind_KubernetesHarbor            CatalogKind = 4156
+	CatalogKind_KubernetesJenkins           CatalogKind = 4157
 	// 4170–4189: Kubernetes app platforms
 	// KubernetesPostgres is a prerequisite because the recommended (and
 	// E2E-proven) database composition backs Temporal's default and
 	// visibility stores with a CloudNativePG cluster.
-	CloudResourceKind_KubernetesTemporal        CloudResourceKind = 4170
-	CloudResourceKind_KubernetesNats            CloudResourceKind = 4171
-	CloudResourceKind_KubernetesLocust          CloudResourceKind = 4172
-	CloudResourceKind_KubernetesPlantonRunner   CloudResourceKind = 4173
-	CloudResourceKind_KubernetesPlantonOperator CloudResourceKind = 4174
+	CatalogKind_KubernetesTemporal        CatalogKind = 4170
+	CatalogKind_KubernetesNats            CatalogKind = 4171
+	CatalogKind_KubernetesLocust          CatalogKind = 4172
+	CatalogKind_KubernetesPlantonRunner   CatalogKind = 4173
+	CatalogKind_KubernetesPlantonOperator CatalogKind = 4174
 	// KubernetesPlantonOperator is a prerequisite because this kind declares
 	// the PlantonPlatform custom resource that only the operator's CRD
 	// admits and only the operator reconciles into a running platform.
-	CloudResourceKind_KubernetesPlantonPlatform CloudResourceKind = 4175
+	CatalogKind_KubernetesPlantonPlatform CatalogKind = 4175
 	// 5000–5999: DigitalOcean resources
-	CloudResourceKind_DigitalOceanApp               CloudResourceKind = 5000
-	CloudResourceKind_DigitalOceanBucket            CloudResourceKind = 5001
-	CloudResourceKind_DigitalOceanContainerRegistry CloudResourceKind = 5002
+	CatalogKind_DigitalOceanApp               CatalogKind = 5000
+	CatalogKind_DigitalOceanBucket            CatalogKind = 5001
+	CatalogKind_DigitalOceanContainerRegistry CatalogKind = 5002
 	// A DigitalOcean managed database cluster -- the cluster every other
 	// managed-database resource is created on: users, logical databases,
 	// connection pools, the firewall rule set, Kafka topics, and Kafka
@@ -2491,134 +2491,134 @@ const (
 	// cluster of its own, a monitor alert names the clusters it watches, and
 	// an App Platform app names a cluster it attaches; those three references
 	// are containment-exempt on their specs.
-	CloudResourceKind_DigitalOceanDatabaseCluster CloudResourceKind = 5003
-	CloudResourceKind_DigitalOceanDnsZone         CloudResourceKind = 5004
+	CatalogKind_DigitalOceanDatabaseCluster CatalogKind = 5003
+	CatalogKind_DigitalOceanDnsZone         CatalogKind = 5004
 	// No VPC prerequisite: the droplet spec's vpc reference is optional —
 	// an omitted vpc places the droplet in the region's default VPC.
-	CloudResourceKind_DigitalOceanDroplet  CloudResourceKind = 5005
-	CloudResourceKind_DigitalOceanFirewall CloudResourceKind = 5006
-	CloudResourceKind_DigitalOceanFunction CloudResourceKind = 5007
+	CatalogKind_DigitalOceanDroplet  CatalogKind = 5005
+	CatalogKind_DigitalOceanFirewall CatalogKind = 5006
+	CatalogKind_DigitalOceanFunction CatalogKind = 5007
 	// DigitalOceanVpc is a prerequisite because the cluster spec's vpc
 	// reference is required: the control plane and every node pool live inside
 	// one VPC, resolved to the DigitalOceanVpc's exported vpc_id output.
-	CloudResourceKind_DigitalOceanKubernetesCluster CloudResourceKind = 5008
+	CatalogKind_DigitalOceanKubernetesCluster CatalogKind = 5008
 	// DigitalOceanKubernetesCluster is a prerequisite because a node pool is
 	// API-addressed under its owning cluster: the spec's cluster reference is
 	// required and the pool cannot exist first.
-	CloudResourceKind_DigitalOceanKubernetesNodePool CloudResourceKind = 5009
+	CatalogKind_DigitalOceanKubernetesNodePool CatalogKind = 5009
 	// No registry prerequisite: the load balancer's vpc reference is optional
 	// (DigitalOcean places it in the region's default VPC when unset, and
 	// GLOBAL balancers take no VPC at all). Scenarios that exercise VPC
 	// placement declare it per-scenario via the e2e-prerequisites annotation.
-	CloudResourceKind_DigitalOceanLoadBalancer CloudResourceKind = 5010
-	CloudResourceKind_DigitalOceanVolume       CloudResourceKind = 5011
-	CloudResourceKind_DigitalOceanVpc          CloudResourceKind = 5012
-	CloudResourceKind_DigitalOceanCertificate  CloudResourceKind = 5013
+	CatalogKind_DigitalOceanLoadBalancer CatalogKind = 5010
+	CatalogKind_DigitalOceanVolume       CatalogKind = 5011
+	CatalogKind_DigitalOceanVpc          CatalogKind = 5012
+	CatalogKind_DigitalOceanCertificate  CatalogKind = 5013
 	// DigitalOceanDnsZone is a prerequisite because a record is API-addressed
 	// under its domain: the spec's domain reference is required, resolved to
 	// the DigitalOceanDnsZone's exported zone_name output.
-	CloudResourceKind_DigitalOceanDnsRecord CloudResourceKind = 5014
+	CatalogKind_DigitalOceanDnsRecord CatalogKind = 5014
 	// An additional user on a managed database cluster: the cluster
 	// reference is required, resolved to the DigitalOceanDatabaseCluster's
 	// exported cluster_id output.
-	CloudResourceKind_DigitalOceanDatabaseUser CloudResourceKind = 5015
+	CatalogKind_DigitalOceanDatabaseUser CatalogKind = 5015
 	// An additional logical database on a managed database cluster: the
 	// cluster reference is required.
-	CloudResourceKind_DigitalOceanDatabaseDb CloudResourceKind = 5016
+	CatalogKind_DigitalOceanDatabaseDb CatalogKind = 5016
 	// A PgBouncer connection pool on a managed PostgreSQL cluster: the
 	// cluster reference is required.
-	CloudResourceKind_DigitalOceanDatabaseConnectionPool CloudResourceKind = 5017
+	CatalogKind_DigitalOceanDatabaseConnectionPool CatalogKind = 5017
 	// The inbound trusted-sources rule set of a managed database cluster:
 	// the cluster reference is required.
-	CloudResourceKind_DigitalOceanDatabaseFirewall CloudResourceKind = 5018
+	CatalogKind_DigitalOceanDatabaseFirewall CatalogKind = 5018
 	// A read-only replica of a managed database cluster: the primary
 	// cluster reference is required.
-	CloudResourceKind_DigitalOceanDatabaseReplica CloudResourceKind = 5019
+	CatalogKind_DigitalOceanDatabaseReplica CatalogKind = 5019
 	// A topic on a managed Kafka cluster with the full per-topic
 	// configuration block; the owning cluster reference is required.
-	CloudResourceKind_DigitalOceanDatabaseKafkaTopic CloudResourceKind = 5020
+	CatalogKind_DigitalOceanDatabaseKafkaTopic CatalogKind = 5020
 	// One schema subject registered in a managed Kafka cluster's schema
 	// registry; the owning cluster reference is required.
-	CloudResourceKind_DigitalOceanDatabaseKafkaSchema CloudResourceKind = 5021
+	CatalogKind_DigitalOceanDatabaseKafkaSchema CatalogKind = 5021
 	// The account-level organizational container; membership is carried on
 	// the project itself as resource URNs.
-	CloudResourceKind_DigitalOceanProject CloudResourceKind = 5030
+	CatalogKind_DigitalOceanProject CatalogKind = 5030
 	// An SSH public key registered on the account, referenced by droplets
 	// and droplet autoscale pools at create time.
-	CloudResourceKind_DigitalOceanSshKey CloudResourceKind = 5031
+	CatalogKind_DigitalOceanSshKey CatalogKind = 5031
 	// An alert policy on DigitalOcean's built-in metrics for droplets, load
 	// balancers, and managed database clusters. All entity targeting is
 	// optional, so there is no registry prerequisite.
-	CloudResourceKind_DigitalOceanMonitorAlert CloudResourceKind = 5040
+	CatalogKind_DigitalOceanMonitorAlert CatalogKind = 5040
 	// An availability/latency probe on an external endpoint with composed
 	// alert rules; the target is outside the account, so there is no
 	// registry prerequisite.
-	CloudResourceKind_DigitalOceanUptimeCheck CloudResourceKind = 5041
+	CatalogKind_DigitalOceanUptimeCheck CatalogKind = 5041
 	// A static public IP address (IPv4 or IPv6) reserved in a region and
 	// optionally assigned to a droplet. The droplet attachment is an
 	// optional composition seam, so there is no registry prerequisite.
-	CloudResourceKind_DigitalOceanReservedIp CloudResourceKind = 5050
+	CatalogKind_DigitalOceanReservedIp CatalogKind = 5050
 	// A private-network peering connection between exactly two VPCs; both
 	// VPC references are required.
-	CloudResourceKind_DigitalOceanVpcPeering CloudResourceKind = 5051
+	CatalogKind_DigitalOceanVpcPeering CatalogKind = 5051
 	// An access-key pair for Spaces object storage. Bucket grants are an
 	// optional composition seam, so there is no registry prerequisite.
-	CloudResourceKind_DigitalOceanSpacesKey CloudResourceKind = 5060
+	CatalogKind_DigitalOceanSpacesKey CatalogKind = 5060
 	// A CDN endpoint serving a Spaces bucket's content from the global edge:
 	// the origin reference is required, resolved to the DigitalOceanBucket's
 	// exported bucket_domain_name output.
-	CloudResourceKind_DigitalOceanCdn CloudResourceKind = 5061
+	CatalogKind_DigitalOceanCdn CatalogKind = 5061
 	// A pool of identical droplets DigitalOcean keeps at a fixed size or
 	// scales on utilization. The template's ssh_keys reference is required
 	// (the API mandates SSH keys), resolved to the DigitalOceanSshKey's
 	// exported ssh_key_id output.
-	CloudResourceKind_DigitalOceanDropletAutoscalePool CloudResourceKind = 5070
+	CatalogKind_DigitalOceanDropletAutoscalePool CatalogKind = 5070
 	// 7000–7999: Cloudflare resources
-	CloudResourceKind_CloudflareDnsZone     CloudResourceKind = 7000
-	CloudResourceKind_CloudflareKvNamespace CloudResourceKind = 7001
-	CloudResourceKind_CloudflareR2Bucket    CloudResourceKind = 7002
-	CloudResourceKind_CloudflareWorker      CloudResourceKind = 7003
+	CatalogKind_CloudflareDnsZone     CatalogKind = 7000
+	CatalogKind_CloudflareKvNamespace CatalogKind = 7001
+	CatalogKind_CloudflareR2Bucket    CatalogKind = 7002
+	CatalogKind_CloudflareWorker      CatalogKind = 7003
 	// CloudflareDnsZone and CloudflareLoadBalancerPool are prerequisites because
 	// a load balancer is a DNS-level construct inside a zone (the spec's zone_id
 	// reference must resolve) and traffic must land somewhere (the required
 	// fallback_pool reference must resolve to a live pool).
-	CloudResourceKind_CloudflareLoadBalancer               CloudResourceKind = 7004
-	CloudResourceKind_CloudflareD1Database                 CloudResourceKind = 7005
-	CloudResourceKind_CloudflareZeroTrustAccessApplication CloudResourceKind = 7006
+	CatalogKind_CloudflareLoadBalancer               CatalogKind = 7004
+	CatalogKind_CloudflareD1Database                 CatalogKind = 7005
+	CatalogKind_CloudflareZeroTrustAccessApplication CatalogKind = 7006
 	// CloudflareDnsZone is a prerequisite because every record lives inside a
 	// zone -- the spec's zone_id reference must resolve before the record can
 	// be created.
-	CloudResourceKind_CloudflareDnsRecord CloudResourceKind = 7007
+	CatalogKind_CloudflareDnsRecord CatalogKind = 7007
 	// CloudflareDnsZone is a prerequisite because zone-scoped rulesets (the
 	// common case; the spec's zone_id reference defaults to the zone kind) must
 	// resolve their zone first. Account-scoped rulesets simply leave the
 	// reference unused.
-	CloudResourceKind_CloudflareRuleset CloudResourceKind = 7008
+	CatalogKind_CloudflareRuleset CatalogKind = 7008
 	// CloudflareKvNamespace is a prerequisite because a KV pair is written into
 	// a namespace -- the spec's namespace_id reference must resolve first.
-	CloudResourceKind_CloudflareWorkersKvPair                 CloudResourceKind = 7009
-	CloudResourceKind_CloudflareHyperdriveConfig              CloudResourceKind = 7010
-	CloudResourceKind_CloudflareLoadBalancerPool              CloudResourceKind = 7011
-	CloudResourceKind_CloudflareLoadBalancerMonitor           CloudResourceKind = 7012
-	CloudResourceKind_CloudflareZeroTrustAccessPolicy         CloudResourceKind = 7013
-	CloudResourceKind_CloudflareZeroTrustAccessGroup          CloudResourceKind = 7014
-	CloudResourceKind_CloudflareQueue                         CloudResourceKind = 7015
-	CloudResourceKind_CloudflarePagesProject                  CloudResourceKind = 7016
-	CloudResourceKind_CloudflareZeroTrustTunnel               CloudResourceKind = 7017
-	CloudResourceKind_CloudflareZeroTrustTunnelVirtualNetwork CloudResourceKind = 7018
+	CatalogKind_CloudflareWorkersKvPair                 CatalogKind = 7009
+	CatalogKind_CloudflareHyperdriveConfig              CatalogKind = 7010
+	CatalogKind_CloudflareLoadBalancerPool              CatalogKind = 7011
+	CatalogKind_CloudflareLoadBalancerMonitor           CatalogKind = 7012
+	CatalogKind_CloudflareZeroTrustAccessPolicy         CatalogKind = 7013
+	CatalogKind_CloudflareZeroTrustAccessGroup          CatalogKind = 7014
+	CatalogKind_CloudflareQueue                         CatalogKind = 7015
+	CatalogKind_CloudflarePagesProject                  CatalogKind = 7016
+	CatalogKind_CloudflareZeroTrustTunnel               CatalogKind = 7017
+	CatalogKind_CloudflareZeroTrustTunnelVirtualNetwork CatalogKind = 7018
 	// CloudflareZeroTrustTunnel is a prerequisite because a route steers a CIDR
 	// through an existing tunnel -- the spec's tunnel_id reference must resolve
 	// first. (The optional virtual_network_id is scenario-declared, not a
 	// registry prerequisite.)
-	CloudResourceKind_CloudflareZeroTrustTunnelRoute CloudResourceKind = 7019
-	CloudResourceKind_CloudflareList                 CloudResourceKind = 7020
+	CatalogKind_CloudflareZeroTrustTunnelRoute CatalogKind = 7019
+	CatalogKind_CloudflareList                 CatalogKind = 7020
 	// CloudflareList is a prerequisite because an item exists only inside a
 	// list -- the spec's list_id reference must resolve first.
-	CloudResourceKind_CloudflareListItem        CloudResourceKind = 7021
-	CloudResourceKind_CloudflareTurnstileWidget CloudResourceKind = 7022
+	CatalogKind_CloudflareListItem        CatalogKind = 7021
+	CatalogKind_CloudflareTurnstileWidget CatalogKind = 7022
 	// CloudflareDnsZone is a prerequisite because email routing is enabled ON a
 	// zone -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareEmailRoutingZone CloudResourceKind = 7023
+	CatalogKind_CloudflareEmailRoutingZone CatalogKind = 7023
 	// CloudflareDnsZone is a prerequisite because a routing rule lives in a
 	// zone's email routing configuration -- the spec's zone_id reference must
 	// resolve first. CloudflareEmailRoutingZone is deliberately NOT a
@@ -2630,209 +2630,209 @@ const (
 	// create-time dependency. (Forward destinations reference
 	// CloudflareEmailRoutingAddress only for forward-type rules, so that
 	// edge is scenario-declared.)
-	CloudResourceKind_CloudflareEmailRoutingRule    CloudResourceKind = 7024
-	CloudResourceKind_CloudflareEmailRoutingAddress CloudResourceKind = 7025
-	CloudResourceKind_CloudflareOriginCaCertificate CloudResourceKind = 7026
+	CatalogKind_CloudflareEmailRoutingRule    CatalogKind = 7024
+	CatalogKind_CloudflareEmailRoutingAddress CatalogKind = 7025
+	CatalogKind_CloudflareOriginCaCertificate CatalogKind = 7026
 	// CloudflareDnsZone is a prerequisite because a certificate pack is ordered
 	// for a zone's hostnames -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareCertificatePack CloudResourceKind = 7027
+	CatalogKind_CloudflareCertificatePack CatalogKind = 7027
 	// CloudflareDnsZone is a prerequisite because a custom hostname (SSL for
 	// SaaS) is provisioned inside a zone -- the spec's zone_id reference must
 	// resolve first.
-	CloudResourceKind_CloudflareCustomHostname CloudResourceKind = 7028
+	CatalogKind_CloudflareCustomHostname CatalogKind = 7028
 	// CloudflareDnsZone is a prerequisite because the fallback origin is a
 	// zone-level SSL-for-SaaS setting -- the spec's zone_id reference must
 	// resolve first.
-	CloudResourceKind_CloudflareCustomHostnameFallbackOrigin CloudResourceKind = 7029
+	CatalogKind_CloudflareCustomHostnameFallbackOrigin CatalogKind = 7029
 	// No prerequisites: identity providers are account-scoped in the canonical
 	// case (the optional zone scope is a per-manifest choice, not a structural
 	// dependency).
-	CloudResourceKind_CloudflareZeroTrustAccessIdentityProvider CloudResourceKind = 7030
+	CatalogKind_CloudflareZeroTrustAccessIdentityProvider CatalogKind = 7030
 	// No prerequisites: service tokens are account-scoped in the canonical case
 	// (the optional zone scope is a per-manifest choice, not a structural
 	// dependency).
-	CloudResourceKind_CloudflareZeroTrustAccessServiceToken CloudResourceKind = 7031
+	CatalogKind_CloudflareZeroTrustAccessServiceToken CatalogKind = 7031
 	// No prerequisites: the organization is an account-scoped configuration
 	// singleton (the optional zone scope is a per-manifest choice, not a
 	// structural dependency).
-	CloudResourceKind_CloudflareZeroTrustOrganization CloudResourceKind = 7032
+	CatalogKind_CloudflareZeroTrustOrganization CatalogKind = 7032
 	// No prerequisites: targets are account-scoped, and the virtual-network
 	// reference is an optional per-manifest edge (omitted = the account's
 	// default virtual network).
-	CloudResourceKind_CloudflareZeroTrustAccessInfrastructureTarget CloudResourceKind = 7033
+	CatalogKind_CloudflareZeroTrustAccessInfrastructureTarget CatalogKind = 7033
 	// No prerequisites: portals are account-scoped, and the servers[] rows'
 	// MCP-server references are optional per-manifest edges.
-	CloudResourceKind_CloudflareZeroTrustMcpPortal CloudResourceKind = 7034
+	CatalogKind_CloudflareZeroTrustMcpPortal CatalogKind = 7034
 	// No prerequisites: MCP server registrations are account-scoped and
 	// self-contained -- portals reference them, not the reverse.
-	CloudResourceKind_CloudflareZeroTrustMcpServer CloudResourceKind = 7035
+	CatalogKind_CloudflareZeroTrustMcpServer CatalogKind = 7035
 	// No prerequisites: Gateway policies are account-scoped, and their list /
 	// virtual-network references are optional per-manifest edges.
-	CloudResourceKind_CloudflareZeroTrustGatewayPolicy CloudResourceKind = 7060
+	CatalogKind_CloudflareZeroTrustGatewayPolicy CatalogKind = 7060
 	// No prerequisites: Zero Trust lists are account-scoped and self-contained.
-	CloudResourceKind_CloudflareZeroTrustList CloudResourceKind = 7061
+	CatalogKind_CloudflareZeroTrustList CatalogKind = 7061
 	// No prerequisites: the Gateway configuration is an account-scoped
 	// singleton, and its certificate reference is an optional per-manifest
 	// edge.
-	CloudResourceKind_CloudflareZeroTrustGatewaySettings CloudResourceKind = 7062
+	CatalogKind_CloudflareZeroTrustGatewaySettings CatalogKind = 7062
 	// No prerequisites: DNS locations are account-scoped and self-contained.
-	CloudResourceKind_CloudflareZeroTrustDnsLocation CloudResourceKind = 7063
+	CatalogKind_CloudflareZeroTrustDnsLocation CatalogKind = 7063
 	// No prerequisites: the default device profile is an account-scoped
 	// configuration singleton; its virtual-network and zone-certificate
 	// references are optional per-manifest edges.
-	CloudResourceKind_CloudflareZeroTrustDeviceDefaultProfile CloudResourceKind = 7080
+	CatalogKind_CloudflareZeroTrustDeviceDefaultProfile CatalogKind = 7080
 	// No prerequisites: custom device profiles are account-scoped, and the
 	// virtual-network reference is an optional per-manifest edge.
-	CloudResourceKind_CloudflareZeroTrustDeviceCustomProfile CloudResourceKind = 7081
+	CatalogKind_CloudflareZeroTrustDeviceCustomProfile CatalogKind = 7081
 	// No prerequisites: posture rules are account-scoped and self-contained
 	// (list and integration references are literal UUIDs today).
-	CloudResourceKind_CloudflareZeroTrustDevicePostureRule CloudResourceKind = 7082
+	CatalogKind_CloudflareZeroTrustDevicePostureRule CatalogKind = 7082
 	// CloudflareDnsZone is a prerequisite because TLS settings are zone-scoped
 	// configuration -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareZoneTlsSettings CloudResourceKind = 7150
+	CatalogKind_CloudflareZoneTlsSettings CatalogKind = 7150
 	// CloudflareDnsZone is a prerequisite because a custom certificate is
 	// uploaded to an existing zone -- the spec's zone_id reference must resolve
 	// first.
-	CloudResourceKind_CloudflareCustomSslCertificate CloudResourceKind = 7151
+	CatalogKind_CloudflareCustomSslCertificate CatalogKind = 7151
 	// No prerequisites: mTLS certificates are account-scoped uploads and
 	// self-contained -- consumers (zone TLS CA associations, Authenticated
 	// Origin Pulls rows, Workers mTLS bindings) reference them, not the
 	// reverse.
-	CloudResourceKind_CloudflareMtlsCertificate CloudResourceKind = 7152
+	CatalogKind_CloudflareMtlsCertificate CatalogKind = 7152
 	// CloudflareDnsZone is a prerequisite because Authenticated Origin Pulls
 	// enablement configures an existing zone -- the spec's zone_id reference
 	// must resolve first. The per-hostname certificate edge is optional and
 	// scenario-declared, never a registry prerequisite.
-	CloudResourceKind_CloudflareAuthenticatedOriginPulls CloudResourceKind = 7153
+	CatalogKind_CloudflareAuthenticatedOriginPulls CatalogKind = 7153
 	// CloudflareDnsZone is a prerequisite because the client certificate is
 	// uploaded to an existing zone -- the spec's zone_id reference must resolve
 	// first.
-	CloudResourceKind_CloudflareAuthenticatedOriginPullsCertificate CloudResourceKind = 7154
+	CatalogKind_CloudflareAuthenticatedOriginPullsCertificate CatalogKind = 7154
 	// CloudflareDnsZone is a prerequisite because zone settings configure an
 	// existing zone -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareZoneSettings CloudResourceKind = 7180
+	CatalogKind_CloudflareZoneSettings CatalogKind = 7180
 	// CloudflareDnsZone is a prerequisite because cache settings configure an
 	// existing zone -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareCacheSettings CloudResourceKind = 7181
+	CatalogKind_CloudflareCacheSettings CatalogKind = 7181
 	// No prerequisites: IP Access rules are account-scoped in the canonical case
 	// (the zone scope is a per-manifest choice, not a structural dependency).
-	CloudResourceKind_CloudflareIpAccessRule CloudResourceKind = 7210
+	CatalogKind_CloudflareIpAccessRule CatalogKind = 7210
 	// CloudflareDnsZone is a prerequisite because Bot Management is zone-singleton
 	// configuration -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareBotManagement CloudResourceKind = 7211
+	CatalogKind_CloudflareBotManagement CatalogKind = 7211
 	// CloudflareDnsZone is a prerequisite because snippets deploy to a zone --
 	// the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareSnippet CloudResourceKind = 7212
+	CatalogKind_CloudflareSnippet CatalogKind = 7212
 	// CloudflareDnsZone and CloudflareSnippet are prerequisites: the rules table
 	// is zone-scoped and every rule invokes a snippet by name.
-	CloudResourceKind_CloudflareSnippetRules CloudResourceKind = 7213
+	CatalogKind_CloudflareSnippetRules CatalogKind = 7213
 	// CloudflareDnsZone is a prerequisite because waiting rooms sit on a zone's
 	// host+path -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareWaitingRoom CloudResourceKind = 7240
+	CatalogKind_CloudflareWaitingRoom CatalogKind = 7240
 	// CloudflareWaitingRoom is a prerequisite because events run on a room (and
 	// the room's own chain brings the zone).
-	CloudResourceKind_CloudflareWaitingRoomEvent CloudResourceKind = 7241
+	CatalogKind_CloudflareWaitingRoomEvent CatalogKind = 7241
 	// No prerequisites: logpush jobs are dual-scope (account or zone) and the
 	// zone reference is optional -- zone-scoped lanes declare the edge at the
 	// scenario level.
-	CloudResourceKind_CloudflareLogpushJob CloudResourceKind = 7250
+	CatalogKind_CloudflareLogpushJob CatalogKind = 7250
 	// No prerequisites: every delivery mechanism (email, PagerDuty, webhook)
 	// is optional -- policies referencing a webhook declare the edge at the
 	// scenario level.
-	CloudResourceKind_CloudflareNotificationPolicy CloudResourceKind = 7251
+	CatalogKind_CloudflareNotificationPolicy CatalogKind = 7251
 	// No prerequisites: a webhook destination is account-scoped and
 	// self-contained -- notification policies reference it, not the reverse.
-	CloudResourceKind_CloudflareNotificationWebhook CloudResourceKind = 7252
+	CatalogKind_CloudflareNotificationWebhook CatalogKind = 7252
 	// No prerequisites: a site is identified by host OR zone, and the zone
 	// reference is optional -- zone-measured lanes declare the edge at the
 	// scenario level.
-	CloudResourceKind_CloudflareWebAnalyticsSite CloudResourceKind = 7253
+	CatalogKind_CloudflareWebAnalyticsSite CatalogKind = 7253
 	// CloudflareWorker is a prerequisite because a workflow registers a class
 	// exported by a DEPLOYED Worker script -- the spec's script_name reference
 	// must resolve first.
-	CloudResourceKind_CloudflareWorkflow CloudResourceKind = 7270
+	CatalogKind_CloudflareWorkflow CatalogKind = 7270
 	// No prerequisites: the Secrets Store is an account-scoped container and
 	// self-contained -- consumers (store secrets, Worker bindings, AI Gateway
 	// authentication) reference it, not the reverse.
-	CloudResourceKind_CloudflareSecretsStore CloudResourceKind = 7271
+	CatalogKind_CloudflareSecretsStore CatalogKind = 7271
 	// CloudflareSecretsStore is a prerequisite because every secret lives
 	// inside a store -- the spec's store_id reference must resolve first.
-	CloudResourceKind_CloudflareSecretsStoreSecret CloudResourceKind = 7272
+	CatalogKind_CloudflareSecretsStoreSecret CatalogKind = 7272
 	// No prerequisites: the gateway is account-scoped and self-contained; its
 	// optional Secrets Store link (BYO provider keys) is a scenario-level
 	// composition, not a structural requirement.
-	CloudResourceKind_CloudflareAiGateway CloudResourceKind = 7300
+	CatalogKind_CloudflareAiGateway CatalogKind = 7300
 	// No prerequisites: an account-owned API token is self-contained; the
 	// resources its policies cover are identifiers, not references.
-	CloudResourceKind_CloudflareAccountApiToken CloudResourceKind = 7370
+	CatalogKind_CloudflareAccountApiToken CatalogKind = 7370
 	// CloudflareDnsZone is a prerequisite because standalone health checks are
 	// zone-scoped -- the spec's zone_id reference must resolve first.
-	CloudResourceKind_CloudflareHealthcheck CloudResourceKind = 7400
+	CatalogKind_CloudflareHealthcheck CatalogKind = 7400
 	// 8000–8999: Auth0 resources
-	CloudResourceKind_Auth0Connection               CloudResourceKind = 8000
-	CloudResourceKind_Auth0Client                   CloudResourceKind = 8001
-	CloudResourceKind_Auth0EventStream              CloudResourceKind = 8002
-	CloudResourceKind_Auth0ResourceServer           CloudResourceKind = 8003
-	CloudResourceKind_Auth0Action                   CloudResourceKind = 8004
-	CloudResourceKind_Auth0Role                     CloudResourceKind = 8005
-	CloudResourceKind_Auth0User                     CloudResourceKind = 8006
-	CloudResourceKind_Auth0TenantSettings           CloudResourceKind = 8007
-	CloudResourceKind_Auth0CustomDomain             CloudResourceKind = 8008
-	CloudResourceKind_Auth0CustomDomainVerification CloudResourceKind = 8009
+	CatalogKind_Auth0Connection               CatalogKind = 8000
+	CatalogKind_Auth0Client                   CatalogKind = 8001
+	CatalogKind_Auth0EventStream              CatalogKind = 8002
+	CatalogKind_Auth0ResourceServer           CatalogKind = 8003
+	CatalogKind_Auth0Action                   CatalogKind = 8004
+	CatalogKind_Auth0Role                     CatalogKind = 8005
+	CatalogKind_Auth0User                     CatalogKind = 8006
+	CatalogKind_Auth0TenantSettings           CatalogKind = 8007
+	CatalogKind_Auth0CustomDomain             CatalogKind = 8008
+	CatalogKind_Auth0CustomDomainVerification CatalogKind = 8009
 	// 8010–8015: how the tenant's Universal Login looks, reads and mails --
 	// branding and theme, the login flow, each prompt's words and screen
 	// partials, the email service and each email.
-	CloudResourceKind_Auth0Branding                   CloudResourceKind = 8010
-	CloudResourceKind_Auth0Prompt                     CloudResourceKind = 8011
-	CloudResourceKind_Auth0PromptCustomText           CloudResourceKind = 8012
-	CloudResourceKind_Auth0PromptScreenPartials       CloudResourceKind = 8013
-	CloudResourceKind_Auth0EmailProvider              CloudResourceKind = 8014
-	CloudResourceKind_Auth0EmailTemplate              CloudResourceKind = 8015
-	CloudResourceKind_Auth0ClientFromMetadataDocument CloudResourceKind = 8016
+	CatalogKind_Auth0Branding                   CatalogKind = 8010
+	CatalogKind_Auth0Prompt                     CatalogKind = 8011
+	CatalogKind_Auth0PromptCustomText           CatalogKind = 8012
+	CatalogKind_Auth0PromptScreenPartials       CatalogKind = 8013
+	CatalogKind_Auth0EmailProvider              CatalogKind = 8014
+	CatalogKind_Auth0EmailTemplate              CatalogKind = 8015
+	CatalogKind_Auth0ClientFromMetadataDocument CatalogKind = 8016
 	// 9000–9999: OpenFGA resources
 	// OpenFGA publishes a Terraform provider and no Pulumi provider, so its
 	// kinds ship one HCL module and declare the engines that run it; the CLI
 	// and the platform refuse Pulumi for them before anything runs.
-	CloudResourceKind_OpenFgaStore              CloudResourceKind = 9000
-	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 9001
-	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 9002
+	CatalogKind_OpenFgaStore              CatalogKind = 9000
+	CatalogKind_OpenFgaAuthorizationModel CatalogKind = 9001
+	CatalogKind_OpenFgaRelationshipTuple  CatalogKind = 9002
 	// 10000–10999: Stripe resources
 	// Stripe publishes a Terraform provider and no Pulumi provider, and its
 	// kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL
 	// module, and every other engine refused before anything runs.
 	// Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
-	CloudResourceKind_StripeWebhookEndpoint            CloudResourceKind = 10000
-	CloudResourceKind_StripeEventDestination           CloudResourceKind = 10001
-	CloudResourceKind_StripeBillingPortalConfiguration CloudResourceKind = 10002
-	CloudResourceKind_StripePaymentMethodConfiguration CloudResourceKind = 10003
-	CloudResourceKind_StripePaymentMethodDomain        CloudResourceKind = 10004
-	CloudResourceKind_StripeRadarValueList             CloudResourceKind = 10005
-	CloudResourceKind_StripeProduct                    CloudResourceKind = 10100
+	CatalogKind_StripeWebhookEndpoint            CatalogKind = 10000
+	CatalogKind_StripeEventDestination           CatalogKind = 10001
+	CatalogKind_StripeBillingPortalConfiguration CatalogKind = 10002
+	CatalogKind_StripePaymentMethodConfiguration CatalogKind = 10003
+	CatalogKind_StripePaymentMethodDomain        CatalogKind = 10004
+	CatalogKind_StripeRadarValueList             CatalogKind = 10005
+	CatalogKind_StripeProduct                    CatalogKind = 10100
 	// A price always belongs to a product (its product field is required), so
 	// the product deploys first.
-	CloudResourceKind_StripePrice  CloudResourceKind = 10101
-	CloudResourceKind_StripeCoupon CloudResourceKind = 10102
+	CatalogKind_StripePrice  CatalogKind = 10101
+	CatalogKind_StripeCoupon CatalogKind = 10102
 	// A promotion code always redeems a coupon (its coupon field is required),
 	// so the coupon deploys first.
-	CloudResourceKind_StripePromotionCode      CloudResourceKind = 10103
-	CloudResourceKind_StripeEntitlementFeature CloudResourceKind = 10104
-	CloudResourceKind_StripeShippingRate       CloudResourceKind = 10105
+	CatalogKind_StripePromotionCode      CatalogKind = 10103
+	CatalogKind_StripeEntitlementFeature CatalogKind = 10104
+	CatalogKind_StripeShippingRate       CatalogKind = 10105
 	// Tax rate and tax registration share the initials "tr", so each takes
 	// Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
-	CloudResourceKind_StripeTaxRate         CloudResourceKind = 10106
-	CloudResourceKind_StripeTaxRegistration CloudResourceKind = 10107
-	CloudResourceKind_StripeBillingMeter    CloudResourceKind = 10108
+	CatalogKind_StripeTaxRate         CatalogKind = 10106
+	CatalogKind_StripeTaxRegistration CatalogKind = 10107
+	CatalogKind_StripeBillingMeter    CatalogKind = 10108
 	// A payment link always sells at least one price (line_items is required),
 	// so the price deploys first.
-	CloudResourceKind_StripePaymentLink CloudResourceKind = 10109
+	CatalogKind_StripePaymentLink CatalogKind = 10109
 )
 
-// Enum value maps for CloudResourceKind.
+// Enum value maps for CatalogKind.
 var (
-	CloudResourceKind_name = map[int32]string{
+	CatalogKind_name = map[int32]string{
 		0:     "unspecified",
-		1:     "TestCloudResourceGeneric",
-		2:     "TestCloudResourceKubernetes",
+		1:     "TestCatalogKindGeneric",
+		2:     "TestCatalogKindKubernetes",
 		1000:  "AwsAlb",
 		1001:  "AwsCertManagerCert",
 		1002:  "AwsCloudFront",
@@ -3670,10 +3670,10 @@ var (
 		10108: "StripeBillingMeter",
 		10109: "StripePaymentLink",
 	}
-	CloudResourceKind_value = map[string]int32{
+	CatalogKind_value = map[string]int32{
 		"unspecified":                                    0,
-		"TestCloudResourceGeneric":                       1,
-		"TestCloudResourceKubernetes":                    2,
+		"TestCatalogKindGeneric":                         1,
+		"TestCatalogKindKubernetes":                      2,
 		"AwsAlb":                                         1000,
 		"AwsCertManagerCert":                             1001,
 		"AwsCloudFront":                                  1002,
@@ -4513,38 +4513,38 @@ var (
 	}
 )
 
-func (x CloudResourceKind) Enum() *CloudResourceKind {
-	p := new(CloudResourceKind)
+func (x CatalogKind) Enum() *CatalogKind {
+	p := new(CatalogKind)
 	*p = x
 	return p
 }
 
-func (x CloudResourceKind) String() string {
+func (x CatalogKind) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (CloudResourceKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_shared_cloudresourcekind_cloud_resource_kind_proto_enumTypes[0].Descriptor()
+func (CatalogKind) Descriptor() protoreflect.EnumDescriptor {
+	return file_shared_catalogkind_catalog_kind_proto_enumTypes[0].Descriptor()
 }
 
-func (CloudResourceKind) Type() protoreflect.EnumType {
-	return &file_shared_cloudresourcekind_cloud_resource_kind_proto_enumTypes[0]
+func (CatalogKind) Type() protoreflect.EnumType {
+	return &file_shared_catalogkind_catalog_kind_proto_enumTypes[0]
 }
 
-func (x CloudResourceKind) Number() protoreflect.EnumNumber {
+func (x CatalogKind) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use CloudResourceKind.Descriptor instead.
-func (CloudResourceKind) EnumDescriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKind.Descriptor instead.
+func (CatalogKind) EnumDescriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_kind_proto_rawDescGZIP(), []int{0}
 }
 
-// api-resource-kind cloud-resource meta
-type CloudResourceKindMeta struct {
+// api-resource-kind infra-component meta
+type CatalogKindMeta struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// cloud-resource provider
-	Provider CloudResourceProvider `protobuf:"varint,1,opt,name=provider,proto3,enum=dev.planton.shared.cloudresourcekind.CloudResourceProvider" json:"provider,omitempty"`
+	// catalog provider
+	Provider CatalogProvider `protobuf:"varint,1,opt,name=provider,proto3,enum=dev.planton.shared.catalogkind.CatalogProvider" json:"provider,omitempty"`
 	// the kind's API version — the version half of the manifest apiVersion
 	// (e.g. "aws.planton.dev/v1alpha1" carries version "v1"). the value must match
 	// the maturity grammar ^v\d+((alpha|beta)\d+)?$ (v1alpha1 → v1beta1 → v1):
@@ -4552,7 +4552,7 @@ type CloudResourceKindMeta struct {
 	// served version; per-version metadata arrives additively beside it (see
 	// deprecations), and richer blocks follow if a kind ever serves multiple
 	// versions at once. enum-value options are compile-time data, so the
-	// grammar is enforced by the crkreflect registry tests rather than
+	// grammar is enforced by the catalogkindreflect registry tests rather than
 	// protovalidate.
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	// name of the kind as written in manifests. set only when it differs from the
@@ -4564,8 +4564,8 @@ type CloudResourceKindMeta struct {
 	// this): resolution is keyed by name, so a duplicate would make manifests
 	// ambiguous about which kind they declare.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// cloud-resource id-prefix — the per-kind segment embedded in every
-	// resource id (cr_<id_prefix>_<ulid>) and the id's only kind
+	// infra-component id-prefix — the per-kind segment embedded in every
+	// resource id (ic_<id_prefix>_<ulid>) and the id's only kind
 	// discriminator: CLI argument parsing, search lookups, and kind
 	// auto-detection all resolve the kind FROM this segment, so ids stay
 	// self-describing in the surfaces that carry nothing else (logs,
@@ -4580,9 +4580,9 @@ type CloudResourceKindMeta struct {
 	//   - unique across the whole registry — enforced mechanically (the
 	//     prefix index fails construction on a duplicate)
 	IdPrefix string `protobuf:"bytes,4,opt,name=id_prefix,json=idPrefix,proto3" json:"id_prefix,omitempty"`
-	// flag indicating whether the cloud-resource kind can be used to launch a service.
+	// flag indicating whether the catalog kind can be used to launch a service.
 	IsServiceKind bool `protobuf:"varint,5,opt,name=is_service_kind,json=isServiceKind,proto3" json:"is_service_kind,omitempty"`
-	// Flag indicating whether the cloud-resource kind is a container kind.
+	// Flag indicating whether the catalog kind is a container kind.
 	// Container kinds are drawn as BOUNDARIES on architecture diagrams — other
 	// resources that reference them nest visually inside them (a VPC encloses
 	// its subnets, a Kubernetes namespace encloses its deployments, a database
@@ -4604,16 +4604,16 @@ type CloudResourceKindMeta struct {
 	// dev.planton.shared.foreignkey.v1.containment_exempt option so the diagram
 	// never nests a resource inside something it merely connects to.
 	ContainerKind bool `protobuf:"varint,6,opt,name=container_kind,json=containerKind,proto3" json:"container_kind,omitempty"`
-	// components that must be deployed before this component can function.
+	// components that must be deployed before this kind can function.
 	// order matters: index 0 is deployed first. the E2E framework installs these
-	// (resolved transitively) before the component under test and tears them down
+	// (resolved transitively) before the kind under test and tears them down
 	// in reverse order; a consumer may pin a prerequisite's exact install shape
 	// via an e2e/prerequisites/<kind>.yaml override, which wins over the
 	// prerequisite's own e2e/prerequisite.yaml install profile. this is also
 	// used by the platform for dependency ordering in infra charts.
 	// example: KubernetesPostgres needs KubernetesCloudNativePgOperator
 	// because it creates postgresql.cnpg.io/v1 Cluster resources.
-	Prerequisites []CloudResourceKind `protobuf:"varint,7,rep,packed,name=prerequisites,proto3,enum=dev.planton.shared.cloudresourcekind.CloudResourceKind" json:"prerequisites,omitempty"`
+	Prerequisites []CatalogKind `protobuf:"varint,7,rep,packed,name=prerequisites,proto3,enum=dev.planton.shared.catalogkind.CatalogKind" json:"prerequisites,omitempty"`
 	// set ONLY for kinds whose spec is a direct projection of a single Kubernetes
 	// custom resource -- i.e. the Terraform module is a thin `kubernetes_manifest`
 	// passthrough rather than hand-written provider logic. its presence flips the
@@ -4622,7 +4622,7 @@ type CloudResourceKindMeta struct {
 	// generate-module`). absent for provider-abstraction kinds (aws/gcp/etc.),
 	// which keep idiomatic snake_case typed variables. the api_version/kind here
 	// are the UPSTREAM CRD's group-version-kind, distinct from the Planton
-	// groupVersion returned by crkreflect.GroupVersion.
+	// groupVersion returned by catalogkindreflect.GroupVersion.
 	KubernetesManifestProjection *KubernetesManifestProjection `protobuf:"bytes,8,opt,name=kubernetes_manifest_projection,json=kubernetesManifestProjection,proto3" json:"kubernetes_manifest_projection,omitempty"`
 	// schema versions of this kind announced as deprecated. a deprecated version
 	// keeps working exactly as before -- documents authored at it are accepted
@@ -4637,20 +4637,20 @@ type CloudResourceKindMeta struct {
 	// outlive its version or strand its writers. the upgrade target is never
 	// authored: it is always the kind's served version, derived, so it cannot
 	// drift. like every kind_meta field this is compile-time data enforced by
-	// the crkreflect registry tests and the bundle conformance gate.
-	Deprecations []*CloudResourceKindVersionDeprecation `protobuf:"bytes,9,rep,name=deprecations,proto3" json:"deprecations,omitempty"`
+	// the catalogkindreflect registry tests and the bundle conformance gate.
+	Deprecations []*CatalogKindVersionDeprecation `protobuf:"bytes,9,rep,name=deprecations,proto3" json:"deprecations,omitempty"`
 	// the provider-console service group this kind is browsed under — the
 	// coarse UX taxonomy (AWS "Compute", Azure "Networking"), NOT the fine
 	// family sub-bands the enum numbers allocate in (a sub-band clusters kinds
 	// that share code and fixtures; many sub-bands map into one group). exactly
 	// one group per kind: explorers, docs navigation, and AI grounding each
-	// need one home per component, and multi-service relationships belong in
-	// the component's documentation. REQUIRED for kinds of grouped providers
+	// need one home per kind, and multi-service relationships belong in
+	// the kind's documentation. REQUIRED for kinds of grouped providers
 	// (aws, azure, gcp, kubernetes, cloudflare, digital_ocean) and PROHIBITED
-	// for providers without a service taxonomy — the crkreflect registry tests
+	// for providers without a service taxonomy — the catalogkindreflect registry tests
 	// enforce both directions, including that the group belongs to the kind's
 	// own provider.
-	ServiceGroup CloudProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup" json:"service_group,omitempty"`
+	ServiceGroup CatalogProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.catalogkind.CatalogProviderServiceGroup" json:"service_group,omitempty"`
 	// set ONLY for cluster kinds whose deploy publishes a Kubernetes provider
 	// connection (the platform materializes one from the cluster's stack
 	// outputs, named by the manifest's planton.dev/connection-name annotation
@@ -4677,28 +4677,28 @@ type CloudResourceKindMeta struct {
 	// neither tofu nor terraform carries no iac/tf); and the platform resolves a
 	// resource of the kind to a listed engine whatever its organization's
 	// default. names rather than the enum because this file cannot import
-	// shared/iac.proto without a package cycle; the crkreflect registry tests
+	// shared/iac.proto without a package cycle; the catalogkindreflect registry tests
 	// hold every value to a real, non-duplicated provisioner name.
 	Provisioners  []string `protobuf:"bytes,12,rep,name=provisioners,proto3" json:"provisioners,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudResourceKindMeta) Reset() {
-	*x = CloudResourceKindMeta{}
-	mi := &file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[0]
+func (x *CatalogKindMeta) Reset() {
+	*x = CatalogKindMeta{}
+	mi := &file_shared_catalogkind_catalog_kind_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudResourceKindMeta) String() string {
+func (x *CatalogKindMeta) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudResourceKindMeta) ProtoMessage() {}
+func (*CatalogKindMeta) ProtoMessage() {}
 
-func (x *CloudResourceKindMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[0]
+func (x *CatalogKindMeta) ProtoReflect() protoreflect.Message {
+	mi := &file_shared_catalogkind_catalog_kind_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4709,89 +4709,89 @@ func (x *CloudResourceKindMeta) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudResourceKindMeta.ProtoReflect.Descriptor instead.
-func (*CloudResourceKindMeta) Descriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindMeta.ProtoReflect.Descriptor instead.
+func (*CatalogKindMeta) Descriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_kind_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudResourceKindMeta) GetProvider() CloudResourceProvider {
+func (x *CatalogKindMeta) GetProvider() CatalogProvider {
 	if x != nil {
 		return x.Provider
 	}
-	return CloudResourceProvider_cloud_resource_provider_unspecified
+	return CatalogProvider_catalog_provider_unspecified
 }
 
-func (x *CloudResourceKindMeta) GetVersion() string {
+func (x *CatalogKindMeta) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *CloudResourceKindMeta) GetName() string {
+func (x *CatalogKindMeta) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *CloudResourceKindMeta) GetIdPrefix() string {
+func (x *CatalogKindMeta) GetIdPrefix() string {
 	if x != nil {
 		return x.IdPrefix
 	}
 	return ""
 }
 
-func (x *CloudResourceKindMeta) GetIsServiceKind() bool {
+func (x *CatalogKindMeta) GetIsServiceKind() bool {
 	if x != nil {
 		return x.IsServiceKind
 	}
 	return false
 }
 
-func (x *CloudResourceKindMeta) GetContainerKind() bool {
+func (x *CatalogKindMeta) GetContainerKind() bool {
 	if x != nil {
 		return x.ContainerKind
 	}
 	return false
 }
 
-func (x *CloudResourceKindMeta) GetPrerequisites() []CloudResourceKind {
+func (x *CatalogKindMeta) GetPrerequisites() []CatalogKind {
 	if x != nil {
 		return x.Prerequisites
 	}
 	return nil
 }
 
-func (x *CloudResourceKindMeta) GetKubernetesManifestProjection() *KubernetesManifestProjection {
+func (x *CatalogKindMeta) GetKubernetesManifestProjection() *KubernetesManifestProjection {
 	if x != nil {
 		return x.KubernetesManifestProjection
 	}
 	return nil
 }
 
-func (x *CloudResourceKindMeta) GetDeprecations() []*CloudResourceKindVersionDeprecation {
+func (x *CatalogKindMeta) GetDeprecations() []*CatalogKindVersionDeprecation {
 	if x != nil {
 		return x.Deprecations
 	}
 	return nil
 }
 
-func (x *CloudResourceKindMeta) GetServiceGroup() CloudProviderServiceGroup {
+func (x *CatalogKindMeta) GetServiceGroup() CatalogProviderServiceGroup {
 	if x != nil {
 		return x.ServiceGroup
 	}
-	return CloudProviderServiceGroup_cloud_provider_service_group_unspecified
+	return CatalogProviderServiceGroup_catalog_provider_service_group_unspecified
 }
 
-func (x *CloudResourceKindMeta) GetPublishesKubernetesConnection() bool {
+func (x *CatalogKindMeta) GetPublishesKubernetesConnection() bool {
 	if x != nil {
 		return x.PublishesKubernetesConnection
 	}
 	return false
 }
 
-func (x *CloudResourceKindMeta) GetProvisioners() []string {
+func (x *CatalogKindMeta) GetProvisioners() []string {
 	if x != nil {
 		return x.Provisioners
 	}
@@ -4799,8 +4799,8 @@ func (x *CloudResourceKindMeta) GetProvisioners() []string {
 }
 
 // marks one of a kind's schema versions as deprecated. carried on
-// CloudResourceKindMeta.deprecations; see that field for the contract.
-type CloudResourceKindVersionDeprecation struct {
+// CatalogKindMeta.deprecations; see that field for the contract.
+type CatalogKindVersionDeprecation struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the deprecated schema version, e.g. "v1alpha1". must match the maturity
 	// grammar, resolve to a schema this release ships for the kind, and differ
@@ -4815,21 +4815,21 @@ type CloudResourceKindVersionDeprecation struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudResourceKindVersionDeprecation) Reset() {
-	*x = CloudResourceKindVersionDeprecation{}
-	mi := &file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[1]
+func (x *CatalogKindVersionDeprecation) Reset() {
+	*x = CatalogKindVersionDeprecation{}
+	mi := &file_shared_catalogkind_catalog_kind_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudResourceKindVersionDeprecation) String() string {
+func (x *CatalogKindVersionDeprecation) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudResourceKindVersionDeprecation) ProtoMessage() {}
+func (*CatalogKindVersionDeprecation) ProtoMessage() {}
 
-func (x *CloudResourceKindVersionDeprecation) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[1]
+func (x *CatalogKindVersionDeprecation) ProtoReflect() protoreflect.Message {
+	mi := &file_shared_catalogkind_catalog_kind_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4840,27 +4840,27 @@ func (x *CloudResourceKindVersionDeprecation) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudResourceKindVersionDeprecation.ProtoReflect.Descriptor instead.
-func (*CloudResourceKindVersionDeprecation) Descriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use CatalogKindVersionDeprecation.ProtoReflect.Descriptor instead.
+func (*CatalogKindVersionDeprecation) Descriptor() ([]byte, []int) {
+	return file_shared_catalogkind_catalog_kind_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudResourceKindVersionDeprecation) GetVersion() string {
+func (x *CatalogKindVersionDeprecation) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *CloudResourceKindVersionDeprecation) GetNote() string {
+func (x *CatalogKindVersionDeprecation) GetNote() string {
 	if x != nil {
 		return x.Note
 	}
 	return ""
 }
 
-// identifies the upstream Kubernetes custom resource that a CloudResourceKind
-// projects onto. carried on CloudResourceKindMeta for projection kinds only.
+// identifies the upstream Kubernetes custom resource that a CatalogKind
+// projects onto. carried on CatalogKindMeta for projection kinds only.
 type KubernetesManifestProjection struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// upstream CRD groupVersion, e.g. "networking.istio.io/v1".
@@ -4873,7 +4873,7 @@ type KubernetesManifestProjection struct {
 
 func (x *KubernetesManifestProjection) Reset() {
 	*x = KubernetesManifestProjection{}
-	mi := &file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[2]
+	mi := &file_shared_catalogkind_catalog_kind_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4885,7 +4885,7 @@ func (x *KubernetesManifestProjection) String() string {
 func (*KubernetesManifestProjection) ProtoMessage() {}
 
 func (x *KubernetesManifestProjection) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[2]
+	mi := &file_shared_catalogkind_catalog_kind_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4898,7 +4898,7 @@ func (x *KubernetesManifestProjection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesManifestProjection.ProtoReflect.Descriptor instead.
 func (*KubernetesManifestProjection) Descriptor() ([]byte, []int) {
-	return file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescGZIP(), []int{2}
+	return file_shared_catalogkind_catalog_kind_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *KubernetesManifestProjection) GetApiVersion() string {
@@ -4915,54 +4915,54 @@ func (x *KubernetesManifestProjection) GetKind() string {
 	return ""
 }
 
-var file_shared_cloudresourcekind_cloud_resource_kind_proto_extTypes = []protoimpl.ExtensionInfo{
+var file_shared_catalogkind_catalog_kind_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
-		ExtensionType: (*CloudResourceKindMeta)(nil),
+		ExtensionType: (*CatalogKindMeta)(nil),
 		Field:         10100,
-		Name:          "dev.planton.shared.cloudresourcekind.kind_meta",
+		Name:          "dev.planton.shared.catalogkind.kind_meta",
 		Tag:           "bytes,10100,opt,name=kind_meta",
-		Filename:      "shared/cloudresourcekind/cloud_resource_kind.proto",
+		Filename:      "shared/catalogkind/catalog_kind.proto",
 	},
 }
 
 // Extension fields to descriptorpb.EnumValueOptions.
 var (
-	// optional dev.planton.shared.cloudresourcekind.CloudResourceKindMeta kind_meta = 10100;
-	E_KindMeta = &file_shared_cloudresourcekind_cloud_resource_kind_proto_extTypes[0]
+	// optional dev.planton.shared.catalogkind.CatalogKindMeta kind_meta = 10100;
+	E_KindMeta = &file_shared_catalogkind_catalog_kind_proto_extTypes[0]
 )
 
-var File_shared_cloudresourcekind_cloud_resource_kind_proto protoreflect.FileDescriptor
+var File_shared_catalogkind_catalog_kind_proto protoreflect.FileDescriptor
 
-const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
+const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\n" +
-	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\xb5\x06\n" +
-	"\x15CloudResourceKindMeta\x12W\n" +
-	"\bprovider\x18\x01 \x01(\x0e2;.dev.planton.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12\x18\n" +
+	"%shared/catalogkind/catalog_kind.proto\x12\x1edev.planton.shared.catalogkind\x1a google/protobuf/descriptor.proto\x1a)shared/catalogkind/catalog_provider.proto\x1a7shared/catalogkind/catalog_provider_service_group.proto\"\x81\x06\n" +
+	"\x0fCatalogKindMeta\x12K\n" +
+	"\bprovider\x18\x01 \x01(\x0e2/.dev.planton.shared.catalogkind.CatalogProviderR\bprovider\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1b\n" +
 	"\tid_prefix\x18\x04 \x01(\tR\bidPrefix\x12&\n" +
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind\x12%\n" +
-	"\x0econtainer_kind\x18\x06 \x01(\bR\rcontainerKind\x12]\n" +
-	"\rprerequisites\x18\a \x03(\x0e27.dev.planton.shared.cloudresourcekind.CloudResourceKindR\rprerequisites\x12\x88\x01\n" +
-	"\x1ekubernetes_manifest_projection\x18\b \x01(\v2B.dev.planton.shared.cloudresourcekind.KubernetesManifestProjectionR\x1ckubernetesManifestProjection\x12m\n" +
-	"\fdeprecations\x18\t \x03(\v2I.dev.planton.shared.cloudresourcekind.CloudResourceKindVersionDeprecationR\fdeprecations\x12d\n" +
+	"\x0econtainer_kind\x18\x06 \x01(\bR\rcontainerKind\x12Q\n" +
+	"\rprerequisites\x18\a \x03(\x0e2+.dev.planton.shared.catalogkind.CatalogKindR\rprerequisites\x12\x82\x01\n" +
+	"\x1ekubernetes_manifest_projection\x18\b \x01(\v2<.dev.planton.shared.catalogkind.KubernetesManifestProjectionR\x1ckubernetesManifestProjection\x12a\n" +
+	"\fdeprecations\x18\t \x03(\v2=.dev.planton.shared.catalogkind.CatalogKindVersionDeprecationR\fdeprecations\x12`\n" +
 	"\rservice_group\x18\n" +
-	" \x01(\x0e2?.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupR\fserviceGroup\x12F\n" +
+	" \x01(\x0e2;.dev.planton.shared.catalogkind.CatalogProviderServiceGroupR\fserviceGroup\x12F\n" +
 	"\x1fpublishes_kubernetes_connection\x18\v \x01(\bR\x1dpublishesKubernetesConnection\x12\"\n" +
-	"\fprovisioners\x18\f \x03(\tR\fprovisioners\"S\n" +
-	"#CloudResourceKindVersionDeprecation\x12\x18\n" +
+	"\fprovisioners\x18\f \x03(\tR\fprovisioners\"M\n" +
+	"\x1dCatalogKindVersionDeprecation\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\x12\n" +
 	"\x04note\x18\x02 \x01(\tR\x04note\"S\n" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xec\x93\x03\n" +
-	"\x11CloudResourceKind\x12\x0f\n" +
-	"\vunspecified\x10\x00\x12b\n" +
-	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
-	"\bv1alpha1\x12 superseded by the v1alpha2 shape\x127\n" +
-	"\x1bTestCloudResourceKubernetes\x10\x02\x1a\x16\xa2\xf7\x04\x12\b\x01\x12\bv1alpha1\"\x04tcrk\x12+\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe2\x93\x03\n" +
+	"\vCatalogKind\x12\x0f\n" +
+	"\vunspecified\x10\x00\x12`\n" +
+	"\x16TestCatalogKindGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tckgJ,\n" +
+	"\bv1alpha1\x12 superseded by the v1alpha2 shape\x125\n" +
+	"\x19TestCatalogKindKubernetes\x10\x02\x1a\x16\xa2\xf7\x04\x12\b\x01\x12\bv1alpha1\"\x04tckk\x12+\n" +
 	"\x06AwsAlb\x10\xe8\a\x1a\x1e\xa2\xf7\x04\x1a\b\f\x12\bv1alpha1\"\x06awsalb:\x02\xbc\bPh\x123\n" +
 	"\x12AwsCertManagerCert\x10\xe9\a\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awsacmPi\x12-\n" +
 	"\rAwsCloudFront\x10\xea\a\x1a\x19\xa2\xf7\x04\x15\b\f\x12\bv1alpha1\"\x05awscfPh\x12,\n" +
@@ -5875,41 +5875,41 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\rStripeTaxRate\x10\xfaN\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stptxrb\x04tofu\x12;\n" +
 	"\x15StripeTaxRegistration\x10\xfbN\x1a\x1f\xa2\xf7\x04\x1b\b\x1d\x12\bv1alpha1\"\astptxrgb\x04tofu\x126\n" +
 	"\x12StripeBillingMeter\x10\xfcN\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpbmb\x04tofu\x129\n" +
-	"\x11StripePaymentLink\x10\xfdN\x1a!\xa2\xf7\x04\x1d\b\x1d\x12\bv1alpha1\"\x05stppl:\x02\xf5Nb\x04tofu:|\n" +
-	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.dev.planton.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xad\x02\n" +
-	"(com.dev.planton.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
+	"\x11StripePaymentLink\x10\xfdN\x1a!\xa2\xf7\x04\x1d\b\x1d\x12\bv1alpha1\"\x05stppl:\x02\xf5Nb\x04tofu:p\n" +
+	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2/.dev.planton.shared.catalogkind.CatalogKindMetaR\bkindMetaB\x83\x02\n" +
+	"\"com.dev.planton.shared.catalogkindB\x10CatalogKindProtoP\x01Z/github.com/plantonhq/planton/shared/catalogkind\xa2\x02\x04DPSC\xaa\x02\x1eDev.Planton.Shared.Catalogkind\xca\x02\x1eDev\\Planton\\Shared\\Catalogkind\xe2\x02*Dev\\Planton\\Shared\\Catalogkind\\GPBMetadata\xea\x02!Dev::Planton::Shared::Catalogkindb\x06proto3"
 
 var (
-	file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescOnce sync.Once
-	file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescData []byte
+	file_shared_catalogkind_catalog_kind_proto_rawDescOnce sync.Once
+	file_shared_catalogkind_catalog_kind_proto_rawDescData []byte
 )
 
-func file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescGZIP() []byte {
-	file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescOnce.Do(func() {
-		file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc), len(file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc)))
+func file_shared_catalogkind_catalog_kind_proto_rawDescGZIP() []byte {
+	file_shared_catalogkind_catalog_kind_proto_rawDescOnce.Do(func() {
+		file_shared_catalogkind_catalog_kind_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_shared_catalogkind_catalog_kind_proto_rawDesc), len(file_shared_catalogkind_catalog_kind_proto_rawDesc)))
 	})
-	return file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescData
+	return file_shared_catalogkind_catalog_kind_proto_rawDescData
 }
 
-var file_shared_cloudresourcekind_cloud_resource_kind_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_shared_cloudresourcekind_cloud_resource_kind_proto_goTypes = []any{
-	(CloudResourceKind)(0),                      // 0: dev.planton.shared.cloudresourcekind.CloudResourceKind
-	(*CloudResourceKindMeta)(nil),               // 1: dev.planton.shared.cloudresourcekind.CloudResourceKindMeta
-	(*CloudResourceKindVersionDeprecation)(nil), // 2: dev.planton.shared.cloudresourcekind.CloudResourceKindVersionDeprecation
-	(*KubernetesManifestProjection)(nil),        // 3: dev.planton.shared.cloudresourcekind.KubernetesManifestProjection
-	(CloudResourceProvider)(0),                  // 4: dev.planton.shared.cloudresourcekind.CloudResourceProvider
-	(CloudProviderServiceGroup)(0),              // 5: dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup
-	(*descriptorpb.EnumValueOptions)(nil),       // 6: google.protobuf.EnumValueOptions
+var file_shared_catalogkind_catalog_kind_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_shared_catalogkind_catalog_kind_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_shared_catalogkind_catalog_kind_proto_goTypes = []any{
+	(CatalogKind)(0),                      // 0: dev.planton.shared.catalogkind.CatalogKind
+	(*CatalogKindMeta)(nil),               // 1: dev.planton.shared.catalogkind.CatalogKindMeta
+	(*CatalogKindVersionDeprecation)(nil), // 2: dev.planton.shared.catalogkind.CatalogKindVersionDeprecation
+	(*KubernetesManifestProjection)(nil),  // 3: dev.planton.shared.catalogkind.KubernetesManifestProjection
+	(CatalogProvider)(0),                  // 4: dev.planton.shared.catalogkind.CatalogProvider
+	(CatalogProviderServiceGroup)(0),      // 5: dev.planton.shared.catalogkind.CatalogProviderServiceGroup
+	(*descriptorpb.EnumValueOptions)(nil), // 6: google.protobuf.EnumValueOptions
 }
-var file_shared_cloudresourcekind_cloud_resource_kind_proto_depIdxs = []int32{
-	4, // 0: dev.planton.shared.cloudresourcekind.CloudResourceKindMeta.provider:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceProvider
-	0, // 1: dev.planton.shared.cloudresourcekind.CloudResourceKindMeta.prerequisites:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
-	3, // 2: dev.planton.shared.cloudresourcekind.CloudResourceKindMeta.kubernetes_manifest_projection:type_name -> dev.planton.shared.cloudresourcekind.KubernetesManifestProjection
-	2, // 3: dev.planton.shared.cloudresourcekind.CloudResourceKindMeta.deprecations:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKindVersionDeprecation
-	5, // 4: dev.planton.shared.cloudresourcekind.CloudResourceKindMeta.service_group:type_name -> dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup
-	6, // 5: dev.planton.shared.cloudresourcekind.kind_meta:extendee -> google.protobuf.EnumValueOptions
-	1, // 6: dev.planton.shared.cloudresourcekind.kind_meta:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKindMeta
+var file_shared_catalogkind_catalog_kind_proto_depIdxs = []int32{
+	4, // 0: dev.planton.shared.catalogkind.CatalogKindMeta.provider:type_name -> dev.planton.shared.catalogkind.CatalogProvider
+	0, // 1: dev.planton.shared.catalogkind.CatalogKindMeta.prerequisites:type_name -> dev.planton.shared.catalogkind.CatalogKind
+	3, // 2: dev.planton.shared.catalogkind.CatalogKindMeta.kubernetes_manifest_projection:type_name -> dev.planton.shared.catalogkind.KubernetesManifestProjection
+	2, // 3: dev.planton.shared.catalogkind.CatalogKindMeta.deprecations:type_name -> dev.planton.shared.catalogkind.CatalogKindVersionDeprecation
+	5, // 4: dev.planton.shared.catalogkind.CatalogKindMeta.service_group:type_name -> dev.planton.shared.catalogkind.CatalogProviderServiceGroup
+	6, // 5: dev.planton.shared.catalogkind.kind_meta:extendee -> google.protobuf.EnumValueOptions
+	1, // 6: dev.planton.shared.catalogkind.kind_meta:type_name -> dev.planton.shared.catalogkind.CatalogKindMeta
 	7, // [7:7] is the sub-list for method output_type
 	7, // [7:7] is the sub-list for method input_type
 	6, // [6:7] is the sub-list for extension type_name
@@ -5917,30 +5917,30 @@ var file_shared_cloudresourcekind_cloud_resource_kind_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_shared_cloudresourcekind_cloud_resource_kind_proto_init() }
-func file_shared_cloudresourcekind_cloud_resource_kind_proto_init() {
-	if File_shared_cloudresourcekind_cloud_resource_kind_proto != nil {
+func init() { file_shared_catalogkind_catalog_kind_proto_init() }
+func file_shared_catalogkind_catalog_kind_proto_init() {
+	if File_shared_catalogkind_catalog_kind_proto != nil {
 		return
 	}
-	file_shared_cloudresourcekind_cloud_provider_service_group_proto_init()
-	file_shared_cloudresourcekind_cloud_resource_provider_proto_init()
+	file_shared_catalogkind_catalog_provider_proto_init()
+	file_shared_catalogkind_catalog_provider_service_group_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc), len(file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_catalogkind_catalog_kind_proto_rawDesc), len(file_shared_catalogkind_catalog_kind_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   3,
 			NumExtensions: 1,
 			NumServices:   0,
 		},
-		GoTypes:           file_shared_cloudresourcekind_cloud_resource_kind_proto_goTypes,
-		DependencyIndexes: file_shared_cloudresourcekind_cloud_resource_kind_proto_depIdxs,
-		EnumInfos:         file_shared_cloudresourcekind_cloud_resource_kind_proto_enumTypes,
-		MessageInfos:      file_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes,
-		ExtensionInfos:    file_shared_cloudresourcekind_cloud_resource_kind_proto_extTypes,
+		GoTypes:           file_shared_catalogkind_catalog_kind_proto_goTypes,
+		DependencyIndexes: file_shared_catalogkind_catalog_kind_proto_depIdxs,
+		EnumInfos:         file_shared_catalogkind_catalog_kind_proto_enumTypes,
+		MessageInfos:      file_shared_catalogkind_catalog_kind_proto_msgTypes,
+		ExtensionInfos:    file_shared_catalogkind_catalog_kind_proto_extTypes,
 	}.Build()
-	File_shared_cloudresourcekind_cloud_resource_kind_proto = out.File
-	file_shared_cloudresourcekind_cloud_resource_kind_proto_goTypes = nil
-	file_shared_cloudresourcekind_cloud_resource_kind_proto_depIdxs = nil
+	File_shared_catalogkind_catalog_kind_proto = out.File
+	file_shared_catalogkind_catalog_kind_proto_goTypes = nil
+	file_shared_catalogkind_catalog_kind_proto_depIdxs = nil
 }

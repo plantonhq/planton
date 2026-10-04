@@ -28,7 +28,7 @@ type GcpHierarchicalFirewallPolicy struct {
 	state         protoimpl.MessageState               `protogen:"open.v1"`
 	ApiVersion    string                               `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                               `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata        `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata        `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpHierarchicalFirewallPolicySpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpHierarchicalFirewallPolicyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpHierarchicalFirewallPolicy) GetKind() string {
 	return ""
 }
 
-func (x *GcpHierarchicalFirewallPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpHierarchicalFirewallPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpHierarchicalFirewallPolicy) GetStatus() *GcpHierarchicalFirewallPoli
 }
 
 type GcpHierarchicalFirewallPolicyStatus struct {
-	state         protoimpl.MessageState                     `protogen:"open.v1"`
-	Outputs       *GcpHierarchicalFirewallPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState                `protogen:"open.v1"`
+	Outputs       *GcpHierarchicalFirewallPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpHierarchicalFirewallPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpHierarchicalFirewallPolicyStatus) GetOutputs() *GcpHierarchicalFirewallPolicyStackOutputs {
+func (x *GcpHierarchicalFirewallPolicyStatus) GetOutputs() *GcpHierarchicalFirewallPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dGcpHierarchicalFirewallPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
 	"\x04spec\x18\x04 \x01(\v2Y.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatusR\x06status\"\xa2\x01\n" +
-	"#GcpHierarchicalFirewallPolicyStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2[.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatusR\x06status\"\x9d\x01\n" +
+	"#GcpHierarchicalFirewallPolicyStatus\x12v\n" +
+	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyOutputsR\aoutputsB\xba\x03\n" +
 	":com.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1B\bApiProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcphierarchicalfirewallpolicy/v1alpha1;gcphierarchicalfirewallpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcphierarchicalfirewallpolicy.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcphierarchicalfirewallpolicy\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcphierarchicalfirewallpolicy\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcphierarchicalfirewallpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*GcpHierarchicalFirewallPolicy)(nil),             // 0: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicy
-	(*GcpHierarchicalFirewallPolicyStatus)(nil),       // 1: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpHierarchicalFirewallPolicySpec)(nil),         // 3: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicySpec
-	(*GcpHierarchicalFirewallPolicyStackOutputs)(nil), // 4: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStackOutputs
+	(*GcpHierarchicalFirewallPolicy)(nil),        // 0: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicy
+	(*GcpHierarchicalFirewallPolicyStatus)(nil),  // 1: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpHierarchicalFirewallPolicySpec)(nil),    // 3: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicySpec
+	(*GcpHierarchicalFirewallPolicyOutputs)(nil), // 4: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyOutputs
 }
 var file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicy.spec:type_name -> dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicySpec
 	1, // 2: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicy.status:type_name -> dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatus
-	4, // 3: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatus.outputs:type_name -> dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStackOutputs
+	4, // 3: dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyStatus.outputs:type_name -> dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

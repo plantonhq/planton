@@ -31,7 +31,7 @@ type AwsSagemakerDomain struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsSagemakerDomainSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsSagemakerDomain) GetKind() string {
 	return ""
 }
 
-func (x *AwsSagemakerDomain) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSagemakerDomain) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsSagemakerDomain) GetStatus() *AwsSagemakerDomainStatus {
 // aws-sagemaker-domain status
 type AwsSagemakerDomainStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsSagemakerDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsSagemakerDomainOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsSagemakerDomainStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerdomain_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSagemakerDomainStatus) GetOutputs() *AwsSagemakerDomainStackOutputs {
+func (x *AwsSagemakerDomainStatus) GetOutputs() *AwsSagemakerDomainOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awssagemakerdomain_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsSagemakerDomainR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsSagemakerDomainStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatusR\x06status\"|\n" +
+	"\x18AwsSagemakerDomainStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awssagemakerdomain.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awssagemakerdomain/v1alpha1;awssagemakerdomainv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awssagemakerdomain.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awssagemakerdomain\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awssagemakerdomain\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awssagemakerdomain::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awssagemakerdomain_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awssagemakerdomain_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssagemakerdomain_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSagemakerDomain)(nil),             // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain
-	(*AwsSagemakerDomainStatus)(nil),       // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSagemakerDomainSpec)(nil),         // 3: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainSpec
-	(*AwsSagemakerDomainStackOutputs)(nil), // 4: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs
+	(*AwsSagemakerDomain)(nil),           // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain
+	(*AwsSagemakerDomainStatus)(nil),     // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSagemakerDomainSpec)(nil),       // 3: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainSpec
+	(*AwsSagemakerDomainOutputs)(nil),    // 4: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs
 }
 var file_catalog_aws_awssagemakerdomain_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain.spec:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainSpec
 	1, // 2: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain.status:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatus
-	4, // 3: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatus.outputs:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackOutputs
+	4, // 3: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStatus.outputs:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

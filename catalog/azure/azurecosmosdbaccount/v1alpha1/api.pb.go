@@ -37,7 +37,7 @@ type AzureCosmosdbAccount struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureCosmosdbAccountSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureCosmosdbAccount) GetKind() string {
 	return ""
 }
 
-func (x *AzureCosmosdbAccount) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureCosmosdbAccount) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureCosmosdbAccount) GetStatus() *AzureCosmosdbAccountStatus {
 // AzureCosmosdbAccountStatus holds the deployment status and outputs.
 type AzureCosmosdbAccountStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureCosmosdbAccountStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureCosmosdbAccountOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureCosmosdbAccountStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbaccount_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureCosmosdbAccountStatus) GetOutputs() *AzureCosmosdbAccountStackOutputs {
+func (x *AzureCosmosdbAccountStatus) GetOutputs() *AzureCosmosdbAccountOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azurecosmosdbaccount_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AzureCosmosdbAccountR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatusR\x06status\"\x89\x01\n" +
-	"\x1aAzureCosmosdbAccountStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStackOutputsR\aoutputsB\x87\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatusR\x06status\"\x84\x01\n" +
+	"\x1aAzureCosmosdbAccountStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountOutputsR\aoutputsB\x87\x03\n" +
 	"3com.dev.planton.azure.azurecosmosdbaccount.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azurecosmosdbaccount/v1alpha1;azurecosmosdbaccountv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azurecosmosdbaccount.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azurecosmosdbaccount\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azurecosmosdbaccount\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azurecosmosdbaccount::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azurecosmosdbaccount_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurecosmosdbaccount_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecosmosdbaccount_v1alpha1_api_proto_goTypes = []any{
-	(*AzureCosmosdbAccount)(nil),             // 0: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccount
-	(*AzureCosmosdbAccountStatus)(nil),       // 1: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureCosmosdbAccountSpec)(nil),         // 3: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountSpec
-	(*AzureCosmosdbAccountStackOutputs)(nil), // 4: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStackOutputs
+	(*AzureCosmosdbAccount)(nil),         // 0: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccount
+	(*AzureCosmosdbAccountStatus)(nil),   // 1: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureCosmosdbAccountSpec)(nil),     // 3: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountSpec
+	(*AzureCosmosdbAccountOutputs)(nil),  // 4: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountOutputs
 }
 var file_catalog_azure_azurecosmosdbaccount_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccount.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccount.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccount.spec:type_name -> dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountSpec
 	1, // 2: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccount.status:type_name -> dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatus
-	4, // 3: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatus.outputs:type_name -> dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStackOutputs
+	4, // 3: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStatus.outputs:type_name -> dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

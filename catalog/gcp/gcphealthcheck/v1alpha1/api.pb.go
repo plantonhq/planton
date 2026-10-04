@@ -28,7 +28,7 @@ type GcpHealthCheck struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpHealthCheckSpec           `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpHealthCheckStatus         `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpHealthCheck) GetKind() string {
 	return ""
 }
 
-func (x *GcpHealthCheck) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpHealthCheck) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpHealthCheck) GetStatus() *GcpHealthCheckStatus {
 }
 
 type GcpHealthCheckStatus struct {
-	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Outputs       *GcpHealthCheckStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *GcpHealthCheckOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpHealthCheckStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcphealthcheck_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpHealthCheckStatus) GetOutputs() *GcpHealthCheckStackOutputs {
+func (x *GcpHealthCheckStatus) GetOutputs() *GcpHealthCheckOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcphealthcheck_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eGcpHealthCheckR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStatusR\x06status\"u\n" +
-	"\x14GcpHealthCheckStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStatusR\x06status\"p\n" +
+	"\x14GcpHealthCheckStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.gcp.gcphealthcheck.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/gcp/gcphealthcheck/v1alpha1;gcphealthcheckv1alpha1\xa2\x02\x04DPGG\xaa\x02'Dev.Planton.Gcp.Gcphealthcheck.V1alpha1\xca\x02'Dev\\Planton\\Gcp\\Gcphealthcheck\\V1alpha1\xe2\x023Dev\\Planton\\Gcp\\Gcphealthcheck\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Gcp::Gcphealthcheck::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcphealthcheck_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_gcp_gcphealthcheck_v1alpha1_api_proto_goTypes = []any{
 	(*GcpHealthCheck)(nil),               // 0: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheck
 	(*GcpHealthCheckStatus)(nil),         // 1: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpHealthCheckSpec)(nil),           // 3: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckSpec
-	(*GcpHealthCheckStackOutputs)(nil),   // 4: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStackOutputs
+	(*GcpHealthCheckOutputs)(nil),        // 4: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckOutputs
 }
 var file_catalog_gcp_gcphealthcheck_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheck.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheck.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheck.spec:type_name -> dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckSpec
 	1, // 2: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheck.status:type_name -> dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStatus
-	4, // 3: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStatus.outputs:type_name -> dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStackOutputs
+	4, // 3: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStatus.outputs:type_name -> dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

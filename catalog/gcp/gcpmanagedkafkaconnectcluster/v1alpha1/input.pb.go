@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-managed-kafka-connect-cluster stack-input
-type GcpManagedKafkaConnectClusterStackInput struct {
+// gcp-managed-kafka-connect-cluster iac-input
+type GcpManagedKafkaConnectClusterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *GcpManagedKafkaConnectCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpManagedKafkaConnectClusterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpManagedKafkaConnectClusterStackInput) Reset() {
-	*x = GcpManagedKafkaConnectClusterStackInput{}
+func (x *GcpManagedKafkaConnectClusterIacInput) Reset() {
+	*x = GcpManagedKafkaConnectClusterIacInput{}
 	mi := &file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpManagedKafkaConnectClusterStackInput) String() string {
+func (x *GcpManagedKafkaConnectClusterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpManagedKafkaConnectClusterStackInput) ProtoMessage() {}
+func (*GcpManagedKafkaConnectClusterIacInput) ProtoMessage() {}
 
-func (x *GcpManagedKafkaConnectClusterStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpManagedKafkaConnectClusterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpManagedKafkaConnectClusterStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpManagedKafkaConnectClusterStackInput.ProtoReflect.Descriptor instead.
-func (*GcpManagedKafkaConnectClusterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpManagedKafkaConnectClusterIacInput.ProtoReflect.Descriptor instead.
+func (*GcpManagedKafkaConnectClusterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpManagedKafkaConnectClusterStackInput) GetTarget() *GcpManagedKafkaConnectCluster {
+func (x *GcpManagedKafkaConnectClusterIacInput) GetTarget() *GcpManagedKafkaConnectCluster {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpManagedKafkaConnectClusterStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpManagedKafkaConnectClusterIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto protoref
 
 const file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/input.proto\x126dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1\x1a<catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe5\x01\n" +
-	"'GcpManagedKafkaConnectClusterStackInput\x12m\n" +
+	">catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/input.proto\x126dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1\x1a<catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe3\x01\n" +
+	"%GcpManagedKafkaConnectClusterIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	":com.dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_rawDesc
 
 var file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_goTypes = []any{
-	(*GcpManagedKafkaConnectClusterStackInput)(nil), // 0: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterStackInput
-	(*GcpManagedKafkaConnectCluster)(nil),           // 1: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectCluster
-	(*gcp.GcpProviderConfig)(nil),                   // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpManagedKafkaConnectClusterIacInput)(nil), // 0: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterIacInput
+	(*GcpManagedKafkaConnectCluster)(nil),         // 1: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectCluster
+	(*gcp.GcpProviderConfig)(nil),                 // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterStackInput.target:type_name -> dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectCluster
-	2, // 1: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterIacInput.target:type_name -> dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectCluster
+	2, // 1: dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

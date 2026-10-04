@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOrganizationAccountStackInput is the input for the IaC modules
+// AwsOrganizationAccountIacInput is the input for the IaC modules
 // that manage a member account with its folded contact and region
 // settings.
-type AwsOrganizationAccountStackInput struct {
+type AwsOrganizationAccountIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsOrganizationAccount resource to deploy.
 	Target *AwsOrganizationAccount `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsOrganizationAccountStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsOrganizationAccountStackInput) Reset() {
-	*x = AwsOrganizationAccountStackInput{}
+func (x *AwsOrganizationAccountIacInput) Reset() {
+	*x = AwsOrganizationAccountIacInput{}
 	mi := &file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOrganizationAccountStackInput) String() string {
+func (x *AwsOrganizationAccountIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOrganizationAccountStackInput) ProtoMessage() {}
+func (*AwsOrganizationAccountIacInput) ProtoMessage() {}
 
-func (x *AwsOrganizationAccountStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsOrganizationAccountIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsOrganizationAccountStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOrganizationAccountStackInput.ProtoReflect.Descriptor instead.
-func (*AwsOrganizationAccountStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOrganizationAccountIacInput.ProtoReflect.Descriptor instead.
+func (*AwsOrganizationAccountIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOrganizationAccountStackInput) GetTarget() *AwsOrganizationAccount {
+func (x *AwsOrganizationAccountIacInput) GetTarget() *AwsOrganizationAccount {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsOrganizationAccountStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsOrganizationAccountIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsorganizationaccount_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsorganizationaccount/v1alpha1/input.proto\x12/dev.planton.aws.awsorganizationaccount.v1alpha1\x1a5catalog/aws/awsorganizationaccount/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd0\x01\n" +
-	" AwsOrganizationAccountStackInput\x12_\n" +
+	"7catalog/aws/awsorganizationaccount/v1alpha1/input.proto\x12/dev.planton.aws.awsorganizationaccount.v1alpha1\x1a5catalog/aws/awsorganizationaccount/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xce\x01\n" +
+	"\x1eAwsOrganizationAccountIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"3com.dev.planton.aws.awsorganizationaccount.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_goTypes = []any{
-	(*AwsOrganizationAccountStackInput)(nil), // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStackInput
-	(*AwsOrganizationAccount)(nil),           // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount
-	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsOrganizationAccountIacInput)(nil), // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountIacInput
+	(*AwsOrganizationAccount)(nil),         // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount
+	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsorganizationaccount_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStackInput.target:type_name -> dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount
-	2, // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountIacInput.target:type_name -> dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount
+	2, // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

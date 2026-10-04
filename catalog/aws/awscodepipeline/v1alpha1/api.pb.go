@@ -34,7 +34,7 @@ type AwsCodePipeline struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the CodePipeline pipeline.
 	Spec *AwsCodePipelineSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -87,7 +87,7 @@ func (x *AwsCodePipeline) GetKind() string {
 	return ""
 }
 
-func (x *AwsCodePipeline) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCodePipeline) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsCodePipeline) GetStatus() *AwsCodePipelineStatus {
 type AwsCodePipelineStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsCodePipelineStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsCodePipelineOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsCodePipelineStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscodepipeline_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCodePipelineStatus) GetOutputs() *AwsCodePipelineStackOutputs {
+func (x *AwsCodePipelineStatus) GetOutputs() *AwsCodePipelineOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awscodepipeline_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAwsCodePipelineR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
 	"\x04spec\x18\x04 \x01(\v2=.dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12W\n" +
-	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStatusR\x06status\"x\n" +
-	"\x15AwsCodePipelineStatus\x12_\n" +
-	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackOutputsR\aoutputsB\xd8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2?.dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStatusR\x06status\"s\n" +
+	"\x15AwsCodePipelineStatus\x12Z\n" +
+	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineOutputsR\aoutputsB\xd8\x02\n" +
 	",com.dev.planton.aws.awscodepipeline.v1alpha1B\bApiProtoP\x01ZYgithub.com/plantonhq/planton/catalog/aws/awscodepipeline/v1alpha1;awscodepipelinev1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Aws.Awscodepipeline.V1alpha1\xca\x02(Dev\\Planton\\Aws\\Awscodepipeline\\V1alpha1\xe2\x024Dev\\Planton\\Aws\\Awscodepipeline\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Aws::Awscodepipeline::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_aws_awscodepipeline_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_aws_awscodepipeline_v1alpha1_api_proto_goTypes = []any{
 	(*AwsCodePipeline)(nil),              // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline
 	(*AwsCodePipelineStatus)(nil),        // 1: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsCodePipelineSpec)(nil),          // 3: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineSpec
-	(*AwsCodePipelineStackOutputs)(nil),  // 4: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackOutputs
+	(*AwsCodePipelineOutputs)(nil),       // 4: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineOutputs
 }
 var file_catalog_aws_awscodepipeline_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline.spec:type_name -> dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineSpec
 	1, // 2: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline.status:type_name -> dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStatus
-	4, // 3: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStatus.outputs:type_name -> dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackOutputs
+	4, // 3: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStatus.outputs:type_name -> dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

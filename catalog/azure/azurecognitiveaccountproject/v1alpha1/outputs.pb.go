@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCognitiveAccountProjectStackOutputs** captures the outputs of
+// **AzureCognitiveAccountProjectOutputs** captures the outputs of
 // provisioning an AI Foundry project.
-type AzureCognitiveAccountProjectStackOutputs struct {
+type AzureCognitiveAccountProjectOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the project.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{account}/projects/{name}
@@ -45,20 +45,20 @@ type AzureCognitiveAccountProjectStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) Reset() {
-	*x = AzureCognitiveAccountProjectStackOutputs{}
+func (x *AzureCognitiveAccountProjectOutputs) Reset() {
+	*x = AzureCognitiveAccountProjectOutputs{}
 	mi := &file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) String() string {
+func (x *AzureCognitiveAccountProjectOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCognitiveAccountProjectStackOutputs) ProtoMessage() {}
+func (*AzureCognitiveAccountProjectOutputs) ProtoMessage() {}
 
-func (x *AzureCognitiveAccountProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCognitiveAccountProjectOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *AzureCognitiveAccountProjectStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCognitiveAccountProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCognitiveAccountProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCognitiveAccountProjectOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCognitiveAccountProjectOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) GetProjectId() string {
+func (x *AzureCognitiveAccountProjectOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) GetProjectName() string {
+func (x *AzureCognitiveAccountProjectOutputs) GetProjectName() string {
 	if x != nil {
 		return x.ProjectName
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) GetEndpoints() map[string]string {
+func (x *AzureCognitiveAccountProjectOutputs) GetEndpoints() map[string]string {
 	if x != nil {
 		return x.Endpoints
 	}
 	return nil
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) GetIsDefault() bool {
+func (x *AzureCognitiveAccountProjectOutputs) GetIsDefault() bool {
 	if x != nil {
 		return x.IsDefault
 	}
 	return false
 }
 
-func (x *AzureCognitiveAccountProjectStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureCognitiveAccountProjectOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -114,12 +114,12 @@ var File_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azurecognitiveaccountproject/v1alpha1/outputs.proto\x127dev.planton.azure.azurecognitiveaccountproject.v1alpha1\"\xac\x03\n" +
-	"(AzureCognitiveAccountProjectStackOutputs\x12\x1d\n" +
+	"Acatalog/azure/azurecognitiveaccountproject/v1alpha1/outputs.proto\x127dev.planton.azure.azurecognitiveaccountproject.v1alpha1\"\xa2\x03\n" +
+	"#AzureCognitiveAccountProjectOutputs\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12!\n" +
-	"\fproject_name\x18\x02 \x01(\tR\vprojectName\x12\x8e\x01\n" +
-	"\tendpoints\x18\x03 \x03(\v2p.dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackOutputs.EndpointsEntryR\tendpoints\x12\x1d\n" +
+	"\fproject_name\x18\x02 \x01(\tR\vprojectName\x12\x89\x01\n" +
+	"\tendpoints\x18\x03 \x03(\v2k.dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectOutputs.EndpointsEntryR\tendpoints\x12\x1d\n" +
 	"\n" +
 	"is_default\x18\x04 \x01(\bR\tisDefault\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\x05 \x01(\tR!systemAssignedIdentityPrincipalId\x1a<\n" +
@@ -142,11 +142,11 @@ func file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCognitiveAccountProjectStackOutputs)(nil), // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackOutputs
-	nil, // 1: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackOutputs.EndpointsEntry
+	(*AzureCognitiveAccountProjectOutputs)(nil), // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectOutputs
+	nil, // 1: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectOutputs.EndpointsEntry
 }
 var file_catalog_azure_azurecognitiveaccountproject_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackOutputs.endpoints:type_name -> dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackOutputs.EndpointsEntry
+	1, // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectOutputs.endpoints:type_name -> dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectOutputs.EndpointsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

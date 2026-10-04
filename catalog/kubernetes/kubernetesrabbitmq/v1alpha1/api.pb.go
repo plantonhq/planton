@@ -31,7 +31,7 @@ type KubernetesRabbitMq struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesRabbitMqSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesRabbitMq) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesRabbitMq) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesRabbitMq) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesRabbitMq) GetStatus() *KubernetesRabbitMqStatus {
 // kubernetes-rabbit-mq status
 type KubernetesRabbitMqStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesRabbitMqStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesRabbitMqOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesRabbitMqStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesRabbitMqStatus) GetOutputs() *KubernetesRabbitMqStackOutputs {
+func (x *KubernetesRabbitMqStatus) GetOutputs() *KubernetesRabbitMqOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12KubernetesRabbitMqR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12f\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12f\n" +
 	"\x04spec\x18\x04 \x01(\v2J.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12d\n" +
-	"\x06status\x18\x05 \x01(\v2L.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatusR\x06status\"\x88\x01\n" +
-	"\x18KubernetesRabbitMqStatus\x12l\n" +
-	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2L.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatusR\x06status\"\x83\x01\n" +
+	"\x18KubernetesRabbitMqStatus\x12g\n" +
+	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqOutputsR\aoutputsB\x97\x03\n" +
 	"6com.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1B\bApiProtoP\x01Zfgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesrabbitmq/v1alpha1;kubernetesrabbitmqv1alpha1\xa2\x02\x04DPKK\xaa\x022Dev.Planton.Kubernetes.Kubernetesrabbitmq.V1alpha1\xca\x022Dev\\Planton\\Kubernetes\\Kubernetesrabbitmq\\V1alpha1\xe2\x02>Dev\\Planton\\Kubernetes\\Kubernetesrabbitmq\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Kubernetes::Kubernetesrabbitmq::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesRabbitMq)(nil),             // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq
-	(*KubernetesRabbitMqStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesRabbitMqSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqSpec
-	(*KubernetesRabbitMqStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackOutputs
+	(*KubernetesRabbitMq)(nil),           // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq
+	(*KubernetesRabbitMqStatus)(nil),     // 1: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesRabbitMqSpec)(nil),       // 3: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqSpec
+	(*KubernetesRabbitMqOutputs)(nil),    // 4: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqOutputs
 }
 var file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq.spec:type_name -> dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqSpec
 	1, // 2: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMq.status:type_name -> dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatus
-	4, // 3: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesKarapaceStackOutputs** — the handles a schema registry
+// **KubernetesKarapaceOutputs** — the handles a schema registry
 // exports for composition. Producers, consumers, Connect converters
 // and consoles configure `endpoint` as their schema.registry.url.
-type KubernetesKarapaceStackOutputs struct {
+type KubernetesKarapaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the registry runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -44,20 +44,20 @@ type KubernetesKarapaceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKarapaceStackOutputs) Reset() {
-	*x = KubernetesKarapaceStackOutputs{}
+func (x *KubernetesKarapaceOutputs) Reset() {
+	*x = KubernetesKarapaceOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKarapaceStackOutputs) String() string {
+func (x *KubernetesKarapaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKarapaceStackOutputs) ProtoMessage() {}
+func (*KubernetesKarapaceOutputs) ProtoMessage() {}
 
-func (x *KubernetesKarapaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKarapaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *KubernetesKarapaceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKarapaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKarapaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKarapaceOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKarapaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKarapaceStackOutputs) GetNamespace() string {
+func (x *KubernetesKarapaceOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKarapaceStackOutputs) GetServiceName() string {
+func (x *KubernetesKarapaceOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesKarapaceStackOutputs) GetEndpoint() string {
+func (x *KubernetesKarapaceOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKarapaceStackOutputs) GetRestProxyEndpoint() string {
+func (x *KubernetesKarapaceOutputs) GetRestProxyEndpoint() string {
 	if x != nil {
 		return x.RestProxyEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKarapaceStackOutputs) GetSchemasTopic() string {
+func (x *KubernetesKarapaceOutputs) GetSchemasTopic() string {
 	if x != nil {
 		return x.SchemasTopic
 	}
@@ -113,8 +113,8 @@ var File_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kuberneteskarapace/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kuberneteskarapace.v1alpha1\"\xd2\x01\n" +
-	"\x1eKubernetesKarapaceStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kuberneteskarapace/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kuberneteskarapace.v1alpha1\"\xcd\x01\n" +
+	"\x19KubernetesKarapaceOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12.\n" +
@@ -136,7 +136,7 @@ func file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKarapaceStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceStackOutputs
+	(*KubernetesKarapaceOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceOutputs
 }
 var file_catalog_kubernetes_kuberneteskarapace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

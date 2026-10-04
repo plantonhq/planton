@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsConfigAggregatorStackOutputs captures the observable state of
+// AwsConfigAggregatorOutputs captures the observable state of
 // the aggregation arms after apply.
-type AwsConfigAggregatorStackOutputs struct {
+type AwsConfigAggregatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The aggregator's name (also the provider's import ID). Set only
 	// when spec.aggregation is configured.
@@ -39,20 +39,20 @@ type AwsConfigAggregatorStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsConfigAggregatorStackOutputs) Reset() {
-	*x = AwsConfigAggregatorStackOutputs{}
+func (x *AwsConfigAggregatorOutputs) Reset() {
+	*x = AwsConfigAggregatorOutputs{}
 	mi := &file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsConfigAggregatorStackOutputs) String() string {
+func (x *AwsConfigAggregatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsConfigAggregatorStackOutputs) ProtoMessage() {}
+func (*AwsConfigAggregatorOutputs) ProtoMessage() {}
 
-func (x *AwsConfigAggregatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsConfigAggregatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsConfigAggregatorStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsConfigAggregatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsConfigAggregatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsConfigAggregatorOutputs.ProtoReflect.Descriptor instead.
+func (*AwsConfigAggregatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsConfigAggregatorStackOutputs) GetAggregatorName() string {
+func (x *AwsConfigAggregatorOutputs) GetAggregatorName() string {
 	if x != nil {
 		return x.AggregatorName
 	}
 	return ""
 }
 
-func (x *AwsConfigAggregatorStackOutputs) GetAggregatorArn() string {
+func (x *AwsConfigAggregatorOutputs) GetAggregatorArn() string {
 	if x != nil {
 		return x.AggregatorArn
 	}
 	return ""
 }
 
-func (x *AwsConfigAggregatorStackOutputs) GetAuthorizationArns() map[string]string {
+func (x *AwsConfigAggregatorOutputs) GetAuthorizationArns() map[string]string {
 	if x != nil {
 		return x.AuthorizationArns
 	}
@@ -94,11 +94,11 @@ var File_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsconfigaggregator/v1alpha1/outputs.proto\x12,dev.planton.aws.awsconfigaggregator.v1alpha1\"\xcd\x02\n" +
-	"\x1fAwsConfigAggregatorStackOutputs\x12'\n" +
+	"6catalog/aws/awsconfigaggregator/v1alpha1/outputs.proto\x12,dev.planton.aws.awsconfigaggregator.v1alpha1\"\xc3\x02\n" +
+	"\x1aAwsConfigAggregatorOutputs\x12'\n" +
 	"\x0faggregator_name\x18\x01 \x01(\tR\x0eaggregatorName\x12%\n" +
-	"\x0eaggregator_arn\x18\x02 \x01(\tR\raggregatorArn\x12\x93\x01\n" +
-	"\x12authorization_arns\x18\x03 \x03(\v2d.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs.AuthorizationArnsEntryR\x11authorizationArns\x1aD\n" +
+	"\x0eaggregator_arn\x18\x02 \x01(\tR\raggregatorArn\x12\x8e\x01\n" +
+	"\x12authorization_arns\x18\x03 \x03(\v2_.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs.AuthorizationArnsEntryR\x11authorizationArns\x1aD\n" +
 	"\x16AuthorizationArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xf8\x02\n" +
@@ -118,11 +118,11 @@ func file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsConfigAggregatorStackOutputs)(nil), // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs
-	nil,                                     // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs.AuthorizationArnsEntry
+	(*AwsConfigAggregatorOutputs)(nil), // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs
+	nil,                                // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs.AuthorizationArnsEntry
 }
 var file_catalog_aws_awsconfigaggregator_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs.authorization_arns:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs.AuthorizationArnsEntry
+	1, // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs.authorization_arns:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs.AuthorizationArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

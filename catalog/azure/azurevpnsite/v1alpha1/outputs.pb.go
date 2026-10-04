@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVpnSiteStackOutputs** captures the outputs of provisioning a
+// **AzureVpnSiteOutputs** captures the outputs of provisioning a
 // VPN site.
-type AzureVpnSiteStackOutputs struct {
+type AzureVpnSiteOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the VPN site -- what a
 	// connection references as its remote_vpn_site_id.
@@ -40,20 +40,20 @@ type AzureVpnSiteStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureVpnSiteStackOutputs) Reset() {
-	*x = AzureVpnSiteStackOutputs{}
+func (x *AzureVpnSiteOutputs) Reset() {
+	*x = AzureVpnSiteOutputs{}
 	mi := &file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVpnSiteStackOutputs) String() string {
+func (x *AzureVpnSiteOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVpnSiteStackOutputs) ProtoMessage() {}
+func (*AzureVpnSiteOutputs) ProtoMessage() {}
 
-func (x *AzureVpnSiteStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVpnSiteOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureVpnSiteStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVpnSiteStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVpnSiteStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVpnSiteOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVpnSiteOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVpnSiteStackOutputs) GetVpnSiteId() string {
+func (x *AzureVpnSiteOutputs) GetVpnSiteId() string {
 	if x != nil {
 		return x.VpnSiteId
 	}
 	return ""
 }
 
-func (x *AzureVpnSiteStackOutputs) GetVpnSiteName() string {
+func (x *AzureVpnSiteOutputs) GetVpnSiteName() string {
 	if x != nil {
 		return x.VpnSiteName
 	}
 	return ""
 }
 
-func (x *AzureVpnSiteStackOutputs) GetLinkIds() map[string]string {
+func (x *AzureVpnSiteOutputs) GetLinkIds() map[string]string {
 	if x != nil {
 		return x.LinkIds
 	}
@@ -95,11 +95,11 @@ var File_catalog_azure_azurevpnsite_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/azure/azurevpnsite/v1alpha1/outputs.proto\x12'dev.planton.azure.azurevpnsite.v1alpha1\"\x85\x02\n" +
-	"\x18AzureVpnSiteStackOutputs\x12\x1e\n" +
+	"1catalog/azure/azurevpnsite/v1alpha1/outputs.proto\x12'dev.planton.azure.azurevpnsite.v1alpha1\"\xfb\x01\n" +
+	"\x13AzureVpnSiteOutputs\x12\x1e\n" +
 	"\vvpn_site_id\x18\x01 \x01(\tR\tvpnSiteId\x12\"\n" +
-	"\rvpn_site_name\x18\x02 \x01(\tR\vvpnSiteName\x12i\n" +
-	"\blink_ids\x18\x03 \x03(\v2N.dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackOutputs.LinkIdsEntryR\alinkIds\x1a:\n" +
+	"\rvpn_site_name\x18\x02 \x01(\tR\vvpnSiteName\x12d\n" +
+	"\blink_ids\x18\x03 \x03(\v2I.dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteOutputs.LinkIdsEntryR\alinkIds\x1a:\n" +
 	"\fLinkIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xd3\x02\n" +
@@ -119,11 +119,11 @@ func file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVpnSiteStackOutputs)(nil), // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackOutputs
-	nil,                              // 1: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackOutputs.LinkIdsEntry
+	(*AzureVpnSiteOutputs)(nil), // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteOutputs
+	nil,                         // 1: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteOutputs.LinkIdsEntry
 }
 var file_catalog_azure_azurevpnsite_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackOutputs.link_ids:type_name -> dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteStackOutputs.LinkIdsEntry
+	1, // 0: dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteOutputs.link_ids:type_name -> dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteOutputs.LinkIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

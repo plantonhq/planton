@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorDataCollectionRuleAssociationStackOutputs** captures
+// **AzureMonitorDataCollectionRuleAssociationOutputs** captures
 // the outputs from provisioning an Azure Monitor data collection rule
 // association.
-type AzureMonitorDataCollectionRuleAssociationStackOutputs struct {
+type AzureMonitorDataCollectionRuleAssociationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The association's ARM resource ID, scoped under the target machine
 	// ({target_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{name}).
@@ -35,20 +35,20 @@ type AzureMonitorDataCollectionRuleAssociationStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureMonitorDataCollectionRuleAssociationStackOutputs) Reset() {
-	*x = AzureMonitorDataCollectionRuleAssociationStackOutputs{}
+func (x *AzureMonitorDataCollectionRuleAssociationOutputs) Reset() {
+	*x = AzureMonitorDataCollectionRuleAssociationOutputs{}
 	mi := &file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorDataCollectionRuleAssociationStackOutputs) String() string {
+func (x *AzureMonitorDataCollectionRuleAssociationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorDataCollectionRuleAssociationStackOutputs) ProtoMessage() {}
+func (*AzureMonitorDataCollectionRuleAssociationOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorDataCollectionRuleAssociationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorDataCollectionRuleAssociationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMonitorDataCollectionRuleAssociationStackOutputs) ProtoReflect() p
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorDataCollectionRuleAssociationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorDataCollectionRuleAssociationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorDataCollectionRuleAssociationOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorDataCollectionRuleAssociationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorDataCollectionRuleAssociationStackOutputs) GetDataCollectionRuleAssociationId() string {
+func (x *AzureMonitorDataCollectionRuleAssociationOutputs) GetDataCollectionRuleAssociationId() string {
 	if x != nil {
 		return x.DataCollectionRuleAssociationId
 	}
 	return ""
 }
 
-func (x *AzureMonitorDataCollectionRuleAssociationStackOutputs) GetDataCollectionRuleAssociationName() string {
+func (x *AzureMonitorDataCollectionRuleAssociationOutputs) GetDataCollectionRuleAssociationName() string {
 	if x != nil {
 		return x.DataCollectionRuleAssociationName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_output
 
 const file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/azure/azuremonitordatacollectionruleassociation/v1alpha1/outputs.proto\x12Ddev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1\"\xd7\x01\n" +
-	"5AzureMonitorDataCollectionRuleAssociationStackOutputs\x12L\n" +
+	"Ncatalog/azure/azuremonitordatacollectionruleassociation/v1alpha1/outputs.proto\x12Ddev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1\"\xd2\x01\n" +
+	"0AzureMonitorDataCollectionRuleAssociationOutputs\x12L\n" +
 	"#data_collection_rule_association_id\x18\x01 \x01(\tR\x1fdataCollectionRuleAssociationId\x12P\n" +
 	"%data_collection_rule_association_name\x18\x02 \x01(\tR!dataCollectionRuleAssociationNameB\x9f\x04\n" +
 	"Hcom.dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1B\fOutputsProtoP\x01Z\x8f\x01github.com/plantonhq/planton/catalog/azure/azuremonitordatacollectionruleassociation/v1alpha1;azuremonitordatacollectionruleassociationv1alpha1\xa2\x02\x04DPAA\xaa\x02DDev.Planton.Azure.Azuremonitordatacollectionruleassociation.V1alpha1\xca\x02DDev\\Planton\\Azure\\Azuremonitordatacollectionruleassociation\\V1alpha1\xe2\x02PDev\\Planton\\Azure\\Azuremonitordatacollectionruleassociation\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Azure::Azuremonitordatacollectionruleassociation::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outpu
 
 var file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorDataCollectionRuleAssociationStackOutputs)(nil), // 0: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationStackOutputs
+	(*AzureMonitorDataCollectionRuleAssociationOutputs)(nil), // 0: dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1.AzureMonitorDataCollectionRuleAssociationOutputs
 }
 var file_catalog_azure_azuremonitordatacollectionruleassociation_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

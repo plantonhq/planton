@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpNetworkFirewallPolicySpec creates one network firewall policy: an
 ordered set of firewall rules owned by a project and associated with
@@ -57,7 +57,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpnetworkfirewallpolicy
+    e2e-catalog-kind: gcpnetworkfirewallpolicy
   annotations:
     planton.dev/e2e: "true"
   tags:

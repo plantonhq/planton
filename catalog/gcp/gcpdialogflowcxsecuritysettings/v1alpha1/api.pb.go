@@ -31,7 +31,7 @@ type GcpDialogflowCxSecuritySettings struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpDialogflowCxSecuritySettingsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpDialogflowCxSecuritySettings) GetKind() string {
 	return ""
 }
 
-func (x *GcpDialogflowCxSecuritySettings) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpDialogflowCxSecuritySettings) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpDialogflowCxSecuritySettings) GetStatus() *GcpDialogflowCxSecuritySe
 // gcp-dialogflow-cx-security-settings status
 type GcpDialogflowCxSecuritySettingsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpDialogflowCxSecuritySettingsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpDialogflowCxSecuritySettingsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpDialogflowCxSecuritySettingsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpDialogflowCxSecuritySettingsStatus) GetOutputs() *GcpDialogflowCxSecuritySettingsStackOutputs {
+func (x *GcpDialogflowCxSecuritySettingsStatus) GetOutputs() *GcpDialogflowCxSecuritySettingsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_api_proto_rawDes
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fGcpDialogflowCxSecuritySettingsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatusR\x06status\"\xa8\x01\n" +
-	"%GcpDialogflowCxSecuritySettingsStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatusR\x06status\"\xa3\x01\n" +
+	"%GcpDialogflowCxSecuritySettingsStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsOutputsR\aoutputsB\xc8\x03\n" +
 	"<com.dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1;gcpdialogflowcxsecuritysettingsv1alpha1\xa2\x02\x04DPGG\xaa\x028Dev.Planton.Gcp.Gcpdialogflowcxsecuritysettings.V1alpha1\xca\x028Dev\\Planton\\Gcp\\Gcpdialogflowcxsecuritysettings\\V1alpha1\xe2\x02DDev\\Planton\\Gcp\\Gcpdialogflowcxsecuritysettings\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Gcp::Gcpdialogflowcxsecuritysettings::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_api_proto_rawDesc
 
 var file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_api_proto_goTypes = []any{
-	(*GcpDialogflowCxSecuritySettings)(nil),             // 0: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettings
-	(*GcpDialogflowCxSecuritySettingsStatus)(nil),       // 1: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpDialogflowCxSecuritySettingsSpec)(nil),         // 3: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsSpec
-	(*GcpDialogflowCxSecuritySettingsStackOutputs)(nil), // 4: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStackOutputs
+	(*GcpDialogflowCxSecuritySettings)(nil),        // 0: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettings
+	(*GcpDialogflowCxSecuritySettingsStatus)(nil),  // 1: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpDialogflowCxSecuritySettingsSpec)(nil),    // 3: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsSpec
+	(*GcpDialogflowCxSecuritySettingsOutputs)(nil), // 4: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsOutputs
 }
 var file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettings.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettings.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettings.spec:type_name -> dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsSpec
 	1, // 2: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettings.status:type_name -> dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatus
-	4, // 3: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatus.outputs:type_name -> dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStackOutputs
+	4, // 3: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStatus.outputs:type_name -> dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

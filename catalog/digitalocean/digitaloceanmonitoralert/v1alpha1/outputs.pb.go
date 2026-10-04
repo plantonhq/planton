@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanMonitorAlertStackOutputs captures the key outputs after
+// DigitalOceanMonitorAlertOutputs captures the key outputs after
 // provisioning a DigitalOcean monitor alert policy.
-type DigitalOceanMonitorAlertStackOutputs struct {
+type DigitalOceanMonitorAlertOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the alert policy (the API identity, and the import id). Both
 	// provisioners read it from the resource id -- the provider's own uuid
@@ -33,20 +33,20 @@ type DigitalOceanMonitorAlertStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanMonitorAlertStackOutputs) Reset() {
-	*x = DigitalOceanMonitorAlertStackOutputs{}
+func (x *DigitalOceanMonitorAlertOutputs) Reset() {
+	*x = DigitalOceanMonitorAlertOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanMonitorAlertStackOutputs) String() string {
+func (x *DigitalOceanMonitorAlertOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanMonitorAlertStackOutputs) ProtoMessage() {}
+func (*DigitalOceanMonitorAlertOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanMonitorAlertStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanMonitorAlertOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *DigitalOceanMonitorAlertStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanMonitorAlertStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanMonitorAlertStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanMonitorAlertOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanMonitorAlertOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanMonitorAlertStackOutputs) GetAlertId() string {
+func (x *DigitalOceanMonitorAlertOutputs) GetAlertId() string {
 	if x != nil {
 		return x.AlertId
 	}
@@ -74,8 +74,8 @@ var File_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto pr
 
 const file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/digitalocean/digitaloceanmonitoralert/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1\"A\n" +
-	"$DigitalOceanMonitorAlertStackOutputs\x12\x19\n" +
+	"Dcatalog/digitalocean/digitaloceanmonitoralert/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1\"<\n" +
+	"\x1fDigitalOceanMonitorAlertOutputs\x12\x19\n" +
 	"\balert_id\x18\x01 \x01(\tR\aalertIdB\xd1\x03\n" +
 	">com.dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1B\fOutputsProtoP\x01Ztgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanmonitoralert/v1alpha1;digitaloceanmonitoralertv1alpha1\xa2\x02\x04DPDD\xaa\x02:Dev.Planton.Digitalocean.Digitaloceanmonitoralert.V1alpha1\xca\x02:Dev\\Planton\\Digitalocean\\Digitaloceanmonitoralert\\V1alpha1\xe2\x02FDev\\Planton\\Digitalocean\\Digitaloceanmonitoralert\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Digitalocean::Digitaloceanmonitoralert::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_r
 
 var file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanMonitorAlertStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1.DigitalOceanMonitorAlertStackOutputs
+	(*DigitalOceanMonitorAlertOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1.DigitalOceanMonitorAlertOutputs
 }
 var file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

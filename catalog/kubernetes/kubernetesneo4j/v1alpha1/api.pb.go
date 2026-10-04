@@ -31,7 +31,7 @@ type KubernetesNeo4J struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesNeo4JSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesNeo4J) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesNeo4J) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesNeo4J) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesNeo4J) GetStatus() *KubernetesNeo4JStatus {
 // neo4j-kubernetes status.
 type KubernetesNeo4JStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesNeo4JStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesNeo4JOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesNeo4JStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesneo4j_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesNeo4JStatus) GetOutputs() *KubernetesNeo4JStackOutputs {
+func (x *KubernetesNeo4JStatus) GetOutputs() *KubernetesNeo4JOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesneo4j_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fKubernetesNeo4jR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12^\n" +
-	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStatusR\x06status\"\x7f\n" +
-	"\x15KubernetesNeo4jStatus\x12f\n" +
-	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStatusR\x06status\"z\n" +
+	"\x15KubernetesNeo4jStatus\x12a\n" +
+	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jOutputsR\aoutputsB\x82\x03\n" +
 	"3com.dev.planton.kubernetes.kubernetesneo4j.v1alpha1B\bApiProtoP\x01Z`github.com/plantonhq/planton/catalog/kubernetes/kubernetesneo4j/v1alpha1;kubernetesneo4jv1alpha1\xa2\x02\x04DPKK\xaa\x02/Dev.Planton.Kubernetes.Kubernetesneo4j.V1alpha1\xca\x02/Dev\\Planton\\Kubernetes\\Kubernetesneo4j\\V1alpha1\xe2\x02;Dev\\Planton\\Kubernetes\\Kubernetesneo4j\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Kubernetes::Kubernetesneo4j::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetesneo4j_v1alpha1_api_proto_msgTypes = make([
 var file_catalog_kubernetes_kubernetesneo4j_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesNeo4J)(nil),              // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4j
 	(*KubernetesNeo4JStatus)(nil),        // 1: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesNeo4JSpec)(nil),          // 3: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jSpec
-	(*KubernetesNeo4JStackOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStackOutputs
+	(*KubernetesNeo4JOutputs)(nil),       // 4: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jOutputs
 }
 var file_catalog_kubernetes_kubernetesneo4j_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4j.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4j.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4j.spec:type_name -> dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jSpec
 	1, // 2: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4j.status:type_name -> dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStatus
-	4, // 3: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesneo4j.v1alpha1.KubernetesNeo4jOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

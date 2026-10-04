@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: gcpeventarctrigger
 spec:
@@ -29,5 +29,5 @@ spec:
       exclusions:
         - audit-log events are Google-source events at $0 per million on Eventarc's meter (first 50,000 chargeable events monthly free) -- and per Google's pricing note, events using Cloud Audit Logs incur Cloud Logging charges on the audited project
         - the Eventarc-created transport topic bills standard Pub/Sub rates as bucket-creation events flow; audit events are typically ~2 KiB, well under the 64 KiB chunking threshold
-        - each delivered event triggers a Cloud Workflows execution billed as steps on the bucket-onboarding workflow's component
+        - each delivered event triggers a Cloud Workflows execution billed as steps on the bucket-onboarding workflow's kind
       notes: Zero committed at creation -- volume follows how often the watched API call (storage.buckets.create) actually happens, a rate no manifest can pin down; the trigger itself never becomes the bill.

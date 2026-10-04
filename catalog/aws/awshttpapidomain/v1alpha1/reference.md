@@ -36,7 +36,7 @@ Design notes:
   to the domain; the module creates one per routing_rules entry.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

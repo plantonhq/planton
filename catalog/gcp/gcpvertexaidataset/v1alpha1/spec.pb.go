@@ -32,7 +32,7 @@ const (
 // through the Vertex AI API, the console, or the SDK and are deliberately
 // not part of this block.
 //
-// Google assigns the dataset a numeric id at creation; the stack outputs
+// Google assigns the dataset a numeric id at creation; the outputs
 // carry it and the full resource name for the training jobs and pipelines
 // that consume the dataset.
 //

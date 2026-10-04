@@ -31,7 +31,7 @@ type KubernetesOpenSearchOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesOpenSearchOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesOpenSearchOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesOpenSearchOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesOpenSearchOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesOpenSearchOperator) GetStatus() *KubernetesOpenSearchOperator
 // kubernetes-open-search-operator status.
 type KubernetesOpenSearchOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesOpenSearchOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesOpenSearchOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesOpenSearchOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesOpenSearchOperatorStatus) GetOutputs() *KubernetesOpenSearchOperatorStackOutputs {
+func (x *KubernetesOpenSearchOperatorStatus) GetOutputs() *KubernetesOpenSearchOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_api_proto_ra
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cKubernetesOpenSearchOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
 	"\x04spec\x18\x04 \x01(\v2^.dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12x\n" +
-	"\x06status\x18\x05 \x01(\v2`.dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatusR\x06status\"\xa7\x01\n" +
-	"\"KubernetesOpenSearchOperatorStatus\x12\x80\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2f.dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStackOutputsR\aoutputsB\xdd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2`.dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatusR\x06status\"\xa1\x01\n" +
+	"\"KubernetesOpenSearchOperatorStatus\x12{\n" +
+	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorOutputsR\aoutputsB\xdd\x03\n" +
 	"@com.dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1B\bApiProtoP\x01Zzgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesopensearchoperator/v1alpha1;kubernetesopensearchoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02<Dev.Planton.Kubernetes.Kubernetesopensearchoperator.V1alpha1\xca\x02<Dev\\Planton\\Kubernetes\\Kubernetesopensearchoperator\\V1alpha1\xe2\x02HDev\\Planton\\Kubernetes\\Kubernetesopensearchoperator\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Kubernetes::Kubernetesopensearchoperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_api_proto_raw
 
 var file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesOpenSearchOperator)(nil),             // 0: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperator
-	(*KubernetesOpenSearchOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesOpenSearchOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorSpec
-	(*KubernetesOpenSearchOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStackOutputs
+	(*KubernetesOpenSearchOperator)(nil),        // 0: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperator
+	(*KubernetesOpenSearchOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesOpenSearchOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorSpec
+	(*KubernetesOpenSearchOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesopensearchoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperator.spec:type_name -> dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperator.status:type_name -> dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1.KubernetesOpenSearchOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

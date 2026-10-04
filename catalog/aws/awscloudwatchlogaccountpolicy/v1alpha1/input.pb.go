@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogAccountPolicyStackInput is the input for the IaC
+// AwsCloudwatchLogAccountPolicyIacInput is the input for the IaC
 // modules that manage a CloudWatch Logs account policy.
-type AwsCloudwatchLogAccountPolicyStackInput struct {
+type AwsCloudwatchLogAccountPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudwatchLogAccountPolicy resource to deploy.
 	Target *AwsCloudwatchLogAccountPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudwatchLogAccountPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackInput) Reset() {
-	*x = AwsCloudwatchLogAccountPolicyStackInput{}
+func (x *AwsCloudwatchLogAccountPolicyIacInput) Reset() {
+	*x = AwsCloudwatchLogAccountPolicyIacInput{}
 	mi := &file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackInput) String() string {
+func (x *AwsCloudwatchLogAccountPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogAccountPolicyStackInput) ProtoMessage() {}
+func (*AwsCloudwatchLogAccountPolicyIacInput) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogAccountPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogAccountPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudwatchLogAccountPolicyStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogAccountPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogAccountPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogAccountPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogAccountPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackInput) GetTarget() *AwsCloudwatchLogAccountPolicy {
+func (x *AwsCloudwatchLogAccountPolicyIacInput) GetTarget() *AwsCloudwatchLogAccountPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchLogAccountPolicyStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudwatchLogAccountPolicyIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto protoref
 
 const file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/input.proto\x126dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1\x1a<catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe5\x01\n" +
-	"'AwsCloudwatchLogAccountPolicyStackInput\x12m\n" +
+	">catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/input.proto\x126dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1\x1a<catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe3\x01\n" +
+	"%AwsCloudwatchLogAccountPolicyIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	":com.dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_rawDesc
 
 var file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudwatchLogAccountPolicyStackInput)(nil), // 0: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyStackInput
-	(*AwsCloudwatchLogAccountPolicy)(nil),           // 1: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicy
-	(*aws.AwsProviderConfig)(nil),                   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudwatchLogAccountPolicyIacInput)(nil), // 0: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyIacInput
+	(*AwsCloudwatchLogAccountPolicy)(nil),         // 1: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicy
+	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudwatchlogaccountpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyStackInput.target:type_name -> dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicy
-	2, // 1: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyIacInput.target:type_name -> dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicy
+	2, // 1: dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1.AwsCloudwatchLogAccountPolicyIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

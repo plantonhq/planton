@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCognitiveDeploymentStackOutputs** captures the outputs of
+// **AzureCognitiveDeploymentOutputs** captures the outputs of
 // provisioning a model deployment.
-type AzureCognitiveDeploymentStackOutputs struct {
+type AzureCognitiveDeploymentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the deployment.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{account}/deployments/{name}
@@ -43,20 +43,20 @@ type AzureCognitiveDeploymentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureCognitiveDeploymentStackOutputs) Reset() {
-	*x = AzureCognitiveDeploymentStackOutputs{}
+func (x *AzureCognitiveDeploymentOutputs) Reset() {
+	*x = AzureCognitiveDeploymentOutputs{}
 	mi := &file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCognitiveDeploymentStackOutputs) String() string {
+func (x *AzureCognitiveDeploymentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCognitiveDeploymentStackOutputs) ProtoMessage() {}
+func (*AzureCognitiveDeploymentOutputs) ProtoMessage() {}
 
-func (x *AzureCognitiveDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCognitiveDeploymentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *AzureCognitiveDeploymentStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCognitiveDeploymentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCognitiveDeploymentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCognitiveDeploymentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCognitiveDeploymentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCognitiveDeploymentStackOutputs) GetDeploymentId() string {
+func (x *AzureCognitiveDeploymentOutputs) GetDeploymentId() string {
 	if x != nil {
 		return x.DeploymentId
 	}
 	return ""
 }
 
-func (x *AzureCognitiveDeploymentStackOutputs) GetDeploymentName() string {
+func (x *AzureCognitiveDeploymentOutputs) GetDeploymentName() string {
 	if x != nil {
 		return x.DeploymentName
 	}
 	return ""
 }
 
-func (x *AzureCognitiveDeploymentStackOutputs) GetModelVersion() string {
+func (x *AzureCognitiveDeploymentOutputs) GetModelVersion() string {
 	if x != nil {
 		return x.ModelVersion
 	}
@@ -98,8 +98,8 @@ var File_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurecognitivedeployment/v1alpha1/outputs.proto\x123dev.planton.azure.azurecognitivedeployment.v1alpha1\"\x99\x01\n" +
-	"$AzureCognitiveDeploymentStackOutputs\x12#\n" +
+	"=catalog/azure/azurecognitivedeployment/v1alpha1/outputs.proto\x123dev.planton.azure.azurecognitivedeployment.v1alpha1\"\x94\x01\n" +
+	"\x1fAzureCognitiveDeploymentOutputs\x12#\n" +
 	"\rdeployment_id\x18\x01 \x01(\tR\fdeploymentId\x12'\n" +
 	"\x0fdeployment_name\x18\x02 \x01(\tR\x0edeploymentName\x12#\n" +
 	"\rmodel_version\x18\x03 \x01(\tR\fmodelVersionB\xa7\x03\n" +
@@ -119,7 +119,7 @@ func file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCognitiveDeploymentStackOutputs)(nil), // 0: dev.planton.azure.azurecognitivedeployment.v1alpha1.AzureCognitiveDeploymentStackOutputs
+	(*AzureCognitiveDeploymentOutputs)(nil), // 0: dev.planton.azure.azurecognitivedeployment.v1alpha1.AzureCognitiveDeploymentOutputs
 }
 var file_catalog_azure_azurecognitivedeployment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

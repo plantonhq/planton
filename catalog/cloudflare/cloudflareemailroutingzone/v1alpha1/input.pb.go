@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-email-routing-zone stack-input
-type CloudflareEmailRoutingZoneStackInput struct {
+// cloudflare-email-routing-zone iac-input
+type CloudflareEmailRoutingZoneIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareEmailRoutingZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareEmailRoutingZoneStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareEmailRoutingZoneStackInput) Reset() {
-	*x = CloudflareEmailRoutingZoneStackInput{}
+func (x *CloudflareEmailRoutingZoneIacInput) Reset() {
+	*x = CloudflareEmailRoutingZoneIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareEmailRoutingZoneStackInput) String() string {
+func (x *CloudflareEmailRoutingZoneIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareEmailRoutingZoneStackInput) ProtoMessage() {}
+func (*CloudflareEmailRoutingZoneIacInput) ProtoMessage() {}
 
-func (x *CloudflareEmailRoutingZoneStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareEmailRoutingZoneIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareEmailRoutingZoneStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareEmailRoutingZoneStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareEmailRoutingZoneStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareEmailRoutingZoneIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareEmailRoutingZoneIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareEmailRoutingZoneStackInput) GetTarget() *CloudflareEmailRoutingZone {
+func (x *CloudflareEmailRoutingZoneIacInput) GetTarget() *CloudflareEmailRoutingZone {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareEmailRoutingZoneStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareEmailRoutingZoneIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto prot
 
 const file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/cloudflare/cloudflareemailroutingzone/v1alpha1/input.proto\x12:dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1\x1a@catalog/cloudflare/cloudflareemailroutingzone/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf1\x01\n" +
-	"$CloudflareEmailRoutingZoneStackInput\x12n\n" +
+	"Bcatalog/cloudflare/cloudflareemailroutingzone/v1alpha1/input.proto\x12:dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1\x1a@catalog/cloudflare/cloudflareemailroutingzone/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xef\x01\n" +
+	"\"CloudflareEmailRoutingZoneIacInput\x12n\n" +
 	"\x06target\x18\x01 \x01(\v2V.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xd1\x03\n" +
 	">com.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_raw
 
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareEmailRoutingZoneStackInput)(nil), // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackInput
-	(*CloudflareEmailRoutingZone)(nil),           // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone
-	(*cloudflare.CloudflareProviderConfig)(nil),  // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareEmailRoutingZoneIacInput)(nil),  // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneIacInput
+	(*CloudflareEmailRoutingZone)(nil),          // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone
+	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackInput.target:type_name -> dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone
-	2, // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneIacInput.target:type_name -> dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone
+	2, // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

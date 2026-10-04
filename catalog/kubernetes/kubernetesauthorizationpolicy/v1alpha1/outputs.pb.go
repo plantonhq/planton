@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesAuthorizationPolicyStackOutputs captures observable outputs after the
+// KubernetesAuthorizationPolicyOutputs captures observable outputs after the
 // AuthorizationPolicy is created on the target cluster. AuthorizationPolicy has no
 // controller-reconciled status subresource that is useful to surface here (istiod
 // enforces the policy in the data plane), so only the resource identity is exported.
-type KubernetesAuthorizationPolicyStackOutputs struct {
+type KubernetesAuthorizationPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created AuthorizationPolicy (equals metadata.name).
 	AuthorizationPolicyName string `protobuf:"bytes,1,opt,name=authorization_policy_name,json=authorizationPolicyName,proto3" json:"authorization_policy_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesAuthorizationPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesAuthorizationPolicyStackOutputs) Reset() {
-	*x = KubernetesAuthorizationPolicyStackOutputs{}
+func (x *KubernetesAuthorizationPolicyOutputs) Reset() {
+	*x = KubernetesAuthorizationPolicyOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesAuthorizationPolicyStackOutputs) String() string {
+func (x *KubernetesAuthorizationPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesAuthorizationPolicyStackOutputs) ProtoMessage() {}
+func (*KubernetesAuthorizationPolicyOutputs) ProtoMessage() {}
 
-func (x *KubernetesAuthorizationPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesAuthorizationPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesAuthorizationPolicyStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesAuthorizationPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesAuthorizationPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesAuthorizationPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesAuthorizationPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesAuthorizationPolicyStackOutputs) GetAuthorizationPolicyName() string {
+func (x *KubernetesAuthorizationPolicyOutputs) GetAuthorizationPolicyName() string {
 	if x != nil {
 		return x.AuthorizationPolicyName
 	}
 	return ""
 }
 
-func (x *KubernetesAuthorizationPolicyStackOutputs) GetNamespace() string {
+func (x *KubernetesAuthorizationPolicyOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto
 
 const file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/outputs.proto\x12=dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1\"\x85\x01\n" +
-	")KubernetesAuthorizationPolicyStackOutputs\x12:\n" +
+	"Gcatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/outputs.proto\x12=dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1\"\x80\x01\n" +
+	"$KubernetesAuthorizationPolicyOutputs\x12:\n" +
 	"\x19authorization_policy_name\x18\x01 \x01(\tR\x17authorizationPolicyName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xe8\x03\n" +
 	"Acom.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1B\fOutputsProtoP\x01Z|github.com/plantonhq/planton/catalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1;kubernetesauthorizationpolicyv1alpha1\xa2\x02\x04DPKK\xaa\x02=Dev.Planton.Kubernetes.Kubernetesauthorizationpolicy.V1alpha1\xca\x02=Dev\\Planton\\Kubernetes\\Kubernetesauthorizationpolicy\\V1alpha1\xe2\x02IDev\\Planton\\Kubernetes\\Kubernetesauthorizationpolicy\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Kubernetes::Kubernetesauthorizationpolicy::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_prot
 
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesAuthorizationPolicyStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackOutputs
+	(*KubernetesAuthorizationPolicyOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyOutputs
 }
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

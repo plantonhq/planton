@@ -31,7 +31,7 @@ type KubernetesKubeRayOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKubeRayOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesKubeRayOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKubeRayOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKubeRayOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesKubeRayOperator) GetStatus() *KubernetesKubeRayOperatorStatus
 // kuberay-operator-kubernetes status.
 type KubernetesKubeRayOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKubeRayOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKubeRayOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesKubeRayOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskuberayoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKubeRayOperatorStatus) GetOutputs() *KubernetesKubeRayOperatorStackOutputs {
+func (x *KubernetesKubeRayOperatorStatus) GetOutputs() *KubernetesKubeRayOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kuberneteskuberayoperator_v1alpha1_api_proto_rawDe
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19KubernetesKubeRayOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatusR\x06status\"\x9d\x01\n" +
-	"\x1fKubernetesKubeRayOperatorStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatusR\x06status\"\x98\x01\n" +
+	"\x1fKubernetesKubeRayOperatorStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorOutputsR\aoutputsB\xc8\x03\n" +
 	"=com.dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskuberayoperator/v1alpha1;kuberneteskuberayoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x029Dev.Planton.Kubernetes.Kuberneteskuberayoperator.V1alpha1\xca\x029Dev\\Planton\\Kubernetes\\Kuberneteskuberayoperator\\V1alpha1\xe2\x02EDev\\Planton\\Kubernetes\\Kuberneteskuberayoperator\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Kubernetes::Kuberneteskuberayoperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kuberneteskuberayoperator_v1alpha1_api_proto_rawDes
 
 var file_catalog_kubernetes_kuberneteskuberayoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskuberayoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKubeRayOperator)(nil),             // 0: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperator
-	(*KubernetesKubeRayOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKubeRayOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorSpec
-	(*KubernetesKubeRayOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStackOutputs
+	(*KubernetesKubeRayOperator)(nil),        // 0: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperator
+	(*KubernetesKubeRayOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKubeRayOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorSpec
+	(*KubernetesKubeRayOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorOutputs
 }
 var file_catalog_kubernetes_kuberneteskuberayoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperator.spec:type_name -> dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperator.status:type_name -> dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

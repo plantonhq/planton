@@ -49,7 +49,7 @@ const (
 //   - API keys and usage plans are a REST API feature (the AwsRestApiUsagePlan
 //     component); HTTP APIs do not support them -- use JWT/IAM/Lambda authorizers.
 //
-// Credentials, region, and deployment workflow live outside this spec in stack inputs.
+// Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsHttpApiGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

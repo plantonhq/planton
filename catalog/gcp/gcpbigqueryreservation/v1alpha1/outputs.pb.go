@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpBigQueryReservationStackOutputs captures the reservation's identity
+// GcpBigQueryReservationOutputs captures the reservation's identity
 // and its assignments.
-type GcpBigQueryReservationStackOutputs struct {
+type GcpBigQueryReservationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/reservations/{reservation_name}.
@@ -38,20 +38,20 @@ type GcpBigQueryReservationStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryReservationStackOutputs) Reset() {
-	*x = GcpBigQueryReservationStackOutputs{}
+func (x *GcpBigQueryReservationOutputs) Reset() {
+	*x = GcpBigQueryReservationOutputs{}
 	mi := &file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryReservationStackOutputs) String() string {
+func (x *GcpBigQueryReservationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryReservationStackOutputs) ProtoMessage() {}
+func (*GcpBigQueryReservationOutputs) ProtoMessage() {}
 
-func (x *GcpBigQueryReservationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryReservationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,33 +63,33 @@ func (x *GcpBigQueryReservationStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryReservationStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryReservationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryReservationOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryReservationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryReservationStackOutputs) GetName() string {
+func (x *GcpBigQueryReservationOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpBigQueryReservationStackOutputs) GetReservationName() string {
+func (x *GcpBigQueryReservationOutputs) GetReservationName() string {
 	if x != nil {
 		return x.ReservationName
 	}
 	return ""
 }
 
-func (x *GcpBigQueryReservationStackOutputs) GetLocation() string {
+func (x *GcpBigQueryReservationOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpBigQueryReservationStackOutputs) GetAssignmentNames() []string {
+func (x *GcpBigQueryReservationOutputs) GetAssignmentNames() []string {
 	if x != nil {
 		return x.AssignmentNames
 	}
@@ -100,8 +100,8 @@ var File_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpbigqueryreservation/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpbigqueryreservation.v1alpha1\"\xaa\x01\n" +
-	"\"GcpBigQueryReservationStackOutputs\x12\x12\n" +
+	"9catalog/gcp/gcpbigqueryreservation/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpbigqueryreservation.v1alpha1\"\xa5\x01\n" +
+	"\x1dGcpBigQueryReservationOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12)\n" +
 	"\x10reservation_name\x18\x02 \x01(\tR\x0freservationName\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12)\n" +
@@ -122,7 +122,7 @@ func file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBigQueryReservationStackOutputs)(nil), // 0: dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationStackOutputs
+	(*GcpBigQueryReservationOutputs)(nil), // 0: dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationOutputs
 }
 var file_catalog_gcp_gcpbigqueryreservation_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

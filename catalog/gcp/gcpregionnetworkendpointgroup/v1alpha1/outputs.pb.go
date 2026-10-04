@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP regional network endpoint group.
-type GcpRegionNetworkEndpointGroupStackOutputs struct {
+type GcpRegionNetworkEndpointGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the network endpoint group. This is the value a backend
 	// service references in backends[].group — the composition handle that puts
@@ -41,20 +41,20 @@ type GcpRegionNetworkEndpointGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) Reset() {
-	*x = GcpRegionNetworkEndpointGroupStackOutputs{}
+func (x *GcpRegionNetworkEndpointGroupOutputs) Reset() {
+	*x = GcpRegionNetworkEndpointGroupOutputs{}
 	mi := &file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) String() string {
+func (x *GcpRegionNetworkEndpointGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRegionNetworkEndpointGroupStackOutputs) ProtoMessage() {}
+func (*GcpRegionNetworkEndpointGroupOutputs) ProtoMessage() {}
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpRegionNetworkEndpointGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *GcpRegionNetworkEndpointGroupStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRegionNetworkEndpointGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpRegionNetworkEndpointGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRegionNetworkEndpointGroupOutputs.ProtoReflect.Descriptor instead.
+func (*GcpRegionNetworkEndpointGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) GetSelfLink() string {
+func (x *GcpRegionNetworkEndpointGroupOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) GetNetworkEndpointGroupName() string {
+func (x *GcpRegionNetworkEndpointGroupOutputs) GetNetworkEndpointGroupName() string {
 	if x != nil {
 		return x.NetworkEndpointGroupName
 	}
 	return ""
 }
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) GetNetworkEndpointType() string {
+func (x *GcpRegionNetworkEndpointGroupOutputs) GetNetworkEndpointType() string {
 	if x != nil {
 		return x.NetworkEndpointType
 	}
 	return ""
 }
 
-func (x *GcpRegionNetworkEndpointGroupStackOutputs) GetRegion() string {
+func (x *GcpRegionNetworkEndpointGroupOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -103,8 +103,8 @@ var File_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1\"\xd3\x01\n" +
-	")GcpRegionNetworkEndpointGroupStackOutputs\x12\x1b\n" +
+	"@catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1\"\xce\x01\n" +
+	"$GcpRegionNetworkEndpointGroupOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12=\n" +
 	"\x1bnetwork_endpoint_group_name\x18\x02 \x01(\tR\x18networkEndpointGroupName\x122\n" +
 	"\x15network_endpoint_type\x18\x03 \x01(\tR\x13networkEndpointType\x12\x16\n" +
@@ -125,7 +125,7 @@ func file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpRegionNetworkEndpointGroupStackOutputs)(nil), // 0: dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupStackOutputs
+	(*GcpRegionNetworkEndpointGroupOutputs)(nil), // 0: dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupOutputs
 }
 var file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

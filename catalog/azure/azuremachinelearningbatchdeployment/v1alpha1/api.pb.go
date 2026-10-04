@@ -34,10 +34,10 @@ type AzureMachineLearningBatchDeployment struct {
 	// Resource kind. Must be "AzureMachineLearningBatchDeployment".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Batch deployment specification.
 	Spec *AzureMachineLearningBatchDeploymentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureMachineLearningBatchDeploymentStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureMachineLearningBatchDeployment) GetKind() string {
 	return ""
 }
 
-func (x *AzureMachineLearningBatchDeployment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMachineLearningBatchDeployment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureMachineLearningBatchDeployment) GetStatus() *AzureMachineLearningB
 // AzureMachineLearningBatchDeploymentStatus holds the deployment outputs.
 type AzureMachineLearningBatchDeploymentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureMachineLearningBatchDeploymentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureMachineLearningBatchDeploymentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureMachineLearningBatchDeploymentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMachineLearningBatchDeploymentStatus) GetOutputs() *AzureMachineLearningBatchDeploymentStackOutputs {
+func (x *AzureMachineLearningBatchDeploymentStatus) GetOutputs() *AzureMachineLearningBatchDeploymentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_api_proto_
 	"apiVersion\x12>\n" +
 	"\x04kind\x18\x02 \x01(\tB*\xbaH'r%\n" +
 	"#AzureMachineLearningBatchDeploymentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x83\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x83\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2g.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x81\x01\n" +
-	"\x06status\x18\x05 \x01(\v2i.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatusR\x06status\"\xb7\x01\n" +
-	")AzureMachineLearningBatchDeploymentStatus\x12\x89\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2o.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStackOutputsR\aoutputsB\xf1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2i.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatusR\x06status\"\xb2\x01\n" +
+	")AzureMachineLearningBatchDeploymentStatus\x12\x84\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2j.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentOutputsR\aoutputsB\xf1\x03\n" +
 	"Bcom.dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1B\bApiProtoP\x01Z\x83\x01github.com/plantonhq/planton/catalog/azure/azuremachinelearningbatchdeployment/v1alpha1;azuremachinelearningbatchdeploymentv1alpha1\xa2\x02\x04DPAA\xaa\x02>Dev.Planton.Azure.Azuremachinelearningbatchdeployment.V1alpha1\xca\x02>Dev\\Planton\\Azure\\Azuremachinelearningbatchdeployment\\V1alpha1\xe2\x02JDev\\Planton\\Azure\\Azuremachinelearningbatchdeployment\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Azure::Azuremachinelearningbatchdeployment::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_api_proto_r
 
 var file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMachineLearningBatchDeployment)(nil),             // 0: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeployment
-	(*AzureMachineLearningBatchDeploymentStatus)(nil),       // 1: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatus
-	(*shared.CloudResourceMetadata)(nil),                    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMachineLearningBatchDeploymentSpec)(nil),         // 3: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentSpec
-	(*AzureMachineLearningBatchDeploymentStackOutputs)(nil), // 4: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStackOutputs
+	(*AzureMachineLearningBatchDeployment)(nil),        // 0: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeployment
+	(*AzureMachineLearningBatchDeploymentStatus)(nil),  // 1: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatus
+	(*shared.CatalogObjectMetadata)(nil),               // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMachineLearningBatchDeploymentSpec)(nil),    // 3: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentSpec
+	(*AzureMachineLearningBatchDeploymentOutputs)(nil), // 4: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentOutputs
 }
 var file_catalog_azure_azuremachinelearningbatchdeployment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeployment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeployment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeployment.spec:type_name -> dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentSpec
 	1, // 2: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeployment.status:type_name -> dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatus
-	4, // 3: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatus.outputs:type_name -> dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStackOutputs
+	4, // 3: dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentStatus.outputs:type_name -> dev.planton.azure.azuremachinelearningbatchdeployment.v1alpha1.AzureMachineLearningBatchDeploymentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

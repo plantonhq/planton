@@ -59,7 +59,7 @@ const (
 // change is followed by a wait for the accelerator to return to the DEPLOYED
 // state — expect minutes, not seconds, per apply.
 //
-// Credentials and deployment workflow live outside this spec in stack inputs.
+// Credentials and deployment workflow live outside this spec in IaC inputs.
 type AwsGlobalAcceleratorSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS provider region used for deployment. Global Accelerator is a

@@ -47,7 +47,7 @@ const (
 //   - There is deliberately no description field: the CreateStateMachine API has
 //     no description input (the AWS console derives one from the definition's
 //     Comment field), so a spec field would be silently dropped.
-//   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+//   - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsStepFunctionSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.
@@ -76,7 +76,7 @@ type AwsStepFunctionSpec struct {
 	// Publish a version of the state machine on every create and on every
 	// configuration update. Published versions are immutable snapshots
 	// (definition + role + logging/tracing/encryption at publish time) addressed
-	// by the version ARN exported in stack outputs. Versions are the foundation
+	// by the version ARN exported in outputs. Versions are the foundation
 	// for alias-based traffic shifting and safe rollbacks: point consumers at a
 	// version ARN (or an alias routing between two versions) instead of the
 	// mutable state machine ARN. When false (the default), executions always run
@@ -221,7 +221,7 @@ func (x *AwsStepFunctionSpec) GetEncryption() *AwsStepFunctionEncryptionConfig {
 
 // AwsStepFunctionAlias defines one named alias on the state machine. The
 // alias routes 100% of traffic to the version published by this deployment
-// and its ARN is exported in stack outputs keyed by name.
+// and its ARN is exported in outputs keyed by name.
 type AwsStepFunctionAlias struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alias name. 1-80 characters matching [0-9A-Za-z_-]. The name keys the

@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsapprunnerservice
 spec:
@@ -79,6 +79,6 @@ spec:
       total_list_cost: "10.2200"
       exclusions:
         - active instance vCPU and memory usage follows request traffic and concurrency -- from zero (the provisioned instance idle) up to the default auto-scaling maximum of 25 running around the clock
-        - the interface VPC endpoint carrying the VPC Ingress Connection bills hourly and per GB on its own AwsVpcEndpoint component
+        - the interface VPC endpoint carrying the VPC Ingress Connection bills hourly and per GB on its own AwsVpcEndpoint kind
         - data transfer within and out of the VPC
-      notes: Provisioned (warm) instances bill memory only; vCPU starts billing the moment an instance actively serves requests -- which is why the committed line carries GB-hours and no vCPU-hours. Custom domains and the managed TLS certificates App Runner issues for them are free. The private service (is_publicly_accessible false) is reachable only through the VPC Ingress Connection; App Runner itself adds no charge for the connection -- the endpoint carrying it bills as its own component.
+      notes: Provisioned (warm) instances bill memory only; vCPU starts billing the moment an instance actively serves requests -- which is why the committed line carries GB-hours and no vCPU-hours. Custom domains and the managed TLS certificates App Runner issues for them are free. The private service (is_publicly_accessible false) is reachable only through the VPC Ingress Connection; App Runner itself adds no charge for the connection -- the endpoint carrying it bills as its own kind.

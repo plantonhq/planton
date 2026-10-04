@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesKarpenterStackOutputs captures observable outputs after
+// KubernetesKarpenterOutputs captures observable outputs after
 // Karpenter is installed on the target cluster.
-type KubernetesKarpenterStackOutputs struct {
+type KubernetesKarpenterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Karpenter was installed into (the resolved spec.namespace).
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -42,20 +42,20 @@ type KubernetesKarpenterStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesKarpenterStackOutputs) Reset() {
-	*x = KubernetesKarpenterStackOutputs{}
+func (x *KubernetesKarpenterOutputs) Reset() {
+	*x = KubernetesKarpenterOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKarpenterStackOutputs) String() string {
+func (x *KubernetesKarpenterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKarpenterStackOutputs) ProtoMessage() {}
+func (*KubernetesKarpenterOutputs) ProtoMessage() {}
 
-func (x *KubernetesKarpenterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKarpenterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *KubernetesKarpenterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKarpenterStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKarpenterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKarpenterOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKarpenterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKarpenterStackOutputs) GetNamespace() string {
+func (x *KubernetesKarpenterOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKarpenterStackOutputs) GetReleaseName() string {
+func (x *KubernetesKarpenterOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesKarpenterStackOutputs) GetCrdReleaseName() string {
+func (x *KubernetesKarpenterOutputs) GetCrdReleaseName() string {
 	if x != nil {
 		return x.CrdReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesKarpenterStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesKarpenterOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
@@ -104,8 +104,8 @@ var File_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kuberneteskarpenter/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kuberneteskarpenter.v1alpha1\"\xbe\x01\n" +
-	"\x1fKubernetesKarpenterStackOutputs\x12\x1c\n" +
+	"=catalog/kubernetes/kuberneteskarpenter/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kuberneteskarpenter.v1alpha1\"\xb9\x01\n" +
+	"\x1aKubernetesKarpenterOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12(\n" +
 	"\x10crd_release_name\x18\x03 \x01(\tR\x0ecrdReleaseName\x120\n" +
@@ -126,7 +126,7 @@ func file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKarpenterStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStackOutputs
+	(*KubernetesKarpenterOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterOutputs
 }
 var file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

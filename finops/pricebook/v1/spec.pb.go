@@ -80,15 +80,15 @@ type PriceBookEntry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The entry's slug identity, unique within this book, referenced by
 	// estimate model quantity lines (e.g. "alb-hours-us-east-1"). Name the
-	// provider SKU and its pricing scope, not any component: many components
+	// provider SKU and its pricing scope, not any kind: many kinds
 	// may cite one entry.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The provider offering that bills (FOCUS ServiceName), exactly as
-	// component cost profiles declare it, e.g. "Elastic Load Balancing".
+	// catalog kind cost profiles declare it, e.g. "Elastic Load Balancing".
 	ServiceName string `protobuf:"bytes,2,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
 	// The unit the price is quoted in (FOCUS PricingUnit), e.g. "hours",
 	// "WCU-hours", "disk-months". Must agree with the pricing_unit that
-	// component cost profiles declare for meters priced by this entry; the
+	// catalog kind cost profiles declare for meters priced by this entry; the
 	// estimate generator enforces the agreement.
 	PricingUnit string `protobuf:"bytes,3,opt,name=pricing_unit,json=pricingUnit,proto3" json:"pricing_unit,omitempty"`
 	// The pricing scope the price was verified for: a provider region code
@@ -111,7 +111,7 @@ type PriceBookEntry struct {
 	// The entry's decomposed identity, for value-keyed lookups: the spec
 	// values that select this price, in the catalog's own vocabulary
 	// (e.g. instance_class: db.m6g.large, engine: postgres, deployment:
-	// multi-az). A component's cost derivation binds these keys from
+	// multi-az). A kind's cost derivation binds these keys from
 	// manifest values to pick the entry, so slugs stay human naming while
 	// attributes are the machine join. Entries carrying attributes must
 	// be unique per (service_name, pricing_unit, region, attributes) --

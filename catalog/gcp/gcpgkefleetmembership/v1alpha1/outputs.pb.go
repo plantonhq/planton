@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeFleetMembershipStackOutputs carries the membership's identity.
-type GcpGkeFleetMembershipStackOutputs struct {
+// GcpGkeFleetMembershipOutputs carries the membership's identity.
+type GcpGkeFleetMembershipOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/memberships/{membership_id} --
@@ -37,20 +37,20 @@ type GcpGkeFleetMembershipStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGkeFleetMembershipStackOutputs) Reset() {
-	*x = GcpGkeFleetMembershipStackOutputs{}
+func (x *GcpGkeFleetMembershipOutputs) Reset() {
+	*x = GcpGkeFleetMembershipOutputs{}
 	mi := &file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeFleetMembershipStackOutputs) String() string {
+func (x *GcpGkeFleetMembershipOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeFleetMembershipStackOutputs) ProtoMessage() {}
+func (*GcpGkeFleetMembershipOutputs) ProtoMessage() {}
 
-func (x *GcpGkeFleetMembershipStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeFleetMembershipOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *GcpGkeFleetMembershipStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeFleetMembershipStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGkeFleetMembershipStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeFleetMembershipOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGkeFleetMembershipOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeFleetMembershipStackOutputs) GetName() string {
+func (x *GcpGkeFleetMembershipOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpGkeFleetMembershipStackOutputs) GetMembershipId() string {
+func (x *GcpGkeFleetMembershipOutputs) GetMembershipId() string {
 	if x != nil {
 		return x.MembershipId
 	}
 	return ""
 }
 
-func (x *GcpGkeFleetMembershipStackOutputs) GetLocation() string {
+func (x *GcpGkeFleetMembershipOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -92,8 +92,8 @@ var File_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpgkefleetmembership/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpgkefleetmembership.v1alpha1\"x\n" +
-	"!GcpGkeFleetMembershipStackOutputs\x12\x12\n" +
+	"8catalog/gcp/gcpgkefleetmembership/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpgkefleetmembership.v1alpha1\"s\n" +
+	"\x1cGcpGkeFleetMembershipOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rmembership_id\x18\x02 \x01(\tR\fmembershipId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\x86\x03\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGkeFleetMembershipStackOutputs)(nil), // 0: dev.planton.gcp.gcpgkefleetmembership.v1alpha1.GcpGkeFleetMembershipStackOutputs
+	(*GcpGkeFleetMembershipOutputs)(nil), // 0: dev.planton.gcp.gcpgkefleetmembership.v1alpha1.GcpGkeFleetMembershipOutputs
 }
 var file_catalog_gcp_gcpgkefleetmembership_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

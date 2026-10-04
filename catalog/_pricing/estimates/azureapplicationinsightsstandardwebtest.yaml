@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azureapplicationinsightsstandardwebtest
 spec:
@@ -32,7 +32,7 @@ spec:
       exclusions:
         - test results and their traces are ingested into the bound Application Insights component and bill that component's per-GB Log Analytics ingestion meters
         - retries of failed runs add executions that follow the endpoint's actual failure behavior -- the estimate prices the healthy-endpoint schedule
-        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert component with its own monthly fee
+        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert kind with its own monthly fee
       notes: The schedule never stops on its own -- executions accrue whether anyone reads the results or not; enabled=false keeps the definition and stops the schedule (and the spend).
     - preset: 02-content-check
       region_assumption: eastus
@@ -51,5 +51,5 @@ spec:
       total_list_cost: "4.3800"
       exclusions:
         - test results and their traces are ingested into the bound Application Insights component and bill that component's per-GB Log Analytics ingestion meters
-        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert component with its own monthly fee
+        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert kind with its own monthly fee
       notes: The schedule never stops on its own -- executions accrue whether anyone reads the results or not; enabled=false keeps the definition and stops the schedule (and the spend).

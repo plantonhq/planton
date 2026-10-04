@@ -37,7 +37,7 @@ Key design notes:
 - Child volumes are independent lifecycle resources and are NOT managed by
   this component. Use the root_volume_id output to create child volumes.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-dns-zone stack-input
-type DigitalOceanDnsZoneStackInput struct {
+// digital-ocean-dns-zone iac-input
+type DigitalOceanDnsZoneIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *DigitalOceanDnsZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanDnsZoneStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDnsZoneStackInput) Reset() {
-	*x = DigitalOceanDnsZoneStackInput{}
+func (x *DigitalOceanDnsZoneIacInput) Reset() {
+	*x = DigitalOceanDnsZoneIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDnsZoneStackInput) String() string {
+func (x *DigitalOceanDnsZoneIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDnsZoneStackInput) ProtoMessage() {}
+func (*DigitalOceanDnsZoneIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanDnsZoneStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDnsZoneIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanDnsZoneStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDnsZoneStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDnsZoneStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDnsZoneIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDnsZoneIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDnsZoneStackInput) GetTarget() *DigitalOceanDnsZone {
+func (x *DigitalOceanDnsZoneIacInput) GetTarget() *DigitalOceanDnsZone {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanDnsZoneStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanDnsZoneIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto protorefl
 
 const file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/digitalocean/digitaloceandnszone/v1alpha1/input.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\x1a;catalog/digitalocean/digitaloceandnszone/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xe2\x01\n" +
-	"\x1dDigitalOceanDnsZoneStackInput\x12b\n" +
+	"=catalog/digitalocean/digitaloceandnszone/v1alpha1/input.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\x1a;catalog/digitalocean/digitaloceandnszone/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xe0\x01\n" +
+	"\x1bDigitalOceanDnsZoneIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xac\x03\n" +
 	"9com.dev.planton.digitalocean.digitaloceandnszone.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_rawDescG
 
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanDnsZoneStackInput)(nil),           // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackInput
+	(*DigitalOceanDnsZoneIacInput)(nil),             // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneIacInput
 	(*DigitalOceanDnsZone)(nil),                     // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZone
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackInput.target:type_name -> dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZone
-	2, // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneIacInput.target:type_name -> dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZone
+	2, // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azureeventgridsystemtopic
 spec:
@@ -19,7 +19,7 @@ spec:
       exclusions:
         - every blob and queue event the bound storage account emits is a billed operation at 0.60 USD per million past the monthly 100,000-operation free grant, counted in 64 KB units -- volume follows the storage account's workload, not this manifest
         - every delivery attempt by attached event subscriptions bills the same meter, retries included; advanced filtering and subject-ends-with filtering bill per evaluation (event-type matching and subject-begins-with are free)
-        - dead-lettered events bill as delivery operations, with blob storage charges on the dead-letter destination's own component
+        - dead-lettered events bill as delivery operations, with blob storage charges on the dead-letter destination's own kind
       notes: Zero committed cost -- the topic bills nothing for existing; a quiet storage account stays inside the monthly free grant, and a busy one moves the meter through no change here.
     - preset: 02-resource-group-events
       region_assumption: eastus
@@ -29,5 +29,5 @@ spec:
       exclusions:
         - every resource-lifecycle event in the bound resource group (created, changed, deleted) is a billed operation at 0.60 USD per million past the monthly 100,000-operation free grant -- deployment cadence, not this manifest, sets the volume
         - every delivery attempt by attached event subscriptions bills the same meter, retries included; advanced filtering and subject-ends-with filtering bill per evaluation
-        - dead-lettered events bill as delivery operations, with blob storage charges on the dead-letter destination's own component
+        - dead-lettered events bill as delivery operations, with blob storage charges on the dead-letter destination's own kind
       notes: Zero committed cost -- the Global region placement is a source-shape requirement, not a pricing choice; lifecycle-event volume in a typical group sits comfortably inside the free grant.

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpServerlessVpcConnectorStackOutputs captures values returned after
+// GcpServerlessVpcConnectorOutputs captures values returned after
 // provisioning.
-type GcpServerlessVpcConnectorStackOutputs struct {
+type GcpServerlessVpcConnectorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Short name of the connector as created in GCP.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -40,20 +40,20 @@ type GcpServerlessVpcConnectorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpServerlessVpcConnectorStackOutputs) Reset() {
-	*x = GcpServerlessVpcConnectorStackOutputs{}
+func (x *GcpServerlessVpcConnectorOutputs) Reset() {
+	*x = GcpServerlessVpcConnectorOutputs{}
 	mi := &file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServerlessVpcConnectorStackOutputs) String() string {
+func (x *GcpServerlessVpcConnectorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServerlessVpcConnectorStackOutputs) ProtoMessage() {}
+func (*GcpServerlessVpcConnectorOutputs) ProtoMessage() {}
 
-func (x *GcpServerlessVpcConnectorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpServerlessVpcConnectorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *GcpServerlessVpcConnectorStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServerlessVpcConnectorStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpServerlessVpcConnectorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServerlessVpcConnectorOutputs.ProtoReflect.Descriptor instead.
+func (*GcpServerlessVpcConnectorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServerlessVpcConnectorStackOutputs) GetName() string {
+func (x *GcpServerlessVpcConnectorOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpServerlessVpcConnectorStackOutputs) GetSelfLink() string {
+func (x *GcpServerlessVpcConnectorOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpServerlessVpcConnectorStackOutputs) GetState() string {
+func (x *GcpServerlessVpcConnectorOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpServerlessVpcConnectorStackOutputs) GetRegion() string {
+func (x *GcpServerlessVpcConnectorOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -102,8 +102,8 @@ var File_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpserverlessvpcconnector/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1\"\x86\x01\n" +
-	"%GcpServerlessVpcConnectorStackOutputs\x12\x12\n" +
+	"<catalog/gcp/gcpserverlessvpcconnector/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1\"\x81\x01\n" +
+	" GcpServerlessVpcConnectorOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05state\x12\x16\n" +
@@ -124,7 +124,7 @@ func file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpServerlessVpcConnectorStackOutputs)(nil), // 0: dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1.GcpServerlessVpcConnectorStackOutputs
+	(*GcpServerlessVpcConnectorOutputs)(nil), // 0: dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1.GcpServerlessVpcConnectorOutputs
 }
 var file_catalog_gcp_gcpserverlessvpcconnector_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

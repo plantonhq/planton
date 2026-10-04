@@ -1,5 +1,5 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file replays the component's presets through its cost derivation
+# This file replays the kind's presets through its cost derivation
 # (../derivations/, the machine-executable value-to-quantity rules) against
 # the provider's price book (../pricebook/, pinned unit prices with source
 # URL and retrieval date): every line cost and preset total is computed
@@ -7,9 +7,9 @@
 # conformance gate re-verifies all arithmetic. A preset the derivation
 # refuses to price (a rate delegated to a referenced resource) carries no
 # entry here -- absence is the honest state, never a guessed number.
-# Schema: finops/componentcostestimate/v1.
+# Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: azureeventhubnamespace
 spec:
@@ -33,7 +33,7 @@ spec:
         - ingress events bill per million on the Standard Ingress Events meter and follow producer volume; capture, when a hub enables it, bills the hourly Standard Capture meter per TU
         - TUs auto-inflate grows above capacity bill at the same TU rate, up to maximum_throughput_units -- the estimate prices the provisioned floor
         - network egress follows consumer placement
-      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
     - preset: 02-locked-down-keyless
       region_assumption: eastus
       currency: USD
@@ -52,7 +52,7 @@ spec:
       exclusions:
         - ingress events bill per million on the Standard Ingress Events meter and follow producer volume; capture, when a hub enables it, bills the hourly Standard Capture meter per TU
         - network egress follows consumer placement
-      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
     - preset: 03-premium-isolated
       region_assumption: eastus
       currency: USD
@@ -71,4 +71,4 @@ spec:
       exclusions:
         - event data retained beyond the included window bills per GB-month on the Premium Extended Retention meter
         - network egress follows consumer placement
-      notes: The price list publishes no Premium ingress or capture meters -- both are included in the PU rate. A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+      notes: The price list publishes no Premium ingress or capture meters -- both are included in the PU rate. A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.

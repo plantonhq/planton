@@ -36,7 +36,7 @@ type KubernetesKarpenter struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKarpenterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *KubernetesKarpenter) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKarpenter) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKarpenter) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *KubernetesKarpenter) GetStatus() *KubernetesKarpenterStatus {
 // KubernetesKarpenterStatus holds the deployment status and outputs.
 type KubernetesKarpenterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKarpenterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKarpenterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*KubernetesKarpenterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKarpenterStatus) GetOutputs() *KubernetesKarpenterStackOutputs {
+func (x *KubernetesKarpenterStatus) GetOutputs() *KubernetesKarpenterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13KubernetesKarpenterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatusR\x06status\"\x8b\x01\n" +
-	"\x19KubernetesKarpenterStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatusR\x06status\"\x86\x01\n" +
+	"\x19KubernetesKarpenterStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.kubernetes.kuberneteskarpenter.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskarpenter/v1alpha1;kuberneteskarpenterv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kuberneteskarpenter.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kuberneteskarpenter\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kuberneteskarpenter\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kuberneteskarpenter::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKarpenter)(nil),             // 0: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenter
-	(*KubernetesKarpenterStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKarpenterSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterSpec
-	(*KubernetesKarpenterStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStackOutputs
+	(*KubernetesKarpenter)(nil),          // 0: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenter
+	(*KubernetesKarpenterStatus)(nil),    // 1: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKarpenterSpec)(nil),      // 3: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterSpec
+	(*KubernetesKarpenterOutputs)(nil),   // 4: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterOutputs
 }
 var file_catalog_kubernetes_kuberneteskarpenter_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenter.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenter.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenter.spec:type_name -> dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenter.status:type_name -> dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskarpenter.v1alpha1.KubernetesKarpenterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

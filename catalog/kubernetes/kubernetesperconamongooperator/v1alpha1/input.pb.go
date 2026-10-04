@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// percona-operator-kubernetes stack-input
-type KubernetesPerconaMongoOperatorStackInput struct {
+// percona-operator-kubernetes iac-input
+type KubernetesPerconaMongoOperatorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesPerconaMongoOperator `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesPerconaMongoOperatorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesPerconaMongoOperatorStackInput) Reset() {
-	*x = KubernetesPerconaMongoOperatorStackInput{}
+func (x *KubernetesPerconaMongoOperatorIacInput) Reset() {
+	*x = KubernetesPerconaMongoOperatorIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPerconaMongoOperatorStackInput) String() string {
+func (x *KubernetesPerconaMongoOperatorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPerconaMongoOperatorStackInput) ProtoMessage() {}
+func (*KubernetesPerconaMongoOperatorIacInput) ProtoMessage() {}
 
-func (x *KubernetesPerconaMongoOperatorStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPerconaMongoOperatorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesPerconaMongoOperatorStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPerconaMongoOperatorStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesPerconaMongoOperatorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPerconaMongoOperatorIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesPerconaMongoOperatorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPerconaMongoOperatorStackInput) GetTarget() *KubernetesPerconaMongoOperator {
+func (x *KubernetesPerconaMongoOperatorIacInput) GetTarget() *KubernetesPerconaMongoOperator {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesPerconaMongoOperatorStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesPerconaMongoOperatorIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto 
 
 const file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/kubernetes/kubernetesperconamongooperator/v1alpha1/input.proto\x12>dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1\x1aDcatalog/kubernetes/kubernetesperconamongooperator/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xfd\x01\n" +
-	"(KubernetesPerconaMongoOperatorStackInput\x12v\n" +
+	"Fcatalog/kubernetes/kubernetesperconamongooperator/v1alpha1/input.proto\x12>dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1\x1aDcatalog/kubernetes/kubernetesperconamongooperator/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xfb\x01\n" +
+	"&KubernetesPerconaMongoOperatorIacInput\x12v\n" +
 	"\x06target\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xed\x03\n" +
 	"Bcom.dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto
 
 var file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesPerconaMongoOperatorStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorStackInput
-	(*KubernetesPerconaMongoOperator)(nil),           // 1: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperator
-	(*kubernetes.KubernetesProviderConfig)(nil),      // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesPerconaMongoOperatorIacInput)(nil), // 0: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorIacInput
+	(*KubernetesPerconaMongoOperator)(nil),         // 1: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperator
+	(*kubernetes.KubernetesProviderConfig)(nil),    // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorStackInput.target:type_name -> dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperator
-	2, // 1: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorIacInput.target:type_name -> dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperator
+	2, // 1: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

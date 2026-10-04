@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureWebApplicationFirewallPolicyStackInput is the input to the IaC
+// AzureWebApplicationFirewallPolicyIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource definition
 // and Azure provider credentials.
-type AzureWebApplicationFirewallPolicyStackInput struct {
+type AzureWebApplicationFirewallPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The WAF policy resource to deploy.
 	Target *AzureWebApplicationFirewallPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureWebApplicationFirewallPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackInput) Reset() {
-	*x = AzureWebApplicationFirewallPolicyStackInput{}
+func (x *AzureWebApplicationFirewallPolicyIacInput) Reset() {
+	*x = AzureWebApplicationFirewallPolicyIacInput{}
 	mi := &file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackInput) String() string {
+func (x *AzureWebApplicationFirewallPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureWebApplicationFirewallPolicyStackInput) ProtoMessage() {}
+func (*AzureWebApplicationFirewallPolicyIacInput) ProtoMessage() {}
 
-func (x *AzureWebApplicationFirewallPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureWebApplicationFirewallPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureWebApplicationFirewallPolicyStackInput) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureWebApplicationFirewallPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AzureWebApplicationFirewallPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureWebApplicationFirewallPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AzureWebApplicationFirewallPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackInput) GetTarget() *AzureWebApplicationFirewallPolicy {
+func (x *AzureWebApplicationFirewallPolicyIacInput) GetTarget() *AzureWebApplicationFirewallPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureWebApplicationFirewallPolicyIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto pr
 
 const file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azurewebapplicationfirewallpolicy/v1alpha1/input.proto\x12<dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1\x1aBcatalog/azure/azurewebapplicationfirewallpolicy/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf7\x01\n" +
-	"+AzureWebApplicationFirewallPolicyStackInput\x12w\n" +
+	"Dcatalog/azure/azurewebapplicationfirewallpolicy/v1alpha1/input.proto\x12<dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1\x1aBcatalog/azure/azurewebapplicationfirewallpolicy/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf5\x01\n" +
+	")AzureWebApplicationFirewallPolicyIacInput\x12w\n" +
 	"\x06target\x18\x01 \x01(\v2_.dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xe4\x03\n" +
 	"@com.dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_r
 
 var file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AzureWebApplicationFirewallPolicyStackInput)(nil), // 0: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyStackInput
-	(*AzureWebApplicationFirewallPolicy)(nil),           // 1: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicy
-	(*azure.AzureProviderConfig)(nil),                   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureWebApplicationFirewallPolicyIacInput)(nil), // 0: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyIacInput
+	(*AzureWebApplicationFirewallPolicy)(nil),         // 1: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicy
+	(*azure.AzureProviderConfig)(nil),                 // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyStackInput.target:type_name -> dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicy
-	2, // 1: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyIacInput.target:type_name -> dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicy
+	2, // 1: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

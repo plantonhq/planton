@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0UserSpec defines the configuration for an Auth0 User.
 In Auth0, a user is an identity that signs in through exactly one connection.
@@ -36,7 +36,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/user/
 
 ```yaml
 # Auth0 User Test Manifest
-# This file is used for testing the Auth0User component
+# This file is used for testing the Auth0User kind
 #
 # Prerequisites:
 # 1. Set the following environment variables:

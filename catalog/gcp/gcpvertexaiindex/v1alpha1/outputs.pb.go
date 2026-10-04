@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Vertex AI Vector Search index.
-type GcpVertexAiIndexStackOutputs struct {
+type GcpVertexAiIndexOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified index resource path — the value a
 	// GcpVertexAiDeployedIndex passes as its `index` reference.
@@ -43,20 +43,20 @@ type GcpVertexAiIndexStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiIndexStackOutputs) Reset() {
-	*x = GcpVertexAiIndexStackOutputs{}
+func (x *GcpVertexAiIndexOutputs) Reset() {
+	*x = GcpVertexAiIndexOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiIndexStackOutputs) String() string {
+func (x *GcpVertexAiIndexOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiIndexStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiIndexOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiIndexStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiIndexOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *GcpVertexAiIndexStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiIndexStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiIndexStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiIndexOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiIndexOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiIndexStackOutputs) GetIndexId() string {
+func (x *GcpVertexAiIndexOutputs) GetIndexId() string {
 	if x != nil {
 		return x.IndexId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexStackOutputs) GetIndexName() string {
+func (x *GcpVertexAiIndexOutputs) GetIndexName() string {
 	if x != nil {
 		return x.IndexName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexStackOutputs) GetMetadataSchemaUri() string {
+func (x *GcpVertexAiIndexOutputs) GetMetadataSchemaUri() string {
 	if x != nil {
 		return x.MetadataSchemaUri
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexStackOutputs) GetCreateTime() string {
+func (x *GcpVertexAiIndexOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexStackOutputs) GetUpdateTime() string {
+func (x *GcpVertexAiIndexOutputs) GetUpdateTime() string {
 	if x != nil {
 		return x.UpdateTime
 	}
@@ -112,8 +112,8 @@ var File_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpvertexaiindex/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpvertexaiindex.v1alpha1\"\xca\x01\n" +
-	"\x1cGcpVertexAiIndexStackOutputs\x12\x19\n" +
+	"3catalog/gcp/gcpvertexaiindex/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpvertexaiindex.v1alpha1\"\xc5\x01\n" +
+	"\x17GcpVertexAiIndexOutputs\x12\x19\n" +
 	"\bindex_id\x18\x01 \x01(\tR\aindexId\x12\x1d\n" +
 	"\n" +
 	"index_name\x18\x02 \x01(\tR\tindexName\x12.\n" +
@@ -138,7 +138,7 @@ func file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiIndexStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiindex.v1alpha1.GcpVertexAiIndexStackOutputs
+	(*GcpVertexAiIndexOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiindex.v1alpha1.GcpVertexAiIndexOutputs
 }
 var file_catalog_gcp_gcpvertexaiindex_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a GCP private services access
 // connection.
-type GcpServiceNetworkingConnectionStackOutputs struct {
+type GcpServiceNetworkingConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the VPC peering GCP created on the network for this connection
 	// (e.g. servicenetworking-googleapis-com). This is the peering an operator
@@ -38,20 +38,20 @@ type GcpServiceNetworkingConnectionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpServiceNetworkingConnectionStackOutputs) Reset() {
-	*x = GcpServiceNetworkingConnectionStackOutputs{}
+func (x *GcpServiceNetworkingConnectionOutputs) Reset() {
+	*x = GcpServiceNetworkingConnectionOutputs{}
 	mi := &file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServiceNetworkingConnectionStackOutputs) String() string {
+func (x *GcpServiceNetworkingConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServiceNetworkingConnectionStackOutputs) ProtoMessage() {}
+func (*GcpServiceNetworkingConnectionOutputs) ProtoMessage() {}
 
-func (x *GcpServiceNetworkingConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpServiceNetworkingConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *GcpServiceNetworkingConnectionStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServiceNetworkingConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpServiceNetworkingConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServiceNetworkingConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpServiceNetworkingConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServiceNetworkingConnectionStackOutputs) GetPeering() string {
+func (x *GcpServiceNetworkingConnectionOutputs) GetPeering() string {
 	if x != nil {
 		return x.Peering
 	}
 	return ""
 }
 
-func (x *GcpServiceNetworkingConnectionStackOutputs) GetNetwork() string {
+func (x *GcpServiceNetworkingConnectionOutputs) GetNetwork() string {
 	if x != nil {
 		return x.Network
 	}
@@ -86,8 +86,8 @@ var File_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto proto
 
 const file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/gcp/gcpservicenetworkingconnection/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1\"`\n" +
-	"*GcpServiceNetworkingConnectionStackOutputs\x12\x18\n" +
+	"Acatalog/gcp/gcpservicenetworkingconnection/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1\"[\n" +
+	"%GcpServiceNetworkingConnectionOutputs\x12\x18\n" +
 	"\apeering\x18\x01 \x01(\tR\apeering\x12\x18\n" +
 	"\anetwork\x18\x02 \x01(\tR\anetworkB\xc5\x03\n" +
 	";com.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1B\fOutputsProtoP\x01Zwgithub.com/plantonhq/planton/catalog/gcp/gcpservicenetworkingconnection/v1alpha1;gcpservicenetworkingconnectionv1alpha1\xa2\x02\x04DPGG\xaa\x027Dev.Planton.Gcp.Gcpservicenetworkingconnection.V1alpha1\xca\x027Dev\\Planton\\Gcp\\Gcpservicenetworkingconnection\\V1alpha1\xe2\x02CDev\\Planton\\Gcp\\Gcpservicenetworkingconnection\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Gcp::Gcpservicenetworkingconnection::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_rawD
 
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpServiceNetworkingConnectionStackOutputs)(nil), // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackOutputs
+	(*GcpServiceNetworkingConnectionOutputs)(nil), // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionOutputs
 }
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

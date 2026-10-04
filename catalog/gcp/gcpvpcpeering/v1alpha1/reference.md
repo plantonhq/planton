@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpVpcPeeringSpec manages ONE SIDE of a VPC Network Peering: the peering
 entry on `network` that points at `peer_network`, and the route exchange
@@ -61,7 +61,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpvpcpeering
+    e2e-catalog-kind: gcpvpcpeering
   annotations:
     planton.dev/e2e: "true"
     # Side A under test needs a second network and the side-B peering on it

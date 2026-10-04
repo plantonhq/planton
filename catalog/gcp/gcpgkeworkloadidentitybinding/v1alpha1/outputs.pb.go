@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeWorkloadIdentityBindingStackOutputs surfaces useful attributes
+// GcpGkeWorkloadIdentityBindingOutputs surfaces useful attributes
 // after the binding is created.
-type GcpGkeWorkloadIdentityBindingStackOutputs struct {
+type GcpGkeWorkloadIdentityBindingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The IAM member string added to the policy, e.g.
 	// "serviceAccount:my-project.svc.id.goog[cert-manager/cert-manager]".
@@ -34,20 +34,20 @@ type GcpGkeWorkloadIdentityBindingStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *GcpGkeWorkloadIdentityBindingStackOutputs) Reset() {
-	*x = GcpGkeWorkloadIdentityBindingStackOutputs{}
+func (x *GcpGkeWorkloadIdentityBindingOutputs) Reset() {
+	*x = GcpGkeWorkloadIdentityBindingOutputs{}
 	mi := &file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeWorkloadIdentityBindingStackOutputs) String() string {
+func (x *GcpGkeWorkloadIdentityBindingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeWorkloadIdentityBindingStackOutputs) ProtoMessage() {}
+func (*GcpGkeWorkloadIdentityBindingOutputs) ProtoMessage() {}
 
-func (x *GcpGkeWorkloadIdentityBindingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeWorkloadIdentityBindingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *GcpGkeWorkloadIdentityBindingStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeWorkloadIdentityBindingStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGkeWorkloadIdentityBindingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeWorkloadIdentityBindingOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGkeWorkloadIdentityBindingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeWorkloadIdentityBindingStackOutputs) GetMember() string {
+func (x *GcpGkeWorkloadIdentityBindingOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpGkeWorkloadIdentityBindingStackOutputs) GetServiceAccountEmail() string {
+func (x *GcpGkeWorkloadIdentityBindingOutputs) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
 	}
@@ -82,8 +82,8 @@ var File_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1\"w\n" +
-	")GcpGkeWorkloadIdentityBindingStackOutputs\x12\x16\n" +
+	"@catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1\"r\n" +
+	"$GcpGkeWorkloadIdentityBindingOutputs\x12\x16\n" +
 	"\x06member\x18\x01 \x01(\tR\x06member\x122\n" +
 	"\x15service_account_email\x18\x02 \x01(\tR\x13serviceAccountEmailB\xbe\x03\n" +
 	":com.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1;gcpgkeworkloadidentitybindingv1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpgkeworkloadidentitybinding.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpgkeworkloadidentitybinding\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpgkeworkloadidentitybinding\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpgkeworkloadidentitybinding::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGkeWorkloadIdentityBindingStackOutputs)(nil), // 0: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStackOutputs
+	(*GcpGkeWorkloadIdentityBindingOutputs)(nil), // 0: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingOutputs
 }
 var file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

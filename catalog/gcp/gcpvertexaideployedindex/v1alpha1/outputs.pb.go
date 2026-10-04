@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after deploying a Vertex AI index onto an index
 // endpoint.
-type GcpVertexAiDeployedIndexStackOutputs struct {
+type GcpVertexAiDeployedIndexOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the DeployedIndex resource as the provider reports it.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -51,20 +51,20 @@ type GcpVertexAiDeployedIndexStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) Reset() {
-	*x = GcpVertexAiDeployedIndexStackOutputs{}
+func (x *GcpVertexAiDeployedIndexOutputs) Reset() {
+	*x = GcpVertexAiDeployedIndexOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) String() string {
+func (x *GcpVertexAiDeployedIndexOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiDeployedIndexStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiDeployedIndexOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiDeployedIndexOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,54 +76,54 @@ func (x *GcpVertexAiDeployedIndexStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiDeployedIndexStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiDeployedIndexStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiDeployedIndexOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiDeployedIndexOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetName() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetDeployedIndexId() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetDeployedIndexId() string {
 	if x != nil {
 		return x.DeployedIndexId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetCreateTime() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetIndexSyncTime() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetIndexSyncTime() string {
 	if x != nil {
 		return x.IndexSyncTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetMatchGrpcAddress() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetMatchGrpcAddress() string {
 	if x != nil {
 		return x.MatchGrpcAddress
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetServiceAttachment() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetServiceAttachment() string {
 	if x != nil {
 		return x.ServiceAttachment
 	}
 	return ""
 }
 
-func (x *GcpVertexAiDeployedIndexStackOutputs) GetIndexEndpoint() string {
+func (x *GcpVertexAiDeployedIndexOutputs) GetIndexEndpoint() string {
 	if x != nil {
 		return x.IndexEndpoint
 	}
@@ -134,8 +134,8 @@ var File_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpvertexaideployedindex/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpvertexaideployedindex.v1alpha1\"\xb3\x02\n" +
-	"$GcpVertexAiDeployedIndexStackOutputs\x12\x12\n" +
+	";catalog/gcp/gcpvertexaideployedindex/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpvertexaideployedindex.v1alpha1\"\xae\x02\n" +
+	"\x1fGcpVertexAiDeployedIndexOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12*\n" +
 	"\x11deployed_index_id\x18\x02 \x01(\tR\x0fdeployedIndexId\x12\x1f\n" +
 	"\vcreate_time\x18\x03 \x01(\tR\n" +
@@ -160,7 +160,7 @@ func file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiDeployedIndexStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaideployedindex.v1alpha1.GcpVertexAiDeployedIndexStackOutputs
+	(*GcpVertexAiDeployedIndexOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaideployedindex.v1alpha1.GcpVertexAiDeployedIndexOutputs
 }
 var file_catalog_gcp_gcpvertexaideployedindex_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -32,7 +32,7 @@ type CloudflareSecretsStoreSecret struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareSecretsStoreSecretSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *CloudflareSecretsStoreSecret) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareSecretsStoreSecret) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareSecretsStoreSecret) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareSecretsStoreSecret) GetStatus() *CloudflareSecretsStoreSecret
 // secret.
 type CloudflareSecretsStoreSecretStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareSecretsStoreSecretStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareSecretsStoreSecretOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareSecretsStoreSecretStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareSecretsStoreSecretStatus) GetOutputs() *CloudflareSecretsStoreSecretStackOutputs {
+func (x *CloudflareSecretsStoreSecretStatus) GetOutputs() *CloudflareSecretsStoreSecretOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_api_proto_ra
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cCloudflareSecretsStoreSecretR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
 	"\x04spec\x18\x04 \x01(\v2^.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12x\n" +
-	"\x06status\x18\x05 \x01(\v2`.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatusR\x06status\"\xa7\x01\n" +
-	"\"CloudflareSecretsStoreSecretStatus\x12\x80\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2f.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStackOutputsR\aoutputsB\xdd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2`.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatusR\x06status\"\xa1\x01\n" +
+	"\"CloudflareSecretsStoreSecretStatus\x12{\n" +
+	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretOutputsR\aoutputsB\xdd\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1B\bApiProtoP\x01Zzgithub.com/plantonhq/planton/catalog/cloudflare/cloudflaresecretsstoresecret/v1alpha1;cloudflaresecretsstoresecretv1alpha1\xa2\x02\x04DPCC\xaa\x02<Dev.Planton.Cloudflare.Cloudflaresecretsstoresecret.V1alpha1\xca\x02<Dev\\Planton\\Cloudflare\\Cloudflaresecretsstoresecret\\V1alpha1\xe2\x02HDev\\Planton\\Cloudflare\\Cloudflaresecretsstoresecret\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Cloudflare::Cloudflaresecretsstoresecret::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_api_proto_raw
 
 var file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareSecretsStoreSecret)(nil),             // 0: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecret
-	(*CloudflareSecretsStoreSecretStatus)(nil),       // 1: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareSecretsStoreSecretSpec)(nil),         // 3: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretSpec
-	(*CloudflareSecretsStoreSecretStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStackOutputs
+	(*CloudflareSecretsStoreSecret)(nil),        // 0: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecret
+	(*CloudflareSecretsStoreSecretStatus)(nil),  // 1: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareSecretsStoreSecretSpec)(nil),    // 3: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretSpec
+	(*CloudflareSecretsStoreSecretOutputs)(nil), // 4: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretOutputs
 }
 var file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecret.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecret.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecret.spec:type_name -> dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretSpec
 	1, // 2: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecret.status:type_name -> dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatus
-	4, // 3: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatus.outputs:type_name -> dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStatus.outputs:type_name -> dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

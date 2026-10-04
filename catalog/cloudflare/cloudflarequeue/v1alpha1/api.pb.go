@@ -31,7 +31,7 @@ type CloudflareQueue struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareQueueSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareQueue) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareQueue) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareQueue) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareQueue) GetStatus() *CloudflareQueueStatus {
 // cloudflare-queue status
 type CloudflareQueueStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-queue stack-outputs
-	Outputs       *CloudflareQueueStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-queue outputs
+	Outputs       *CloudflareQueueOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareQueueStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarequeue_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareQueueStatus) GetOutputs() *CloudflareQueueStackOutputs {
+func (x *CloudflareQueueStatus) GetOutputs() *CloudflareQueueOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarequeue_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fCloudflareQueueR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12^\n" +
-	"\x06status\x18\x05 \x01(\v2F.dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStatusR\x06status\"\x7f\n" +
-	"\x15CloudflareQueueStatus\x12f\n" +
-	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2F.dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStatusR\x06status\"z\n" +
+	"\x15CloudflareQueueStatus\x12a\n" +
+	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueOutputsR\aoutputsB\x82\x03\n" +
 	"3com.dev.planton.cloudflare.cloudflarequeue.v1alpha1B\bApiProtoP\x01Z`github.com/plantonhq/planton/catalog/cloudflare/cloudflarequeue/v1alpha1;cloudflarequeuev1alpha1\xa2\x02\x04DPCC\xaa\x02/Dev.Planton.Cloudflare.Cloudflarequeue.V1alpha1\xca\x02/Dev\\Planton\\Cloudflare\\Cloudflarequeue\\V1alpha1\xe2\x02;Dev\\Planton\\Cloudflare\\Cloudflarequeue\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Cloudflare::Cloudflarequeue::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_cloudflare_cloudflarequeue_v1alpha1_api_proto_msgTypes = make([
 var file_catalog_cloudflare_cloudflarequeue_v1alpha1_api_proto_goTypes = []any{
 	(*CloudflareQueue)(nil),              // 0: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueue
 	(*CloudflareQueueStatus)(nil),        // 1: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*CloudflareQueueSpec)(nil),          // 3: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueSpec
-	(*CloudflareQueueStackOutputs)(nil),  // 4: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStackOutputs
+	(*CloudflareQueueOutputs)(nil),       // 4: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueOutputs
 }
 var file_catalog_cloudflare_cloudflarequeue_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueue.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueue.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueue.spec:type_name -> dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueSpec
 	1, // 2: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueue.status:type_name -> dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStatus
-	4, // 3: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarequeue.v1alpha1.CloudflareQueueOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

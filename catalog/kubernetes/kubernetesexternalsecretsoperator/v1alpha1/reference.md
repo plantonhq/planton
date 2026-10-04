@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesExternalSecretsOperatorSpec** installs the External Secrets
 Operator (ESO) — the controller that syncs secrets FROM external stores
@@ -36,7 +36,7 @@ never the primary interface.
 ```yaml
 # Full-surface offline-proof manifest: exercises the CRD lifecycle knobs,
 # HA controller with leader election, reconcile tuning, sharding and
-# scoping, workload identity, scheduling, sizing, per-component tuning,
+# scoping, workload identity, scheduling, sizing, per-kind tuning,
 # observability, image override, and the helm_values escape hatch — so the
 # offline tofu plan and pulumi preview proofs cover arms the live kind
 # lanes exclude. Placeholder values; never applied to a real cluster.

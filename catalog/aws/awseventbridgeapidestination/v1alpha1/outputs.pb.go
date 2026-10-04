@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgeApiDestinationStackOutputs captures the observable
+// AwsEventBridgeApiDestinationOutputs captures the observable
 // state of the connection and destination after apply.
-type AwsEventBridgeApiDestinationStackOutputs struct {
+type AwsEventBridgeApiDestinationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The owned connection's ARN - what other instances' destinations
 	// and pipe/rule targets reference. Empty when the instance has no
@@ -41,20 +41,20 @@ type AwsEventBridgeApiDestinationStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgeApiDestinationStackOutputs) Reset() {
-	*x = AwsEventBridgeApiDestinationStackOutputs{}
+func (x *AwsEventBridgeApiDestinationOutputs) Reset() {
+	*x = AwsEventBridgeApiDestinationOutputs{}
 	mi := &file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgeApiDestinationStackOutputs) String() string {
+func (x *AwsEventBridgeApiDestinationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgeApiDestinationStackOutputs) ProtoMessage() {}
+func (*AwsEventBridgeApiDestinationOutputs) ProtoMessage() {}
 
-func (x *AwsEventBridgeApiDestinationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgeApiDestinationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AwsEventBridgeApiDestinationStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgeApiDestinationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgeApiDestinationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgeApiDestinationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgeApiDestinationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgeApiDestinationStackOutputs) GetConnectionArn() string {
+func (x *AwsEventBridgeApiDestinationOutputs) GetConnectionArn() string {
 	if x != nil {
 		return x.ConnectionArn
 	}
 	return ""
 }
 
-func (x *AwsEventBridgeApiDestinationStackOutputs) GetConnectionSecretArn() string {
+func (x *AwsEventBridgeApiDestinationOutputs) GetConnectionSecretArn() string {
 	if x != nil {
 		return x.ConnectionSecretArn
 	}
 	return ""
 }
 
-func (x *AwsEventBridgeApiDestinationStackOutputs) GetApiDestinationArn() string {
+func (x *AwsEventBridgeApiDestinationOutputs) GetApiDestinationArn() string {
 	if x != nil {
 		return x.ApiDestinationArn
 	}
@@ -96,8 +96,8 @@ var File_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto protore
 
 const file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awseventbridgeapidestination/v1alpha1/outputs.proto\x125dev.planton.aws.awseventbridgeapidestination.v1alpha1\"\xb5\x01\n" +
-	"(AwsEventBridgeApiDestinationStackOutputs\x12%\n" +
+	"?catalog/aws/awseventbridgeapidestination/v1alpha1/outputs.proto\x125dev.planton.aws.awseventbridgeapidestination.v1alpha1\"\xb0\x01\n" +
+	"#AwsEventBridgeApiDestinationOutputs\x12%\n" +
 	"\x0econnection_arn\x18\x01 \x01(\tR\rconnectionArn\x122\n" +
 	"\x15connection_secret_arn\x18\x02 \x01(\tR\x13connectionSecretArn\x12.\n" +
 	"\x13api_destination_arn\x18\x03 \x01(\tR\x11apiDestinationArnB\xb7\x03\n" +
@@ -117,7 +117,7 @@ func file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEventBridgeApiDestinationStackOutputs)(nil), // 0: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationStackOutputs
+	(*AwsEventBridgeApiDestinationOutputs)(nil), // 0: dev.planton.aws.awseventbridgeapidestination.v1alpha1.AwsEventBridgeApiDestinationOutputs
 }
 var file_catalog_aws_awseventbridgeapidestination_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

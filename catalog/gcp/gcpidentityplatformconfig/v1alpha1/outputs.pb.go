@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a project's Identity Platform
 // configuration.
-type GcpIdentityPlatformConfigStackOutputs struct {
+type GcpIdentityPlatformConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The configuration's resource name: projects/{project}/config.
 	ConfigName string `protobuf:"bytes,1,opt,name=config_name,json=configName,proto3" json:"config_name,omitempty"`
@@ -39,20 +39,20 @@ type GcpIdentityPlatformConfigStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *GcpIdentityPlatformConfigStackOutputs) Reset() {
-	*x = GcpIdentityPlatformConfigStackOutputs{}
+func (x *GcpIdentityPlatformConfigOutputs) Reset() {
+	*x = GcpIdentityPlatformConfigOutputs{}
 	mi := &file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIdentityPlatformConfigStackOutputs) String() string {
+func (x *GcpIdentityPlatformConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIdentityPlatformConfigStackOutputs) ProtoMessage() {}
+func (*GcpIdentityPlatformConfigOutputs) ProtoMessage() {}
 
-func (x *GcpIdentityPlatformConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpIdentityPlatformConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *GcpIdentityPlatformConfigStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIdentityPlatformConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpIdentityPlatformConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIdentityPlatformConfigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpIdentityPlatformConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIdentityPlatformConfigStackOutputs) GetConfigName() string {
+func (x *GcpIdentityPlatformConfigOutputs) GetConfigName() string {
 	if x != nil {
 		return x.ConfigName
 	}
 	return ""
 }
 
-func (x *GcpIdentityPlatformConfigStackOutputs) GetApiKey() string {
+func (x *GcpIdentityPlatformConfigOutputs) GetApiKey() string {
 	if x != nil {
 		return x.ApiKey
 	}
 	return ""
 }
 
-func (x *GcpIdentityPlatformConfigStackOutputs) GetFirebaseSubdomain() string {
+func (x *GcpIdentityPlatformConfigOutputs) GetFirebaseSubdomain() string {
 	if x != nil {
 		return x.FirebaseSubdomain
 	}
@@ -94,8 +94,8 @@ var File_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpidentityplatformconfig/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpidentityplatformconfig.v1alpha1\"\x90\x01\n" +
-	"%GcpIdentityPlatformConfigStackOutputs\x12\x1f\n" +
+	"<catalog/gcp/gcpidentityplatformconfig/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpidentityplatformconfig.v1alpha1\"\x8b\x01\n" +
+	" GcpIdentityPlatformConfigOutputs\x12\x1f\n" +
 	"\vconfig_name\x18\x01 \x01(\tR\n" +
 	"configName\x12\x17\n" +
 	"\aapi_key\x18\x02 \x01(\tR\x06apiKey\x12-\n" +
@@ -116,7 +116,7 @@ func file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpIdentityPlatformConfigStackOutputs)(nil), // 0: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigStackOutputs
+	(*GcpIdentityPlatformConfigOutputs)(nil), // 0: dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigOutputs
 }
 var file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

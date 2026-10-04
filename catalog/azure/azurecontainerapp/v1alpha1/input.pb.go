@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureContainerAppStackInput is the input to the IaC module.
+// AzureContainerAppIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureContainerAppStackInput struct {
+type AzureContainerAppIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *AzureContainerApp `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureContainerAppStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppStackInput) Reset() {
-	*x = AzureContainerAppStackInput{}
+func (x *AzureContainerAppIacInput) Reset() {
+	*x = AzureContainerAppIacInput{}
 	mi := &file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppStackInput) String() string {
+func (x *AzureContainerAppIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppStackInput) ProtoMessage() {}
+func (*AzureContainerAppIacInput) ProtoMessage() {}
 
-func (x *AzureContainerAppStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureContainerAppStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppStackInput.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppIacInput.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppStackInput) GetTarget() *AzureContainerApp {
+func (x *AzureContainerAppIacInput) GetTarget() *AzureContainerApp {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureContainerAppStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureContainerAppIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurecontainerapp_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurecontainerapp/v1alpha1/input.proto\x12,dev.planton.azure.azurecontainerapp.v1alpha1\x1a2catalog/azure/azurecontainerapp/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc7\x01\n" +
-	"\x1bAzureContainerAppStackInput\x12W\n" +
+	"4catalog/azure/azurecontainerapp/v1alpha1/input.proto\x12,dev.planton.azure.azurecontainerapp.v1alpha1\x1a2catalog/azure/azurecontainerapp/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc5\x01\n" +
+	"\x19AzureContainerAppIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xf4\x02\n" +
 	"0com.dev.planton.azure.azurecontainerapp.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_goTypes = []any{
-	(*AzureContainerAppStackInput)(nil), // 0: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppStackInput
-	(*AzureContainerApp)(nil),           // 1: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerApp
-	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureContainerAppIacInput)(nil), // 0: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIacInput
+	(*AzureContainerApp)(nil),         // 1: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerApp
+	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecontainerapp_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppStackInput.target:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerApp
-	2, // 1: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIacInput.target:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerApp
+	2, // 1: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

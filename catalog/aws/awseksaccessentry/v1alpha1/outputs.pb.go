@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEksAccessEntryStackOutputs describes the values returned after
+// AwsEksAccessEntryOutputs describes the values returned after
 // provisioning an EKS access entry.
-type AwsEksAccessEntryStackOutputs struct {
+type AwsEksAccessEntryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// access_entry_arn is the Amazon Resource Name of the entry --
 	// arn:aws:eks:<region>:<account>:access-entry/<cluster>/<principal
@@ -36,20 +36,20 @@ type AwsEksAccessEntryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEksAccessEntryStackOutputs) Reset() {
-	*x = AwsEksAccessEntryStackOutputs{}
+func (x *AwsEksAccessEntryOutputs) Reset() {
+	*x = AwsEksAccessEntryOutputs{}
 	mi := &file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEksAccessEntryStackOutputs) String() string {
+func (x *AwsEksAccessEntryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEksAccessEntryStackOutputs) ProtoMessage() {}
+func (*AwsEksAccessEntryOutputs) ProtoMessage() {}
 
-func (x *AwsEksAccessEntryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEksAccessEntryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsEksAccessEntryStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEksAccessEntryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEksAccessEntryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEksAccessEntryOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEksAccessEntryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEksAccessEntryStackOutputs) GetAccessEntryArn() string {
+func (x *AwsEksAccessEntryOutputs) GetAccessEntryArn() string {
 	if x != nil {
 		return x.AccessEntryArn
 	}
 	return ""
 }
 
-func (x *AwsEksAccessEntryStackOutputs) GetPrincipalArn() string {
+func (x *AwsEksAccessEntryOutputs) GetPrincipalArn() string {
 	if x != nil {
 		return x.PrincipalArn
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awseksaccessentry/v1alpha1/outputs.proto\x12*dev.planton.aws.awseksaccessentry.v1alpha1\"n\n" +
-	"\x1dAwsEksAccessEntryStackOutputs\x12(\n" +
+	"4catalog/aws/awseksaccessentry/v1alpha1/outputs.proto\x12*dev.planton.aws.awseksaccessentry.v1alpha1\"i\n" +
+	"\x18AwsEksAccessEntryOutputs\x12(\n" +
 	"\x10access_entry_arn\x18\x01 \x01(\tR\x0eaccessEntryArn\x12#\n" +
 	"\rprincipal_arn\x18\x02 \x01(\tR\fprincipalArnB\xea\x02\n" +
 	".com.dev.planton.aws.awseksaccessentry.v1alpha1B\fOutputsProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awseksaccessentry/v1alpha1;awseksaccessentryv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awseksaccessentry.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awseksaccessentry\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awseksaccessentry\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awseksaccessentry::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEksAccessEntryStackOutputs)(nil), // 0: dev.planton.aws.awseksaccessentry.v1alpha1.AwsEksAccessEntryStackOutputs
+	(*AwsEksAccessEntryOutputs)(nil), // 0: dev.planton.aws.awseksaccessentry.v1alpha1.AwsEksAccessEntryOutputs
 }
 var file_catalog_aws_awseksaccessentry_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

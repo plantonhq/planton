@@ -63,12 +63,12 @@ type StripePrice struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripePrice" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the product, amount, currency and schedule.
 	Spec *StripePriceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the price as created, populated after deployment.
@@ -121,7 +121,7 @@ func (x *StripePrice) GetKind() string {
 	return ""
 }
 
-func (x *StripePrice) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripePrice) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -146,8 +146,8 @@ func (x *StripePrice) GetStatus() *StripePriceStatus {
 // Populated by the deployment system.
 type StripePriceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the price's id and type.
-	Outputs       *StripePriceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the price's id and type.
+	Outputs       *StripePriceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -182,7 +182,7 @@ func (*StripePriceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeprice_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripePriceStatus) GetOutputs() *StripePriceStackOutputs {
+func (x *StripePriceStatus) GetOutputs() *StripePriceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -200,11 +200,11 @@ const file_catalog_stripe_stripeprice_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vStripePriceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12T\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12T\n" +
 	"\x04spec\x18\x04 \x01(\v28.dev.planton.stripe.stripeprice.v1alpha1.StripePriceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12R\n" +
-	"\x06status\x18\x05 \x01(\v2:.dev.planton.stripe.stripeprice.v1alpha1.StripePriceStatusR\x06status\"o\n" +
-	"\x11StripePriceStatus\x12Z\n" +
-	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackOutputsR\aoutputsB\xce\x02\n" +
+	"\x06status\x18\x05 \x01(\v2:.dev.planton.stripe.stripeprice.v1alpha1.StripePriceStatusR\x06status\"j\n" +
+	"\x11StripePriceStatus\x12U\n" +
+	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.stripe.stripeprice.v1alpha1.StripePriceOutputsR\aoutputsB\xce\x02\n" +
 	"+com.dev.planton.stripe.stripeprice.v1alpha1B\bApiProtoP\x01ZTgithub.com/plantonhq/planton/catalog/stripe/stripeprice/v1alpha1;stripepricev1alpha1\xa2\x02\x04DPSS\xaa\x02'Dev.Planton.Stripe.Stripeprice.V1alpha1\xca\x02'Dev\\Planton\\Stripe\\Stripeprice\\V1alpha1\xe2\x023Dev\\Planton\\Stripe\\Stripeprice\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Stripe::Stripeprice::V1alpha1b\x06proto3"
 
 var (
@@ -223,15 +223,15 @@ var file_catalog_stripe_stripeprice_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_stripe_stripeprice_v1alpha1_api_proto_goTypes = []any{
 	(*StripePrice)(nil),                  // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePrice
 	(*StripePriceStatus)(nil),            // 1: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*StripePriceSpec)(nil),              // 3: dev.planton.stripe.stripeprice.v1alpha1.StripePriceSpec
-	(*StripePriceStackOutputs)(nil),      // 4: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackOutputs
+	(*StripePriceOutputs)(nil),           // 4: dev.planton.stripe.stripeprice.v1alpha1.StripePriceOutputs
 }
 var file_catalog_stripe_stripeprice_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePrice.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripeprice.v1alpha1.StripePrice.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripeprice.v1alpha1.StripePrice.spec:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceSpec
 	1, // 2: dev.planton.stripe.stripeprice.v1alpha1.StripePrice.status:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceStatus
-	4, // 3: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStatus.outputs:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceStackOutputs
+	4, // 3: dev.planton.stripe.stripeprice.v1alpha1.StripePriceStatus.outputs:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

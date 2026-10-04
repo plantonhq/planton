@@ -22,9 +22,9 @@ const (
 )
 
 // *
-// **KubernetesKafkaConnectorStackOutputs** — the handles a declared
+// **KubernetesKafkaConnectorOutputs** — the handles a declared
 // connector exports.
-type KubernetesKafkaConnectorStackOutputs struct {
+type KubernetesKafkaConnectorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the KafkaConnector resource lives in (the Connect
 	// cluster's namespace).
@@ -37,20 +37,20 @@ type KubernetesKafkaConnectorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaConnectorStackOutputs) Reset() {
-	*x = KubernetesKafkaConnectorStackOutputs{}
+func (x *KubernetesKafkaConnectorOutputs) Reset() {
+	*x = KubernetesKafkaConnectorOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaConnectorStackOutputs) String() string {
+func (x *KubernetesKafkaConnectorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaConnectorStackOutputs) ProtoMessage() {}
+func (*KubernetesKafkaConnectorOutputs) ProtoMessage() {}
 
-func (x *KubernetesKafkaConnectorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaConnectorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *KubernetesKafkaConnectorStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaConnectorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaConnectorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaConnectorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaConnectorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaConnectorStackOutputs) GetNamespace() string {
+func (x *KubernetesKafkaConnectorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaConnectorStackOutputs) GetConnectorName() string {
+func (x *KubernetesKafkaConnectorOutputs) GetConnectorName() string {
 	if x != nil {
 		return x.ConnectorName
 	}
@@ -85,8 +85,8 @@ var File_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kuberneteskafkaconnector/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1\"k\n" +
-	"$KubernetesKafkaConnectorStackOutputs\x12\x1c\n" +
+	"Bcatalog/kubernetes/kuberneteskafkaconnector/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1\"f\n" +
+	"\x1fKubernetesKafkaConnectorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
 	"\x0econnector_name\x18\x02 \x01(\tR\rconnectorNameB\xc5\x03\n" +
 	"<com.dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskafkaconnector/v1alpha1;kuberneteskafkaconnectorv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kuberneteskafkaconnector.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kuberneteskafkaconnector\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kuberneteskafkaconnector\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kuberneteskafkaconnector::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKafkaConnectorStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorStackOutputs
+	(*KubernetesKafkaConnectorOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1.KubernetesKafkaConnectorOutputs
 }
 var file_catalog_kubernetes_kuberneteskafkaconnector_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpSslCertificateSpec defines a self-managed Compute Engine SSL certificate
 — you bring the PEM certificate chain and private key (issued by your own
@@ -193,7 +193,7 @@ The private key matching the certificate, in PEM format (-----BEGIN
 PRIVATE KEY----- / -----BEGIN RSA PRIVATE KEY----- / -----BEGIN EC
 PRIVATE KEY-----). GCP accepts RSA-2048 (and larger) and ECDSA P-256
 keys; the key must be unencrypted (no passphrase). Write-only in GCP —
-the API never returns it, and it never appears in stack outputs.
+the API never returns it, and it never appears in outputs.
 Immutable. The PEM framing is taught here rather than enforced by a
 validation rule, because sensitive fields hold a managed-secret
 reference on consuming platforms and a content-shape rule would

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeWebhookEndpointStackInput is the input to the StripeWebhookEndpoint IaC module.
+// StripeWebhookEndpointIacInput is the input to the StripeWebhookEndpoint IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeWebhookEndpointStackInput struct {
+type StripeWebhookEndpointIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeWebhookEndpoint resource to be deployed.
 	Target *StripeWebhookEndpoint `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeWebhookEndpointStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeWebhookEndpointStackInput) Reset() {
-	*x = StripeWebhookEndpointStackInput{}
+func (x *StripeWebhookEndpointIacInput) Reset() {
+	*x = StripeWebhookEndpointIacInput{}
 	mi := &file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeWebhookEndpointStackInput) String() string {
+func (x *StripeWebhookEndpointIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeWebhookEndpointStackInput) ProtoMessage() {}
+func (*StripeWebhookEndpointIacInput) ProtoMessage() {}
 
-func (x *StripeWebhookEndpointStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeWebhookEndpointIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeWebhookEndpointStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeWebhookEndpointStackInput.ProtoReflect.Descriptor instead.
-func (*StripeWebhookEndpointStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeWebhookEndpointIacInput.ProtoReflect.Descriptor instead.
+func (*StripeWebhookEndpointIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeWebhookEndpointStackInput) GetTarget() *StripeWebhookEndpoint {
+func (x *StripeWebhookEndpointIacInput) GetTarget() *StripeWebhookEndpoint {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeWebhookEndpointStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeWebhookEndpointIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto protoreflect.
 
 const file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/stripe/stripewebhookendpoint/v1alpha1/input.proto\x121dev.planton.stripe.stripewebhookendpoint.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a7catalog/stripe/stripewebhookendpoint/v1alpha1/api.proto\"\xd6\x01\n" +
-	"\x1fStripeWebhookEndpointStackInput\x12`\n" +
+	"9catalog/stripe/stripewebhookendpoint/v1alpha1/input.proto\x121dev.planton.stripe.stripewebhookendpoint.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a7catalog/stripe/stripewebhookendpoint/v1alpha1/api.proto\"\xd4\x01\n" +
+	"\x1dStripeWebhookEndpointIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x96\x03\n" +
 	"5com.dev.planton.stripe.stripewebhookendpoint.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_goTypes = []any{
-	(*StripeWebhookEndpointStackInput)(nil), // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackInput
-	(*StripeWebhookEndpoint)(nil),           // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint
-	(*stripe.StripeProviderConfig)(nil),     // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeWebhookEndpointIacInput)(nil), // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointIacInput
+	(*StripeWebhookEndpoint)(nil),         // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint
+	(*stripe.StripeProviderConfig)(nil),   // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackInput.target:type_name -> dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint
-	2, // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointIacInput.target:type_name -> dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint
+	2, // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

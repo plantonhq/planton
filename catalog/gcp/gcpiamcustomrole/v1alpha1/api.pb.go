@@ -28,7 +28,7 @@ type GcpIamCustomRole struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpIamCustomRoleSpec         `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpIamCustomRoleStatus       `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpIamCustomRole) GetKind() string {
 	return ""
 }
 
-func (x *GcpIamCustomRole) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpIamCustomRole) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpIamCustomRole) GetStatus() *GcpIamCustomRoleStatus {
 }
 
 type GcpIamCustomRoleStatus struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	Outputs       *GcpIamCustomRoleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Outputs       *GcpIamCustomRoleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpIamCustomRoleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpiamcustomrole_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpIamCustomRoleStatus) GetOutputs() *GcpIamCustomRoleStackOutputs {
+func (x *GcpIamCustomRoleStatus) GetOutputs() *GcpIamCustomRoleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpiamcustomrole_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10GcpIamCustomRoleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStatusR\x06status\"{\n" +
-	"\x16GcpIamCustomRoleStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStatusR\x06status\"v\n" +
+	"\x16GcpIamCustomRoleStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.gcp.gcpiamcustomrole.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpiamcustomrole/v1alpha1;gcpiamcustomrolev1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpiamcustomrole.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpiamcustomrole\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpiamcustomrole\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpiamcustomrole::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcpiamcustomrole_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_api_proto_goTypes = []any{
 	(*GcpIamCustomRole)(nil),             // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole
 	(*GcpIamCustomRoleStatus)(nil),       // 1: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpIamCustomRoleSpec)(nil),         // 3: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleSpec
-	(*GcpIamCustomRoleStackOutputs)(nil), // 4: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackOutputs
+	(*GcpIamCustomRoleOutputs)(nil),      // 4: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleOutputs
 }
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole.spec:type_name -> dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleSpec
 	1, // 2: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole.status:type_name -> dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStatus
-	4, // 3: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStatus.outputs:type_name -> dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackOutputs
+	4, // 3: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStatus.outputs:type_name -> dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGatewayStackOutputs captures observable outputs after the Gateway
+// KubernetesGatewayOutputs captures observable outputs after the Gateway
 // is created on the target cluster. Controller-managed status (assigned
 // addresses, listener conditions) is reconciled asynchronously by the Gateway
 // implementation and read via kubectl, so it is intentionally not stored here.
-type KubernetesGatewayStackOutputs struct {
+type KubernetesGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created Gateway (equals metadata.name). Routes attach to this
 	// Gateway by referencing this name in their parentRefs; in InfraCharts it
@@ -43,20 +43,20 @@ type KubernetesGatewayStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *KubernetesGatewayStackOutputs) Reset() {
-	*x = KubernetesGatewayStackOutputs{}
+func (x *KubernetesGatewayOutputs) Reset() {
+	*x = KubernetesGatewayOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGatewayStackOutputs) String() string {
+func (x *KubernetesGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGatewayStackOutputs) ProtoMessage() {}
+func (*KubernetesGatewayOutputs) ProtoMessage() {}
 
-func (x *KubernetesGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *KubernetesGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGatewayStackOutputs) GetGatewayName() string {
+func (x *KubernetesGatewayOutputs) GetGatewayName() string {
 	if x != nil {
 		return x.GatewayName
 	}
 	return ""
 }
 
-func (x *KubernetesGatewayStackOutputs) GetNamespace() string {
+func (x *KubernetesGatewayOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesGatewayStackOutputs) GetGatewayClassName() string {
+func (x *KubernetesGatewayOutputs) GetGatewayClassName() string {
 	if x != nil {
 		return x.GatewayClassName
 	}
@@ -98,8 +98,8 @@ var File_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesgateway/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesgateway.v1alpha1\"\x8e\x01\n" +
-	"\x1dKubernetesGatewayStackOutputs\x12!\n" +
+	";catalog/kubernetes/kubernetesgateway/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesgateway.v1alpha1\"\x89\x01\n" +
+	"\x18KubernetesGatewayOutputs\x12!\n" +
 	"\fgateway_name\x18\x01 \x01(\tR\vgatewayName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12,\n" +
 	"\x12gateway_class_name\x18\x03 \x01(\tR\x10gatewayClassNameB\x94\x03\n" +
@@ -119,7 +119,7 @@ func file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGatewayStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayStackOutputs
+	(*KubernetesGatewayOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewayOutputs
 }
 var file_catalog_kubernetes_kubernetesgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

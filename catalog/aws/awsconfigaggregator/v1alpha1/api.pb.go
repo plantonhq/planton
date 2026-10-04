@@ -27,7 +27,7 @@ type AwsConfigAggregator struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsConfigAggregatorSpec      `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsConfigAggregatorStatus    `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsConfigAggregator) GetKind() string {
 	return ""
 }
 
-func (x *AwsConfigAggregator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsConfigAggregator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsConfigAggregator) GetStatus() *AwsConfigAggregatorStatus {
 }
 
 type AwsConfigAggregatorStatus struct {
-	state         protoimpl.MessageState           `protogen:"open.v1"`
-	Outputs       *AwsConfigAggregatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Outputs       *AwsConfigAggregatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsConfigAggregatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigaggregator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsConfigAggregatorStatus) GetOutputs() *AwsConfigAggregatorStackOutputs {
+func (x *AwsConfigAggregatorStatus) GetOutputs() *AwsConfigAggregatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsconfigaggregator_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AwsConfigAggregatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatusR\x06status\"\x84\x01\n" +
-	"\x19AwsConfigAggregatorStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatusR\x06status\"\x7f\n" +
+	"\x19AwsConfigAggregatorStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.aws.awsconfigaggregator.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsconfigaggregator/v1alpha1;awsconfigaggregatorv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsconfigaggregator.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsconfigaggregator\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsconfigaggregator\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsconfigaggregator::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsconfigaggregator_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsconfigaggregator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsconfigaggregator_v1alpha1_api_proto_goTypes = []any{
-	(*AwsConfigAggregator)(nil),             // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator
-	(*AwsConfigAggregatorStatus)(nil),       // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsConfigAggregatorSpec)(nil),         // 3: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorSpec
-	(*AwsConfigAggregatorStackOutputs)(nil), // 4: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs
+	(*AwsConfigAggregator)(nil),          // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator
+	(*AwsConfigAggregatorStatus)(nil),    // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsConfigAggregatorSpec)(nil),      // 3: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorSpec
+	(*AwsConfigAggregatorOutputs)(nil),   // 4: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs
 }
 var file_catalog_aws_awsconfigaggregator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator.spec:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorSpec
 	1, // 2: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator.status:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatus
-	4, // 3: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatus.outputs:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackOutputs
+	4, // 3: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStatus.outputs:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

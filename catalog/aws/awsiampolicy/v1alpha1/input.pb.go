@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-iam-policy stack-input
-type AwsIamPolicyStackInput struct {
+// aws-iam-policy iac-input
+type AwsIamPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsIamPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsIamPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsIamPolicyStackInput) Reset() {
-	*x = AwsIamPolicyStackInput{}
+func (x *AwsIamPolicyIacInput) Reset() {
+	*x = AwsIamPolicyIacInput{}
 	mi := &file_catalog_aws_awsiampolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamPolicyStackInput) String() string {
+func (x *AwsIamPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamPolicyStackInput) ProtoMessage() {}
+func (*AwsIamPolicyIacInput) ProtoMessage() {}
 
-func (x *AwsIamPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsIamPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiampolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsIamPolicyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AwsIamPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AwsIamPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiampolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamPolicyStackInput) GetTarget() *AwsIamPolicy {
+func (x *AwsIamPolicyIacInput) GetTarget() *AwsIamPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsIamPolicyStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsIamPolicyIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsiampolicy_v1alpha1_input_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsiampolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsiampolicy/v1alpha1/input.proto\x12%dev.planton.aws.awsiampolicy.v1alpha1\x1a+catalog/aws/awsiampolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb2\x01\n" +
-	"\x16AwsIamPolicyStackInput\x12K\n" +
+	"-catalog/aws/awsiampolicy/v1alpha1/input.proto\x12%dev.planton.aws.awsiampolicy.v1alpha1\x1a+catalog/aws/awsiampolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb0\x01\n" +
+	"\x14AwsIamPolicyIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc5\x02\n" +
 	")com.dev.planton.aws.awsiampolicy.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsiampolicy_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsiampolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiampolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AwsIamPolicyStackInput)(nil), // 0: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyStackInput
-	(*AwsIamPolicy)(nil),           // 1: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicy
-	(*aws.AwsProviderConfig)(nil),  // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsIamPolicyIacInput)(nil),  // 0: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyIacInput
+	(*AwsIamPolicy)(nil),          // 1: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicy
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsiampolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyStackInput.target:type_name -> dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicy
-	2, // 1: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyIacInput.target:type_name -> dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicy
+	2, // 1: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

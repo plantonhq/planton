@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsDlmLifecyclePolicyStackOutputs captures the observable state of
+// AwsDlmLifecyclePolicyOutputs captures the observable state of
 // the policy after apply.
-type AwsDlmLifecyclePolicyStackOutputs struct {
+type AwsDlmLifecyclePolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The policy's id (policy-...) - the provider's import ID.
 	PolicyId string `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
@@ -33,20 +33,20 @@ type AwsDlmLifecyclePolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsDlmLifecyclePolicyStackOutputs) Reset() {
-	*x = AwsDlmLifecyclePolicyStackOutputs{}
+func (x *AwsDlmLifecyclePolicyOutputs) Reset() {
+	*x = AwsDlmLifecyclePolicyOutputs{}
 	mi := &file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsDlmLifecyclePolicyStackOutputs) String() string {
+func (x *AwsDlmLifecyclePolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsDlmLifecyclePolicyStackOutputs) ProtoMessage() {}
+func (*AwsDlmLifecyclePolicyOutputs) ProtoMessage() {}
 
-func (x *AwsDlmLifecyclePolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsDlmLifecyclePolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsDlmLifecyclePolicyStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsDlmLifecyclePolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsDlmLifecyclePolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsDlmLifecyclePolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsDlmLifecyclePolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsDlmLifecyclePolicyStackOutputs) GetPolicyId() string {
+func (x *AwsDlmLifecyclePolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *AwsDlmLifecyclePolicyStackOutputs) GetPolicyArn() string {
+func (x *AwsDlmLifecyclePolicyOutputs) GetPolicyArn() string {
 	if x != nil {
 		return x.PolicyArn
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsdlmlifecyclepolicy/v1alpha1/outputs.proto\x12.dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1\"_\n" +
-	"!AwsDlmLifecyclePolicyStackOutputs\x12\x1b\n" +
+	"8catalog/aws/awsdlmlifecyclepolicy/v1alpha1/outputs.proto\x12.dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1\"Z\n" +
+	"\x1cAwsDlmLifecyclePolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x1d\n" +
 	"\n" +
 	"policy_arn\x18\x02 \x01(\tR\tpolicyArnB\x86\x03\n" +
@@ -102,7 +102,7 @@ func file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsDlmLifecyclePolicyStackOutputs)(nil), // 0: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyStackOutputs
+	(*AwsDlmLifecyclePolicyOutputs)(nil), // 0: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyOutputs
 }
 var file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

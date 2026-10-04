@@ -31,7 +31,7 @@ type GcpBigQueryTable struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpBigQueryTableSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpBigQueryTable) GetKind() string {
 	return ""
 }
 
-func (x *GcpBigQueryTable) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpBigQueryTable) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpBigQueryTable) GetStatus() *GcpBigQueryTableStatus {
 // gcp-bigquery-table status
 type GcpBigQueryTableStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpBigQueryTableStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpBigQueryTableOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpBigQueryTableStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigquerytable_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpBigQueryTableStatus) GetOutputs() *GcpBigQueryTableStackOutputs {
+func (x *GcpBigQueryTableStatus) GetOutputs() *GcpBigQueryTableOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpbigquerytable_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10GcpBigQueryTableR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStatusR\x06status\"{\n" +
-	"\x16GcpBigQueryTableStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStatusR\x06status\"v\n" +
+	"\x16GcpBigQueryTableStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.gcp.gcpbigquerytable.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpbigquerytable/v1alpha1;gcpbigquerytablev1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpbigquerytable.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpbigquerytable\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpbigquerytable\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpbigquerytable::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpbigquerytable_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_gcp_gcpbigquerytable_v1alpha1_api_proto_goTypes = []any{
 	(*GcpBigQueryTable)(nil),             // 0: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTable
 	(*GcpBigQueryTableStatus)(nil),       // 1: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpBigQueryTableSpec)(nil),         // 3: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpec
-	(*GcpBigQueryTableStackOutputs)(nil), // 4: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStackOutputs
+	(*GcpBigQueryTableOutputs)(nil),      // 4: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableOutputs
 }
 var file_catalog_gcp_gcpbigquerytable_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTable.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTable.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTable.spec:type_name -> dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpec
 	1, // 2: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTable.status:type_name -> dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStatus
-	4, // 3: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStatus.outputs:type_name -> dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStackOutputs
+	4, // 3: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStatus.outputs:type_name -> dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

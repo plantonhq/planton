@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogResourcePolicyStackInput is the input for the IaC
+// AwsCloudwatchLogResourcePolicyIacInput is the input for the IaC
 // modules that manage a CloudWatch Logs resource policy.
-type AwsCloudwatchLogResourcePolicyStackInput struct {
+type AwsCloudwatchLogResourcePolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudwatchLogResourcePolicy resource to deploy.
 	Target *AwsCloudwatchLogResourcePolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudwatchLogResourcePolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogResourcePolicyStackInput) Reset() {
-	*x = AwsCloudwatchLogResourcePolicyStackInput{}
+func (x *AwsCloudwatchLogResourcePolicyIacInput) Reset() {
+	*x = AwsCloudwatchLogResourcePolicyIacInput{}
 	mi := &file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogResourcePolicyStackInput) String() string {
+func (x *AwsCloudwatchLogResourcePolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogResourcePolicyStackInput) ProtoMessage() {}
+func (*AwsCloudwatchLogResourcePolicyIacInput) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogResourcePolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogResourcePolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudwatchLogResourcePolicyStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogResourcePolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogResourcePolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogResourcePolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogResourcePolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogResourcePolicyStackInput) GetTarget() *AwsCloudwatchLogResourcePolicy {
+func (x *AwsCloudwatchLogResourcePolicyIacInput) GetTarget() *AwsCloudwatchLogResourcePolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchLogResourcePolicyStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudwatchLogResourcePolicyIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto protore
 
 const file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awscloudwatchlogresourcepolicy/v1alpha1/input.proto\x127dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1\x1a=catalog/aws/awscloudwatchlogresourcepolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe8\x01\n" +
-	"(AwsCloudwatchLogResourcePolicyStackInput\x12o\n" +
+	"?catalog/aws/awscloudwatchlogresourcepolicy/v1alpha1/input.proto\x127dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1\x1a=catalog/aws/awscloudwatchlogresourcepolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe6\x01\n" +
+	"&AwsCloudwatchLogResourcePolicyIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_rawDes
 
 var file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudwatchLogResourcePolicyStackInput)(nil), // 0: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyStackInput
-	(*AwsCloudwatchLogResourcePolicy)(nil),           // 1: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicy
-	(*aws.AwsProviderConfig)(nil),                    // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudwatchLogResourcePolicyIacInput)(nil), // 0: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyIacInput
+	(*AwsCloudwatchLogResourcePolicy)(nil),         // 1: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicy
+	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudwatchlogresourcepolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyStackInput.target:type_name -> dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicy
-	2, // 1: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyIacInput.target:type_name -> dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicy
+	2, // 1: dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1.AwsCloudwatchLogResourcePolicyIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

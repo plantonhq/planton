@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awsroute53zone
 spec:
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.5000"
       exclusions:
         - DNS queries bill per million answered and follow traffic
-        - records, health checks, and routing policies are separate components
+        - records, health checks, and routing policies are separate kinds
     - preset: 02-private-vpc-zone
       region_assumption: global
       currency: USD
@@ -45,7 +45,7 @@ spec:
           list_cost: "0.5000"
       total_list_cost: "0.5000"
       exclusions:
-        - records and resolver-side monitoring are separate components
+        - records and resolver-side monitoring are separate kinds
       notes: In-VPC queries against a private zone are free, so the zone fee is this preset's whole bill.
     - preset: 03-dnssec-signed-zone
       region_assumption: global
@@ -64,5 +64,5 @@ spec:
       total_list_cost: "0.5000"
       exclusions:
         - DNS queries bill per million answered and follow traffic
-        - the DNSSEC signing key bills on its referenced AwsKmsKey component (monthly key fee plus per-request signing)
-        - records, health checks, and routing policies are separate components
+        - the DNSSEC signing key bills on its referenced AwsKmsKey kind (monthly key fee plus per-request signing)
+        - records, health checks, and routing policies are separate kinds

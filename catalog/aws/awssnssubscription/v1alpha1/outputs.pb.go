@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSnsSubscriptionStackOutputs captures observable identifiers from a
+// AwsSnsSubscriptionOutputs captures observable identifiers from a
 // provisioned SNS subscription.
-type AwsSnsSubscriptionStackOutputs struct {
+type AwsSnsSubscriptionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the subscription. The identifier used
 	// for sns:Unsubscribe/SetSubscriptionAttributes permissions and for
@@ -44,20 +44,20 @@ type AwsSnsSubscriptionStackOutputs struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *AwsSnsSubscriptionStackOutputs) Reset() {
-	*x = AwsSnsSubscriptionStackOutputs{}
+func (x *AwsSnsSubscriptionOutputs) Reset() {
+	*x = AwsSnsSubscriptionOutputs{}
 	mi := &file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSnsSubscriptionStackOutputs) String() string {
+func (x *AwsSnsSubscriptionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSnsSubscriptionStackOutputs) ProtoMessage() {}
+func (*AwsSnsSubscriptionOutputs) ProtoMessage() {}
 
-func (x *AwsSnsSubscriptionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSnsSubscriptionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *AwsSnsSubscriptionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSnsSubscriptionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSnsSubscriptionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSnsSubscriptionOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSnsSubscriptionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSnsSubscriptionStackOutputs) GetSubscriptionArn() string {
+func (x *AwsSnsSubscriptionOutputs) GetSubscriptionArn() string {
 	if x != nil {
 		return x.SubscriptionArn
 	}
 	return ""
 }
 
-func (x *AwsSnsSubscriptionStackOutputs) GetOwnerId() string {
+func (x *AwsSnsSubscriptionOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsSnsSubscriptionStackOutputs) GetPendingConfirmation() bool {
+func (x *AwsSnsSubscriptionOutputs) GetPendingConfirmation() bool {
 	if x != nil {
 		return x.PendingConfirmation
 	}
 	return false
 }
 
-func (x *AwsSnsSubscriptionStackOutputs) GetConfirmationWasAuthenticated() bool {
+func (x *AwsSnsSubscriptionOutputs) GetConfirmationWasAuthenticated() bool {
 	if x != nil {
 		return x.ConfirmationWasAuthenticated
 	}
@@ -106,8 +106,8 @@ var File_catalog_aws_awssnssubscription_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awssnssubscription/v1alpha1/outputs.proto\x12+dev.planton.aws.awssnssubscription.v1alpha1\"\xdf\x01\n" +
-	"\x1eAwsSnsSubscriptionStackOutputs\x12)\n" +
+	"5catalog/aws/awssnssubscription/v1alpha1/outputs.proto\x12+dev.planton.aws.awssnssubscription.v1alpha1\"\xda\x01\n" +
+	"\x19AwsSnsSubscriptionOutputs\x12)\n" +
 	"\x10subscription_arn\x18\x01 \x01(\tR\x0fsubscriptionArn\x12\x19\n" +
 	"\bowner_id\x18\x02 \x01(\tR\aownerId\x121\n" +
 	"\x14pending_confirmation\x18\x03 \x01(\bR\x13pendingConfirmation\x12D\n" +
@@ -128,7 +128,7 @@ func file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSnsSubscriptionStackOutputs)(nil), // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackOutputs
+	(*AwsSnsSubscriptionOutputs)(nil), // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionOutputs
 }
 var file_catalog_aws_awssnssubscription_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

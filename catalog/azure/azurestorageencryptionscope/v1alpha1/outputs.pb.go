@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageEncryptionScopeStackOutputs** captures the outputs of
+// **AzureStorageEncryptionScopeOutputs** captures the outputs of
 // provisioning an encryption scope.
-type AzureStorageEncryptionScopeStackOutputs struct {
+type AzureStorageEncryptionScopeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the encryption scope.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/encryptionScopes/{name}
@@ -40,20 +40,20 @@ type AzureStorageEncryptionScopeStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageEncryptionScopeStackOutputs) Reset() {
-	*x = AzureStorageEncryptionScopeStackOutputs{}
+func (x *AzureStorageEncryptionScopeOutputs) Reset() {
+	*x = AzureStorageEncryptionScopeOutputs{}
 	mi := &file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageEncryptionScopeStackOutputs) String() string {
+func (x *AzureStorageEncryptionScopeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageEncryptionScopeStackOutputs) ProtoMessage() {}
+func (*AzureStorageEncryptionScopeOutputs) ProtoMessage() {}
 
-func (x *AzureStorageEncryptionScopeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageEncryptionScopeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureStorageEncryptionScopeStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageEncryptionScopeStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageEncryptionScopeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageEncryptionScopeOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageEncryptionScopeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageEncryptionScopeStackOutputs) GetEncryptionScopeId() string {
+func (x *AzureStorageEncryptionScopeOutputs) GetEncryptionScopeId() string {
 	if x != nil {
 		return x.EncryptionScopeId
 	}
 	return ""
 }
 
-func (x *AzureStorageEncryptionScopeStackOutputs) GetEncryptionScopeName() string {
+func (x *AzureStorageEncryptionScopeOutputs) GetEncryptionScopeName() string {
 	if x != nil {
 		return x.EncryptionScopeName
 	}
 	return ""
 }
 
-func (x *AzureStorageEncryptionScopeStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageEncryptionScopeOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -95,8 +95,8 @@ var File_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto protor
 
 const file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/azure/azurestorageencryptionscope/v1alpha1/outputs.proto\x126dev.planton.azure.azurestorageencryptionscope.v1alpha1\"\xbf\x01\n" +
-	"'AzureStorageEncryptionScopeStackOutputs\x12.\n" +
+	"@catalog/azure/azurestorageencryptionscope/v1alpha1/outputs.proto\x126dev.planton.azure.azurestorageencryptionscope.v1alpha1\"\xba\x01\n" +
+	"\"AzureStorageEncryptionScopeOutputs\x12.\n" +
 	"\x13encryption_scope_id\x18\x01 \x01(\tR\x11encryptionScopeId\x122\n" +
 	"\x15encryption_scope_name\x18\x02 \x01(\tR\x13encryptionScopeName\x120\n" +
 	"\x14storage_account_name\x18\x03 \x01(\tR\x12storageAccountNameB\xbc\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageEncryptionScopeStackOutputs)(nil), // 0: dev.planton.azure.azurestorageencryptionscope.v1alpha1.AzureStorageEncryptionScopeStackOutputs
+	(*AzureStorageEncryptionScopeOutputs)(nil), // 0: dev.planton.azure.azurestorageencryptionscope.v1alpha1.AzureStorageEncryptionScopeOutputs
 }
 var file_catalog_azure_azurestorageencryptionscope_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

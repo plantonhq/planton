@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: finops/componentcostestimate/v1/spec.proto
+// source: finops/catalogkindcostestimate/v1/spec.proto
 
-package componentcostestimatev1
+package catalogkindcostestimatev1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,38 +21,38 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ComponentCostEstimateSpec holds one monthly estimate per catalog preset.
+// CatalogKindCostEstimateSpec holds one monthly estimate per catalog preset.
 // Authoring contract: every monetary value is a decimal STRING (never a
 // YAML float -- floats corrupt cents), every unit price names its source
 // URL and retrieval date, and every meter priced here must be declared by
-// the component's cost.yaml (the conformance gate enforces the binding in
+// the kind's cost.yaml (the conformance gate enforces the binding in
 // both documents' favor: an estimate cannot price a meter the cost profile
 // does not know about).
-type ComponentCostEstimateSpec struct {
+type CatalogKindCostEstimateSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// One estimate per preset shipped by the component, keyed by the preset
-	// file stem. Every preset the component ships should eventually carry an
+	// One estimate per preset shipped by the kind, keyed by the preset
+	// file stem. Every preset the kind ships should eventually carry an
 	// estimate; a preset without one simply renders no price.
 	Presets       []*PresetEstimate `protobuf:"bytes,1,rep,name=presets,proto3" json:"presets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ComponentCostEstimateSpec) Reset() {
-	*x = ComponentCostEstimateSpec{}
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostEstimateSpec) Reset() {
+	*x = CatalogKindCostEstimateSpec{}
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ComponentCostEstimateSpec) String() string {
+func (x *CatalogKindCostEstimateSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ComponentCostEstimateSpec) ProtoMessage() {}
+func (*CatalogKindCostEstimateSpec) ProtoMessage() {}
 
-func (x *ComponentCostEstimateSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[0]
+func (x *CatalogKindCostEstimateSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -63,12 +63,12 @@ func (x *ComponentCostEstimateSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ComponentCostEstimateSpec.ProtoReflect.Descriptor instead.
-func (*ComponentCostEstimateSpec) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimate_v1_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use CatalogKindCostEstimateSpec.ProtoReflect.Descriptor instead.
+func (*CatalogKindCostEstimateSpec) Descriptor() ([]byte, []int) {
+	return file_finops_catalogkindcostestimate_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ComponentCostEstimateSpec) GetPresets() []*PresetEstimate {
+func (x *CatalogKindCostEstimateSpec) GetPresets() []*PresetEstimate {
 	if x != nil {
 		return x.Presets
 	}
@@ -80,13 +80,13 @@ func (x *ComponentCostEstimateSpec) GetPresets() []*PresetEstimate {
 // with the usage-dependent dimensions excluded and named.
 type PresetEstimate struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The preset's file stem under the component's presets/ directory, e.g.
+	// The preset's file stem under the kind's presets/ directory, e.g.
 	// "02-production-ha" for presets/02-production-ha.yaml. The conformance
 	// gate fails an estimate whose preset file does not exist.
 	Preset string `protobuf:"bytes,1,opt,name=preset,proto3" json:"preset,omitempty"`
 	// The region whose list prices this estimate uses, e.g. "us-east-1".
 	// Cloud list prices vary by region; an estimate is only reproducible
-	// with its region pinned. Empty only for cluster-capacity components,
+	// with its region pinned. Empty only for cluster-capacity kinds,
 	// which price nothing regional.
 	RegionAssumption string `protobuf:"bytes,2,opt,name=region_assumption,json=regionAssumption,proto3" json:"region_assumption,omitempty"`
 	// ISO 4217 currency of every monetary value in this estimate ("USD").
@@ -97,10 +97,10 @@ type PresetEstimate struct {
 	// Declared explicitly so every quantity below is reproducible.
 	HoursPerMonth int32 `protobuf:"varint,4,opt,name=hours_per_month,json=hoursPerMonth,proto3" json:"hours_per_month,omitempty"`
 	// The priced charges, one per metered functionality, ordered largest
-	// list_cost first. Empty for cluster-capacity components, which carry a
+	// list_cost first. Empty for cluster-capacity kinds, which carry a
 	// capacity_footprint instead of priced lines.
 	LineItems []*LineItem `protobuf:"bytes,5,rep,name=line_items,json=lineItems,proto3" json:"line_items,omitempty"`
-	// For cluster-capacity components only: the cluster resources the preset
+	// For cluster-capacity kinds only: the cluster resources the preset
 	// reserves, stated as capacity rather than dollars. A workload that
 	// consumes shares of an existing cluster has no honest dollar figure of
 	// its own -- its cost is the cluster's node economics, which this
@@ -123,7 +123,7 @@ type PresetEstimate struct {
 
 func (x *PresetEstimate) Reset() {
 	*x = PresetEstimate{}
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -135,7 +135,7 @@ func (x *PresetEstimate) String() string {
 func (*PresetEstimate) ProtoMessage() {}
 
 func (x *PresetEstimate) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[1]
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -148,7 +148,7 @@ func (x *PresetEstimate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PresetEstimate.ProtoReflect.Descriptor instead.
 func (*PresetEstimate) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimate_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_finops_catalogkindcostestimate_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PresetEstimate) GetPreset() string {
@@ -222,10 +222,10 @@ func (x *PresetEstimate) GetNotes() string {
 type LineItem struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The provider offering that bills (FOCUS ServiceName), exactly as the
-	// component's cost.yaml declares it, e.g. "Google Kubernetes Engine".
+	// kind's cost.yaml declares it, e.g. "Google Kubernetes Engine".
 	ServiceName string `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
 	// The functionality being metered (FOCUS SkuMeter). Must match a
-	// baseline charge or cost driver sku_meter in the component's cost.yaml
+	// baseline charge or cost driver sku_meter in the kind's cost.yaml
 	// -- the gate rejects an estimate that prices an undeclared meter.
 	SkuMeter string `protobuf:"bytes,2,opt,name=sku_meter,json=skuMeter,proto3" json:"sku_meter,omitempty"`
 	// The unit the price is quoted in (FOCUS PricingUnit), e.g. "hours",
@@ -256,7 +256,7 @@ type LineItem struct {
 
 func (x *LineItem) Reset() {
 	*x = LineItem{}
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -268,7 +268,7 @@ func (x *LineItem) String() string {
 func (*LineItem) ProtoMessage() {}
 
 func (x *LineItem) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[2]
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -281,7 +281,7 @@ func (x *LineItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LineItem.ProtoReflect.Descriptor instead.
 func (*LineItem) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimate_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_finops_catalogkindcostestimate_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *LineItem) GetServiceName() string {
@@ -373,7 +373,7 @@ type CapacityFootprint struct {
 
 func (x *CapacityFootprint) Reset() {
 	*x = CapacityFootprint{}
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[3]
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -385,7 +385,7 @@ func (x *CapacityFootprint) String() string {
 func (*CapacityFootprint) ProtoMessage() {}
 
 func (x *CapacityFootprint) ProtoReflect() protoreflect.Message {
-	mi := &file_finops_componentcostestimate_v1_spec_proto_msgTypes[3]
+	mi := &file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -398,7 +398,7 @@ func (x *CapacityFootprint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CapacityFootprint.ProtoReflect.Descriptor instead.
 func (*CapacityFootprint) Descriptor() ([]byte, []int) {
-	return file_finops_componentcostestimate_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_finops_catalogkindcostestimate_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CapacityFootprint) GetCpuRequests() string {
@@ -443,21 +443,21 @@ func (x *CapacityFootprint) GetBasis() string {
 	return ""
 }
 
-var File_finops_componentcostestimate_v1_spec_proto protoreflect.FileDescriptor
+var File_finops_catalogkindcostestimate_v1_spec_proto protoreflect.FileDescriptor
 
-const file_finops_componentcostestimate_v1_spec_proto_rawDesc = "" +
+const file_finops_catalogkindcostestimate_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"*finops/componentcostestimate/v1/spec.proto\x12+dev.planton.finops.componentcostestimate.v1\"r\n" +
-	"\x19ComponentCostEstimateSpec\x12U\n" +
-	"\apresets\x18\x01 \x03(\v2;.dev.planton.finops.componentcostestimate.v1.PresetEstimateR\apresets\"\xbc\x03\n" +
+	",finops/catalogkindcostestimate/v1/spec.proto\x12-dev.planton.finops.catalogkindcostestimate.v1\"v\n" +
+	"\x1bCatalogKindCostEstimateSpec\x12W\n" +
+	"\apresets\x18\x01 \x03(\v2=.dev.planton.finops.catalogkindcostestimate.v1.PresetEstimateR\apresets\"\xc0\x03\n" +
 	"\x0ePresetEstimate\x12\x16\n" +
 	"\x06preset\x18\x01 \x01(\tR\x06preset\x12+\n" +
 	"\x11region_assumption\x18\x02 \x01(\tR\x10regionAssumption\x12\x1a\n" +
 	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12&\n" +
-	"\x0fhours_per_month\x18\x04 \x01(\x05R\rhoursPerMonth\x12T\n" +
+	"\x0fhours_per_month\x18\x04 \x01(\x05R\rhoursPerMonth\x12V\n" +
 	"\n" +
-	"line_items\x18\x05 \x03(\v25.dev.planton.finops.componentcostestimate.v1.LineItemR\tlineItems\x12m\n" +
-	"\x12capacity_footprint\x18\x06 \x01(\v2>.dev.planton.finops.componentcostestimate.v1.CapacityFootprintR\x11capacityFootprint\x12&\n" +
+	"line_items\x18\x05 \x03(\v27.dev.planton.finops.catalogkindcostestimate.v1.LineItemR\tlineItems\x12o\n" +
+	"\x12capacity_footprint\x18\x06 \x01(\v2@.dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprintR\x11capacityFootprint\x12&\n" +
 	"\x0ftotal_list_cost\x18\a \x01(\tR\rtotalListCost\x12\x1e\n" +
 	"\n" +
 	"exclusions\x18\b \x03(\tR\n" +
@@ -480,32 +480,32 @@ const file_finops_componentcostestimate_v1_spec_proto_rawDesc = "" +
 	"cpu_limits\x18\x03 \x01(\tR\tcpuLimits\x12#\n" +
 	"\rmemory_limits\x18\x04 \x01(\tR\fmemoryLimits\x12-\n" +
 	"\x12persistent_storage\x18\x05 \x01(\tR\x11persistentStorage\x12\x14\n" +
-	"\x05basis\x18\x06 \x01(\tR\x05basisB\xe3\x02\n" +
-	"/com.dev.planton.finops.componentcostestimate.v1B\tSpecProtoP\x01ZTgithub.com/plantonhq/planton/finops/componentcostestimate/v1;componentcostestimatev1\xa2\x02\x04DPFC\xaa\x02+Dev.Planton.Finops.Componentcostestimate.V1\xca\x02+Dev\\Planton\\Finops\\Componentcostestimate\\V1\xe2\x027Dev\\Planton\\Finops\\Componentcostestimate\\V1\\GPBMetadata\xea\x02/Dev::Planton::Finops::Componentcostestimate::V1b\x06proto3"
+	"\x05basis\x18\x06 \x01(\tR\x05basisB\xf1\x02\n" +
+	"1com.dev.planton.finops.catalogkindcostestimate.v1B\tSpecProtoP\x01ZXgithub.com/plantonhq/planton/finops/catalogkindcostestimate/v1;catalogkindcostestimatev1\xa2\x02\x04DPFC\xaa\x02-Dev.Planton.Finops.Catalogkindcostestimate.V1\xca\x02-Dev\\Planton\\Finops\\Catalogkindcostestimate\\V1\xe2\x029Dev\\Planton\\Finops\\Catalogkindcostestimate\\V1\\GPBMetadata\xea\x021Dev::Planton::Finops::Catalogkindcostestimate::V1b\x06proto3"
 
 var (
-	file_finops_componentcostestimate_v1_spec_proto_rawDescOnce sync.Once
-	file_finops_componentcostestimate_v1_spec_proto_rawDescData []byte
+	file_finops_catalogkindcostestimate_v1_spec_proto_rawDescOnce sync.Once
+	file_finops_catalogkindcostestimate_v1_spec_proto_rawDescData []byte
 )
 
-func file_finops_componentcostestimate_v1_spec_proto_rawDescGZIP() []byte {
-	file_finops_componentcostestimate_v1_spec_proto_rawDescOnce.Do(func() {
-		file_finops_componentcostestimate_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_componentcostestimate_v1_spec_proto_rawDesc), len(file_finops_componentcostestimate_v1_spec_proto_rawDesc)))
+func file_finops_catalogkindcostestimate_v1_spec_proto_rawDescGZIP() []byte {
+	file_finops_catalogkindcostestimate_v1_spec_proto_rawDescOnce.Do(func() {
+		file_finops_catalogkindcostestimate_v1_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostestimate_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostestimate_v1_spec_proto_rawDesc)))
 	})
-	return file_finops_componentcostestimate_v1_spec_proto_rawDescData
+	return file_finops_catalogkindcostestimate_v1_spec_proto_rawDescData
 }
 
-var file_finops_componentcostestimate_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_finops_componentcostestimate_v1_spec_proto_goTypes = []any{
-	(*ComponentCostEstimateSpec)(nil), // 0: dev.planton.finops.componentcostestimate.v1.ComponentCostEstimateSpec
-	(*PresetEstimate)(nil),            // 1: dev.planton.finops.componentcostestimate.v1.PresetEstimate
-	(*LineItem)(nil),                  // 2: dev.planton.finops.componentcostestimate.v1.LineItem
-	(*CapacityFootprint)(nil),         // 3: dev.planton.finops.componentcostestimate.v1.CapacityFootprint
+var file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_finops_catalogkindcostestimate_v1_spec_proto_goTypes = []any{
+	(*CatalogKindCostEstimateSpec)(nil), // 0: dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimateSpec
+	(*PresetEstimate)(nil),              // 1: dev.planton.finops.catalogkindcostestimate.v1.PresetEstimate
+	(*LineItem)(nil),                    // 2: dev.planton.finops.catalogkindcostestimate.v1.LineItem
+	(*CapacityFootprint)(nil),           // 3: dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprint
 }
-var file_finops_componentcostestimate_v1_spec_proto_depIdxs = []int32{
-	1, // 0: dev.planton.finops.componentcostestimate.v1.ComponentCostEstimateSpec.presets:type_name -> dev.planton.finops.componentcostestimate.v1.PresetEstimate
-	2, // 1: dev.planton.finops.componentcostestimate.v1.PresetEstimate.line_items:type_name -> dev.planton.finops.componentcostestimate.v1.LineItem
-	3, // 2: dev.planton.finops.componentcostestimate.v1.PresetEstimate.capacity_footprint:type_name -> dev.planton.finops.componentcostestimate.v1.CapacityFootprint
+var file_finops_catalogkindcostestimate_v1_spec_proto_depIdxs = []int32{
+	1, // 0: dev.planton.finops.catalogkindcostestimate.v1.CatalogKindCostEstimateSpec.presets:type_name -> dev.planton.finops.catalogkindcostestimate.v1.PresetEstimate
+	2, // 1: dev.planton.finops.catalogkindcostestimate.v1.PresetEstimate.line_items:type_name -> dev.planton.finops.catalogkindcostestimate.v1.LineItem
+	3, // 2: dev.planton.finops.catalogkindcostestimate.v1.PresetEstimate.capacity_footprint:type_name -> dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprint
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -513,26 +513,26 @@ var file_finops_componentcostestimate_v1_spec_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_finops_componentcostestimate_v1_spec_proto_init() }
-func file_finops_componentcostestimate_v1_spec_proto_init() {
-	if File_finops_componentcostestimate_v1_spec_proto != nil {
+func init() { file_finops_catalogkindcostestimate_v1_spec_proto_init() }
+func file_finops_catalogkindcostestimate_v1_spec_proto_init() {
+	if File_finops_catalogkindcostestimate_v1_spec_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_componentcostestimate_v1_spec_proto_rawDesc), len(file_finops_componentcostestimate_v1_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finops_catalogkindcostestimate_v1_spec_proto_rawDesc), len(file_finops_catalogkindcostestimate_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_finops_componentcostestimate_v1_spec_proto_goTypes,
-		DependencyIndexes: file_finops_componentcostestimate_v1_spec_proto_depIdxs,
-		MessageInfos:      file_finops_componentcostestimate_v1_spec_proto_msgTypes,
+		GoTypes:           file_finops_catalogkindcostestimate_v1_spec_proto_goTypes,
+		DependencyIndexes: file_finops_catalogkindcostestimate_v1_spec_proto_depIdxs,
+		MessageInfos:      file_finops_catalogkindcostestimate_v1_spec_proto_msgTypes,
 	}.Build()
-	File_finops_componentcostestimate_v1_spec_proto = out.File
-	file_finops_componentcostestimate_v1_spec_proto_goTypes = nil
-	file_finops_componentcostestimate_v1_spec_proto_depIdxs = nil
+	File_finops_catalogkindcostestimate_v1_spec_proto = out.File
+	file_finops_catalogkindcostestimate_v1_spec_proto_goTypes = nil
+	file_finops_catalogkindcostestimate_v1_spec_proto_depIdxs = nil
 }

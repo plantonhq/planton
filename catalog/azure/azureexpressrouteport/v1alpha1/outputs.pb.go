@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureExpressRoutePortStackOutputs** captures the outputs of
+// **AzureExpressRoutePortOutputs** captures the outputs of
 // provisioning an ExpressRoute Port. The per-link facility facts
 // (router, interface, patch panel, rack) are what you hand to the
 // colocation facility to order the physical cross-connects.
-type AzureExpressRoutePortStackOutputs struct {
+type AzureExpressRoutePortOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the port -- what an ExpressRoute
 	// Direct circuit references as express_route_port_id.
@@ -82,20 +82,20 @@ type AzureExpressRoutePortStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureExpressRoutePortStackOutputs) Reset() {
-	*x = AzureExpressRoutePortStackOutputs{}
+func (x *AzureExpressRoutePortOutputs) Reset() {
+	*x = AzureExpressRoutePortOutputs{}
 	mi := &file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRoutePortStackOutputs) String() string {
+func (x *AzureExpressRoutePortOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRoutePortStackOutputs) ProtoMessage() {}
+func (*AzureExpressRoutePortOutputs) ProtoMessage() {}
 
-func (x *AzureExpressRoutePortStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRoutePortOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -107,138 +107,138 @@ func (x *AzureExpressRoutePortStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRoutePortStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureExpressRoutePortStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRoutePortOutputs.ProtoReflect.Descriptor instead.
+func (*AzureExpressRoutePortOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetExpressRoutePortId() string {
+func (x *AzureExpressRoutePortOutputs) GetExpressRoutePortId() string {
 	if x != nil {
 		return x.ExpressRoutePortId
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetExpressRoutePortName() string {
+func (x *AzureExpressRoutePortOutputs) GetExpressRoutePortName() string {
 	if x != nil {
 		return x.ExpressRoutePortName
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetGuid() string {
+func (x *AzureExpressRoutePortOutputs) GetGuid() string {
 	if x != nil {
 		return x.Guid
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetEthertype() string {
+func (x *AzureExpressRoutePortOutputs) GetEthertype() string {
 	if x != nil {
 		return x.Ethertype
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetMtu() string {
+func (x *AzureExpressRoutePortOutputs) GetMtu() string {
 	if x != nil {
 		return x.Mtu
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureExpressRoutePortOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink1Id() string {
+func (x *AzureExpressRoutePortOutputs) GetLink1Id() string {
 	if x != nil {
 		return x.Link1Id
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink1RouterName() string {
+func (x *AzureExpressRoutePortOutputs) GetLink1RouterName() string {
 	if x != nil {
 		return x.Link1RouterName
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink1InterfaceName() string {
+func (x *AzureExpressRoutePortOutputs) GetLink1InterfaceName() string {
 	if x != nil {
 		return x.Link1InterfaceName
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink1PatchPanelId() string {
+func (x *AzureExpressRoutePortOutputs) GetLink1PatchPanelId() string {
 	if x != nil {
 		return x.Link1PatchPanelId
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink1RackId() string {
+func (x *AzureExpressRoutePortOutputs) GetLink1RackId() string {
 	if x != nil {
 		return x.Link1RackId
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink1ConnectorType() string {
+func (x *AzureExpressRoutePortOutputs) GetLink1ConnectorType() string {
 	if x != nil {
 		return x.Link1ConnectorType
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink2Id() string {
+func (x *AzureExpressRoutePortOutputs) GetLink2Id() string {
 	if x != nil {
 		return x.Link2Id
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink2RouterName() string {
+func (x *AzureExpressRoutePortOutputs) GetLink2RouterName() string {
 	if x != nil {
 		return x.Link2RouterName
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink2InterfaceName() string {
+func (x *AzureExpressRoutePortOutputs) GetLink2InterfaceName() string {
 	if x != nil {
 		return x.Link2InterfaceName
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink2PatchPanelId() string {
+func (x *AzureExpressRoutePortOutputs) GetLink2PatchPanelId() string {
 	if x != nil {
 		return x.Link2PatchPanelId
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink2RackId() string {
+func (x *AzureExpressRoutePortOutputs) GetLink2RackId() string {
 	if x != nil {
 		return x.Link2RackId
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetLink2ConnectorType() string {
+func (x *AzureExpressRoutePortOutputs) GetLink2ConnectorType() string {
 	if x != nil {
 		return x.Link2ConnectorType
 	}
 	return ""
 }
 
-func (x *AzureExpressRoutePortStackOutputs) GetAuthorizationKeys() map[string]string {
+func (x *AzureExpressRoutePortOutputs) GetAuthorizationKeys() map[string]string {
 	if x != nil {
 		return x.AuthorizationKeys
 	}
@@ -249,8 +249,8 @@ var File_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azureexpressrouteport/v1alpha1/outputs.proto\x120dev.planton.azure.azureexpressrouteport.v1alpha1\x1a\x1cshared/options/options.proto\"\x8b\b\n" +
-	"!AzureExpressRoutePortStackOutputs\x121\n" +
+	":catalog/azure/azureexpressrouteport/v1alpha1/outputs.proto\x120dev.planton.azure.azureexpressrouteport.v1alpha1\x1a\x1cshared/options/options.proto\"\x81\b\n" +
+	"\x1cAzureExpressRoutePortOutputs\x121\n" +
 	"\x15express_route_port_id\x18\x01 \x01(\tR\x12expressRoutePortId\x125\n" +
 	"\x17express_route_port_name\x18\x02 \x01(\tR\x14expressRoutePortName\x12\x12\n" +
 	"\x04guid\x18\x03 \x01(\tR\x04guid\x12\x1c\n" +
@@ -269,8 +269,8 @@ const file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_rawDesc = 
 	"\x14link2_interface_name\x18\x0f \x01(\tR\x12link2InterfaceName\x12/\n" +
 	"\x14link2_patch_panel_id\x18\x10 \x01(\tR\x11link2PatchPanelId\x12\"\n" +
 	"\rlink2_rack_id\x18\x11 \x01(\tR\vlink2RackId\x120\n" +
-	"\x14link2_connector_type\x18\x12 \x01(\tR\x12link2ConnectorType\x12\x9f\x01\n" +
-	"\x12authorization_keys\x18\x13 \x03(\v2j.dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs.AuthorizationKeysEntryB\x04\xa0\xa6\x1d\x01R\x11authorizationKeys\x1aD\n" +
+	"\x14link2_connector_type\x18\x12 \x01(\tR\x12link2ConnectorType\x12\x9a\x01\n" +
+	"\x12authorization_keys\x18\x13 \x03(\v2e.dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortOutputs.AuthorizationKeysEntryB\x04\xa0\xa6\x1d\x01R\x11authorizationKeys\x1aD\n" +
 	"\x16AuthorizationKeysEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x92\x03\n" +
@@ -290,11 +290,11 @@ func file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureExpressRoutePortStackOutputs)(nil), // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs
-	nil, // 1: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs.AuthorizationKeysEntry
+	(*AzureExpressRoutePortOutputs)(nil), // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortOutputs
+	nil,                                  // 1: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortOutputs.AuthorizationKeysEntry
 }
 var file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs.authorization_keys:type_name -> dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs.AuthorizationKeysEntry
+	1, // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortOutputs.authorization_keys:type_name -> dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortOutputs.AuthorizationKeysEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

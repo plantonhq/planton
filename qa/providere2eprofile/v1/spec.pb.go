@@ -142,7 +142,7 @@ func (ProviderE2EProfileSpec_TestSubstrate) EnumDescriptor() ([]byte, []int) {
 	return file_qa_providere2eprofile_v1_spec_proto_rawDescGZIP(), []int{0, 1}
 }
 
-// Which CI schedule lane runs by default for this provider's components.
+// Which CI schedule lane runs by default for this provider's kinds.
 type ProviderE2EProfileSpec_ScheduleLane int32
 
 const (
@@ -222,7 +222,7 @@ type ProviderE2EProfileSpec struct {
 	// means the module and the provider disagree about the applied state —
 	// the send-omitted-value and Optional+Computed echo defect classes — which
 	// otherwise surface as perpetual diffs on users' own re-applies. Scoped to
-	// the component under test; prerequisite fixtures are exempt (they belong
+	// the kind under test; prerequisite fixtures are exempt (they belong
 	// to other kinds' contracts). Providers arm this once their catalog's
 	// no-op re-plan classes are burned down.
 	AssertApplyIdempotency bool `protobuf:"varint,8,opt,name=assert_apply_idempotency,json=assertApplyIdempotency,proto3" json:"assert_apply_idempotency,omitempty"`

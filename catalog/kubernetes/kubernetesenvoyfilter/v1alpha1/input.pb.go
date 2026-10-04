@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesEnvoyFilterStackInput provides the inputs for creating the EnvoyFilter on a
+// KubernetesEnvoyFilterIacInput provides the inputs for creating the EnvoyFilter on a
 // Kubernetes cluster.
-type KubernetesEnvoyFilterStackInput struct {
+type KubernetesEnvoyFilterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *KubernetesEnvoyFilter `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesEnvoyFilterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesEnvoyFilterStackInput) Reset() {
-	*x = KubernetesEnvoyFilterStackInput{}
+func (x *KubernetesEnvoyFilterIacInput) Reset() {
+	*x = KubernetesEnvoyFilterIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesEnvoyFilterStackInput) String() string {
+func (x *KubernetesEnvoyFilterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesEnvoyFilterStackInput) ProtoMessage() {}
+func (*KubernetesEnvoyFilterIacInput) ProtoMessage() {}
 
-func (x *KubernetesEnvoyFilterStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesEnvoyFilterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesEnvoyFilterStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesEnvoyFilterStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesEnvoyFilterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesEnvoyFilterIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesEnvoyFilterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesEnvoyFilterStackInput) GetTarget() *KubernetesEnvoyFilter {
+func (x *KubernetesEnvoyFilterIacInput) GetTarget() *KubernetesEnvoyFilter {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesEnvoyFilterStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesEnvoyFilterIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto protorefl
 
 const file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/input.proto\x125dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1\x1a;catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe2\x01\n" +
-	"\x1fKubernetesEnvoyFilterStackInput\x12d\n" +
+	"=catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/input.proto\x125dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1\x1a;catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe0\x01\n" +
+	"\x1dKubernetesEnvoyFilterIacInput\x12d\n" +
 	"\x06target\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesEnvoyFilterStackInput)(nil),     // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackInput
+	(*KubernetesEnvoyFilterIacInput)(nil),       // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterIacInput
 	(*KubernetesEnvoyFilter)(nil),               // 1: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackInput.target:type_name -> dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter
-	2, // 1: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterIacInput.target:type_name -> dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilter
+	2, // 1: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-dns-zone stack-input
-type CloudflareDnsZoneStackInput struct {
+// cloudflare-dns-zone iac-input
+type CloudflareDnsZoneIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *CloudflareDnsZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflareDnsZoneStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareDnsZoneStackInput) Reset() {
-	*x = CloudflareDnsZoneStackInput{}
+func (x *CloudflareDnsZoneIacInput) Reset() {
+	*x = CloudflareDnsZoneIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareDnsZoneStackInput) String() string {
+func (x *CloudflareDnsZoneIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareDnsZoneStackInput) ProtoMessage() {}
+func (*CloudflareDnsZoneIacInput) ProtoMessage() {}
 
-func (x *CloudflareDnsZoneStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareDnsZoneIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflareDnsZoneStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareDnsZoneStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareDnsZoneStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareDnsZoneIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareDnsZoneIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareDnsZoneStackInput) GetTarget() *CloudflareDnsZone {
+func (x *CloudflareDnsZoneIacInput) GetTarget() *CloudflareDnsZone {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareDnsZoneStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareDnsZoneIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto protoreflect.
 
 const file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/cloudflare/cloudflarednszone/v1alpha1/input.proto\x121dev.planton.cloudflare.cloudflarednszone.v1alpha1\x1a7catalog/cloudflare/cloudflarednszone/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xd6\x01\n" +
-	"\x1bCloudflareDnsZoneStackInput\x12\\\n" +
+	"9catalog/cloudflare/cloudflarednszone/v1alpha1/input.proto\x121dev.planton.cloudflare.cloudflarednszone.v1alpha1\x1a7catalog/cloudflare/cloudflarednszone/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xd4\x01\n" +
+	"\x19CloudflareDnsZoneIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.cloudflare.cloudflarednszone.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareDnsZoneStackInput)(nil),         // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackInput
+	(*CloudflareDnsZoneIacInput)(nil),           // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneIacInput
 	(*CloudflareDnsZone)(nil),                   // 1: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZone
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarednszone_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackInput.target:type_name -> dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZone
-	2, // 1: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneIacInput.target:type_name -> dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZone
+	2, // 1: dev.planton.cloudflare.cloudflarednszone.v1alpha1.CloudflareDnsZoneIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

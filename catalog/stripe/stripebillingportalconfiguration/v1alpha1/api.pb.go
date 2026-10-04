@@ -67,12 +67,12 @@ type StripeBillingPortalConfiguration struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripeBillingPortalConfiguration" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains what the portal lets a customer do.
 	Spec *StripeBillingPortalConfigurationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the configuration as created, populated after deployment.
@@ -125,7 +125,7 @@ func (x *StripeBillingPortalConfiguration) GetKind() string {
 	return ""
 }
 
-func (x *StripeBillingPortalConfiguration) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripeBillingPortalConfiguration) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -150,8 +150,8 @@ func (x *StripeBillingPortalConfiguration) GetStatus() *StripeBillingPortalConfi
 // StripeBillingPortalConfiguration resource. Populated by the deployment system.
 type StripeBillingPortalConfigurationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the configuration's id and state.
-	Outputs       *StripeBillingPortalConfigurationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the configuration's id and state.
+	Outputs       *StripeBillingPortalConfigurationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,7 +186,7 @@ func (*StripeBillingPortalConfigurationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripeBillingPortalConfigurationStatus) GetOutputs() *StripeBillingPortalConfigurationStackOutputs {
+func (x *StripeBillingPortalConfigurationStatus) GetOutputs() *StripeBillingPortalConfigurationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -204,11 +204,11 @@ const file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_api_proto_ra
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" StripeBillingPortalConfigurationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12~\n" +
 	"\x04spec\x18\x04 \x01(\v2b.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12|\n" +
-	"\x06status\x18\x05 \x01(\v2d.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatusR\x06status\"\xaf\x01\n" +
-	"&StripeBillingPortalConfigurationStatus\x12\x84\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2j.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackOutputsR\aoutputsB\xe1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2d.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatusR\x06status\"\xa9\x01\n" +
+	"&StripeBillingPortalConfigurationStatus\x12\x7f\n" +
+	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationOutputsR\aoutputsB\xe1\x03\n" +
 	"@com.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1B\bApiProtoP\x01Z~github.com/plantonhq/planton/catalog/stripe/stripebillingportalconfiguration/v1alpha1;stripebillingportalconfigurationv1alpha1\xa2\x02\x04DPSS\xaa\x02<Dev.Planton.Stripe.Stripebillingportalconfiguration.V1alpha1\xca\x02<Dev\\Planton\\Stripe\\Stripebillingportalconfiguration\\V1alpha1\xe2\x02HDev\\Planton\\Stripe\\Stripebillingportalconfiguration\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Stripe::Stripebillingportalconfiguration::V1alpha1b\x06proto3"
 
 var (
@@ -225,17 +225,17 @@ func file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_api_proto_raw
 
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_api_proto_goTypes = []any{
-	(*StripeBillingPortalConfiguration)(nil),             // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration
-	(*StripeBillingPortalConfigurationStatus)(nil),       // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripeBillingPortalConfigurationSpec)(nil),         // 3: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationSpec
-	(*StripeBillingPortalConfigurationStackOutputs)(nil), // 4: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackOutputs
+	(*StripeBillingPortalConfiguration)(nil),        // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration
+	(*StripeBillingPortalConfigurationStatus)(nil),  // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripeBillingPortalConfigurationSpec)(nil),    // 3: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationSpec
+	(*StripeBillingPortalConfigurationOutputs)(nil), // 4: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationOutputs
 }
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration.spec:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationSpec
 	1, // 2: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration.status:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatus
-	4, // 3: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatus.outputs:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackOutputs
+	4, // 3: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStatus.outputs:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

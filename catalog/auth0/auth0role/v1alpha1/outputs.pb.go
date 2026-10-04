@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0RoleStackOutputs contains the outputs from an Auth0 Role deployment.
+// Auth0RoleOutputs contains the outputs from an Auth0 Role deployment.
 // These outputs provide the identifiers needed to reference the role when
 // assigning it to users or auditing access control configuration.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/role#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/role/#outputs
-type Auth0RoleStackOutputs struct {
+type Auth0RoleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the Auth0 role (e.g., "rol_abc123").
 	// Assigned by Auth0 and used to reference the role when assigning it to users
@@ -42,20 +42,20 @@ type Auth0RoleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0RoleStackOutputs) Reset() {
-	*x = Auth0RoleStackOutputs{}
+func (x *Auth0RoleOutputs) Reset() {
+	*x = Auth0RoleOutputs{}
 	mi := &file_catalog_auth0_auth0role_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0RoleStackOutputs) String() string {
+func (x *Auth0RoleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0RoleStackOutputs) ProtoMessage() {}
+func (*Auth0RoleOutputs) ProtoMessage() {}
 
-func (x *Auth0RoleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0RoleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0role_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *Auth0RoleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0RoleStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0RoleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0RoleOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0RoleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0role_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0RoleStackOutputs) GetId() string {
+func (x *Auth0RoleOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0RoleStackOutputs) GetName() string {
+func (x *Auth0RoleOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0RoleStackOutputs) GetDescription() string {
+func (x *Auth0RoleOutputs) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
@@ -97,8 +97,8 @@ var File_catalog_auth0_auth0role_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_auth0_auth0role_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/auth0/auth0role/v1alpha1/outputs.proto\x12$dev.planton.auth0.auth0role.v1alpha1\"]\n" +
-	"\x15Auth0RoleStackOutputs\x12\x0e\n" +
+	".catalog/auth0/auth0role/v1alpha1/outputs.proto\x12$dev.planton.auth0.auth0role.v1alpha1\"X\n" +
+	"\x10Auth0RoleOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescriptionB\xbe\x02\n" +
@@ -118,7 +118,7 @@ func file_catalog_auth0_auth0role_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_auth0_auth0role_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0role_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0RoleStackOutputs)(nil), // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackOutputs
+	(*Auth0RoleOutputs)(nil), // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleOutputs
 }
 var file_catalog_auth0_auth0role_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

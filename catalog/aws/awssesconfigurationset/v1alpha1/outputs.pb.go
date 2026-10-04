@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSesConfigurationSetStackOutputs captures the observable identifiers
+// AwsSesConfigurationSetOutputs captures the observable identifiers
 // of the SES configuration set.
-type AwsSesConfigurationSetStackOutputs struct {
+type AwsSesConfigurationSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the configuration set -- the target
 	// for IAM policies that scope who may send under this set.
@@ -36,20 +36,20 @@ type AwsSesConfigurationSetStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsSesConfigurationSetStackOutputs) Reset() {
-	*x = AwsSesConfigurationSetStackOutputs{}
+func (x *AwsSesConfigurationSetOutputs) Reset() {
+	*x = AwsSesConfigurationSetOutputs{}
 	mi := &file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSesConfigurationSetStackOutputs) String() string {
+func (x *AwsSesConfigurationSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSesConfigurationSetStackOutputs) ProtoMessage() {}
+func (*AwsSesConfigurationSetOutputs) ProtoMessage() {}
 
-func (x *AwsSesConfigurationSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSesConfigurationSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsSesConfigurationSetStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSesConfigurationSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSesConfigurationSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSesConfigurationSetOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSesConfigurationSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSesConfigurationSetStackOutputs) GetConfigurationSetArn() string {
+func (x *AwsSesConfigurationSetOutputs) GetConfigurationSetArn() string {
 	if x != nil {
 		return x.ConfigurationSetArn
 	}
 	return ""
 }
 
-func (x *AwsSesConfigurationSetStackOutputs) GetConfigurationSetName() string {
+func (x *AwsSesConfigurationSetOutputs) GetConfigurationSetName() string {
 	if x != nil {
 		return x.ConfigurationSetName
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awssesconfigurationset/v1alpha1/outputs.proto\x12/dev.planton.aws.awssesconfigurationset.v1alpha1\"\x8e\x01\n" +
-	"\"AwsSesConfigurationSetStackOutputs\x122\n" +
+	"9catalog/aws/awssesconfigurationset/v1alpha1/outputs.proto\x12/dev.planton.aws.awssesconfigurationset.v1alpha1\"\x89\x01\n" +
+	"\x1dAwsSesConfigurationSetOutputs\x122\n" +
 	"\x15configuration_set_arn\x18\x01 \x01(\tR\x13configurationSetArn\x124\n" +
 	"\x16configuration_set_name\x18\x02 \x01(\tR\x14configurationSetNameB\x8d\x03\n" +
 	"3com.dev.planton.aws.awssesconfigurationset.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/aws/awssesconfigurationset/v1alpha1;awssesconfigurationsetv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Aws.Awssesconfigurationset.V1alpha1\xca\x02/Dev\\Planton\\Aws\\Awssesconfigurationset\\V1alpha1\xe2\x02;Dev\\Planton\\Aws\\Awssesconfigurationset\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Aws::Awssesconfigurationset::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSesConfigurationSetStackOutputs)(nil), // 0: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStackOutputs
+	(*AwsSesConfigurationSetOutputs)(nil), // 0: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetOutputs
 }
 var file_catalog_aws_awssesconfigurationset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -37,7 +37,7 @@ type AzureManagedRedis struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureManagedRedisSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureManagedRedis) GetKind() string {
 	return ""
 }
 
-func (x *AzureManagedRedis) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureManagedRedis) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureManagedRedis) GetStatus() *AzureManagedRedisStatus {
 // AzureManagedRedisStatus holds the deployment status and outputs.
 type AzureManagedRedisStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureManagedRedisStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureManagedRedisOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureManagedRedisStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanagedredis_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureManagedRedisStatus) GetOutputs() *AzureManagedRedisStackOutputs {
+func (x *AzureManagedRedisStatus) GetOutputs() *AzureManagedRedisOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azuremanagedredis_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AzureManagedRedisR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatusR\x06status\"\x80\x01\n" +
-	"\x17AzureManagedRedisStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStackOutputsR\aoutputsB\xf2\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatusR\x06status\"{\n" +
+	"\x17AzureManagedRedisStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisOutputsR\aoutputsB\xf2\x02\n" +
 	"0com.dev.planton.azure.azuremanagedredis.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/azure/azuremanagedredis/v1alpha1;azuremanagedredisv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Azure.Azuremanagedredis.V1alpha1\xca\x02,Dev\\Planton\\Azure\\Azuremanagedredis\\V1alpha1\xe2\x028Dev\\Planton\\Azure\\Azuremanagedredis\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Azure::Azuremanagedredis::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azuremanagedredis_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azuremanagedredis_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremanagedredis_v1alpha1_api_proto_goTypes = []any{
-	(*AzureManagedRedis)(nil),             // 0: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedis
-	(*AzureManagedRedisStatus)(nil),       // 1: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureManagedRedisSpec)(nil),         // 3: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisSpec
-	(*AzureManagedRedisStackOutputs)(nil), // 4: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStackOutputs
+	(*AzureManagedRedis)(nil),            // 0: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedis
+	(*AzureManagedRedisStatus)(nil),      // 1: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureManagedRedisSpec)(nil),        // 3: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisSpec
+	(*AzureManagedRedisOutputs)(nil),     // 4: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisOutputs
 }
 var file_catalog_azure_azuremanagedredis_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedis.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedis.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedis.spec:type_name -> dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisSpec
 	1, // 2: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedis.status:type_name -> dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatus
-	4, // 3: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatus.outputs:type_name -> dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStackOutputs
+	4, // 3: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStatus.outputs:type_name -> dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

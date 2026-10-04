@@ -6,7 +6,7 @@
 
 **apiVersion**: `azure.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **AzurePrivateDnsResolverForwardingRulesetSpec** defines a DNS
 forwarding ruleset -- the rule book that decides which DNS names

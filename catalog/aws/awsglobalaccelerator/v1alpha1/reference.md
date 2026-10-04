@@ -41,7 +41,7 @@ to deploy before deleting), and every accelerator/listener/endpoint-group
 change is followed by a wait for the accelerator to return to the DEPLOYED
 state — expect minutes, not seconds, per apply.
 
-Credentials and deployment workflow live outside this spec in stack inputs.
+Credentials and deployment workflow live outside this spec in IaC inputs.
 
 ## Example
 

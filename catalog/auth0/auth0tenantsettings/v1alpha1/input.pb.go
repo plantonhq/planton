@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0TenantSettingsStackInput is the input to the Auth0TenantSettings IaC module.
+// Auth0TenantSettingsIacInput is the input to the Auth0TenantSettings IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0TenantSettingsStackInput struct {
+type Auth0TenantSettingsIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0TenantSettings resource to be deployed.
 	Target *Auth0TenantSettings `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -37,20 +37,20 @@ type Auth0TenantSettingsStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0TenantSettingsStackInput) Reset() {
-	*x = Auth0TenantSettingsStackInput{}
+func (x *Auth0TenantSettingsIacInput) Reset() {
+	*x = Auth0TenantSettingsIacInput{}
 	mi := &file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0TenantSettingsStackInput) String() string {
+func (x *Auth0TenantSettingsIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0TenantSettingsStackInput) ProtoMessage() {}
+func (*Auth0TenantSettingsIacInput) ProtoMessage() {}
 
-func (x *Auth0TenantSettingsStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0TenantSettingsIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *Auth0TenantSettingsStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0TenantSettingsStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0TenantSettingsStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0TenantSettingsIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0TenantSettingsIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0TenantSettingsStackInput) GetTarget() *Auth0TenantSettings {
+func (x *Auth0TenantSettingsIacInput) GetTarget() *Auth0TenantSettings {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0TenantSettingsStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0TenantSettingsIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -85,8 +85,8 @@ var File_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/auth0/auth0tenantsettings/v1alpha1/input.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\x1a4catalog/auth0/auth0tenantsettings/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xcd\x01\n" +
-	"\x1dAuth0TenantSettingsStackInput\x12[\n" +
+	"6catalog/auth0/auth0tenantsettings/v1alpha1/input.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\x1a4catalog/auth0/auth0tenantsettings/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xcb\x01\n" +
+	"\x1bAuth0TenantSettingsIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\x82\x03\n" +
 	"2com.dev.planton.auth0.auth0tenantsettings.v1alpha1B\n" +
@@ -106,13 +106,13 @@ func file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0TenantSettingsStackInput)(nil), // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackInput
-	(*Auth0TenantSettings)(nil),           // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings
-	(*auth0.Auth0ProviderConfig)(nil),     // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0TenantSettingsIacInput)(nil), // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsIacInput
+	(*Auth0TenantSettings)(nil),         // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings
+	(*auth0.Auth0ProviderConfig)(nil),   // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackInput.target:type_name -> dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings
-	2, // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsIacInput.target:type_name -> dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettings
+	2, // 1: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

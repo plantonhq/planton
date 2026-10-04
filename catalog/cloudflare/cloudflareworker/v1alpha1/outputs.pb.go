@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareWorkerStackOutputs captures the outputs after deploying a Cloudflare Worker.
-type CloudflareWorkerStackOutputs struct {
+// CloudflareWorkerOutputs captures the outputs after deploying a Cloudflare Worker.
+type CloudflareWorkerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the deployed Worker script (equals the
 	// script name in v5).
@@ -48,20 +48,20 @@ type CloudflareWorkerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareWorkerStackOutputs) Reset() {
-	*x = CloudflareWorkerStackOutputs{}
+func (x *CloudflareWorkerOutputs) Reset() {
+	*x = CloudflareWorkerOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWorkerStackOutputs) String() string {
+func (x *CloudflareWorkerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWorkerStackOutputs) ProtoMessage() {}
+func (*CloudflareWorkerOutputs) ProtoMessage() {}
 
-func (x *CloudflareWorkerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWorkerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,54 +73,54 @@ func (x *CloudflareWorkerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWorkerStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWorkerOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWorkerStackOutputs) GetScriptId() string {
+func (x *CloudflareWorkerOutputs) GetScriptId() string {
 	if x != nil {
 		return x.ScriptId
 	}
 	return ""
 }
 
-func (x *CloudflareWorkerStackOutputs) GetScriptName() string {
+func (x *CloudflareWorkerOutputs) GetScriptName() string {
 	if x != nil {
 		return x.ScriptName
 	}
 	return ""
 }
 
-func (x *CloudflareWorkerStackOutputs) GetCustomDomainHostnames() []string {
+func (x *CloudflareWorkerOutputs) GetCustomDomainHostnames() []string {
 	if x != nil {
 		return x.CustomDomainHostnames
 	}
 	return nil
 }
 
-func (x *CloudflareWorkerStackOutputs) GetRoutePatterns() []string {
+func (x *CloudflareWorkerOutputs) GetRoutePatterns() []string {
 	if x != nil {
 		return x.RoutePatterns
 	}
 	return nil
 }
 
-func (x *CloudflareWorkerStackOutputs) GetCustomDomainIds() map[string]string {
+func (x *CloudflareWorkerOutputs) GetCustomDomainIds() map[string]string {
 	if x != nil {
 		return x.CustomDomainIds
 	}
 	return nil
 }
 
-func (x *CloudflareWorkerStackOutputs) GetRouteIds() map[string]string {
+func (x *CloudflareWorkerOutputs) GetRouteIds() map[string]string {
 	if x != nil {
 		return x.RouteIds
 	}
 	return nil
 }
 
-func (x *CloudflareWorkerStackOutputs) GetRouteZoneIds() map[string]string {
+func (x *CloudflareWorkerOutputs) GetRouteZoneIds() map[string]string {
 	if x != nil {
 		return x.RouteZoneIds
 	}
@@ -131,16 +131,16 @@ var File_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/cloudflare/cloudflareworker/v1alpha1/outputs.proto\x120dev.planton.cloudflare.cloudflareworker.v1alpha1\"\x93\x06\n" +
-	"\x1cCloudflareWorkerStackOutputs\x12\x1b\n" +
+	":catalog/cloudflare/cloudflareworker/v1alpha1/outputs.proto\x120dev.planton.cloudflare.cloudflareworker.v1alpha1\"\xff\x05\n" +
+	"\x17CloudflareWorkerOutputs\x12\x1b\n" +
 	"\tscript_id\x18\x01 \x01(\tR\bscriptId\x12\x1f\n" +
 	"\vscript_name\x18\x02 \x01(\tR\n" +
 	"scriptName\x126\n" +
 	"\x17custom_domain_hostnames\x18\x03 \x03(\tR\x15customDomainHostnames\x12%\n" +
-	"\x0eroute_patterns\x18\x04 \x03(\tR\rroutePatterns\x12\x8f\x01\n" +
-	"\x11custom_domain_ids\x18\x05 \x03(\v2c.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.CustomDomainIdsEntryR\x0fcustomDomainIds\x12y\n" +
-	"\troute_ids\x18\x06 \x03(\v2\\.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.RouteIdsEntryR\brouteIds\x12\x86\x01\n" +
-	"\x0eroute_zone_ids\x18\a \x03(\v2`.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.RouteZoneIdsEntryR\frouteZoneIds\x1aB\n" +
+	"\x0eroute_patterns\x18\x04 \x03(\tR\rroutePatterns\x12\x8a\x01\n" +
+	"\x11custom_domain_ids\x18\x05 \x03(\v2^.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.CustomDomainIdsEntryR\x0fcustomDomainIds\x12t\n" +
+	"\troute_ids\x18\x06 \x03(\v2W.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.RouteIdsEntryR\brouteIds\x12\x81\x01\n" +
+	"\x0eroute_zone_ids\x18\a \x03(\v2[.dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.RouteZoneIdsEntryR\frouteZoneIds\x1aB\n" +
 	"\x14CustomDomainIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a;\n" +
@@ -166,15 +166,15 @@ func file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareWorkerStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs
-	nil,                                  // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.CustomDomainIdsEntry
-	nil,                                  // 2: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.RouteIdsEntry
-	nil,                                  // 3: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.RouteZoneIdsEntry
+	(*CloudflareWorkerOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs
+	nil,                             // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.CustomDomainIdsEntry
+	nil,                             // 2: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.RouteIdsEntry
+	nil,                             // 3: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.RouteZoneIdsEntry
 }
 var file_catalog_cloudflare_cloudflareworker_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.custom_domain_ids:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.CustomDomainIdsEntry
-	2, // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.route_ids:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.RouteIdsEntry
-	3, // 2: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.route_zone_ids:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerStackOutputs.RouteZoneIdsEntry
+	1, // 0: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.custom_domain_ids:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.CustomDomainIdsEntry
+	2, // 1: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.route_ids:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.RouteIdsEntry
+	3, // 2: dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.route_zone_ids:type_name -> dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerOutputs.RouteZoneIdsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

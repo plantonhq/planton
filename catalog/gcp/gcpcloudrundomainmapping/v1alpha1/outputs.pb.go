@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudRunDomainMappingStackOutputs captures the observable results of
+// GcpCloudRunDomainMappingOutputs captures the observable results of
 // a deployed domain mapping — above all the DNS records the domain's zone
 // must publish for the mapping to actually serve.
-type GcpCloudRunDomainMappingStackOutputs struct {
+type GcpCloudRunDomainMappingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The mapped domain (the mapping's name in GCP) — the join key
 	// consumers and verifiers address the mapping by.
@@ -45,20 +45,20 @@ type GcpCloudRunDomainMappingStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *GcpCloudRunDomainMappingStackOutputs) Reset() {
-	*x = GcpCloudRunDomainMappingStackOutputs{}
+func (x *GcpCloudRunDomainMappingOutputs) Reset() {
+	*x = GcpCloudRunDomainMappingOutputs{}
 	mi := &file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudRunDomainMappingStackOutputs) String() string {
+func (x *GcpCloudRunDomainMappingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudRunDomainMappingStackOutputs) ProtoMessage() {}
+func (*GcpCloudRunDomainMappingOutputs) ProtoMessage() {}
 
-func (x *GcpCloudRunDomainMappingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudRunDomainMappingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *GcpCloudRunDomainMappingStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudRunDomainMappingStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudRunDomainMappingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudRunDomainMappingOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunDomainMappingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudRunDomainMappingStackOutputs) GetDomain() string {
+func (x *GcpCloudRunDomainMappingOutputs) GetDomain() string {
 	if x != nil {
 		return x.Domain
 	}
 	return ""
 }
 
-func (x *GcpCloudRunDomainMappingStackOutputs) GetRegion() string {
+func (x *GcpCloudRunDomainMappingOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpCloudRunDomainMappingStackOutputs) GetResourceRecords() []*GcpCloudRunDomainMappingResourceRecord {
+func (x *GcpCloudRunDomainMappingOutputs) GetResourceRecords() []*GcpCloudRunDomainMappingResourceRecord {
 	if x != nil {
 		return x.ResourceRecords
 	}
 	return nil
 }
 
-func (x *GcpCloudRunDomainMappingStackOutputs) GetMappedRouteName() string {
+func (x *GcpCloudRunDomainMappingOutputs) GetMappedRouteName() string {
 	if x != nil {
 		return x.MappedRouteName
 	}
@@ -173,8 +173,8 @@ var File_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpcloudrundomainmapping/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1\"\x89\x02\n" +
-	"$GcpCloudRunDomainMappingStackOutputs\x12\x16\n" +
+	";catalog/gcp/gcpcloudrundomainmapping/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1\"\x84\x02\n" +
+	"\x1fGcpCloudRunDomainMappingOutputs\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12\x84\x01\n" +
 	"\x10resource_records\x18\x03 \x03(\v2Y.dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingResourceRecordR\x0fresourceRecords\x12*\n" +
@@ -201,11 +201,11 @@ func file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudRunDomainMappingStackOutputs)(nil),   // 0: dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingStackOutputs
+	(*GcpCloudRunDomainMappingOutputs)(nil),        // 0: dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingOutputs
 	(*GcpCloudRunDomainMappingResourceRecord)(nil), // 1: dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingResourceRecord
 }
 var file_catalog_gcp_gcpcloudrundomainmapping_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingStackOutputs.resource_records:type_name -> dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingResourceRecord
+	1, // 0: dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingOutputs.resource_records:type_name -> dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingResourceRecord
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

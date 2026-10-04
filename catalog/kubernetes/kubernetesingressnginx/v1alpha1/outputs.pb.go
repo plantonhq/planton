@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesIngressNginxStackOutputs captures observable outputs after the
+// KubernetesIngressNginxOutputs captures observable outputs after the
 // ingress-nginx controller installation.
-type KubernetesIngressNginxStackOutputs struct {
+type KubernetesIngressNginxOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Kubernetes namespace the controller was installed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -54,20 +54,20 @@ type KubernetesIngressNginxStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *KubernetesIngressNginxStackOutputs) Reset() {
-	*x = KubernetesIngressNginxStackOutputs{}
+func (x *KubernetesIngressNginxOutputs) Reset() {
+	*x = KubernetesIngressNginxOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIngressNginxStackOutputs) String() string {
+func (x *KubernetesIngressNginxOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIngressNginxStackOutputs) ProtoMessage() {}
+func (*KubernetesIngressNginxOutputs) ProtoMessage() {}
 
-func (x *KubernetesIngressNginxStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIngressNginxOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,54 +79,54 @@ func (x *KubernetesIngressNginxStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIngressNginxStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesIngressNginxStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIngressNginxOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesIngressNginxOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetNamespace() string {
+func (x *KubernetesIngressNginxOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetReleaseName() string {
+func (x *KubernetesIngressNginxOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetIngressClassName() string {
+func (x *KubernetesIngressNginxOutputs) GetIngressClassName() string {
 	if x != nil {
 		return x.IngressClassName
 	}
 	return ""
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetControllerServiceName() string {
+func (x *KubernetesIngressNginxOutputs) GetControllerServiceName() string {
 	if x != nil {
 		return x.ControllerServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetInternalServiceName() string {
+func (x *KubernetesIngressNginxOutputs) GetInternalServiceName() string {
 	if x != nil {
 		return x.InternalServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetLoadBalancerIp() string {
+func (x *KubernetesIngressNginxOutputs) GetLoadBalancerIp() string {
 	if x != nil {
 		return x.LoadBalancerIp
 	}
 	return ""
 }
 
-func (x *KubernetesIngressNginxStackOutputs) GetLoadBalancerHostname() string {
+func (x *KubernetesIngressNginxOutputs) GetLoadBalancerHostname() string {
 	if x != nil {
 		return x.LoadBalancerHostname
 	}
@@ -137,8 +137,8 @@ var File_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto protor
 
 const file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesingressnginx/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesingressnginx.v1alpha1\"\xdf\x02\n" +
-	"\"KubernetesIngressNginxStackOutputs\x12\x1c\n" +
+	"@catalog/kubernetes/kubernetesingressnginx/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesingressnginx.v1alpha1\"\xda\x02\n" +
+	"\x1dKubernetesIngressNginxOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12,\n" +
 	"\x12ingress_class_name\x18\x03 \x01(\tR\x10ingressClassName\x126\n" +
@@ -162,7 +162,7 @@ func file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesIngressNginxStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesingressnginx.v1alpha1.KubernetesIngressNginxStackOutputs
+	(*KubernetesIngressNginxOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesingressnginx.v1alpha1.KubernetesIngressNginxOutputs
 }
 var file_catalog_kubernetes_kubernetesingressnginx_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

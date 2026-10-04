@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePrivateDnsZoneStackOutputs** captures the outputs of provisioning
+// **AzurePrivateDnsZoneOutputs** captures the outputs of provisioning
 // an Azure Private DNS zone.
 //
 // The primary output is `zone_id`, the join key for everything that
@@ -31,7 +31,7 @@ const (
 //   - AzurePrivateEndpoint (private_dns_zone_id for DNS zone group registration)
 //   - AzurePostgresqlFlexibleServer / AzureMysqlFlexibleServer
 //     (private_dns_zone_id for VNet-integrated deployment)
-type AzurePrivateDnsZoneStackOutputs struct {
+type AzurePrivateDnsZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the private DNS zone.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{name}
@@ -49,20 +49,20 @@ type AzurePrivateDnsZoneStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzurePrivateDnsZoneStackOutputs) Reset() {
-	*x = AzurePrivateDnsZoneStackOutputs{}
+func (x *AzurePrivateDnsZoneOutputs) Reset() {
+	*x = AzurePrivateDnsZoneOutputs{}
 	mi := &file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateDnsZoneStackOutputs) String() string {
+func (x *AzurePrivateDnsZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateDnsZoneStackOutputs) ProtoMessage() {}
+func (*AzurePrivateDnsZoneOutputs) ProtoMessage() {}
 
-func (x *AzurePrivateDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateDnsZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,26 +74,26 @@ func (x *AzurePrivateDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateDnsZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePrivateDnsZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateDnsZoneOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePrivateDnsZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateDnsZoneStackOutputs) GetZoneId() string {
+func (x *AzurePrivateDnsZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsZoneStackOutputs) GetZoneName() string {
+func (x *AzurePrivateDnsZoneOutputs) GetZoneName() string {
 	if x != nil {
 		return x.ZoneName
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsZoneStackOutputs) GetResourceGroupName() string {
+func (x *AzurePrivateDnsZoneOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azureprivatednszone/v1alpha1/outputs.proto\x12.dev.planton.azure.azureprivatednszone.v1alpha1\"\x87\x01\n" +
-	"\x1fAzurePrivateDnsZoneStackOutputs\x12\x17\n" +
+	"8catalog/azure/azureprivatednszone/v1alpha1/outputs.proto\x12.dev.planton.azure.azureprivatednszone.v1alpha1\"\x82\x01\n" +
+	"\x1aAzurePrivateDnsZoneOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12\x1b\n" +
 	"\tzone_name\x18\x02 \x01(\tR\bzoneName\x12.\n" +
 	"\x13resource_group_name\x18\x03 \x01(\tR\x11resourceGroupNameB\x84\x03\n" +
@@ -125,7 +125,7 @@ func file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePrivateDnsZoneStackOutputs)(nil), // 0: dev.planton.azure.azureprivatednszone.v1alpha1.AzurePrivateDnsZoneStackOutputs
+	(*AzurePrivateDnsZoneOutputs)(nil), // 0: dev.planton.azure.azureprivatednszone.v1alpha1.AzurePrivateDnsZoneOutputs
 }
 var file_catalog_azure_azureprivatednszone_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

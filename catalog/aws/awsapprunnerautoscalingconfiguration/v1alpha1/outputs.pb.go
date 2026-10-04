@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppRunnerAutoScalingConfigurationStackOutputs captures observable
+// AwsAppRunnerAutoScalingConfigurationOutputs captures observable
 // identifiers from a provisioned App Runner auto scaling configuration.
 // Services reference the configuration by its revision-carrying ARN.
-type AwsAppRunnerAutoScalingConfigurationStackOutputs struct {
+type AwsAppRunnerAutoScalingConfigurationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of this configuration revision (e.g. "arn:aws:apprunner:
 	// us-west-2:123456789012:autoscalingconfiguration/my-asc/3/abc123").
@@ -47,20 +47,20 @@ type AwsAppRunnerAutoScalingConfigurationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) Reset() {
-	*x = AwsAppRunnerAutoScalingConfigurationStackOutputs{}
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) Reset() {
+	*x = AwsAppRunnerAutoScalingConfigurationOutputs{}
 	mi := &file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) String() string {
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppRunnerAutoScalingConfigurationStackOutputs) ProtoMessage() {}
+func (*AwsAppRunnerAutoScalingConfigurationOutputs) ProtoMessage() {}
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,33 +72,33 @@ func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppRunnerAutoScalingConfigurationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAppRunnerAutoScalingConfigurationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppRunnerAutoScalingConfigurationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAppRunnerAutoScalingConfigurationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) GetConfigurationArn() string {
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) GetConfigurationArn() string {
 	if x != nil {
 		return x.ConfigurationArn
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) GetConfigurationRevision() int64 {
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) GetConfigurationRevision() int64 {
 	if x != nil {
 		return x.ConfigurationRevision
 	}
 	return 0
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) GetLatest() bool {
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) GetLatest() bool {
 	if x != nil {
 		return x.Latest
 	}
 	return false
 }
 
-func (x *AwsAppRunnerAutoScalingConfigurationStackOutputs) GetIsDefault() bool {
+func (x *AwsAppRunnerAutoScalingConfigurationOutputs) GetIsDefault() bool {
 	if x != nil {
 		return x.IsDefault
 	}
@@ -109,8 +109,8 @@ var File_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto
 
 const file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/outputs.proto\x12=dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1\"\xcd\x01\n" +
-	"0AwsAppRunnerAutoScalingConfigurationStackOutputs\x12+\n" +
+	"Gcatalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/outputs.proto\x12=dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1\"\xc8\x01\n" +
+	"+AwsAppRunnerAutoScalingConfigurationOutputs\x12+\n" +
 	"\x11configuration_arn\x18\x01 \x01(\tR\x10configurationArn\x125\n" +
 	"\x16configuration_revision\x18\x02 \x01(\x03R\x15configurationRevision\x12\x16\n" +
 	"\x06latest\x18\x03 \x01(\bR\x06latest\x12\x1d\n" +
@@ -132,7 +132,7 @@ func file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_prot
 
 var file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAppRunnerAutoScalingConfigurationStackOutputs)(nil), // 0: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationStackOutputs
+	(*AwsAppRunnerAutoScalingConfigurationOutputs)(nil), // 0: dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1.AwsAppRunnerAutoScalingConfigurationOutputs
 }
 var file_catalog_aws_awsapprunnerautoscalingconfiguration_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

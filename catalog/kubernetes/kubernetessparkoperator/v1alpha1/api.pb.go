@@ -31,7 +31,7 @@ type KubernetesSparkOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesSparkOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesSparkOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesSparkOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesSparkOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesSparkOperator) GetStatus() *KubernetesSparkOperatorStatus {
 // spark-operator-kubernetes status.
 type KubernetesSparkOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesSparkOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesSparkOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesSparkOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesSparkOperatorStatus) GetOutputs() *KubernetesSparkOperatorStackOutputs {
+func (x *KubernetesSparkOperatorStatus) GetOutputs() *KubernetesSparkOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesSparkOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesSparkOperatorStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesSparkOperatorStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetessparkoperator.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetessparkoperator/v1alpha1;kubernetessparkoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetessparkoperator.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetessparkoperator\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetessparkoperator\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetessparkoperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesSparkOperator)(nil),             // 0: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperator
-	(*KubernetesSparkOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesSparkOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorSpec
-	(*KubernetesSparkOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStackOutputs
+	(*KubernetesSparkOperator)(nil),        // 0: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperator
+	(*KubernetesSparkOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesSparkOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorSpec
+	(*KubernetesSparkOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperator.spec:type_name -> dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperator.status:type_name -> dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

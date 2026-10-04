@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOpenSearchServerlessCollectionStackInput is the input for the IaC
+// AwsOpenSearchServerlessCollectionIacInput is the input for the IaC
 // modules that deploy the OpenSearch Serverless collection.
-type AwsOpenSearchServerlessCollectionStackInput struct {
+type AwsOpenSearchServerlessCollectionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsOpenSearchServerlessCollection resource to deploy.
 	Target *AwsOpenSearchServerlessCollection `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsOpenSearchServerlessCollectionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackInput) Reset() {
-	*x = AwsOpenSearchServerlessCollectionStackInput{}
+func (x *AwsOpenSearchServerlessCollectionIacInput) Reset() {
+	*x = AwsOpenSearchServerlessCollectionIacInput{}
 	mi := &file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackInput) String() string {
+func (x *AwsOpenSearchServerlessCollectionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOpenSearchServerlessCollectionStackInput) ProtoMessage() {}
+func (*AwsOpenSearchServerlessCollectionIacInput) ProtoMessage() {}
 
-func (x *AwsOpenSearchServerlessCollectionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsOpenSearchServerlessCollectionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsOpenSearchServerlessCollectionStackInput) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOpenSearchServerlessCollectionStackInput.ProtoReflect.Descriptor instead.
-func (*AwsOpenSearchServerlessCollectionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOpenSearchServerlessCollectionIacInput.ProtoReflect.Descriptor instead.
+func (*AwsOpenSearchServerlessCollectionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackInput) GetTarget() *AwsOpenSearchServerlessCollection {
+func (x *AwsOpenSearchServerlessCollectionIacInput) GetTarget() *AwsOpenSearchServerlessCollection {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsOpenSearchServerlessCollectionIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto prot
 
 const file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/aws/awsopensearchserverlesscollection/v1alpha1/input.proto\x12:dev.planton.aws.awsopensearchserverlesscollection.v1alpha1\x1a@catalog/aws/awsopensearchserverlesscollection/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xf1\x01\n" +
-	"+AwsOpenSearchServerlessCollectionStackInput\x12u\n" +
+	"Bcatalog/aws/awsopensearchserverlesscollection/v1alpha1/input.proto\x12:dev.planton.aws.awsopensearchserverlesscollection.v1alpha1\x1a@catalog/aws/awsopensearchserverlesscollection/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xef\x01\n" +
+	")AwsOpenSearchServerlessCollectionIacInput\x12u\n" +
 	"\x06target\x18\x01 \x01(\v2].dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xd8\x03\n" +
 	">com.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_raw
 
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_goTypes = []any{
-	(*AwsOpenSearchServerlessCollectionStackInput)(nil), // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackInput
-	(*AwsOpenSearchServerlessCollection)(nil),           // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection
-	(*aws.AwsProviderConfig)(nil),                       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsOpenSearchServerlessCollectionIacInput)(nil), // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionIacInput
+	(*AwsOpenSearchServerlessCollection)(nil),         // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection
+	(*aws.AwsProviderConfig)(nil),                     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackInput.target:type_name -> dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection
-	2, // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionIacInput.target:type_name -> dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection
+	2, // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

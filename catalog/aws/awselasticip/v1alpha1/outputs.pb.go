@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsElasticIpStackOutputs captures observable identifiers from a provisioned Elastic IP.
+// AwsElasticIpOutputs captures observable identifiers from a provisioned Elastic IP.
 //
 // The primary output is `allocation_id`, which downstream resources use to wire
 // dependencies via StringValueOrRef. For example, an AwsNlb uses
 // the allocation_id in its subnet_mapping to bind a static public IP to the NLB.
-type AwsElasticIpStackOutputs struct {
+type AwsElasticIpOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The allocation ID of the Elastic IP (e.g., "eipalloc-0123456789abcdef0").
 	// This is the primary identifier used to reference the EIP in other AWS
@@ -50,20 +50,20 @@ type AwsElasticIpStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsElasticIpStackOutputs) Reset() {
-	*x = AwsElasticIpStackOutputs{}
+func (x *AwsElasticIpOutputs) Reset() {
+	*x = AwsElasticIpOutputs{}
 	mi := &file_catalog_aws_awselasticip_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsElasticIpStackOutputs) String() string {
+func (x *AwsElasticIpOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsElasticIpStackOutputs) ProtoMessage() {}
+func (*AwsElasticIpOutputs) ProtoMessage() {}
 
-func (x *AwsElasticIpStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsElasticIpOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awselasticip_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *AwsElasticIpStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsElasticIpStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsElasticIpStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsElasticIpOutputs.ProtoReflect.Descriptor instead.
+func (*AwsElasticIpOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awselasticip_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsElasticIpStackOutputs) GetAllocationId() string {
+func (x *AwsElasticIpOutputs) GetAllocationId() string {
 	if x != nil {
 		return x.AllocationId
 	}
 	return ""
 }
 
-func (x *AwsElasticIpStackOutputs) GetPublicIp() string {
+func (x *AwsElasticIpOutputs) GetPublicIp() string {
 	if x != nil {
 		return x.PublicIp
 	}
 	return ""
 }
 
-func (x *AwsElasticIpStackOutputs) GetArn() string {
+func (x *AwsElasticIpOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsElasticIpStackOutputs) GetPublicDns() string {
+func (x *AwsElasticIpOutputs) GetPublicDns() string {
 	if x != nil {
 		return x.PublicDns
 	}
 	return ""
 }
 
-func (x *AwsElasticIpStackOutputs) GetAssociationId() string {
+func (x *AwsElasticIpOutputs) GetAssociationId() string {
 	if x != nil {
 		return x.AssociationId
 	}
 	return ""
 }
 
-func (x *AwsElasticIpStackOutputs) GetPtrRecord() string {
+func (x *AwsElasticIpOutputs) GetPtrRecord() string {
 	if x != nil {
 		return x.PtrRecord
 	}
@@ -126,8 +126,8 @@ var File_catalog_aws_awselasticip_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awselasticip_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awselasticip/v1alpha1/outputs.proto\x12%dev.planton.aws.awselasticip.v1alpha1\"\xd3\x01\n" +
-	"\x18AwsElasticIpStackOutputs\x12#\n" +
+	"/catalog/aws/awselasticip/v1alpha1/outputs.proto\x12%dev.planton.aws.awselasticip.v1alpha1\"\xce\x01\n" +
+	"\x13AwsElasticIpOutputs\x12#\n" +
 	"\rallocation_id\x18\x01 \x01(\tR\fallocationId\x12\x1b\n" +
 	"\tpublic_ip\x18\x02 \x01(\tR\bpublicIp\x12\x10\n" +
 	"\x03arn\x18\x03 \x01(\tR\x03arn\x12\x1d\n" +
@@ -152,7 +152,7 @@ func file_catalog_aws_awselasticip_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awselasticip_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awselasticip_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsElasticIpStackOutputs)(nil), // 0: dev.planton.aws.awselasticip.v1alpha1.AwsElasticIpStackOutputs
+	(*AwsElasticIpOutputs)(nil), // 0: dev.planton.aws.awselasticip.v1alpha1.AwsElasticIpOutputs
 }
 var file_catalog_aws_awselasticip_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

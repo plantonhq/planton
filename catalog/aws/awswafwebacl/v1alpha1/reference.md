@@ -36,7 +36,7 @@ AWS ships before this spec models it.
 
 Every rule consumes Web ACL Capacity Units (WCUs); the default account
 limit is 5,000 WCUs per web ACL (the deployed total is exported as the
-`capacity` stack output).
+`capacity` output).
 
 Associations are NOT bundled: a web ACL protects at most one scope's worth
 of resources, but which resources it protects is each resource's own

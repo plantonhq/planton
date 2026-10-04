@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareNotificationPolicyStackInput is the input to the IaC module. It
+// CloudflareNotificationPolicyIacInput is the input to the IaC module. It
 // contains the target resource and provider configuration.
-type CloudflareNotificationPolicyStackInput struct {
+type CloudflareNotificationPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// target infra-component to be deployed
 	Target *CloudflareNotificationPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareNotificationPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareNotificationPolicyStackInput) Reset() {
-	*x = CloudflareNotificationPolicyStackInput{}
+func (x *CloudflareNotificationPolicyIacInput) Reset() {
+	*x = CloudflareNotificationPolicyIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareNotificationPolicyStackInput) String() string {
+func (x *CloudflareNotificationPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareNotificationPolicyStackInput) ProtoMessage() {}
+func (*CloudflareNotificationPolicyIacInput) ProtoMessage() {}
 
-func (x *CloudflareNotificationPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareNotificationPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareNotificationPolicyStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareNotificationPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareNotificationPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareNotificationPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareNotificationPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareNotificationPolicyStackInput) GetTarget() *CloudflareNotificationPolicy {
+func (x *CloudflareNotificationPolicyIacInput) GetTarget() *CloudflareNotificationPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareNotificationPolicyStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareNotificationPolicyIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto pr
 
 const file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/input.proto\x12<dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1\x1aBcatalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf7\x01\n" +
-	"&CloudflareNotificationPolicyStackInput\x12r\n" +
+	"Dcatalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/input.proto\x12<dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1\x1aBcatalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf5\x01\n" +
+	"$CloudflareNotificationPolicyIacInput\x12r\n" +
 	"\x06target\x18\x01 \x01(\v2Z.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xdf\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_r
 
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareNotificationPolicyStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackInput
-	(*CloudflareNotificationPolicy)(nil),           // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy
-	(*cloudflare.CloudflareProviderConfig)(nil),    // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareNotificationPolicyIacInput)(nil), // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyIacInput
+	(*CloudflareNotificationPolicy)(nil),         // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy
+	(*cloudflare.CloudflareProviderConfig)(nil),  // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackInput.target:type_name -> dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy
-	2, // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyIacInput.target:type_name -> dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy
+	2, // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

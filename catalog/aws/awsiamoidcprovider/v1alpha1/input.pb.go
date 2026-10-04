@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-iam-oidc-provider stack-input
-type AwsIamOidcProviderStackInput struct {
+// aws-iam-oidc-provider iac-input
+type AwsIamOidcProviderIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// target infra-component
 	Target *AwsIamOidcProvider `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsIamOidcProviderStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsIamOidcProviderStackInput) Reset() {
-	*x = AwsIamOidcProviderStackInput{}
+func (x *AwsIamOidcProviderIacInput) Reset() {
+	*x = AwsIamOidcProviderIacInput{}
 	mi := &file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamOidcProviderStackInput) String() string {
+func (x *AwsIamOidcProviderIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamOidcProviderStackInput) ProtoMessage() {}
+func (*AwsIamOidcProviderIacInput) ProtoMessage() {}
 
-func (x *AwsIamOidcProviderStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsIamOidcProviderIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsIamOidcProviderStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamOidcProviderStackInput.ProtoReflect.Descriptor instead.
-func (*AwsIamOidcProviderStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamOidcProviderIacInput.ProtoReflect.Descriptor instead.
+func (*AwsIamOidcProviderIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamOidcProviderStackInput) GetTarget() *AwsIamOidcProvider {
+func (x *AwsIamOidcProviderIacInput) GetTarget() *AwsIamOidcProvider {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsIamOidcProviderStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsIamOidcProviderIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsiamoidcprovider/v1alpha1/input.proto\x12+dev.planton.aws.awsiamoidcprovider.v1alpha1\x1a1catalog/aws/awsiamoidcprovider/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsIamOidcProviderStackInput\x12W\n" +
+	"3catalog/aws/awsiamoidcprovider/v1alpha1/input.proto\x12+dev.planton.aws.awsiamoidcprovider.v1alpha1\x1a1catalog/aws/awsiamoidcprovider/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsIamOidcProviderIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awsiamoidcprovider.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_goTypes = []any{
-	(*AwsIamOidcProviderStackInput)(nil), // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackInput
-	(*AwsIamOidcProvider)(nil),           // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsIamOidcProviderIacInput)(nil), // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderIacInput
+	(*AwsIamOidcProvider)(nil),         // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsiamoidcprovider_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackInput.target:type_name -> dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider
-	2, // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderIacInput.target:type_name -> dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProvider
+	2, // 1: dev.planton.aws.awsiamoidcprovider.v1alpha1.AwsIamOidcProviderIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

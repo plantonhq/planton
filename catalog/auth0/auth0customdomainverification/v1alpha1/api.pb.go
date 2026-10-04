@@ -69,13 +69,13 @@ type Auth0CustomDomainVerification struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0CustomDomainVerification" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the verification resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
 	// - relationships: the DNS record this verification waits for (depends_on)
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec names the custom domain to verify.
 	Spec *Auth0CustomDomainVerificationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the verified domain, populated after deployment.
@@ -128,7 +128,7 @@ func (x *Auth0CustomDomainVerification) GetKind() string {
 	return ""
 }
 
-func (x *Auth0CustomDomainVerification) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0CustomDomainVerification) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -153,8 +153,8 @@ func (x *Auth0CustomDomainVerification) GetStatus() *Auth0CustomDomainVerificati
 // Auth0CustomDomainVerification resource. Populated by the deployment system.
 type Auth0CustomDomainVerificationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the verified domain.
-	Outputs       *Auth0CustomDomainVerificationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the verified domain.
+	Outputs       *Auth0CustomDomainVerificationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -189,7 +189,7 @@ func (*Auth0CustomDomainVerificationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0customdomainverification_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0CustomDomainVerificationStatus) GetOutputs() *Auth0CustomDomainVerificationStackOutputs {
+func (x *Auth0CustomDomainVerificationStatus) GetOutputs() *Auth0CustomDomainVerificationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -207,11 +207,11 @@ const file_catalog_auth0_auth0customdomainverification_v1alpha1_api_proto_rawDes
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dAuth0CustomDomainVerificationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
 	"\x04spec\x18\x04 \x01(\v2[.dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatusR\x06status\"\xa4\x01\n" +
-	"#Auth0CustomDomainVerificationStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackOutputsR\aoutputsB\xc6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2].dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatusR\x06status\"\x9f\x01\n" +
+	"#Auth0CustomDomainVerificationStatus\x12x\n" +
+	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationOutputsR\aoutputsB\xc6\x03\n" +
 	"<com.dev.planton.auth0.auth0customdomainverification.v1alpha1B\bApiProtoP\x01Zwgithub.com/plantonhq/planton/catalog/auth0/auth0customdomainverification/v1alpha1;auth0customdomainverificationv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Auth0.Auth0customdomainverification.V1alpha1\xca\x028Dev\\Planton\\Auth0\\Auth0customdomainverification\\V1alpha1\xe2\x02DDev\\Planton\\Auth0\\Auth0customdomainverification\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Auth0::Auth0customdomainverification::V1alpha1b\x06proto3"
 
 var (
@@ -228,17 +228,17 @@ func file_catalog_auth0_auth0customdomainverification_v1alpha1_api_proto_rawDesc
 
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_api_proto_goTypes = []any{
-	(*Auth0CustomDomainVerification)(nil),             // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification
-	(*Auth0CustomDomainVerificationStatus)(nil),       // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*Auth0CustomDomainVerificationSpec)(nil),         // 3: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationSpec
-	(*Auth0CustomDomainVerificationStackOutputs)(nil), // 4: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackOutputs
+	(*Auth0CustomDomainVerification)(nil),        // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification
+	(*Auth0CustomDomainVerificationStatus)(nil),  // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*Auth0CustomDomainVerificationSpec)(nil),    // 3: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationSpec
+	(*Auth0CustomDomainVerificationOutputs)(nil), // 4: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationOutputs
 }
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification.spec:type_name -> dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationSpec
 	1, // 2: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerification.status:type_name -> dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatus
-	4, // 3: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatus.outputs:type_name -> dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackOutputs
+	4, // 3: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStatus.outputs:type_name -> dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

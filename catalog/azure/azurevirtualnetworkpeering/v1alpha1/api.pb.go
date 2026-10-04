@@ -36,10 +36,10 @@ type AzureVirtualNetworkPeering struct {
 	// Resource kind. Must be "AzureVirtualNetworkPeering".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Virtual network peering specification.
 	Spec *AzureVirtualNetworkPeeringSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureVirtualNetworkPeeringStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzureVirtualNetworkPeering) GetKind() string {
 	return ""
 }
 
-func (x *AzureVirtualNetworkPeering) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureVirtualNetworkPeering) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureVirtualNetworkPeering) GetStatus() *AzureVirtualNetworkPeeringStat
 // AzureVirtualNetworkPeeringStatus holds the deployment outputs.
 type AzureVirtualNetworkPeeringStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureVirtualNetworkPeeringStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureVirtualNetworkPeeringOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureVirtualNetworkPeeringStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureVirtualNetworkPeeringStatus) GetOutputs() *AzureVirtualNetworkPeeringStackOutputs {
+func (x *AzureVirtualNetworkPeeringStatus) GetOutputs() *AzureVirtualNetworkPeeringOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureVirtualNetworkPeeringR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatusR\x06status\"\x9b\x01\n" +
-	" AzureVirtualNetworkPeeringStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatusR\x06status\"\x96\x01\n" +
+	" AzureVirtualNetworkPeeringStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azurevirtualnetworkpeering.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azurevirtualnetworkpeering/v1alpha1;azurevirtualnetworkpeeringv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azurevirtualnetworkpeering.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azurevirtualnetworkpeering\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azurevirtualnetworkpeering\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azurevirtualnetworkpeering::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_api_proto_goTypes = []any{
-	(*AzureVirtualNetworkPeering)(nil),             // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering
-	(*AzureVirtualNetworkPeeringStatus)(nil),       // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureVirtualNetworkPeeringSpec)(nil),         // 3: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringSpec
-	(*AzureVirtualNetworkPeeringStackOutputs)(nil), // 4: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackOutputs
+	(*AzureVirtualNetworkPeering)(nil),        // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering
+	(*AzureVirtualNetworkPeeringStatus)(nil),  // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureVirtualNetworkPeeringSpec)(nil),    // 3: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringSpec
+	(*AzureVirtualNetworkPeeringOutputs)(nil), // 4: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringOutputs
 }
 var file_catalog_azure_azurevirtualnetworkpeering_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering.spec:type_name -> dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringSpec
 	1, // 2: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeering.status:type_name -> dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatus
-	4, // 3: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatus.outputs:type_name -> dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStackOutputs
+	4, // 3: dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringStatus.outputs:type_name -> dev.planton.azure.azurevirtualnetworkpeering.v1alpha1.AzureVirtualNetworkPeeringOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

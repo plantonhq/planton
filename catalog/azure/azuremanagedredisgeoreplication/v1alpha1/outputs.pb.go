@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureManagedRedisGeoReplicationStackOutputs** captures the outputs of
+// **AzureManagedRedisGeoReplicationOutputs** captures the outputs of
 // linking Managed Redis instances into an active geo-replication group.
-type AzureManagedRedisGeoReplicationStackOutputs struct {
+type AzureManagedRedisGeoReplicationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The group's resource ID -- the ARM ID of the managing Managed Redis
 	// cluster (the group has no ARM object of its own; membership lives
@@ -33,20 +33,20 @@ type AzureManagedRedisGeoReplicationStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureManagedRedisGeoReplicationStackOutputs) Reset() {
-	*x = AzureManagedRedisGeoReplicationStackOutputs{}
+func (x *AzureManagedRedisGeoReplicationOutputs) Reset() {
+	*x = AzureManagedRedisGeoReplicationOutputs{}
 	mi := &file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureManagedRedisGeoReplicationStackOutputs) String() string {
+func (x *AzureManagedRedisGeoReplicationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureManagedRedisGeoReplicationStackOutputs) ProtoMessage() {}
+func (*AzureManagedRedisGeoReplicationOutputs) ProtoMessage() {}
 
-func (x *AzureManagedRedisGeoReplicationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureManagedRedisGeoReplicationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *AzureManagedRedisGeoReplicationStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureManagedRedisGeoReplicationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureManagedRedisGeoReplicationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureManagedRedisGeoReplicationOutputs.ProtoReflect.Descriptor instead.
+func (*AzureManagedRedisGeoReplicationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureManagedRedisGeoReplicationStackOutputs) GetGeoReplicationId() string {
+func (x *AzureManagedRedisGeoReplicationOutputs) GetGeoReplicationId() string {
 	if x != nil {
 		return x.GeoReplicationId
 	}
@@ -74,8 +74,8 @@ var File_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azuremanagedredisgeoreplication/v1alpha1/outputs.proto\x12:dev.planton.azure.azuremanagedredisgeoreplication.v1alpha1\"[\n" +
-	"+AzureManagedRedisGeoReplicationStackOutputs\x12,\n" +
+	"Dcatalog/azure/azuremanagedredisgeoreplication/v1alpha1/outputs.proto\x12:dev.planton.azure.azuremanagedredisgeoreplication.v1alpha1\"V\n" +
+	"&AzureManagedRedisGeoReplicationOutputs\x12,\n" +
 	"\x12geo_replication_id\x18\x01 \x01(\tR\x10geoReplicationIdB\xd8\x03\n" +
 	">com.dev.planton.azure.azuremanagedredisgeoreplication.v1alpha1B\fOutputsProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azuremanagedredisgeoreplication/v1alpha1;azuremanagedredisgeoreplicationv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azuremanagedredisgeoreplication.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azuremanagedredisgeoreplication\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azuremanagedredisgeoreplication\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azuremanagedredisgeoreplication::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_r
 
 var file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureManagedRedisGeoReplicationStackOutputs)(nil), // 0: dev.planton.azure.azuremanagedredisgeoreplication.v1alpha1.AzureManagedRedisGeoReplicationStackOutputs
+	(*AzureManagedRedisGeoReplicationOutputs)(nil), // 0: dev.planton.azure.azuremanagedredisgeoreplication.v1alpha1.AzureManagedRedisGeoReplicationOutputs
 }
 var file_catalog_azure_azuremanagedredisgeoreplication_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

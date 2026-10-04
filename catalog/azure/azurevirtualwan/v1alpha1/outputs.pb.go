@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualWanStackOutputs** captures the outputs of provisioning
+// **AzureVirtualWanOutputs** captures the outputs of provisioning
 // a Virtual WAN.
-type AzureVirtualWanStackOutputs struct {
+type AzureVirtualWanOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the WAN -- what virtual hubs
 	// reference as their virtual_wan_id.
@@ -35,20 +35,20 @@ type AzureVirtualWanStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVirtualWanStackOutputs) Reset() {
-	*x = AzureVirtualWanStackOutputs{}
+func (x *AzureVirtualWanOutputs) Reset() {
+	*x = AzureVirtualWanOutputs{}
 	mi := &file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualWanStackOutputs) String() string {
+func (x *AzureVirtualWanOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualWanStackOutputs) ProtoMessage() {}
+func (*AzureVirtualWanOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualWanStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualWanOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureVirtualWanStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualWanStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualWanStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualWanOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualWanOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualWanStackOutputs) GetVirtualWanId() string {
+func (x *AzureVirtualWanOutputs) GetVirtualWanId() string {
 	if x != nil {
 		return x.VirtualWanId
 	}
 	return ""
 }
 
-func (x *AzureVirtualWanStackOutputs) GetVirtualWanName() string {
+func (x *AzureVirtualWanOutputs) GetVirtualWanName() string {
 	if x != nil {
 		return x.VirtualWanName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurevirtualwan/v1alpha1/outputs.proto\x12*dev.planton.azure.azurevirtualwan.v1alpha1\"m\n" +
-	"\x1bAzureVirtualWanStackOutputs\x12$\n" +
+	"4catalog/azure/azurevirtualwan/v1alpha1/outputs.proto\x12*dev.planton.azure.azurevirtualwan.v1alpha1\"h\n" +
+	"\x16AzureVirtualWanOutputs\x12$\n" +
 	"\x0evirtual_wan_id\x18\x01 \x01(\tR\fvirtualWanId\x12(\n" +
 	"\x10virtual_wan_name\x18\x02 \x01(\tR\x0evirtualWanNameB\xe8\x02\n" +
 	".com.dev.planton.azure.azurevirtualwan.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/azure/azurevirtualwan/v1alpha1;azurevirtualwanv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Azure.Azurevirtualwan.V1alpha1\xca\x02*Dev\\Planton\\Azure\\Azurevirtualwan\\V1alpha1\xe2\x026Dev\\Planton\\Azure\\Azurevirtualwan\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Azure::Azurevirtualwan::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualWanStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualwan.v1alpha1.AzureVirtualWanStackOutputs
+	(*AzureVirtualWanOutputs)(nil), // 0: dev.planton.azure.azurevirtualwan.v1alpha1.AzureVirtualWanOutputs
 }
 var file_catalog_azure_azurevirtualwan_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

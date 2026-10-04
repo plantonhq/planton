@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: catalog/_test/testcloudresourcegeneric/v1alpha2/spec.proto
+// source: catalog/_test/testcatalogkindgeneric/v1alpha2/spec.proto
 
-package testcloudresourcegenericv1alpha2
+package testcatalogkindgenericv1alpha2
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TestCloudResourceGenericSpec at v1alpha2 -- the permanent fixture for "a
+// TestCatalogKindGenericSpec at v1alpha2 -- the permanent fixture for "a
 // kind with two versions and a declarative conversion between them".
 //
 // Relative to v1alpha1 it carries exactly one breaking change of each class
@@ -37,7 +37,7 @@ const (
 //
 // Everything else is deliberately identical to v1alpha1 so the conversion
 // corpus also proves untouched fields pass through byte-for-byte.
-type TestCloudResourceGenericSpec struct {
+type TestCatalogKindGenericSpec struct {
 	state           protoimpl.MessageState    `protogen:"open.v1"`
 	DisplayName     *string                   `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3,oneof" json:"display_name,omitempty"`
 	Int32Field      *int32                    `protobuf:"varint,3,opt,name=int32_field,json=int32Field,proto3,oneof" json:"int32_field,omitempty"`
@@ -73,21 +73,21 @@ type TestCloudResourceGenericSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TestCloudResourceGenericSpec) Reset() {
-	*x = TestCloudResourceGenericSpec{}
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[0]
+func (x *TestCatalogKindGenericSpec) Reset() {
+	*x = TestCatalogKindGenericSpec{}
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TestCloudResourceGenericSpec) String() string {
+func (x *TestCatalogKindGenericSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TestCloudResourceGenericSpec) ProtoMessage() {}
+func (*TestCatalogKindGenericSpec) ProtoMessage() {}
 
-func (x *TestCloudResourceGenericSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[0]
+func (x *TestCatalogKindGenericSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -98,138 +98,138 @@ func (x *TestCloudResourceGenericSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TestCloudResourceGenericSpec.ProtoReflect.Descriptor instead.
-func (*TestCloudResourceGenericSpec) Descriptor() ([]byte, []int) {
-	return file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use TestCatalogKindGenericSpec.ProtoReflect.Descriptor instead.
+func (*TestCatalogKindGenericSpec) Descriptor() ([]byte, []int) {
+	return file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TestCloudResourceGenericSpec) GetDisplayName() string {
+func (x *TestCatalogKindGenericSpec) GetDisplayName() string {
 	if x != nil && x.DisplayName != nil {
 		return *x.DisplayName
 	}
 	return ""
 }
 
-func (x *TestCloudResourceGenericSpec) GetInt32Field() int32 {
+func (x *TestCatalogKindGenericSpec) GetInt32Field() int32 {
 	if x != nil && x.Int32Field != nil {
 		return *x.Int32Field
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetInt64Field() int64 {
+func (x *TestCatalogKindGenericSpec) GetInt64Field() int64 {
 	if x != nil && x.Int64Field != nil {
 		return *x.Int64Field
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetUint32Field() uint32 {
+func (x *TestCatalogKindGenericSpec) GetUint32Field() uint32 {
 	if x != nil && x.Uint32Field != nil {
 		return *x.Uint32Field
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetUint64Field() uint64 {
+func (x *TestCatalogKindGenericSpec) GetUint64Field() uint64 {
 	if x != nil && x.Uint64Field != nil {
 		return *x.Uint64Field
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetFloatField() float32 {
+func (x *TestCatalogKindGenericSpec) GetFloatField() float32 {
 	if x != nil && x.FloatField != nil {
 		return *x.FloatField
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetDoubleField() float64 {
+func (x *TestCatalogKindGenericSpec) GetDoubleField() float64 {
 	if x != nil && x.DoubleField != nil {
 		return *x.DoubleField
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetBoolField() bool {
+func (x *TestCatalogKindGenericSpec) GetBoolField() bool {
 	if x != nil && x.BoolField != nil {
 		return *x.BoolField
 	}
 	return false
 }
 
-func (x *TestCloudResourceGenericSpec) GetNested() *TestGenericNestedMessage {
+func (x *TestCatalogKindGenericSpec) GetNested() *TestGenericNestedMessage {
 	if x != nil {
 		return x.Nested
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetRequiredRef() *v1.StringValueOrRef {
+func (x *TestCatalogKindGenericSpec) GetRequiredRef() *v1.StringValueOrRef {
 	if x != nil {
 		return x.RequiredRef
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetOptionalRef() *v1.StringValueOrRef {
+func (x *TestCatalogKindGenericSpec) GetOptionalRef() *v1.StringValueOrRef {
 	if x != nil {
 		return x.OptionalRef
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetAnnotatedRef() *v1.StringValueOrRef {
+func (x *TestCatalogKindGenericSpec) GetAnnotatedRef() *v1.StringValueOrRef {
 	if x != nil {
 		return x.AnnotatedRef
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetLabels() map[string]string {
+func (x *TestCatalogKindGenericSpec) GetLabels() map[string]string {
 	if x != nil {
 		return x.Labels
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetSteps() []*TestGenericStep {
+func (x *TestCatalogKindGenericSpec) GetSteps() []*TestGenericStep {
 	if x != nil {
 		return x.Steps
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetSensitiveString() string {
+func (x *TestCatalogKindGenericSpec) GetSensitiveString() string {
 	if x != nil {
 		return x.SensitiveString
 	}
 	return ""
 }
 
-func (x *TestCloudResourceGenericSpec) GetSensitiveRef() *v1.StringValueOrRef {
+func (x *TestCatalogKindGenericSpec) GetSensitiveRef() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SensitiveRef
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetReplicas() int32 {
+func (x *TestCatalogKindGenericSpec) GetReplicas() int32 {
 	if x != nil && x.Replicas != nil {
 		return *x.Replicas
 	}
 	return 0
 }
 
-func (x *TestCloudResourceGenericSpec) GetKindlessAccessRef() *v1.StringValueOrRef {
+func (x *TestCatalogKindGenericSpec) GetKindlessAccessRef() *v1.StringValueOrRef {
 	if x != nil {
 		return x.KindlessAccessRef
 	}
 	return nil
 }
 
-func (x *TestCloudResourceGenericSpec) GetCandidateRef() *v1.StringValueOrRef {
+func (x *TestCatalogKindGenericSpec) GetCandidateRef() *v1.StringValueOrRef {
 	if x != nil {
 		return x.CandidateRef
 	}
@@ -247,7 +247,7 @@ type TestGenericStep struct {
 
 func (x *TestGenericStep) Reset() {
 	*x = TestGenericStep{}
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[1]
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -259,7 +259,7 @@ func (x *TestGenericStep) String() string {
 func (*TestGenericStep) ProtoMessage() {}
 
 func (x *TestGenericStep) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[1]
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +272,7 @@ func (x *TestGenericStep) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestGenericStep.ProtoReflect.Descriptor instead.
 func (*TestGenericStep) Descriptor() ([]byte, []int) {
-	return file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescGZIP(), []int{1}
+	return file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *TestGenericStep) GetCommand() string {
@@ -294,7 +294,7 @@ type TestGenericNestedMessage struct {
 
 func (x *TestGenericNestedMessage) Reset() {
 	*x = TestGenericNestedMessage{}
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[2]
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -306,7 +306,7 @@ func (x *TestGenericNestedMessage) String() string {
 func (*TestGenericNestedMessage) ProtoMessage() {}
 
 func (x *TestGenericNestedMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[2]
+	mi := &file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -319,7 +319,7 @@ func (x *TestGenericNestedMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestGenericNestedMessage.ProtoReflect.Descriptor instead.
 func (*TestGenericNestedMessage) Descriptor() ([]byte, []int) {
-	return file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescGZIP(), []int{2}
+	return file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *TestGenericNestedMessage) GetNestedString() string {
@@ -336,12 +336,12 @@ func (x *TestGenericNestedMessage) GetNestedInt() int32 {
 	return 0
 }
 
-var File_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto protoreflect.FileDescriptor
+var File_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto protoreflect.FileDescriptor
 
-const file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc = "" +
+const file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDesc = "" +
 	"\n" +
-	":catalog/_test/testcloudresourcegeneric/v1alpha2/spec.proto\x123dev.planton._test.testcloudresourcegeneric.v1alpha2\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdd\r\n" +
-	"\x1cTestCloudResourceGenericSpec\x12:\n" +
+	"8catalog/_test/testcatalogkindgeneric/v1alpha2/spec.proto\x121dev.planton._test.testcatalogkindgeneric.v1alpha2\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd3\r\n" +
+	"\x1aTestCatalogKindGenericSpec\x12:\n" +
 	"\fdisplay_name\x18\x01 \x01(\tB\x12\x8a\xa6\x1d\x0edefault-stringH\x00R\vdisplayName\x88\x01\x01\x12,\n" +
 	"\vint32_field\x18\x03 \x01(\x05B\x06\x8a\xa6\x1d\x0242H\x01R\n" +
 	"int32Field\x88\x01\x01\x12.\n" +
@@ -353,14 +353,14 @@ const file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc = 
 	"floatField\x88\x01\x01\x121\n" +
 	"\fdouble_field\x18\b \x01(\x01B\t\x8a\xa6\x1d\x052.718H\x06R\vdoubleField\x88\x01\x01\x12,\n" +
 	"\n" +
-	"bool_field\x18\t \x01(\bB\b\x8a\xa6\x1d\x04trueH\aR\tboolField\x88\x01\x01\x12e\n" +
+	"bool_field\x18\t \x01(\bB\b\x8a\xa6\x1d\x04trueH\aR\tboolField\x88\x01\x01\x12c\n" +
 	"\x06nested\x18\n" +
-	" \x01(\v2M.dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericNestedMessageR\x06nested\x12]\n" +
+	" \x01(\v2K.dev.planton._test.testcatalogkindgeneric.v1alpha2.TestGenericNestedMessageR\x06nested\x12]\n" +
 	"\frequired_ref\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\vrequiredRef\x12U\n" +
 	"\foptional_ref\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\voptionalRef\x12r\n" +
-	"\rannotated_ref\x18\x11 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x19\x88\xd4a\x01\x92\xd4a\x11status.outputs.idR\fannotatedRef\x12u\n" +
-	"\x06labels\x18\r \x03(\v2].dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.LabelsEntryR\x06labels\x12Z\n" +
-	"\x05steps\x18\x0e \x03(\v2D.dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericStepR\x05steps\x12/\n" +
+	"\rannotated_ref\x18\x11 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x19\x88\xd4a\x01\x92\xd4a\x11status.outputs.idR\fannotatedRef\x12q\n" +
+	"\x06labels\x18\r \x03(\v2Y.dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.LabelsEntryR\x06labels\x12X\n" +
+	"\x05steps\x18\x0e \x03(\v2B.dev.planton._test.testcatalogkindgeneric.v1alpha2.TestGenericStepR\x05steps\x12/\n" +
 	"\x10sensitive_string\x18\x0f \x01(\tB\x04\xa0\xa6\x1d\x01R\x0fsensitiveString\x12]\n" +
 	"\rsensitive_ref\x18\x10 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\fsensitiveRef\x12&\n" +
 	"\breplicas\x18\x12 \x01(\x05B\x05\x8a\xa6\x1d\x011H\bR\breplicas\x88\x01\x01\x12h\n" +
@@ -385,39 +385,39 @@ const file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc = 
 	"\n" +
 	"nested_int\x18\x02 \x01(\x05B\x06\x8a\xa6\x1d\x0299H\x01R\tnestedInt\x88\x01\x01B\x10\n" +
 	"\x0e_nested_stringB\r\n" +
-	"\v_nested_intB\xa0\x03\n" +
-	"7com.dev.planton._test.testcloudresourcegeneric.v1alpha2B\tSpecProtoP\x01Zmgithub.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha2;testcloudresourcegenericv1alpha2\xa2\x02\x04DP_T\xaa\x022Dev.Planton.Test.Testcloudresourcegeneric.V1alpha2\xca\x022Dev\\Planton\\Test\\Testcloudresourcegeneric\\V1alpha2\xe2\x02>Dev\\Planton\\Test\\Testcloudresourcegeneric\\V1alpha2\\GPBMetadata\xea\x026Dev::Planton::Test::Testcloudresourcegeneric::V1alpha2b\x06proto3"
+	"\v_nested_intB\x92\x03\n" +
+	"5com.dev.planton._test.testcatalogkindgeneric.v1alpha2B\tSpecProtoP\x01Zigithub.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha2;testcatalogkindgenericv1alpha2\xa2\x02\x04DP_T\xaa\x020Dev.Planton.Test.Testcatalogkindgeneric.V1alpha2\xca\x020Dev\\Planton\\Test\\Testcatalogkindgeneric\\V1alpha2\xe2\x02<Dev\\Planton\\Test\\Testcatalogkindgeneric\\V1alpha2\\GPBMetadata\xea\x024Dev::Planton::Test::Testcatalogkindgeneric::V1alpha2b\x06proto3"
 
 var (
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescOnce sync.Once
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescData []byte
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescOnce sync.Once
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescData []byte
 )
 
-func file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescGZIP() []byte {
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescOnce.Do(func() {
-		file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc), len(file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc)))
+func file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescGZIP() []byte {
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescOnce.Do(func() {
+		file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDesc), len(file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDesc)))
 	})
-	return file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDescData
+	return file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDescData
 }
 
-var file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_goTypes = []any{
-	(*TestCloudResourceGenericSpec)(nil), // 0: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec
-	(*TestGenericStep)(nil),              // 1: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericStep
-	(*TestGenericNestedMessage)(nil),     // 2: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericNestedMessage
-	nil,                                  // 3: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.LabelsEntry
-	(*v1.StringValueOrRef)(nil),          // 4: dev.planton.shared.foreignkey.v1.StringValueOrRef
+var file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_goTypes = []any{
+	(*TestCatalogKindGenericSpec)(nil), // 0: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec
+	(*TestGenericStep)(nil),            // 1: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestGenericStep
+	(*TestGenericNestedMessage)(nil),   // 2: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestGenericNestedMessage
+	nil,                                // 3: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.LabelsEntry
+	(*v1.StringValueOrRef)(nil),        // 4: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
-var file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_depIdxs = []int32{
-	2, // 0: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.nested:type_name -> dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericNestedMessage
-	4, // 1: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.required_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 2: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.optional_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 3: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.annotated_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3, // 4: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.labels:type_name -> dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.LabelsEntry
-	1, // 5: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.steps:type_name -> dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericStep
-	4, // 6: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.sensitive_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 7: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.kindless_access_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 8: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.candidate_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+var file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_depIdxs = []int32{
+	2, // 0: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.nested:type_name -> dev.planton._test.testcatalogkindgeneric.v1alpha2.TestGenericNestedMessage
+	4, // 1: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.required_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 2: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.optional_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 3: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.annotated_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3, // 4: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.labels:type_name -> dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.LabelsEntry
+	1, // 5: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.steps:type_name -> dev.planton._test.testcatalogkindgeneric.v1alpha2.TestGenericStep
+	4, // 6: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.sensitive_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 7: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.kindless_access_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 8: dev.planton._test.testcatalogkindgeneric.v1alpha2.TestCatalogKindGenericSpec.candidate_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	9, // [9:9] is the sub-list for method output_type
 	9, // [9:9] is the sub-list for method input_type
 	9, // [9:9] is the sub-list for extension type_name
@@ -425,28 +425,28 @@ var file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_depIdxs = []
 	0, // [0:9] is the sub-list for field type_name
 }
 
-func init() { file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_init() }
-func file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_init() {
-	if File_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto != nil {
+func init() { file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_init() }
+func file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_init() {
+	if File_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto != nil {
 		return
 	}
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[0].OneofWrappers = []any{}
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc), len(file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDesc), len(file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_goTypes,
-		DependencyIndexes: file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_depIdxs,
-		MessageInfos:      file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_msgTypes,
+		GoTypes:           file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_goTypes,
+		DependencyIndexes: file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_depIdxs,
+		MessageInfos:      file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_msgTypes,
 	}.Build()
-	File_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto = out.File
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_goTypes = nil
-	file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_depIdxs = nil
+	File_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto = out.File
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_goTypes = nil
+	file_catalog__test_testcatalogkindgeneric_v1alpha2_spec_proto_depIdxs = nil
 }

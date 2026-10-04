@@ -39,7 +39,7 @@ const (
 // Task definitions are revisioned and revisions are immutable in AWS: every
 // change to this spec registers a NEW revision of the family rather than
 // mutating the old one. The family name comes from metadata.name. Because the
-// task_definition_arn stack output carries the revision, a service that
+// task_definition_arn output carries the revision, a service that
 // references it by output picks up each new revision on its next deployment
 // -- "change the image tag, the service rolls" falls out of the composition.
 //
