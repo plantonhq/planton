@@ -61,8 +61,8 @@ When you select a catalog kind, Planton takes you to the creation form where you
 ### CLI
 
 ```bash
-# List all available resource types
-planton infra component registered-kinds
+# List every catalog kind
+planton explain --list
 
 # Get details about a specific catalog entry
 planton get catalog-kind <catalog-kind-id>

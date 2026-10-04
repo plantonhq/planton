@@ -121,13 +121,13 @@ planton diff -f vpc.yaml
 planton list infra-component
 
 # Destroy the infrastructure (runs an Infra Job, keeps the record)
-planton infra component destroy <infra-component-id>
+planton destroy <infra-component-id>
 
 # Destroy infrastructure and delete the record
-planton infra component purge <infra-component-id>
+planton purge <infra-component-id>
 
-# List all available resource types
-planton infra component registered-kinds
+# List every catalog kind
+planton explain --list
 
 # View the resource's infrastructure inputs
 planton infra component iac-input <infra-component-id>

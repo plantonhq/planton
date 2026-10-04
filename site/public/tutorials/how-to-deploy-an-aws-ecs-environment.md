@@ -179,7 +179,7 @@ The console provides the richest monitoring experience -- a live DAG visualizati
 From the CLI, you can stream the pipeline status:
 
 ```bash
-planton infra infra-pipeline stream-status <infra-pipeline-id>
+planton infra pipeline stream-status <infra-pipeline-id>
 ```
 
 Use the pipeline ID from the install output (the `infpipe_...` value in the console URL).

@@ -10,7 +10,7 @@ alwaysApply: false
 
 **Trigger**: User references this rule or asks to write/create an architecture pattern.
 
-**Output**: A single file at `catalog/patterns/{slug}.md`. The slug names the composition plainly (e.g., `namespace-ownership.md`), never a marketing phrase.
+**Output**: A single file at `catalog/_patterns/{slug}.md`. The slug names the composition plainly (e.g., `namespace-ownership.md`), never a marketing phrase.
 
 ---
 

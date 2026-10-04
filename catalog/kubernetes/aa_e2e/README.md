@@ -129,9 +129,8 @@ aa_e2e/
     namespace.go          -- NamespaceVerifier (Tier 1)
     workload.go           -- WorkloadVerifier (Tier 1 deployments, statefulsets)
     resource_existence.go -- ResourceExistenceVerifier (Tier 1 secrets, services)
-    operator.go           -- OperatorKindVerifier (Tier 4 operators)
-    crd_workload.go       -- CRDWorkloadVerifier (Tier 3 operator-dependent CRD workloads)
-    helm.go               -- HelmKindVerifier (Tier 2 Helm-based apps)
+    operator.go           -- OperatorComponentVerifier (Tier 4 operators)
+    helm.go               -- HelmComponentVerifier (Tier 2 Helm-based apps)
     valkey.go             -- ValkeyVerifier (Valkey install + persistence/replication behavioral proofs)
     perconamysql.go       -- PxcClusterVerifier (Percona MySQL cluster + Galera durability/backup proofs)
     perconamongodb.go     -- PsmdbClusterVerifier (Percona MongoDB cluster + failover/backup proofs)
@@ -160,7 +159,7 @@ The Harness implements the `provider.Harness` interface from
 Verification is **manifest-driven**: the verifier reads the test manifest YAML
 at runtime, extracts the `kind`, `metadata.name`, and `spec.namespace`, and
 selects the appropriate verifier type. This means adding a new test scenario
-(a YAML file in a kind's `v1/e2e/` directory) never requires touching Go
+(a YAML file in a kind's `e2e/` directory) never requires touching Go
 code.
 
 ### Verifier Types
@@ -170,9 +169,8 @@ code.
 | `NamespaceVerifier` | `namespace.go` | 1 | Namespace exists / absent |
 | `WorkloadVerifier` | `workload.go` | 1 | Deployment or StatefulSet exists in namespace / absent |
 | `ResourceExistenceVerifier` | `resource_existence.go` | 1 | Secret or Service exists in namespace / absent |
-| `HelmKindVerifier` | `helm.go` | 2 | Namespace + running pods + services |
-| `OperatorKindVerifier` | `operator.go` | 4 | Namespace + running pods (no service requirement) |
-| `CRDWorkloadVerifier` | `crd_workload.go` | 3 | Namespace + running pods + services |
+| `HelmComponentVerifier` | `helm.go` | 2 | Namespace + running pods + services |
+| `OperatorComponentVerifier` | `operator.go` | 4 | Namespace + running pods (no service requirement) |
 | `ValkeyVerifier` | `valkey.go` | 2 | Valkey workload ready + write Service. Behavioral proofs: persistence (write a marker key, DELETE the pod, read it back after restart) and replication (write through the write Service, read back through the read Service) |
 | `PxcClusterVerifier` | `perconamysql.go` | 3 | PerconaXtraDBCluster in state `ready` + proxy write Service. Behavioral proof: Galera durability (write a marker row through the proxy, DELETE a database node, read it back at full strength). Backup proof: drives a real XtraBackup to `Succeeded` in the declared store |
 | `PsmdbClusterVerifier` | `perconamongodb.go` | 3 | PerconaServerMongoDB in state `ready` + replica-set Service. Behavioral proof: failover durability (majority-write a marker document, DELETE the primary, read it back through the newly elected primary). Backup proof: drives a real PBM backup to `ready` in the declared store |
@@ -181,11 +179,11 @@ code.
 
 ### Dispatch (`verifier.go`)
 
-`GetVerifierFromManifest` uses three kind classification maps plus a hardcoded
-switch for Tier 1 native resources:
+`GetVerifierFromManifest` uses kind classification maps (the two below, plus
+per-family maps such as `crdInstallKinds`, `gatewayApiKinds` and
+`istioApiKinds`) and a hardcoded switch for Tier 1 native resources:
 
 - **`operatorKinds`** -- Tier 4 operator/controller kinds (namespace + pods)
-- **`crdWorkloadKinds`** -- Tier 3 CRD workloads (namespace + pods + services)
 - **`helmTier2Kinds`** -- Tier 2 Helm-based applications (namespace + pods + services)
 
 New catalog kinds are added to the appropriate map. Tier 1 native resources
