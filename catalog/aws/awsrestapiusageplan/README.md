@@ -8,7 +8,7 @@ Create and manage [API Gateway usage plans](https://docs.aws.amazon.com/apigatew
 and the API keys they admit — quota, throttle, and consumer metering
 for REST APIs.
 
-A plan spans APIs and stages, which is why it is its own component
+A plan spans APIs and stages, which is why it is its own kind
 rather than a field on [AwsRestApiGateway](../awsrestapigateway).
 Routes opt in with `api_key_required`; requests then need a valid key
 on the `X-Api-Key` header (or from the authorizer, per the API's

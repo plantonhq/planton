@@ -1,6 +1,6 @@
 # AWS REST API Domain
 
-Deploys an API Gateway custom domain for REST APIs — callers hit `https://api.example.com/orders` instead of the execute-api endpoint, TLS terminates on your certificate, and base-path mappings fan the hostname's paths out across APIs and stages. A domain outlives any one API and maps many, which is why it is its own component rather than a field on the REST API. The bundle covers the domain, its base-path mappings, and — for PRIVATE domains — the VPC-endpoint access associations; DNS stays outside, composed through the alias-target outputs.
+Deploys an API Gateway custom domain for REST APIs — callers hit `https://api.example.com/orders` instead of the execute-api endpoint, TLS terminates on your certificate, and base-path mappings fan the hostname's paths out across APIs and stages. A domain outlives any one API and maps many, which is why it is its own kind rather than a field on the REST API. The bundle covers the domain, its base-path mappings, and — for PRIVATE domains — the VPC-endpoint access associations; DNS stays outside, composed through the alias-target outputs.
 
 ## What Gets Created
 

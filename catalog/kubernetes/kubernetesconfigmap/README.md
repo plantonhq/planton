@@ -18,11 +18,11 @@ ConfigMaps are the standard Kubernetes mechanism for decoupling configuration fr
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
-- **KubernetesSecret**: The confidential mirror of this component. The two kinds are deliberate mirrors — same namespace handling, same immutability semantics, same key rules. Use KubernetesSecret for passwords, tokens, keys, and certificates; use KubernetesConfigMap for everything that is safe to read.
+- **KubernetesSecret**: The confidential mirror of this kind. The two kinds are deliberate mirrors — same namespace handling, same immutability semantics, same key rules. Use KubernetesSecret for passwords, tokens, keys, and certificates; use KubernetesConfigMap for everything that is safe to read.
 - **KubernetesNamespace**: Provides the target namespace. Reference it from `spec.namespace` to deploy both in one chart.
-- **Workload components** (KubernetesDeployment and friends): Consume the ConfigMap by name via `envFrom`, `configMapKeyRef`, or `configMap` volumes. The created name and namespace are exported as outputs for exactly this composition.
+- **Workload kinds** (KubernetesDeployment and friends): Consume the ConfigMap by name via `envFrom`, `configMapKeyRef`, or `configMap` volumes. The created name and namespace are exported as outputs for exactly this composition.
 
 ## Data Model
 

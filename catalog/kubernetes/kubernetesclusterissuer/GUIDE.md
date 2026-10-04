@@ -32,7 +32,7 @@ If the user asked for "a standard cluster my app's public endpoint runs
 on", steps 1 and 2 belong in the proposal even though the user never said
 "certificate" — that is what makes the endpoint actually serve HTTPS.
 
-## Choosing this component vs KubernetesIssuer
+## Choosing this kind vs KubernetesIssuer
 
 Same signing capabilities, different scope (the spec doc on
 [reference.md](v1alpha1/reference.md) carries the full comparison): one platform-wide

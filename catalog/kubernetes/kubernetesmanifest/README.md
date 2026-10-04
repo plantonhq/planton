@@ -2,7 +2,7 @@
 
 ## When NOT to Use This
 
-Before anything else: **a first-class catalog kind always wins.** Typed kinds validate configuration before deploy, export composable outputs other resources can reference, and document their trade-offs field by field — raw YAML does none of that. If the catalog has a component for what you're deploying (a Deployment, a Helm chart, a StorageClass, ...), use it.
+Before anything else: **a first-class catalog kind always wins.** Typed kinds validate configuration before deploy, export composable outputs other resources can reference, and document their trade-offs field by field — raw YAML does none of that. If the catalog has a kind for what you're deploying (a Deployment, a Helm chart, a StorageClass, ...), use it.
 
 **KubernetesManifest** is the catalog's bring-your-own-manifest escape hatch, for the YAML no kind covers:
 

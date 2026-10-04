@@ -7,7 +7,7 @@ import "catalog/auth0/auth0emailtemplate/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0emailtemplate/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0EmailTemplate is a component that manages one of the emails an Auth0
+// Auth0EmailTemplate is a kind that manages one of the emails an Auth0
 // tenant sends: its sender, subject and body (Liquid-templated HTML), where the
 // link in it leads afterwards, and how long that link lives.
 //

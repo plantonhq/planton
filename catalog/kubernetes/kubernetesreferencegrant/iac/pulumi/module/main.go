@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesreferencegrantv1alpha1.K
 // createReferenceGrant creates the namespaced Gateway API ReferenceGrant using
 // the typed crd2pulumi SDK (gatewayv1.NewReferenceGrant, served as
 // gateway.networking.k8s.io/v1), consistent with every other Planton ingress
-// component. The typed approach catches field-name and structure errors at
+// kind. The typed approach catches field-name and structure errors at
 // compile time rather than at deployment time. The ReferenceGrantSpec mapping
 // (the from/to lists) is built in references.go.
 func createReferenceGrant(

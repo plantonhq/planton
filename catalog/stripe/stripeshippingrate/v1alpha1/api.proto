@@ -7,7 +7,7 @@ import "catalog/stripe/stripeshippingrate/v1alpha1/outputs.proto";
 import "catalog/stripe/stripeshippingrate/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeShippingRate is a component that declares a shipping option customers choose in Checkout
+// StripeShippingRate is a kind that declares a shipping option customers choose in Checkout
 // or on a payment link: a name, a fixed amount, and a delivery window.
 //
 // A rate's name, amount and delivery window never change in Stripe, so changing them replaces the

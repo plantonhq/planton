@@ -30,7 +30,7 @@ operating guardrails in production.
   IAM in the subtree can allow. Test new guardrails on an empty OU or
   a sandbox account before attaching high.
 - **Denying `organizations:LeaveOrganization` is the foundational
-  guardrail** (this component's canonical example) — without it any
+  guardrail** (this kind's canonical example) — without it any
   member account's root can walk out of governance.
 - **Root attachments are the widest blast radius** — a wrong deny at
   the root locks the whole estate out of an API, management account

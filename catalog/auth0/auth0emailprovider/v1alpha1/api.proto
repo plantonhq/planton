@@ -7,7 +7,7 @@ import "catalog/auth0/auth0emailprovider/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0emailprovider/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0EmailProvider is a component that manages the service an Auth0 tenant
+// Auth0EmailProvider is a kind that manages the service an Auth0 tenant
 // sends its emails through: verification, password reset, invitations and
 // multi-factor codes leave from your own sending domain instead of Auth0's
 // built-in test provider, which is meant only for trying Auth0 out.

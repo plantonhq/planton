@@ -1,5 +1,5 @@
 # AwsBedrockKnowledgeBase install profile used as a prerequisite by
-# composed components (an agent scenario's knowledge-base association
+# composed kinds (an agent scenario's knowledge-base association
 # needs a live knowledge base id). The harness deploys it before the
 # dependent scenario and resolves references by name.
 #

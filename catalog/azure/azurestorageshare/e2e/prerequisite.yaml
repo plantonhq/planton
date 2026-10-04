@@ -1,5 +1,5 @@
 # AzureStorageShare install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureStorageShare] in the
+# kinds (declared via prerequisites: [AzureStorageShare] in the
 # kind registry -- the protected-file-share lane today). A minimal SMB
 # share on the SHARED fixture storage account
 # (planton-oss-e2e-azure-fixture-sa) -- deliberately the same account

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EmailProvider is a component that manages the service an Auth0 tenant
+// Auth0EmailProvider is a kind that manages the service an Auth0 tenant
 // sends its emails through: verification, password reset, invitations and
 // multi-factor codes leave from your own sending domain instead of Auth0's
 // built-in test provider, which is meant only for trying Auth0 out.

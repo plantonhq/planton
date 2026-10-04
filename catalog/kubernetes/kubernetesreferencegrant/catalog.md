@@ -1,6 +1,6 @@
 # Kubernetes ReferenceGrant
 
-Creates a namespaced Kubernetes Gateway API `ReferenceGrant` -- a runtime authorization that permits resources in *other* namespaces to reference specified kinds of resources in *this* grant's namespace. In the Gateway API, every cross-namespace reference (a Gateway's TLS `certificateRefs`, a Route's `backendRefs`, and similar) is denied by default; a ReferenceGrant placed in the *referenced* ("to") namespace is what explicitly authorizes it. This component mirrors the upstream Gateway API v1 `ReferenceGrant` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `ReferenceGrant` -- a runtime authorization that permits resources in *other* namespaces to reference specified kinds of resources in *this* grant's namespace. In the Gateway API, every cross-namespace reference (a Gateway's TLS `certificateRefs`, a Route's `backendRefs`, and similar) is denied by default; a ReferenceGrant placed in the *referenced* ("to") namespace is what explicitly authorizes it. This kind mirrors the upstream Gateway API v1 `ReferenceGrant` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 

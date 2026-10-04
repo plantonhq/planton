@@ -24,9 +24,9 @@ Planton workload kinds (KubernetesDeployment, KubernetesStatefulSet) already cre
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity (one documented exception: `traffic_distribution` deploys only through the Pulumi engine — the Terraform kubernetes provider does not expose the field, and the Terraform module fails the plan loudly rather than silently dropping it)
 - **Composable outputs**: The load-balancer address, in-cluster endpoint, and a ready-to-run port-forward command are exported for downstream automation
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
-- **Workload components** (KubernetesDeployment, KubernetesStatefulSet): Already ship with their own Service — use this kind only for additional or differently-shaped exposure. Planton workloads stamp `app: <workload-metadata-name>` on their pods, so selecting one is a single selector entry: `selector: {app: <workload-metadata-name>}`
+- **Workload kinds** (KubernetesDeployment, KubernetesStatefulSet): Already ship with their own Service — use this kind only for additional or differently-shaped exposure. Planton workloads stamp `app: <workload-metadata-name>` on their pods, so selecting one is a single selector entry: `selector: {app: <workload-metadata-name>}`
 - **KubernetesNamespace**: Provides the target namespace. Reference it from `spec.namespace` to deploy both in one chart
 - **Ingress / Gateway components**: Consume the Service by name as their backend; the created name and namespace are exported as outputs for exactly this composition
 

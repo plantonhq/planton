@@ -1,6 +1,6 @@
 # AWS IAM Instance Profile
 
-Deploys an IAM instance profile — the container that delivers an IAM role to EC2 instances. EC2 cannot assume a role directly: an instance can only be launched with an instance profile, which holds exactly one role, and the instance metadata service then vends that role's temporary credentials to whatever runs on the machine — no access keys on disk, credentials that rotate themselves. Everything EC2-shaped references the profile (an instance's profile field, a launch template, an Auto Scaling group), while everything else on AWS (Lambda, ECS, EKS) assumes the role directly. Modeling the profile as its own component keeps that boundary honest, and its `instance_profile_arn` output is what EC2-shaped resources reference via ValueFromRef.
+Deploys an IAM instance profile — the container that delivers an IAM role to EC2 instances. EC2 cannot assume a role directly: an instance can only be launched with an instance profile, which holds exactly one role, and the instance metadata service then vends that role's temporary credentials to whatever runs on the machine — no access keys on disk, credentials that rotate themselves. Everything EC2-shaped references the profile (an instance's profile field, a launch template, an Auto Scaling group), while everything else on AWS (Lambda, ECS, EKS) assumes the role directly. Modeling the profile as its own kind keeps that boundary honest, and its `instance_profile_arn` output is what EC2-shaped resources reference via ValueFromRef.
 
 ## What Gets Created
 

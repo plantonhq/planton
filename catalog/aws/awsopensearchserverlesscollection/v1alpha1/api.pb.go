@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOpenSearchServerlessCollection is a component for creating and managing
+// AwsOpenSearchServerlessCollection is a kind for creating and managing
 // Amazon OpenSearch Serverless collections - fully managed, auto-scaling
 // OpenSearch workspaces for search, time-series, and vector workloads -
 // together with the collection-scoped encryption, network, data-access, and

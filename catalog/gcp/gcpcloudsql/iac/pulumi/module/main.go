@@ -7,7 +7,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources is the Pulumi program entry-point for the GcpCloudSql component.
+// Resources is the Pulumi program entry-point for the GcpCloudSql kind.
 func Resources(ctx *pulumi.Context, iacInput *gcpcloudsqlv1alpha1.GcpCloudSqlIacInput) error {
 	locals := initializeLocals(iacInput)
 

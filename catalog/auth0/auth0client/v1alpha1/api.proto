@@ -7,7 +7,7 @@ import "catalog/auth0/auth0client/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0client/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0Client is a component that configures an Application in Auth0.
+// Auth0Client is a kind that configures an Application in Auth0.
 // In the Auth0 dashboard, these are shown as "Applications" - they represent clients
 // that can authenticate users and request access to APIs.
 //

@@ -33,7 +33,7 @@ const (
 //
 // 100% fidelity with the upstream istio.io/api EnvoyFilter
 // (networking/v1alpha3/envoy_filter.proto, served as networking.istio.io/v1alpha3 — this
-// is the only typed Istio API component still on v1alpha3; it has NOT graduated to v1),
+// is the only typed Istio API kind still on v1alpha3; it has NOT graduated to v1),
 // pinned to the 1.30 line (tag 1.30.3). Upstream spec fields are flattened directly after
 // the Planton namespaced envelope (namespace); there is no nested
 // `envoy_filter` sub-message.
@@ -74,7 +74,7 @@ type KubernetesEnvoyFilterSpec struct {
 	//	      name: "{{ values.app }}"
 	//	      type: depends_on
 	//
-	// See the component's "Composing in Infra Charts" docs for the full pattern.
+	// See the kind's "Composing in Infra Charts" docs for the full pattern.
 	WorkloadSelector *kubernetes.KubernetesIstioApiNetworkingWorkloadSelector `protobuf:"bytes,3,opt,name=workload_selector,json=workloadSelector,proto3" json:"workload_selector,omitempty"`
 	// One or more patches with match conditions, applied in list order within a context.
 	// An EnvoyFilter with no patches is valid upstream (a no-op), so this list is not
@@ -99,7 +99,7 @@ type KubernetesEnvoyFilterSpec struct {
 	// covers a Service, a ServiceEntry, or anything created outside Planton; istiod
 	// resolves group/kind/name at runtime, so order this EnvoyFilter after such a target
 	// with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
-	// See the component's "Composing in Infra Charts" docs.
+	// See the kind's "Composing in Infra Charts" docs.
 	TargetRefs    []*kubernetes.KubernetesIstioApiPolicyTargetReference `protobuf:"bytes,6,rep,name=target_refs,json=targetRefs,proto3" json:"target_refs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

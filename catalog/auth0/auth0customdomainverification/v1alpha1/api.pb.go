@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0CustomDomainVerification is a component that completes an
+// Auth0CustomDomainVerification is a kind that completes an
 // Auth0CustomDomain: it asks Auth0 to check the domain's DNS record and waits
 // until the domain is ready to serve sign-in -- verified, and for an
 // Auth0-managed domain, holding its issued certificate.

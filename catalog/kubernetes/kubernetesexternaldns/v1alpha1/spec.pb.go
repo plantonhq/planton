@@ -72,7 +72,7 @@ type KubernetesExternalDnsSpec struct {
 	// *
 	// The DNS provider records are written to. Exactly one must be set — one
 	// installation manages one provider (deploy multiple instances of this
-	// component for multi-provider clusters).
+	// kind for multi-provider clusters).
 	//
 	// Providers beyond these arms (Akamai, OVH, Scaleway, RFC2136, ...) are
 	// upstream's out-of-tree/webhook territory: run them through the `webhook`

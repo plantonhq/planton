@@ -6,7 +6,7 @@ A catalog kind that provisions an **Amazon FSx for NetApp ONTAP file system** �
 
 In the FSx for ONTAP architecture, the file system is the physical foundation:
 
-- **File System** (this component) → physical infrastructure (storage, throughput, networking, HA)
+- **File System** (this kind) → physical infrastructure (storage, throughput, networking, HA)
 - **SVM** (`AwsFsxOntapStorageVirtualMachine`) → logical data server (protocol endpoints, AD integration, security style)
 - **Volume** (`AwsFsxOntapVolume`) → data container (capacity, tiering, snapshots, SnapLock)
 

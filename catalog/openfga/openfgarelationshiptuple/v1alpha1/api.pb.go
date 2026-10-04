@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaRelationshipTuple is a component that creates a relationship tuple in OpenFGA.
+// OpenFgaRelationshipTuple is a kind that creates a relationship tuple in OpenFGA.
 //
 // A relationship tuple is the fundamental unit of authorization data in OpenFGA. It represents
 // a relationship between a user (or userset) and an object through a specific relation. When

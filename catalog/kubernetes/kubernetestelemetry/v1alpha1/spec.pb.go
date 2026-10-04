@@ -54,7 +54,7 @@ type KubernetesTelemetrySpec struct {
 	// foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
 	// labels and creates NO automatic DAG edge to any workload resource. To order this
 	// configuration after the workload it observes in an infra chart, express the
-	// dependency via metadata.relationships. See the component's "Composing in Infra
+	// dependency via metadata.relationships. See the kind's "Composing in Infra
 	// Charts" docs for the full pattern.
 	Selector *kubernetes.KubernetesIstioApiWorkloadSelector `protobuf:"bytes,3,opt,name=selector,proto3" json:"selector,omitempty"`
 	// Attaches the configuration to specific resources (Gateway, GatewayClass,
@@ -68,7 +68,7 @@ type KubernetesTelemetrySpec struct {
 	// covers a Service, a ServiceEntry, or anything created outside Planton; istiod
 	// resolves group/kind/name at runtime, so order this configuration after such a target
 	// with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
-	// See the component's "Composing in Infra Charts" docs.
+	// See the kind's "Composing in Infra Charts" docs.
 	TargetRefs []*kubernetes.KubernetesIstioApiPolicyTargetReference `protobuf:"bytes,4,rep,name=target_refs,json=targetRefs,proto3" json:"target_refs,omitempty"`
 	// Tracing configuration for the selected workloads. Each entry can enable/disable
 	// span reporting, set the sampling rate, choose providers, and add custom span

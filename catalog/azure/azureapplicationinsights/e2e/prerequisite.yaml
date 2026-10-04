@@ -1,5 +1,5 @@
 # AzureApplicationInsights install profile used as a fixture by
-# composed components (declared via prerequisites:
+# composed kinds (declared via prerequisites:
 # [AzureApplicationInsights] in the kind registry -- the Machine
 # Learning workspace today). The harness deploys this document after
 # the fixture log-analytics workspace (this kind's own registry

@@ -26,9 +26,9 @@ Both IaC modules deliberately create the object **without waiting for a controll
 
 IngressClass objects ship with their controllers (`kubectl get ingressclass` lists what the cluster offers), which is why `ingress_class_name` is a plain name rather than a reference to a Planton kind.
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
-- **Workload components** (KubernetesDeployment and friends): Export a `service` output that backends here route to — deploy the app, then expose it, composed in one chart
+- **Workload kinds** (KubernetesDeployment and friends): Export a `service` output that backends here route to — deploy the app, then expose it, composed in one chart
 - **KubernetesService**: The default reference kind for `service_name`; a backend can point at a managed Service directly
 - **KubernetesSecret**: The default reference kind for `tls[].secret_name` — a `kubernetes.io/tls` Secret holding the certificate and key
 - **cert-manager** (cluster addon): The alternative certificate path — add a `cert-manager.io/cluster-issuer` annotation and cert-manager creates the Secret named in the `tls` block

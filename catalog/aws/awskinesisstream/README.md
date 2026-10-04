@@ -74,7 +74,7 @@ Best for **variable or unpredictable workloads**. You pay per GB of data written
 
 | Feature | Reason |
 |---------|--------|
-| Stream consumers (enhanced fan-out) | Independent lifecycle, many-per-stream, ForceNew on name+stream_arn — modeled as the first-class `AwsKinesisStreamConsumer` component. |
+| Stream consumers (enhanced fan-out) | Independent lifecycle, many-per-stream, ForceNew on name+stream_arn — modeled as the first-class `AwsKinesisStreamConsumer` kind. |
 
 ## Related Resources
 

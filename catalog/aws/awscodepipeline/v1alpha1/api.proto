@@ -7,7 +7,7 @@ import "catalog/aws/awscodepipeline/v1alpha1/outputs.proto";
 import "catalog/aws/awscodepipeline/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsCodePipeline is a component for creating and managing
+// AwsCodePipeline is a kind for creating and managing
 // AWS CodePipeline continuous delivery pipelines that orchestrate build,
 // test, and deploy phases of your release process through an ordered
 // sequence of stages and actions.

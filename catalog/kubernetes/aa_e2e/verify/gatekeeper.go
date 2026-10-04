@@ -70,7 +70,7 @@ func (v *GatekeeperVerifier) VerifyExists(ctx context.Context, kubeconfig string
 
 // VerifyAbsent asserts the engine workloads and its chart-owned webhook
 // configurations are gone — and that the engine CRDs SURVIVED, the
-// crds/-directory keep posture this component documents.
+// crds/-directory keep posture this kind documents.
 func (v *GatekeeperVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
 	if err := KubectlResourceAbsent(ctx, kubeconfig, "deployment", gatekeeperControllerDeployment, v.Namespace); err != nil {
 		return err

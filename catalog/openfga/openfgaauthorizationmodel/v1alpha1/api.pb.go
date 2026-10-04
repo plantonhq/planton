@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaAuthorizationModel is a component that creates an authorization model in OpenFGA.
+// OpenFgaAuthorizationModel is a kind that creates an authorization model in OpenFGA.
 //
 // An authorization model defines the types, relations, and access rules for fine-grained
 // authorization. It is the schema that determines what relationship tuples mean and how

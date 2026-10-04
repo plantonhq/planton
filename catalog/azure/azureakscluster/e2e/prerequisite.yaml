@@ -1,5 +1,5 @@
 # AzureAksCluster install profile used as a prerequisite by composed
-# components (AzureAksNodePool, declared via prerequisites in the kind
+# kinds (AzureAksNodePool, declared via prerequisites in the kind
 # registry). The harness deploys this cluster after the fixture resource
 # group, then resolves the dependent's kubernetes_cluster_id reference
 # against its cluster_id output. Managed networking keeps the prerequisite

@@ -1,4 +1,4 @@
-# Install manifest used when OTHER components declare KubernetesGatewayClass
+# Install manifest used when OTHER kinds declare KubernetesGatewayClass
 # as an E2E prerequisite (a Gateway scenario composing a real class). The
 # controller name is syntactically valid but no controller runs on the kind
 # cluster -- deploys never block on controller reconciliation by design.

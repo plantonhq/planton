@@ -16,7 +16,7 @@ callers hit https://api.example.com/orders instead of the
 execute-api endpoint, TLS terminates on your certificate, and
 base-path mappings fan the domain's paths out across APIs and
 stages. A domain outlives any one API and maps many - which is why
-it is its own component rather than part of AwsRestApiGateway.
+it is its own kind rather than part of AwsRestApiGateway.
 
 The component bundles the domain, its base-path mappings, and - for
 PRIVATE domains - the VPC-endpoint access associations. DNS is not
@@ -24,7 +24,7 @@ modeled here: point an AwsRoute53DnsRecord alias at the domain's
 regional or CloudFront target (both are outputs).
 
 Rule-based routing (an API Gateway v2 surface that also attaches to
-v1 domains) stays on the AwsHttpApiDomain component; this kind
+v1 domains) stays on the AwsHttpApiDomain kind; this kind
 models the v1 routing_mode knob that arbitrates between the two
 mechanisms.
 

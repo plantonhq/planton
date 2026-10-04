@@ -1,5 +1,5 @@
 # AwsRoute53Zone install profile used as a prerequisite by composed
-# components (the DNS record's registry prerequisite). A public zone:
+# kinds (the DNS record's registry prerequisite). A public zone:
 # nothing must exist first, creation takes seconds, and no domain ownership
 # is required (delegation only matters at the registrar, which fixtures
 # never touch). The domain uses the RFC-reserved .test TLD — AWS rejects

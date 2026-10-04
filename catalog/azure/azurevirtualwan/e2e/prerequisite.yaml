@@ -1,5 +1,5 @@
 # AzureVirtualWan install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureVirtualWan] in the kind
+# kinds (declared via prerequisites: [AzureVirtualWan] in the kind
 # registry -- the virtual hub's chain, and transitively everything that
 # attaches to a hub). The harness deploys this document after the
 # fixture resource group and captures its outputs -- virtual_wan_id in

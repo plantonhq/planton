@@ -38,7 +38,7 @@ Destroying this component **deletes the detector** — findings and
 every satellite go with it. Feature and organization-configuration
 arms are patches (AWS has no delete for them); removing an arm from
 the spec reverts nothing on its own. Malware Protection for S3 is
-deliberately NOT part of this component — a protection plan guards an
+deliberately NOT part of this kind — a protection plan guards an
 S3 bucket, not a detector, and ships as its own kind.
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field

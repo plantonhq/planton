@@ -23,7 +23,7 @@ audit trails in production.
   Both engines normalize the group ARN to AWS's `:*` suffix form.
 - **CloudTrail Lake split out.** The event data store carries no trail
   edge (it deploys with zero trails, owns its own billing/retention/
-  termination protection), so it is its own component rather than an
+  termination protection), so it is its own kind rather than an
   arm here.
 - **The delegated-admin registration is account-global.** One
   delegation per organization, performed from the management account —

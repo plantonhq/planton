@@ -21,7 +21,7 @@ operating configuration recording in production.
   those rules so the manifest fails first.
 - **Aggregation split out.** The aggregator and its authorization
   reference NO recorder — aggregation works in an account with zero
-  recorders — so they are their own component, not arms here.
+  recorders — so they are their own kind, not arms here.
 
 ## Operating configuration recording in production
 

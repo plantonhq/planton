@@ -7,7 +7,7 @@ import "catalog/aws/awscodebuildproject/v1alpha1/outputs.proto";
 import "catalog/aws/awscodebuildproject/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsCodeBuildProject is a component for creating and managing
+// AwsCodeBuildProject is a kind for creating and managing
 // AWS CodeBuild projects with an optional webhook for source-triggered builds.
 // CodeBuild compiles source code, runs tests, and produces deployable artifacts
 // in fully managed build containers.

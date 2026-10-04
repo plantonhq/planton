@@ -43,7 +43,7 @@ func createRequestAuthentication(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value
 	// itself (not the SpecPtr() wrapper, which marshals to the wrong element
-	// type); assigned directly below, mirroring the PeerAuthentication component.
+	// type); assigned directly below, mirroring the PeerAuthentication kind.
 	raSpec := istiosecurityv1.RequestAuthenticationSpecArgs{}
 
 	if selector := spec.GetSelector(); selector != nil && len(selector.GetMatchLabels()) > 0 {

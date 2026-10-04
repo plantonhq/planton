@@ -1,6 +1,6 @@
 # OpenFgaAuthorizationModel Test Manifest
 #
-# This manifest is used for testing the OpenFGA Authorization Model component.
+# This manifest is used for testing the OpenFGA Authorization Model kind.
 #
 # Prerequisites:
 # - OpenFGA server running (locally or cloud-hosted)

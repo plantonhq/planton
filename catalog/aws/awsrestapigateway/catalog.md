@@ -1,6 +1,6 @@
 # AWS REST API Gateway
 
-Deploys an Amazon API Gateway REST API (API Gateway v1) — the API, its resource and method tree, a single stage with an explicit deployment, and the API-scoped satellites — as one declarative resource. REST APIs are API Gateway's full-featured surface: mapping templates, JSON Schema request validation, API keys, per-method caching and throttling, WAF integration, and EDGE, REGIONAL, or PRIVATE endpoints. The API definition is exactly one of typed `routes` (the modules derive the resource tree from the paths) or an imported `openapi` document; HTTP APIs, the leaner v2 alternative, are the AWS HTTP API Gateway component.
+Deploys an Amazon API Gateway REST API (API Gateway v1) — the API, its resource and method tree, a single stage with an explicit deployment, and the API-scoped satellites — as one declarative resource. REST APIs are API Gateway's full-featured surface: mapping templates, JSON Schema request validation, API keys, per-method caching and throttling, WAF integration, and EDGE, REGIONAL, or PRIVATE endpoints. The API definition is exactly one of typed `routes` (the modules derive the resource tree from the paths) or an imported `openapi` document; HTTP APIs, the leaner v2 alternative, are the AWS HTTP API Gateway kind.
 
 ## What Gets Created
 

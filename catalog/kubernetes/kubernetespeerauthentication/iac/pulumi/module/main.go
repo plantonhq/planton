@@ -46,7 +46,7 @@ func createPeerAuthentication(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value
 	// itself (not the SpecPtr() wrapper, which marshals to the wrong element
-	// type); assigned directly below, mirroring the Gateway component.
+	// type); assigned directly below, mirroring the Gateway kind.
 	peerAuthSpec := istiosecurityv1.PeerAuthenticationSpecArgs{}
 
 	if mtls := spec.GetMtls(); mtls != nil {

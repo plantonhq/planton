@@ -24,7 +24,7 @@ const (
 
 // KubernetesCnpgBarmanCloudPluginIacInput is the input for both IaC
 // modules (Pulumi and Terraform) of the kubernetes-cnpg-barman-cloud-plugin
-// component.
+// kind.
 type KubernetesCnpgBarmanCloudPluginIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the kubernetes-cnpg-barman-cloud-plugin resource to deploy

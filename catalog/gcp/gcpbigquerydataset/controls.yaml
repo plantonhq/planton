@@ -83,7 +83,7 @@ spec:
       evidence:
         type: provider_default
         reference: BigQuery automatically maintains replicas of stored data across multiple availability zones within the dataset's location; no customer action or field enables it.
-      notes: Multi-region locations (US, EU -- presets 01 and 03) additionally spread data across data centers in the geography; cross-region disaster replication is a separate BigQuery feature not modeled on this component.
+      notes: Multi-region locations (US, EU -- presets 01 and 03) additionally spread data across data centers in the geography; cross-region disaster replication is a separate BigQuery feature not modeled on this kind.
     - control_id: deletion-protection
       status: configurable
       field_path: delete_contents_on_destroy

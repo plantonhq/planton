@@ -1,6 +1,6 @@
 # DigitalOcean Reserved IP
 #
-# Provisions a static public IP reservation -- one component covering the
+# Provisions a static public IP reservation -- one kind covering the
 # provider's four resources: digitalocean_reserved_ip (IPv4, with the
 # genuinely mutable inline droplet assignment), digitalocean_reserved_ipv6,
 # and digitalocean_reserved_ipv6_assignment. The v4/v6 API asymmetries live

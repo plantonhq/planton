@@ -1,10 +1,10 @@
 # AzureResourceGroup install profile used as a prerequisite by composed
-# components (declared via prerequisites: [AzureResourceGroup] in the kind
+# kinds (declared via prerequisites: [AzureResourceGroup] in the kind
 # registry). The E2E harness deploys this document (via the resource group's
 # Pulumi module), captures its outputs under its manifest name, and resolves
 # dependents' resource-group references against them. It is deliberately
 # distinct from scenarios/minimal.yaml so the fixture consumed by other
-# components stays separate from this component's own smoke scenario. Resource
+# kinds stays separate from this kind's own smoke scenario. Resource
 # groups are free, so one shared fixture instance covers every consumer.
 apiVersion: azure.planton.dev/v1alpha1
 kind: AzureResourceGroup

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsDocumentDb is a component for creating and managing
+// AwsDocumentDb is a kind for creating and managing
 // AWS DocumentDB clusters - a fully managed MongoDB-compatible document database service.
 type AwsDocumentDb struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

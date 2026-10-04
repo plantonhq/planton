@@ -7,7 +7,7 @@ import "catalog/stripe/stripeentitlementfeature/v1alpha1/outputs.proto";
 import "catalog/stripe/stripeentitlementfeature/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeEntitlementFeature is a component that declares one capability a customer can be entitled
+// StripeEntitlementFeature is a kind that declares one capability a customer can be entitled
 // to in Stripe Entitlements, identified by a lookup key the application checks.
 //
 // Products grant features (StripeProduct lists them under features), and Stripe reports each

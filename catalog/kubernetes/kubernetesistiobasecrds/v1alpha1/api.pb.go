@@ -25,7 +25,7 @@ const (
 
 // KubernetesIstioBaseCrds installs the Istio CRDs (istio/base) on a target Kubernetes
 // cluster, without istiod or any controller. It is the lightweight prerequisite for the
-// typed Istio API components.
+// typed Istio API kinds.
 type KubernetesIstioBaseCrds struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version

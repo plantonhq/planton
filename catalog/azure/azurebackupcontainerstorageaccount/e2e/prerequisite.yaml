@@ -1,5 +1,5 @@
 # AzureBackupContainerStorageAccount install profile used as a fixture
-# by composed components (declared via prerequisites:
+# by composed kinds (declared via prerequisites:
 # [AzureBackupContainerStorageAccount] in the kind registry -- the
 # protected-file-share lane today). Registers the SHARED fixture
 # storage account (planton-oss-e2e-azure-fixture-sa) with the fixture

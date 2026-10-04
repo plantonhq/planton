@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeTaxRegistration is a component that declares one place the account is registered to
+// StripeTaxRegistration is a kind that declares one place the account is registered to
 // collect tax with Stripe Tax.
 //
 // From its start date, Stripe Tax collects tax there on every payment that uses automatic tax.

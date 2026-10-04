@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesgatewayv1alpha1.Kubernet
 
 // createGateway creates the namespaced Gateway API Gateway using the typed
 // crd2pulumi SDK (gatewayv1.NewGateway), consistent with every other Planton
-// ingress component. The typed approach catches field-name and structure errors
+// ingress kind. The typed approach catches field-name and structure errors
 // at compile time rather than at deployment time. The upstream GatewaySpec is
 // large, so its mapping is split across listeners.go, tls.go, addresses.go,
 // infrastructure.go, and selectors.go.

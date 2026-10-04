@@ -71,7 +71,7 @@ resources:
         arg: config.data_retention_config.airflow_metadata_retention_config.retention_days
     exclusions:
       # -- The Composer 1.x generation (deprecated by Google; this
-      # component targets Composer 2/3 only). Every reason quotes the
+      # kind targets Composer 2/3 only). Every reason quotes the
       # provider's own version constraint.
       - arg: config.node_count
         reason: >-

@@ -7,7 +7,7 @@ import "catalog/auth0/auth0resourceserver/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0resourceserver/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0ResourceServer is a component that configures a Resource Server (API) in Auth0.
+// Auth0ResourceServer is a kind that configures a Resource Server (API) in Auth0.
 // Resource Servers represent the APIs that your applications can request access to.
 // They are essential for implementing OAuth 2.0 API authorization with Auth0.
 //

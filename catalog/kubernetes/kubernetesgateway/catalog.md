@@ -1,6 +1,6 @@
 # Kubernetes Gateway
 
-Creates a namespaced Kubernetes Gateway API `Gateway` -- an instance of traffic-handling infrastructure that binds a set of **listeners** (logical endpoints with a port, protocol, and optional TLS) to addresses, programmed by the controller behind a `GatewayClass`. The Gateway is the role-oriented successor to Ingress: platform teams own the `GatewayClass`, infrastructure teams own the `Gateway`, and application teams attach `Routes` (HTTP/gRPC/TLS/TCP) to its listeners. This component mirrors the upstream Gateway API v1 `Gateway` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `Gateway` -- an instance of traffic-handling infrastructure that binds a set of **listeners** (logical endpoints with a port, protocol, and optional TLS) to addresses, programmed by the controller behind a `GatewayClass`. The Gateway is the role-oriented successor to Ingress: platform teams own the `GatewayClass`, infrastructure teams own the `Gateway`, and application teams attach `Routes` (HTTP/gRPC/TLS/TCP) to its listeners. This kind mirrors the upstream Gateway API v1 `Gateway` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 

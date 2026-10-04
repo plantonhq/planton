@@ -103,7 +103,7 @@ resolved to a literal string before Terraform runs.
 Existing deployments can be adopted into state. `kubectl_manifest` uses
 the composed import ID `apiVersion//kind//name//namespace`; every module
 resource name is deterministic (derived from `metadata.name`), so the
-component's `iac/import-map.yaml` can derive each address blind.
+kind's `iac/import-map.yaml` can derive each address blind.
 
 ## Outputs
 

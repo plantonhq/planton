@@ -54,7 +54,7 @@ planton pulumi stack output --manifest namespace.yaml --stack myorg/myproject/de
 4. **NetworkPolicies**: Creates ingress and egress isolation policies
 5. **Outputs**: Exports observable identifiers and configuration status
 
-### Component Structure
+### Module Structure
 
 ```
 module/

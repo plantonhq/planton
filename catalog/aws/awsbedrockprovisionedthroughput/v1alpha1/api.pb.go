@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockProvisionedThroughput is a component for purchasing and
+// AwsBedrockProvisionedThroughput is a kind for purchasing and
 // managing Amazon Bedrock Provisioned Throughput - dedicated model serving
 // capacity in model units, the required serving path for fine-tuned custom
 // models.

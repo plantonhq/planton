@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Kubernetes Secrets are foundational to every cluster, yet creating and managing them declaratively with proper typing and validation requires boilerplate across different IaC tools. This component abstracts that complexity into a single, type-safe API that follows the 80/20 principle: supporting the five most common secret types that cover the vast majority of production use cases.
+Kubernetes Secrets are foundational to every cluster, yet creating and managing them declaratively with proper typing and validation requires boilerplate across different IaC tools. This kind abstracts that complexity into a single, type-safe API that follows the 80/20 principle: supporting the five most common secret types that cover the vast majority of production use cases.
 
 **Key value over raw manifests:**
 
@@ -16,12 +16,12 @@ Kubernetes Secrets are foundational to every cluster, yet creating and managing 
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
 - **Immutable secrets**: First-class support for Kubernetes immutable secrets (1.21+)
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
 - **KubernetesExternalSecret** (with the External Secrets Operator installed via **KubernetesExternalSecretsOperator**): Syncs secrets _from external backends_ (AWS Secrets Manager, Vault, etc.) into Kubernetes. Use when secrets originate in an external provider.
-- **KubernetesSecret** (this component): Creates secrets _directly_ with literal values provided at deploy time. Use when secret data is available in your CI/CD pipeline, environment config, or IaC variables.
+- **KubernetesSecret** (this kind): Creates secrets _directly_ with literal values provided at deploy time. Use when secret data is available in your CI/CD pipeline, environment config, or IaC variables.
 
-These are complementary components, not overlapping.
+These are complementary kinds, not overlapping.
 
 ## Supported Secret Types
 

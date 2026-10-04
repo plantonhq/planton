@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EventStream is a component that configures an Event Stream in Auth0.
+// Auth0EventStream is a kind that configures an Event Stream in Auth0.
 // Event Streams enable real-time delivery of Auth0 events to external systems like
 // AWS EventBridge or custom webhook endpoints.
 //

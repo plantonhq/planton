@@ -1,6 +1,6 @@
 # AWS REST API Usage Plan
 
-Deploys an API Gateway usage plan with its API keys — the metering and throttling layer for REST API consumers. Each plan covers one or more REST API stages, sets quota (requests per day, week, or month) and throttle ceilings including per-method throttles, and admits callers through API keys created and attached by the same resource. A plan spans APIs and stages, which is why it is its own component rather than part of the REST API; routes opt in with `apiKeyRequired` on the AWS REST API Gateway component.
+Deploys an API Gateway usage plan with its API keys — the metering and throttling layer for REST API consumers. Each plan covers one or more REST API stages, sets quota (requests per day, week, or month) and throttle ceilings including per-method throttles, and admits callers through API keys created and attached by the same resource. A plan spans APIs and stages, which is why it is its own kind rather than part of the REST API; routes opt in with `apiKeyRequired` on the AWS REST API Gateway component.
 
 ## What Gets Created
 

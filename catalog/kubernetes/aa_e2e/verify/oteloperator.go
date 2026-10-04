@@ -45,7 +45,7 @@ const otelDefaultChartVersion = "0.120.0"
 //     workload) reads back through the v1alpha1 served version -- the
 //     conversion webhook call only succeeds when cert-manager's CA
 //     injector has patched the MODULE-owned (kept) CRD's conversion
-//     caBundle, which is the exact trust seam this component's design
+//     caBundle, which is the exact trust seam this kind's design
 //     hangs on.
 //
 // Destroy asserts the CRD posture the manifest declares: kept (the

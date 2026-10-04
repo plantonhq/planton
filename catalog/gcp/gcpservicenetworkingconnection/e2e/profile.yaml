@@ -5,7 +5,7 @@ metadata:
 spec:
   # Composed scenario: the connection needs a VPC and a reserved VPC_PEERING
   # range (GcpGlobalAddress), both installed from the prerequisite graph —
-  # the range via this component's consumer-scoped prerequisite override
+  # the range via this kind's consumer-scoped prerequisite override
   # (e2e/prerequisites/gcpglobaladdress.yaml), since the address kind's
   # published profile is the EXTERNAL VIP shape the forwarding-rule chain
   # needs. deploy -> network peering verify -> destroy -> verify gone, on

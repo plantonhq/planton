@@ -18,7 +18,7 @@ Also not the right kind when:
   component is one cluster it manages.
 - **You want a managed cloud service** — ClickHouse Cloud and the
   cloud providers' managed offerings run the database for you; this
-  component is for running ClickHouse ON the Kubernetes cluster
+  kind is for running ClickHouse ON the Kubernetes cluster
   itself.
 - **You need an OLTP database** — ClickHouse is a columnar OLAP
   engine: brilliant at scanning billions of rows, wrong for

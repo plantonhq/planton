@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0CustomDomain is a component that serves an Auth0 tenant's sign-in on a
+// Auth0CustomDomain is a kind that serves an Auth0 tenant's sign-in on a
 // domain you own -- id.example.com instead of example.eu.auth0.com -- so Universal
 // Login, the emails' links and the tokens' issuer all carry your name.
 //

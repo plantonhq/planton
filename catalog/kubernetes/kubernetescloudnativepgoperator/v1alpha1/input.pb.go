@@ -24,7 +24,7 @@ const (
 
 // KubernetesCloudNativePgOperatorIacInput is the input for both IaC
 // modules (Pulumi and Terraform) of the kubernetes-cloud-native-pg-operator
-// component.
+// kind.
 type KubernetesCloudNativePgOperatorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the kubernetes-cloud-native-pg-operator resource to deploy

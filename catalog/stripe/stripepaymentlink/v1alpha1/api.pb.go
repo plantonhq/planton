@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentLink is a component that declares a Stripe-hosted payment page at a public
+// StripePaymentLink is a kind that declares a Stripe-hosted payment page at a public
 // address, selling declared prices.
 //
 // The link takes payments from the moment it is applied. A link can never change which prices it

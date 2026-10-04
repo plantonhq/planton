@@ -8,7 +8,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources is the Pulumi program entry-point for the GcpCloudRunJob component.
+// Resources is the Pulumi program entry-point for the GcpCloudRunJob kind.
 func Resources(ctx *pulumi.Context, iacInput *gcpcloudrunjobv1alpha1.GcpCloudRunJobIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 

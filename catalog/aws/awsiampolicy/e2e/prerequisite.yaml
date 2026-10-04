@@ -1,4 +1,4 @@
-# AwsIamPolicy install profile used as a prerequisite by composed components
+# AwsIamPolicy install profile used as a prerequisite by composed kinds
 # (e.g. AwsIamUser scenarios that attach a Planton-managed policy by
 # reference). The E2E harness deploys this policy first, captures its
 # outputs, and resolves the dependent's policy_arn reference against them.

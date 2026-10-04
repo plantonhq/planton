@@ -99,7 +99,7 @@ type KubernetesSeaweedFsSpec struct {
 	Filer *KubernetesSeaweedFsFiler `protobuf:"bytes,6,opt,name=filer,proto3" json:"filer,omitempty"`
 	// *
 	// S3 gateway. Empty = enabled with auth, embedded on the filer —
-	// the component's reason to exist. Declare explicitly to add
+	// the kind's reason to exist. Declare explicitly to add
 	// buckets, wire an existing credential config, or split the
 	// gateway into its own Deployment.
 	S3 *KubernetesSeaweedFsS3 `protobuf:"bytes,7,opt,name=s3,proto3" json:"s3,omitempty"`

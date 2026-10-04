@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeEntitlementFeature is a component that declares one capability a customer can be entitled
+// StripeEntitlementFeature is a kind that declares one capability a customer can be entitled
 // to in Stripe Entitlements, identified by a lookup key the application checks.
 //
 // Products grant features (StripeProduct lists them under features), and Stripe reports each

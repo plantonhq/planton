@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0TenantSettings is a component that manages the settings of an existing
+// Auth0TenantSettings is a kind that manages the settings of an existing
 // Auth0 tenant: how it presents itself to the people who sign in through it
 // (its name on Universal Login, its logo, languages and support contacts), how
 // long their sessions last, what its OAuth and OpenID Connect endpoints accept,

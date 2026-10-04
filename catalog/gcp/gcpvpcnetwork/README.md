@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `GcpVpcNetwork` component provides a streamlined, best-practice approach to creating Google Cloud Virtual Private Cloud (VPC) networks. It is designed with the principle of **making the right thing easy and the wrong thing hard**, steering users toward custom-mode VPCs with explicit configuration while preventing common networking pitfalls.
+The `GcpVpcNetwork` kind provides a streamlined, best-practice approach to creating Google Cloud Virtual Private Cloud (VPC) networks. It is designed with the principle of **making the right thing easy and the wrong thing hard**, steering users toward custom-mode VPCs with explicit configuration while preventing common networking pitfalls.
 
 This kind is part of Planton's infrastructure-as-code framework, offering a simple protobuf-based API that generates production-ready Terraform and Pulumi code for GCP VPC deployment.
 

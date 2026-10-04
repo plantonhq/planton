@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockModelAccess is a component for managing Amazon Bedrock model
+// AwsBedrockModelAccess is a kind for managing Amazon Bedrock model
 // access - the marketplace agreement (and, where required, the account
 // use-case form) that entitles an AWS account to invoke a specific
 // foundation model in a region.

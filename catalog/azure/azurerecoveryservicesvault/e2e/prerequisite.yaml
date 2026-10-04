@@ -1,5 +1,5 @@
 # AzureRecoveryServicesVault install profile used as a fixture by
-# composed components (declared via prerequisites:
+# composed kinds (declared via prerequisites:
 # [AzureRecoveryServicesVault] in the kind registry -- the VM backup
 # policy and protected-VM lanes today, the file-share pair next). The
 # harness deploys this document after the fixture resource group and

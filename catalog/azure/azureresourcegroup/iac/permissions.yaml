@@ -16,4 +16,4 @@ spec:
           - Microsoft.Resources/subscriptions/resourceGroups/write
           - Microsoft.Resources/subscriptions/resourceGroups/delete
         provenance: derived
-        notes: Covers azurerm_resource_group -- create, read/refresh, tag updates (the only in-place change; name and region are ForceNew), and destroy. Unlike every other component, these permissions must be held at SUBSCRIPTION scope (the group does not exist yet to scope to); Contributor and Owner carry them. Treat the delete with respect -- deleting a resource group deletes every resource inside it, so resourceGroups/delete is subscription-shaped power even though it is a single operation.
+        notes: Covers azurerm_resource_group -- create, read/refresh, tag updates (the only in-place change; name and region are ForceNew), and destroy. Unlike every other kind, these permissions must be held at SUBSCRIPTION scope (the group does not exist yet to scope to); Contributor and Owner carry them. Treat the delete with respect -- deleting a resource group deletes every resource inside it, so resourceGroups/delete is subscription-shaped power even though it is a single operation.

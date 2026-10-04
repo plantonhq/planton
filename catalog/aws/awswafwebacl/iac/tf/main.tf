@@ -171,7 +171,7 @@ resource "aws_wafv2_web_acl" "this" {
 
 # WAF request logging is a separate PUT-style AWS resource keyed by the web
 # ACL's ARN (at most one per ACL), so it shares this module rather than being
-# its own component. The destination's name must start with "aws-waf-logs-"
+# its own kind. The destination's name must start with "aws-waf-logs-"
 # (AWS-enforced).
 resource "aws_wafv2_web_acl_logging_configuration" "this" {
   count = var.spec.logging != null ? 1 : 0

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePromotionCode is a component that declares a code customers type to redeem a
+// StripePromotionCode is a kind that declares a code customers type to redeem a
 // StripeCoupon, with its own limits.
 //
 // Changing who may redeem the code replaces it. Destroy deactivates the code; Stripe keeps it,

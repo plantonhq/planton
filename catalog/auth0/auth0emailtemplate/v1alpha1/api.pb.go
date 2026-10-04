@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EmailTemplate is a component that manages one of the emails an Auth0
+// Auth0EmailTemplate is a kind that manages one of the emails an Auth0
 // tenant sends: its sender, subject and body (Liquid-templated HTML), where the
 // link in it leads afterwards, and how long that link lives.
 //

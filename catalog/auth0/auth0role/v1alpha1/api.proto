@@ -7,7 +7,7 @@ import "catalog/auth0/auth0role/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0role/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0Role is a component that manages an Auth0 Role.
+// Auth0Role is a kind that manages an Auth0 Role.
 // Roles are named collections of permissions (scopes) that implement Auth0's
 // role-based access control (RBAC). A role groups permissions defined on one or
 // more Auth0 Resource Servers (APIs) and can then be assigned to users.

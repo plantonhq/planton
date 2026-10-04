@@ -1,5 +1,5 @@
 # AzureAiFoundry install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureAiFoundry] in the kind
+# kinds (declared via prerequisites: [AzureAiFoundry] in the kind
 # registry -- the AzureAiFoundryProject lane). The harness deploys
 # this document after the fixture companion chain (resource group +
 # key vault + HNS-off storage account) and captures its outputs --

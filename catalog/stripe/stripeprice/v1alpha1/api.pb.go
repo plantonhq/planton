@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePrice is a component that declares how much, how often and in which currencies a
+// StripePrice is a kind that declares how much, how often and in which currencies a
 // StripeProduct is charged.
 //
 // A price's amount never changes in Stripe, so changing it replaces the price: the new one is

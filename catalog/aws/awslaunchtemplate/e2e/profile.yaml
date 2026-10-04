@@ -6,7 +6,7 @@ spec:
   # A launch template under live E2E: deploy -> DescribeLaunchTemplates
   # verify -> destroy -> verify-destroyed on both provisioners. Templates
   # are free, create in seconds, and never launch an instance during the
-  # test, so this is one of the fastest components in the suite.
+  # test, so this is one of the fastest kinds in the suite.
   #
   # pending_proof: the depth closure added Capacity Reservation targeting,
   # the capacity-block market, dedicated-host placement, connection

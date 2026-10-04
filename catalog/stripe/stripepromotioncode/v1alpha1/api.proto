@@ -7,7 +7,7 @@ import "catalog/stripe/stripepromotioncode/v1alpha1/outputs.proto";
 import "catalog/stripe/stripepromotioncode/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripePromotionCode is a component that declares a code customers type to redeem a
+// StripePromotionCode is a kind that declares a code customers type to redeem a
 // StripeCoupon, with its own limits.
 //
 // Changing who may redeem the code replaces it. Destroy deactivates the code; Stripe keeps it,

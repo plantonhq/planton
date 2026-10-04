@@ -16,7 +16,7 @@ message KubernetesNamespaceOutputs {
   /**
    * The fully qualified namespace identifier.
    * Format: <namespace>
-   * This is the same as namespace but provided for consistency with other components.
+   * This is the same as namespace but provided for consistency with other kinds.
    */
   string namespace_id = 2;
 

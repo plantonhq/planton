@@ -33,7 +33,7 @@ const (
 //   - Granting the role a set of API permissions (scopes), each scoped to the
 //     resource server (API) that owns it
 //
-// Permissions are folded into this component: the IaC modules create the role
+// Permissions are folded into this kind: the IaC modules create the role
 // AND set its permissions in a single deployment, so a role is useful out of the
 // box. The permission set is authoritative -- the deployment manages the complete
 // list of permissions for the role.

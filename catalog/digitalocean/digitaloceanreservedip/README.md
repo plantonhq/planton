@@ -1,6 +1,6 @@
 # DigitalOcean Reserved IP
 
-Built for 100% parity with the Terraform DigitalOcean provider's reserved-IP family at the pinned provider version: one component covering `digitalocean_reserved_ip`, `digitalocean_reserved_ipv6`, and `digitalocean_reserved_ipv6_assignment` (the v4 assignment resource is deliberately never created -- v4 assigns through the reservation's own mutable argument).
+Built for 100% parity with the Terraform DigitalOcean provider's reserved-IP family at the pinned provider version: one kind covering `digitalocean_reserved_ip`, `digitalocean_reserved_ipv6`, and `digitalocean_reserved_ipv6_assignment` (the v4 assignment resource is deliberately never created -- v4 assigns through the reservation's own mutable argument).
 
 ## What this kind models
 

@@ -10,7 +10,7 @@
 # Both production seams are external by construction here — PostgreSQL
 # for metadata, S3 for artifacts — which is exactly what unlocks scaling
 # the server beyond one replica later (a values change on the deployed
-# resource; the component enforces the pairing).
+# resource; the kind enforces the pairing).
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesMlflow
 metadata:

@@ -75,7 +75,7 @@ func TestIDOutputDefaultsAndOverrides(t *testing.T) {
 
 func TestGetVerifierUnknownComponent(t *testing.T) {
 	if _, err := GetVerifier("auth0nothing"); err == nil {
-		t.Fatal("expected an error for an unregistered component")
+		t.Fatal("expected an error for an unregistered kind")
 	}
 }
 

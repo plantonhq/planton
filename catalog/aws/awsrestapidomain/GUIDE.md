@@ -23,7 +23,7 @@ fronting APIs with your own hostname.
 - **Uploaded certificate material is a legacy path.** AWS's docs are
   ambiguous about which endpoint types accept direct uploads (the SDK
   says edge-or-private, the provider shows a regional example); the
-  component permits it everywhere and lets AWS arbitrate. Prefer ACM.
+  kind permits it everywhere and lets AWS arbitrate. Prefer ACM.
 
 ## Running custom domains in production
 

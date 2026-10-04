@@ -112,7 +112,7 @@ gcloud run jobs execute my-etl --region us-central1
 
 ## Deliberately not modeled (recorded reasons)
 
-Everything the pinned GA provider can configure on `google_cloud_run_v2_job` is representable through this component, except the entries below — each a recorded decision (the machine-checked record lives in `iac/provider-parity.yaml`):
+Everything the pinned GA provider can configure on `google_cloud_run_v2_job` is representable through this kind, except the entries below — each a recorded decision (the machine-checked record lives in `iac/provider-parity.yaml`):
 
 | Excluded Feature | Why |
 |---|---|

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeEventDestination is a component that declares where a Stripe account sends its events
+// StripeEventDestination is a kind that declares where a Stripe account sends its events
 // through Stripe's v2 event destinations: a webhook URL, an Amazon EventBridge event bus, or an
 // Azure Event Grid partner topic, as thin or snapshot events.
 //

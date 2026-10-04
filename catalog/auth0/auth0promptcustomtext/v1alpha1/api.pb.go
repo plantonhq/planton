@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptCustomText is a component that manages the words one Universal
+// Auth0PromptCustomText is a kind that manages the words one Universal
 // Login prompt shows in one language: every title, description, button and
 // error message on that prompt's screens, in place of Auth0's defaults.
 //

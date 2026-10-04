@@ -1,5 +1,5 @@
 # AwsS3ObjectSet install profile used as a prerequisite by composed
-# components (declared via the scenario's e2e-prerequisites annotation).
+# kinds (declared via the scenario's e2e-prerequisites annotation).
 # Stages a minimal Node.js Lambda zip into the versioned S3 bucket fixture
 # so zip-based Lambda scenarios can reference a concrete object key without
 # hand-maintaining a pre-seeded bucket. Full metadata is supplied for

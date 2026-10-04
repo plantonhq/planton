@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesgatewayclassv1alpha1.Kub
 
 // createGatewayClass creates the cluster-scoped Gateway API GatewayClass using
 // the typed crd2pulumi SDK (gatewayv1.NewGatewayClass), consistent with how all
-// other Planton ingress components consume the Gateway API typed resources. The
+// other Planton ingress kinds consume the Gateway API typed resources. The
 // typed approach catches field name and structure errors at compile time rather
 // than at deployment time.
 func createGatewayClass(

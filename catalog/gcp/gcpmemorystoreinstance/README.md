@@ -127,7 +127,7 @@ judgment lives in `iac/provider-parity.yaml`, checked by
 
 ## When to Use GcpMemorystoreInstance vs GcpRedisInstance
 
-**Use GcpMemorystoreInstance (this component) when:**
+**Use GcpMemorystoreInstance (this kind) when:**
 - You need native sharding for horizontal data distribution
 - You prefer PSC networking over VPC peering
 - You want AOF persistence, automated backups, or cross-region DR

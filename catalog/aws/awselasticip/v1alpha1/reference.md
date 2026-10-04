@@ -127,7 +127,7 @@ recorded against that pool's allocations. The pool must be a public-scope
 pool provisioned for Elastic IP allocation in this region. May be combined
 with `address` to recover a specific address the pool holds.
 
-Takes a literal pool id today; when the platform's IPAM component lands,
+Takes a literal pool id today; when the platform's IPAM kind lands,
 reference its pool output instead.
 
 This field is ForceNew: changing it requires replacing the EIP.

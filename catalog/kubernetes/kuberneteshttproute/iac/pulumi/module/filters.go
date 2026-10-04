@@ -12,7 +12,7 @@ import (
 // structurally identical yet distinct type tree there
 // (HTTPRouteSpecRulesBackendRefsFilters*), so backend_refs.go carries a parallel
 // set of builders. The duplication is forced by the generated SDK, not by the
-// Planton model (the same pattern the Gateway component uses for its two
+// Planton model (the same pattern the Gateway kind uses for its two
 // non-interchangeable namespace-selector types).
 
 // buildRuleFilters maps rule-level filters. Each filter is a discriminated union

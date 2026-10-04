@@ -1,5 +1,5 @@
 # AwsEventBridgeBus install profile used as a prerequisite by composed
-# components (declared via the scenario's e2e-prerequisites annotation).
+# kinds (declared via the scenario's e2e-prerequisites annotation).
 # A simple custom bus with AWS defaults -- enough for rule scenarios that
 # attach event-pattern rules to a named bus. Full metadata is supplied for
 # tagging/orphan cleanup.

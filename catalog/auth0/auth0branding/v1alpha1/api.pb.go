@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Branding is a component that manages how an Auth0 tenant's Universal Login
+// Auth0Branding is a kind that manages how an Auth0 tenant's Universal Login
 // looks: the logo, favicon, colors and font every login page shares, the full
 // page template the pages render inside, and optionally the no-code theme
 // (borders, colors, fonts, the page background and the login box).

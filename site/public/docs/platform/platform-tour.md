@@ -168,7 +168,7 @@ Beyond the context selector, the header provides quick access to two important f
 Click the store icon in the header (right side) to open the catalog of deployable infrastructure kinds. The store has two sections:
 
 - **Catalog Kinds** — individual Infra Component templates (e.g., AWS VPC, GCP GKE Cluster, Azure AKS). Filter by cloud provider and search by name. Click **Deploy** on any kind to start the deployment wizard.
-- **Infra Charts** — pre-composed collections of catalog kinds that deploy together as a coordinated unit (e.g., an AWS ECS environment with VPC, cluster, load balancer, and DNS).
+- **Infra Charts** — pre-composed templates of catalog objects installed together as a coordinated unit (e.g., an AWS ECS environment with VPC, cluster, load balancer, and DNS).
 
 <!-- SCREENSHOT: Infra Catalog
   Page: /platform/deployment-store

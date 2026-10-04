@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptScreenPartials is a component that manages the HTML fragments one
+// Auth0PromptScreenPartials is a kind that manages the HTML fragments one
 // Universal Login prompt inserts at its named insertion points: extra form
 // fields, consent checkboxes, a note above the buttons, on each of the
 // prompt's screens.

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentMethodDomain is a component that registers a domain where the account's own
+// StripePaymentMethodDomain is a kind that registers a domain where the account's own
 // checkout pages may show wallet buttons (Apple Pay, Google Pay, Link, PayPal, Amazon Pay, Klarna).
 //
 // status.outputs reports each wallet's state and Stripe's reason when one is inactive. Destroy

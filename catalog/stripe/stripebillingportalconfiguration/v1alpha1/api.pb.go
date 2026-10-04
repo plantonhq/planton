@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeBillingPortalConfiguration is a component that declares what Stripe's customer portal
+// StripeBillingPortalConfiguration is a kind that declares what Stripe's customer portal
 // lets a customer do: cancel, update payment methods and details, see invoices.
 //
 // It creates a configuration of its own and never adopts the account's default; the application

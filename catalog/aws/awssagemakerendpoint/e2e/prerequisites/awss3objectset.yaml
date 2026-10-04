@@ -8,7 +8,7 @@
 # your model within the allotted 180 second timeout", live-caught
 # 2026-08-25). Any other kind composing the AwsSagemakerModel install
 # profile needs its own copy of this override (transitive prerequisites
-# resolve against the component under test).
+# resolve against the kind under test).
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsS3ObjectSet
 metadata:

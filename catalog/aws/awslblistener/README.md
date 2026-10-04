@@ -10,7 +10,7 @@ A listener is a first-class node in the routing graph. One load balancer
 carries many listeners (80 and 443 at minimum on most ALBs), each listener
 owns its own certificates and default behavior, and per-service listener
 rules attach to a specific listener as services deploy. Modeling it as its
-own component -- instead of folding it into the load balancer -- lets you:
+own kind -- instead of folding it into the load balancer -- lets you:
 
 - **Keep the load balancer stable**: adding a port, rotating a certificate,
   or changing the default action edits one listener, never the shared

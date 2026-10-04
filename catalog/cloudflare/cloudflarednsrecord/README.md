@@ -4,9 +4,9 @@ Provision and manage individual DNS records in Cloudflare zones using Planton's 
 
 ## Overview
 
-Cloudflare DNS provides authoritative DNS served from a global anycast network, with built-in DDoS protection, zero per-query charges, and optional integrated CDN/WAF/proxy capabilities. This component manages a single DNS record within a Cloudflare-managed zone and covers the full Cloudflare record surface — every record type, structured record data, tags, and record-level settings.
+Cloudflare DNS provides authoritative DNS served from a global anycast network, with built-in DDoS protection, zero per-query charges, and optional integrated CDN/WAF/proxy capabilities. This kind manages a single DNS record within a Cloudflare-managed zone and covers the full Cloudflare record surface — every record type, structured record data, tags, and record-level settings.
 
-A record is either **simple** (its value is a presentation-format string in `content`, written as a literal or read from another resource's output) or **structured** (its components are supplied through a typed `data` block). The component validates which representation a given type requires.
+A record is either **simple** (its value is a presentation-format string in `content`, written as a literal or read from another resource's output) or **structured** (its components are supplied through a typed `data` block). The kind validates which representation a given type requires.
 
 ## Key Features
 

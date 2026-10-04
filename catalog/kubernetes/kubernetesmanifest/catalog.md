@@ -79,7 +79,7 @@ The InfraPipeline deploys the namespace first, then applies the manifest resourc
 
 These are the most important decisions when configuring a Kubernetes Manifest deployment. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Manifest YAML content** -- The `manifestYaml` field is the core of this component. Paste any valid Kubernetes YAML, including multi-document manifests separated by `---`. The IaC module handles resource ordering automatically, applying CRDs before custom resources that depend on them.
+**Manifest YAML content** -- The `manifestYaml` field is the core of this kind. Paste any valid Kubernetes YAML, including multi-document manifests separated by `---`. The IaC module handles resource ordering automatically, applying CRDs before custom resources that depend on them.
 
 **Namespace behavior** -- The `namespace` field is an ANCHOR, not a rewrite: namespaced documents that do not declare their own `metadata.namespace` are applied there, documents with an explicit namespace keep it, and cluster-scoped documents (CRDs, ClusterRoles) are never distorted by it. Set `createNamespace: true` to create the anchor namespace if it does not exist.
 

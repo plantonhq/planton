@@ -44,7 +44,7 @@ const (
 //
 // The cloud-side half (IAM binding / trust policy / federated credential) is owned by
 // the referenced cloud identity resource, which is why every arm is a StringValueOrRef:
-// in an infra chart the cluster, the cloud identity, and the Kubernetes kind
+// in an infra chart the cluster, the cloud identity, and the Kubernetes component
 // deploy in one run, with the identity handle flowing in as a reference.
 type KubernetesWorkloadIdentity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

@@ -17,7 +17,7 @@ Also not the right kind when:
   managed-Keeper arm (`ClickHouseKeeperInstallation` resources are
   reconciled by this same operator).
 - **You want a managed cloud analytics service** — use ClickHouse
-  Cloud or the host cloud provider's managed offerings; this component
+  Cloud or the host cloud provider's managed offerings; this kind
   is for running ClickHouse ON the Kubernetes cluster itself.
 
 ## Overview

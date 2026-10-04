@@ -58,7 +58,7 @@ spec:
 planton apply -f openfga-authz-model.yaml
 ```
 
-This creates an authorization model with a `user` type and a `document` type carrying viewer, editor, and owner relations, and surfaces the new model version's ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this component provisions with Terraform/OpenTofu. An Infra Job tracks the provisioning in real time.
+This creates an authorization model with a `user` type and a `document` type carrying viewer, editor, and owner relations, and surfaces the new model version's ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this kind provisions with Terraform/OpenTofu. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 

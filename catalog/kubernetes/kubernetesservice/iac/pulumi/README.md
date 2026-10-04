@@ -4,7 +4,7 @@
 
 This Pulumi module creates and manages a standalone Kubernetes Service. It supports the complete core/v1 ServiceSpec surface: all four service types (ClusterIP, NodePort, LoadBalancer, ExternalName), headless services, traffic policies, topology-aware `trafficDistribution`, session affinity, LoadBalancer tuning knobs, and dual-stack addressing.
 
-This is the reference engine for the component: it applies the full spec, including `traffic_distribution`, which the Terraform module cannot (the Terraform kubernetes provider does not expose the field — the Terraform module fails its plan loudly when it is set).
+This is the reference engine for the kind: it applies the full spec, including `traffic_distribution`, which the Terraform module cannot (the Terraform kubernetes provider does not expose the field — the Terraform module fails its plan loudly when it is set).
 
 ## Architecture
 

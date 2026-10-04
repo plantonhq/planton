@@ -38,16 +38,16 @@ const (
 //
 // Key design choices:
 //   - HTTP APIs only (WebSocket APIs are a separate protocol surface with their own
-//     route/response model and would be their own component).
+//     route/response model and would be their own kind).
 //   - Routes carry inline integration config; the module deduplicates shared backends.
 //   - A single stage (defaults to "$default" with auto-deploy) since Planton resources
 //     are already environment-scoped.
 //   - Authorizers are named and referenced by routes for clean separation.
-//   - Custom domains are the AwsHttpApiDomain component (a domain outlives any one API
-//     and maps many APIs); VPC links are the AwsHttpApiVpcLink component (one link is
+//   - Custom domains are the AwsHttpApiDomain kind (a domain outlives any one API
+//     and maps many APIs); VPC links are the AwsHttpApiVpcLink kind (one link is
 //     shared by many APIs and owns its own network attachment).
 //   - API keys and usage plans are a REST API feature (the AwsRestApiUsagePlan
-//     component); HTTP APIs do not support them -- use JWT/IAM/Lambda authorizers.
+//     kind); HTTP APIs do not support them -- use JWT/IAM/Lambda authorizers.
 //
 // Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsHttpApiGatewaySpec struct {

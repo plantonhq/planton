@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesenvoyfilterv1alpha1.Kube
 
 // createEnvoyFilter creates the namespaced Istio EnvoyFilter using the typed crd2pulumi SDK
 // (istionetworkingv1alpha3.NewEnvoyFilter), consistent with every other Planton Istio
-// component. EnvoyFilter is the only Istio API component still served at networking/v1alpha3
+// kind. EnvoyFilter is the only Istio API kind still served at networking/v1alpha3
 // (it has not graduated to v1). Every block is attached only when present so unset fields
 // fall through to istiod's defaults.
 func createEnvoyFilter(

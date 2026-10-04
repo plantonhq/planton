@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 // KubernetesCloudNativePgOperatorIacInput is the input for both IaC
 // modules (Pulumi and Terraform) of the kubernetes-cloud-native-pg-operator
-// component.
+// kind.
 message KubernetesCloudNativePgOperatorIacInput {
   // the kubernetes-cloud-native-pg-operator resource to deploy
   KubernetesCloudNativePgOperator target = 1;

@@ -1,6 +1,6 @@
 # Internal GcpAddress scenario: exercises the GCE_ENDPOINT branch with a
 # subnetwork reference from the consumer-scoped GcpSubnetwork prerequisite.
-# The harness deploys GcpVpcNetwork (registry prerequisite) then this component's
+# The harness deploys GcpVpcNetwork (registry prerequisite) then this kind's
 # gcpsubnetwork override, resolves the subnetwork self-link, then applies
 # this INTERNAL reservation. project_id is deliberately omitted.
 apiVersion: gcp.planton.dev/v1alpha1

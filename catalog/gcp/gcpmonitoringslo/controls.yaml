@@ -11,7 +11,7 @@ spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: An SLO stores no customer data -- its goal, period, and SLI definition (and any Monitoring service this kind creates) are Cloud Monitoring control-plane metadata; the metric data the SLI reads lives in Monitoring's datastore, not in this component.
+      notes: An SLO stores no customer data -- its goal, period, and SLI definition (and any Monitoring service this component creates) are Cloud Monitoring control-plane metadata; the metric data the SLI reads lives in Monitoring's datastore, not in this component.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: There is no data at rest to key (see enc-at-rest); the Monitoring API exposes no CMEK surface for SLOs or services.

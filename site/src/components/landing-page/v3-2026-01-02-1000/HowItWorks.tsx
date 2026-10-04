@@ -43,7 +43,7 @@ const infraSteps = [
   },
   {
     title: 'Choose Infra',
-    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} pre-built components`,
+    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} pre-built kinds`,
     iconType: 'lucide' as const,
     icon: Layers,
   },

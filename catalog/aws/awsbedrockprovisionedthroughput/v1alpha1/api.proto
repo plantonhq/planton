@@ -7,7 +7,7 @@ import "catalog/aws/awsbedrockprovisionedthroughput/v1alpha1/outputs.proto";
 import "catalog/aws/awsbedrockprovisionedthroughput/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsBedrockProvisionedThroughput is a component for purchasing and
+// AwsBedrockProvisionedThroughput is a kind for purchasing and
 // managing Amazon Bedrock Provisioned Throughput - dedicated model serving
 // capacity in model units, the required serving path for fine-tuned custom
 // models.

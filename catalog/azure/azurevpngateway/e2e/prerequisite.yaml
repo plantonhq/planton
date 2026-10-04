@@ -1,5 +1,5 @@
 # AzureVpnGateway install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureVpnGateway] in the kind
+# kinds (declared via prerequisites: [AzureVpnGateway] in the kind
 # registry -- the VPN gateway connection). The harness deploys this
 # document after the fixture hub and captures its outputs --
 # vpn_gateway_id in particular -- for dependents' references to resolve

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockCustomModel is a component for creating and managing Amazon
+// AwsBedrockCustomModel is a kind for creating and managing Amazon
 // Bedrock custom models - foundation models customized with your training
 // data through a model-customization job (fine-tuning, continued
 // pre-training, or distillation).

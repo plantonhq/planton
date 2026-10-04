@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeTaxRate is a component that declares a manual tax rate that invoices, subscriptions,
+// StripeTaxRate is a kind that declares a manual tax rate that invoices, subscriptions,
 // Checkout sessions and payment links apply.
 //
 // A rate's percentage and inclusiveness never change in Stripe, so changing them replaces the

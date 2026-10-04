@@ -5,7 +5,7 @@
 # project-scoped chain and roles as the minimal scenario. Two bindings of the
 # same value on one project would collide, so this scenario binds the value
 # to the project only when the minimal one is not also live -- the harness
-# runs scenarios sequentially per component and destroys between them.
+# runs scenarios sequentially per kind and destroys between them.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpTagBinding
 metadata:

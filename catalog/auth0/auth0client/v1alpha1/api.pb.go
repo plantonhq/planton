@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Client is a component that configures an Application in Auth0.
+// Auth0Client is a kind that configures an Application in Auth0.
 // In the Auth0 dashboard, these are shown as "Applications" - they represent clients
 // that can authenticate users and request access to APIs.
 //

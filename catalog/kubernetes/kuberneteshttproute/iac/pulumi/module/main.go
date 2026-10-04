@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, iacInput *kuberneteshttproutev1alpha1.Kubern
 
 // createHttpRoute creates the namespaced Gateway API HTTPRoute using the typed
 // crd2pulumi SDK (gatewayv1.NewHTTPRoute), consistent with every other Planton
-// ingress component. The typed approach catches field-name and structure errors
+// ingress kind. The typed approach catches field-name and structure errors
 // at compile time rather than at deployment time. The upstream HTTPRouteSpec is
 // the largest in the family, so its mapping is split across parent_refs.go,
 // rules.go, matches.go, filters.go, and backend_refs.go.

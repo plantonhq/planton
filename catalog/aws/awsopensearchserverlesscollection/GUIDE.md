@@ -1,6 +1,6 @@
 # AwsOpenSearchServerlessCollection — Kind Guide
 
-The authored wisdom layer for this component: internal conventions, judgment
+The authored wisdom layer for this kind: internal conventions, judgment
 calls, and operational judgment earned while building it. The reference for
 fields is `v1alpha1/reference.md`; this file explains the decisions the
 schema alone cannot.
@@ -14,7 +14,7 @@ schema alone cannot.
   exactly this collection (`collection/<name>`, `index/<name>/<pattern>`).
   The account-wide pattern-matching form those policies also support is a
   different tool (one policy governing many collections) and deliberately
-  outside this component's contract; it belongs to future standalone policy
+  outside this kind's contract; it belongs to future standalone policy
   kinds if demand appears.
 - **The encryption policy is ALWAYS rendered** — AWS rejects
   CreateCollection without a matching encryption policy, so an omitted

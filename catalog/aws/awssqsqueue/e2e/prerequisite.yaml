@@ -1,4 +1,4 @@
-# AwsSqsQueue install profile used as a prerequisite by composed components
+# AwsSqsQueue install profile used as a prerequisite by composed kinds
 # (declared via the scenario's e2e-prerequisites annotation). A standard
 # queue with AWS defaults -- enough for Lambda event-source mapping scenarios
 # that wire SQS into compute. Full metadata is supplied for tagging/orphan

@@ -10,7 +10,7 @@ Volumes sit at the bottom of the ONTAP hierarchy:
 
 - **File System** provides physical infrastructure (storage, throughput, HA pairs)
 - **SVM** provides the logical data server (protocols, endpoints, Active Directory)
-- **Volume** provides data containers (this component)
+- **Volume** provides data containers (this kind)
 
 ## When to Use
 

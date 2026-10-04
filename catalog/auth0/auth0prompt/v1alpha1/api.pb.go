@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Prompt is a component that manages how an Auth0 tenant's login flow
+// Auth0Prompt is a kind that manages how an Auth0 tenant's login flow
 // behaves: whether it runs the Universal Login experience, whether it asks for
 // the identifier first and the password on a second screen, and whether the
 // device's own authenticator is offered as the first factor.

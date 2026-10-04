@@ -25,7 +25,7 @@ var vars = struct {
 	// The one index-schema generation this component renders: TSDB on
 	// schema v13 with 24h index periods — the current-generation Loki
 	// schema. Upstream makes every user hand-author this block; deriving
-	// it is this component's ergonomic win.
+	// it is this kind's ergonomic win.
 	SchemaStore       string
 	SchemaVersion     string
 	SchemaIndexPrefix string

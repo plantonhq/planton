@@ -23,7 +23,7 @@ subject (the `auth0|...` user id, exactly the `sub` claim in every token
 issued for the user) is an output, so other declarations reference the
 identity by output instead of copying a value someone read from a dashboard.
 
-Roles and API permissions are folded into this component: the IaC modules
+Roles and API permissions are folded into this kind: the IaC modules
 create the user AND set its complete role list and permission list in one
 deployment, and both sets are authoritative -- a role or permission removed
 from the manifest is removed from the user on the next apply.

@@ -15,7 +15,7 @@ the activity-logging controls, and the account's proxy auto-config (PAC)
 files.
 
 The spec folds three Cloudflare surfaces with different lifecycles into
-one component:
+one kind:
   - settings: the account configuration SINGLETON. Create and update are
     the same PUT; destroy is a NO-OP that abandons the live configuration
     exactly as last applied. An UNSET sub-object is NOT MANAGED -- it is

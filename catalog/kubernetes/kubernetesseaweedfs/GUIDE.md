@@ -1,7 +1,7 @@
 # KubernetesSeaweedFs Guide
 
 The judgment this guide carries: this is the catalog's in-cluster answer
-whenever another component says "requires object storage" — Loki's
+whenever another kind says "requires object storage" — Loki's
 scalable mode, Tempo beyond one replica, Flink's stateful upgrades,
 MLflow's multi-replica artifacts, Velero's backup target. When one of
 those guides sends you here, this kind plus one credentials hop

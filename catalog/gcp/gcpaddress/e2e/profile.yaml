@@ -4,7 +4,7 @@ metadata:
   name: gcpaddress
 spec:
   # Composed scenario: external addresses need only the GcpVpcNetwork prerequisite
-  # from the kind registry (no component-specific prerequisite.yaml — the
+  # from the kind registry (no kind-specific prerequisite.yaml — the
   # harness installs the VPC's published install profile). Two scenarios cover
   # the kind's two primary branches — an EXTERNAL regional IP (minimal) and an
   # INTERNAL GCE_ENDPOINT in a subnetwork chain (internal-subnetwork). deploy

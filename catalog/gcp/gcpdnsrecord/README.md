@@ -15,7 +15,7 @@ primary/backup failover with health-checked targets.
   and owners.
 - **All record types**: `type` accepts any record type the Cloud DNS API
   supports (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA, HTTPS, SVCB,
-  DS, DNSKEY, TLSA, SSHFP, NAPTR, ...), so new types need no component
+  DS, DNSKEY, TLSA, SSHFP, NAPTR, ...), so new types need no kind
   change.
 - **Traffic steering**: weighted round robin for canary rollouts, geo
   routing for latency-sensitive multi-region serving, and primary/backup

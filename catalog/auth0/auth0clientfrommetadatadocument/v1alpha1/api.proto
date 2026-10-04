@@ -7,7 +7,7 @@ import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0ClientFromMetadataDocument is a component that registers an application
+// Auth0ClientFromMetadataDocument is a kind that registers an application
 // in an Auth0 tenant from its Client ID Metadata Document -- a JSON file the
 // application's owner hosts at an https URL. Auth0 fetches the document and
 // registers the application from it: the path an MCP client takes to onboard

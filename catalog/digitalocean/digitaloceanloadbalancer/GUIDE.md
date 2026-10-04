@@ -15,7 +15,7 @@ DigitalOcean Let's Encrypt certificates rotate their UUID on every auto-renewal.
 - **REGIONAL** (the default when `type` is unset) and **REGIONAL_NETWORK** require a `region` and `forwardingRules`. They may take a `vpc`.
 - **GLOBAL** forbids a `region` and `forwardingRules`. It routes through `glbSettings` (required), plus `domains` and `targetLoadBalancerIds` pointing at regional balancers. A GLOBAL balancer has no VPC.
 
-The provider's own check allows region-without-type (it implies REGIONAL). This component mirrors that.
+The provider's own check allows region-without-type (it implies REGIONAL). This kind mirrors that.
 
 ## Droplet IDs versus a tag
 

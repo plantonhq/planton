@@ -74,7 +74,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means ENABLED (the AWS default) -- deletion is refused until this is explicitly set to false and applied. Teardown is deliberately two steps, and even then AWS holds the store in PENDING_DELETION for 7 days before the purge.
-      notes: The rare governance component where deletion protection is the default posture rather than an opt-in -- disabling it is the visible manifest act.
+      notes: The rare governance kind where deletion protection is the default posture rather than an opt-in -- disabling it is the visible manifest act.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

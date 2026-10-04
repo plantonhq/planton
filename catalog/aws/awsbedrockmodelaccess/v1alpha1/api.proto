@@ -7,7 +7,7 @@ import "catalog/aws/awsbedrockmodelaccess/v1alpha1/outputs.proto";
 import "catalog/aws/awsbedrockmodelaccess/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsBedrockModelAccess is a component for managing Amazon Bedrock model
+// AwsBedrockModelAccess is a kind for managing Amazon Bedrock model
 // access - the marketplace agreement (and, where required, the account
 // use-case form) that entitles an AWS account to invoke a specific
 // foundation model in a region.

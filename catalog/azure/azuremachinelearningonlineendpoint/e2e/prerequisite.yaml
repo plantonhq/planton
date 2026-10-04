@@ -1,5 +1,5 @@
 # AzureMachineLearningOnlineEndpoint install profile used as a fixture
-# by dependent components (declared via prerequisites:
+# by dependent kinds (declared via prerequisites:
 # [AzureMachineLearningOnlineEndpoint] in the kind registry -- the
 # online-deployment lane). The harness deploys this document after the
 # fixture workspace chain and captures its outputs --

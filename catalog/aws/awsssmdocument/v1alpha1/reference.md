@@ -21,7 +21,7 @@ documents at schema version 1.x can only be updated when the
 content itself changes (an AWS rule for legacy command documents).
 
 Associations (State Manager bindings of a document to targets on a
-schedule) are their own AwsSsmAssociation component - an association
+schedule) are their own AwsSsmAssociation kind - an association
 binds ANY document, AWS-managed or customer-owned, so it is not this
 document's satellite.
 

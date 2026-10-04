@@ -86,7 +86,7 @@ These are the most important decisions when configuring a Tempo installation. Ex
 
 **The metrics generator lights up Grafana's service map** — it derives service-graph and span metrics from the trace stream and remote-writes them to a Prometheus. The URL accepts a literal or a reference to a **kube-prometheus-stack** (its `prometheus_endpoint` output); the target Prometheus must accept pushes (`prometheus.enableRemoteWriteReceiver: true` on the stack), and when the URL carries no path the modules append the standard `/api/v1/write`. An empty `processors` list runs both `serviceGraphs` and `spanMetrics` — Tempo's own default set.
 
-**Grafana is the query surface** — `tempoQueryEnabled` adds the Jaeger-UI-compatible query sidecar on 16686 only for tooling that speaks the Jaeger API. `usageReporting` is the component's privacy-first divergence from Tempo's report-by-default: no anonymous statistics leave the cluster without an explicit opt-in.
+**Grafana is the query surface** — `tempoQueryEnabled` adds the Jaeger-UI-compatible query sidecar on 16686 only for tooling that speaks the Jaeger API. `usageReporting` is the kind's privacy-first divergence from Tempo's report-by-default: no anonymous statistics leave the cluster without an explicit opt-in.
 
 **`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (per-receiver tuning, tenant overrides, search concurrency). Anything here silently overrides the typed fields on every deploy; never put secrets in it (object-storage credentials belong in the typed Secret-reference fields), and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
 

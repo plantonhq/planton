@@ -32,7 +32,7 @@ See `variables.tf` for the full variable specification.
 
 Existing GatewayClasses can be adopted into state. `kubectl_manifest` uses the
 composed import ID `apiVersion//kind//name` (no namespace -- GatewayClass is
-cluster-scoped); the component's `iac/import-map.yaml` derives each part
+cluster-scoped); the kind's `iac/import-map.yaml` derives each part
 (apiVersion and kind are constants of this module).
 
 ## Outputs

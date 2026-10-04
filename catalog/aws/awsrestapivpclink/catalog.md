@@ -1,6 +1,6 @@
 # AWS REST API VPC Link
 
-Deploys an API Gateway v1 VPC link — the Network Load Balancer attachment that REST API integrations route through to reach private services inside a VPC without exposing them to the internet. One link is shared by many APIs and owns its own network attachment, which is why it is its own component rather than a field on the REST API. The target balancer is create-time immutable: AWS accepts exactly one NLB per link and has no update for it, so a different NLB means a new link. HTTP APIs use a different link resource that attaches to subnets directly — that is the AWS HTTP API VPC Link, and the two are not interchangeable.
+Deploys an API Gateway v1 VPC link — the Network Load Balancer attachment that REST API integrations route through to reach private services inside a VPC without exposing them to the internet. One link is shared by many APIs and owns its own network attachment, which is why it is its own kind rather than a field on the REST API. The target balancer is create-time immutable: AWS accepts exactly one NLB per link and has no update for it, so a different NLB means a new link. HTTP APIs use a different link resource that attaches to subnets directly — that is the AWS HTTP API VPC Link, and the two are not interchangeable.
 
 ## What Gets Created
 

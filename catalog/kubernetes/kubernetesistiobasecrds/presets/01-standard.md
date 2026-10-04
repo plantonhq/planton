@@ -10,7 +10,7 @@ This preset installs the Istio custom resource definitions on a cluster. The spe
 
 ## Key Configuration Choices
 
-- **Empty spec** (`spec: {}`) — the component installs the Istio CRD set as-is; versioning follows the component's pinned Istio release, so there is nothing to tune
+- **Empty spec** (`spec: {}`) — the component installs the Istio CRD set as-is; versioning follows the kind's pinned Istio release, so there is nothing to tune
 
 ## Placeholders to Replace
 

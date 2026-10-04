@@ -1,4 +1,4 @@
-# Install manifest used when OTHER components declare KubernetesIstio as an
+# Install manifest used when OTHER kinds declare KubernetesIstio as an
 # E2E prerequisite (the behavioral-routing and behavioral-deny scenarios that
 # need a REAL mesh: istiod is the catalog's first in-catalog Gateway API
 # implementation). Sidecar mode; auto-provisioned Gateway API gateways get

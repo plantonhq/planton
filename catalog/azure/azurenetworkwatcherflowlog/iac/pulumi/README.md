@@ -25,4 +25,4 @@ Creates a Network Watcher flow log -- the recorder that writes network traffic m
 
 ## Required Permissions
 
-The deploying principal's least-privilege action set lives in the component's permissions manifest, `../permissions.yaml`.
+The deploying principal's least-privilege action set lives in the kind's permissions manifest, `../permissions.yaml`.

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `AwsRoute53DnsRecord` component enables declarative management of individual DNS records in AWS Route53 hosted zones. This kind is designed for users who need fine-grained control over DNS records, including support for advanced Route53 features like alias records and routing policies.
+The `AwsRoute53DnsRecord` kind enables declarative management of individual DNS records in AWS Route53 hosted zones. This kind is designed for users who need fine-grained control over DNS records, including support for advanced Route53 features like alias records and routing policies.
 
 Route53's alias records are a powerful AWS-specific feature that allows pointing zone apex domains (like `example.com`) directly to AWS resources without the restrictions of CNAME records, and without incurring Route53 query charges for alias queries to AWS resources.
 

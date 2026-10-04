@@ -7,7 +7,7 @@ import "catalog/stripe/stripeproduct/v1alpha1/outputs.proto";
 import "catalog/stripe/stripeproduct/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeProduct is a component that declares one thing a Stripe account sells, as customers see
+// StripeProduct is a kind that declares one thing a Stripe account sells, as customers see
 // it, and the entitlement features buying it grants.
 //
 // Prices are separate resources (StripePrice names its product). Destroy archives the product;

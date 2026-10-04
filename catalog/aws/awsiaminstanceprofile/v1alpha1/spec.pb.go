@@ -33,7 +33,7 @@ const (
 // instance. Everything EC2-shaped (an instance's iam_instance_profile_arn, a
 // launch template, an Auto Scaling group) references the profile, while
 // everything else on AWS (Lambda, ECS, EKS, ...) assumes the role directly.
-// Modeling the profile as its own component keeps that boundary honest: roles
+// Modeling the profile as its own kind keeps that boundary honest: roles
 // serve every service, and the profile exists only where EC2 needs it.
 //
 // The profile name comes from metadata.name. Name and path are create-only

@@ -1,6 +1,6 @@
 # Kubernetes TLSRoute
 
-Creates a namespaced Kubernetes Gateway API `TLSRoute` -- a route that matches inbound TLS connections by their **SNI hostname** and forwards them, still encrypted, to one or more backend Services (TLS passthrough). The Gateway never decrypts the traffic: the backend terminates TLS itself. This is the standard way to expose services that must hold their own certificate (databases, mTLS services, or apps doing end-to-end TLS). This component mirrors the upstream Gateway API `TLSRoute` (standard channel, `gateway.networking.k8s.io/v1` from Gateway API v1.6) spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `TLSRoute` -- a route that matches inbound TLS connections by their **SNI hostname** and forwards them, still encrypted, to one or more backend Services (TLS passthrough). The Gateway never decrypts the traffic: the backend terminates TLS itself. This is the standard way to expose services that must hold their own certificate (databases, mTLS services, or apps doing end-to-end TLS). This kind mirrors the upstream Gateway API `TLSRoute` (standard channel, `gateway.networking.k8s.io/v1` from Gateway API v1.6) spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 

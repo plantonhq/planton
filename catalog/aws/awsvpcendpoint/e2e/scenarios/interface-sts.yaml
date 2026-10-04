@@ -3,7 +3,7 @@
 # honestly -- the VPC prerequisite enables both DNS support and DNS hostnames,
 # which is exactly what AWS requires for a private hosted zone association.
 # No security groups are given, so AWS falls back to the VPC's default
-# security group (the documented default this component preserves). STS is
+# security group (the documented default this kind preserves). STS is
 # chosen because it exists in every region and carries no data-path setup.
 # Full metadata is supplied for tagging/orphan cleanup.
 apiVersion: aws.planton.dev/v1alpha1

@@ -521,7 +521,7 @@ Enabling `public_access` provisions the managed r2.dev domain directly. For prod
 
 ### Versioning
 
-R2 does not support object versioning, so it is not modeled by this component.
+R2 does not support object versioning, so it is not modeled by this kind.
 
 ## Additional Resources
 

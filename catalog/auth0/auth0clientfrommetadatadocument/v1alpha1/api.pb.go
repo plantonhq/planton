@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ClientFromMetadataDocument is a component that registers an application
+// Auth0ClientFromMetadataDocument is a kind that registers an application
 // in an Auth0 tenant from its Client ID Metadata Document -- a JSON file the
 // application's owner hosts at an https URL. Auth0 fetches the document and
 // registers the application from it: the path an MCP client takes to onboard

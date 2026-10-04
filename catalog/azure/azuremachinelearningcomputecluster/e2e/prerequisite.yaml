@@ -1,5 +1,5 @@
 # AzureMachineLearningComputeCluster install profile used as a fixture
-# by dependent components (declared via the e2e-prerequisites
+# by dependent kinds (declared via the e2e-prerequisites
 # annotation -- the batch-deployment lane, whose recipe the service
 # refuses to create without a compute target). The harness deploys this
 # document after the fixture workspace chain and captures its outputs --

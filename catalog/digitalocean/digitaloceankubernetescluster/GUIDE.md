@@ -29,7 +29,7 @@ Changing the default pool's `size` (or `gpuPartitionMode`) does not resize the p
 
 ## HA is a one-way door with a price tag
 
-`highlyAvailable: true` gives the control plane multiple replicas and a real SLA, at an extra monthly cost — and it can never be turned off again. Turn it on for production clusters whose API must survive a control-plane node loss; leave it off for everything else. Note that on newer DOKS versions DigitalOcean's own default is HA ON — this component sends an explicit false when unset, so you never get a surprise HA bill.
+`highlyAvailable: true` gives the control plane multiple replicas and a real SLA, at an extra monthly cost — and it can never be turned off again. Turn it on for production clusters whose API must survive a control-plane node loss; leave it off for everything else. Note that on newer DOKS versions DigitalOcean's own default is HA ON — this kind sends an explicit false when unset, so you never get a surprise HA bill.
 
 ## Firewall the control plane, but don't lock yourself out
 

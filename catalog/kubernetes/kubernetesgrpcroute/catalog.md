@@ -1,6 +1,6 @@
 # Kubernetes GRPCRoute
 
-Creates a namespaced Kubernetes Gateway API `GRPCRoute` -- a route that matches **gRPC requests** by hostname (`:authority`), service/method, or header, optionally transforms them with filters, and forwards them to one or more backend Services through a Gateway. GRPCRoute is part of the Gateway API **standard channel** (served as `gateway.networking.k8s.io/v1`). This is the first-class way to expose a gRPC API behind a Gateway -- weighted canaries, header-based routing, and request mirroring included. This component mirrors the upstream Gateway API `GRPCRoute` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `GRPCRoute` -- a route that matches **gRPC requests** by hostname (`:authority`), service/method, or header, optionally transforms them with filters, and forwards them to one or more backend Services through a Gateway. GRPCRoute is part of the Gateway API **standard channel** (served as `gateway.networking.k8s.io/v1`). This is the first-class way to expose a gRPC API behind a Gateway -- weighted canaries, header-based routing, and request mirroring included. This kind mirrors the upstream Gateway API `GRPCRoute` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 

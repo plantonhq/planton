@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGatekeeper is a component that installs OPA
+// KubernetesGatekeeper is a kind that installs OPA
 // Gatekeeper, the Open Policy Agent's admission controller for
 // Kubernetes, on a cluster. Gatekeeper enforces policies declared as
 // ConstraintTemplates (Rego or CEL) instantiated by Constraint

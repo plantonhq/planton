@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Action is a component that manages an Auth0 Action.
+// Auth0Action is a kind that manages an Auth0 Action.
 // Actions are custom Node.js functions that execute at specific points in
 // the Auth0 pipeline (post-login, pre-registration, credentials-exchange, etc.)
 // to customize authentication and authorization behavior.

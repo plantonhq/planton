@@ -169,7 +169,7 @@ func buildTracingList(list []*kubernetestelemetryv1alpha1.KubernetesTelemetryTra
 // buildCustomTags maps the custom-tag map to its CRD JSON shape. Each tag carries
 // exactly one source (literal/environment/header/formatter); only the set source is
 // emitted, so the resulting object satisfies the CRD's oneOf. This nested shape is the
-// precise reason this component uses an untyped CustomResource (see createTelemetry).
+// precise reason this kind uses an untyped CustomResource (see createTelemetry).
 func buildCustomTags(tags map[string]*kubernetestelemetryv1alpha1.KubernetesTelemetryCustomTag) map[string]interface{} {
 	out := make(map[string]interface{}, len(tags))
 	for name, tag := range tags {

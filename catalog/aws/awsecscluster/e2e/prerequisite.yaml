@@ -1,5 +1,5 @@
 # AwsEcsCluster install profile used as a prerequisite by composed
-# components (the ECS service chain). A Fargate cluster is free until tasks
+# kinds (the ECS service chain). A Fargate cluster is free until tasks
 # run, so the fixture attaches both Fargate capacity providers and enables
 # nothing else -- consumers bring their own task definitions and services.
 # Full metadata is supplied for tagging/orphan cleanup.

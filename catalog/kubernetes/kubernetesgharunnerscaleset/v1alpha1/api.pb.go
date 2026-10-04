@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGhaRunnerScaleSet is a component that creates a GitHub Actions
+// KubernetesGhaRunnerScaleSet is a kind that creates a GitHub Actions
 // Runner Scale Set on a Kubernetes cluster. The scale set provides self-hosted runners
 // that automatically scale based on workflow demand.
 //

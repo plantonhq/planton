@@ -1,5 +1,5 @@
 # AwsIamInstanceProfile install profile used as a prerequisite by composed
-# components (declared via the planton.dev/e2e-prerequisites annotation or
+# kinds (declared via the planton.dev/e2e-prerequisites annotation or
 # prerequisites: [AwsIamInstanceProfile] in the kind registry). The profile
 # wraps the shared ec2-trust role fixture -- the instance-side identity a
 # launched instance assumes (the ECS Managed Instances launch template's

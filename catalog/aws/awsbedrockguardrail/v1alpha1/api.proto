@@ -7,7 +7,7 @@ import "catalog/aws/awsbedrockguardrail/v1alpha1/outputs.proto";
 import "catalog/aws/awsbedrockguardrail/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsBedrockGuardrail is a component for creating and managing Amazon
+// AwsBedrockGuardrail is a kind for creating and managing Amazon
 // Bedrock guardrails - content-safety policy sets (content filters, denied
 // topics, word filters, sensitive-information handling, contextual
 // grounding) evaluated on model inputs and outputs, with immutable

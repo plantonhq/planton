@@ -29,7 +29,7 @@ func TestEveryStripeKindHasAVerifier(t *testing.T) {
 		}
 	}
 	if _, err := GetVerifier("stripeunknown"); err == nil {
-		t.Error("an unknown component must be refused")
+		t.Error("an unknown kind must be refused")
 	}
 }
 

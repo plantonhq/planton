@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMemorydbCluster is a component for creating and managing
+// AwsMemorydbCluster is a kind for creating and managing
 // Amazon MemoryDB clusters — a fully managed, Redis-compatible, durable
 // in-memory database with microsecond reads and single-digit millisecond writes.
 type AwsMemorydbCluster struct {

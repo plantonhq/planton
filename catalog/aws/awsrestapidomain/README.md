@@ -8,7 +8,7 @@ Create and manage an [API Gateway custom domain](https://docs.aws.amazon.com/api
 for REST APIs — your hostname, your certificate, base-path mappings that
 fan paths out across APIs and stages.
 
-A domain outlives any one API, which is why it is its own component
+A domain outlives any one API, which is why it is its own kind
 rather than a field on [AwsRestApiGateway](../awsrestapigateway).
 
 ## What Gets Created

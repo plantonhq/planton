@@ -366,7 +366,7 @@ The managed r2.dev public URL has its own lifecycle and is configured outside th
 
 ### Versioning
 
-R2 does not support object versioning, so it is not modeled by this component.
+R2 does not support object versioning, so it is not modeled by this kind.
 
 ## Additional Resources
 

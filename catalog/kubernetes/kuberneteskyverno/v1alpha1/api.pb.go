@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesKyverno is a component that installs Kyverno, the
+// KubernetesKyverno is a kind that installs Kyverno, the
 // Kubernetes-native policy engine, on a Kubernetes cluster. Kyverno
 // validates, mutates, generates, and cleans up resources using policies
 // declared as Kubernetes resources — no new policy language.

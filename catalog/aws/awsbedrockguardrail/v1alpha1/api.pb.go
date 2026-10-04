@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockGuardrail is a component for creating and managing Amazon
+// AwsBedrockGuardrail is a kind for creating and managing Amazon
 // Bedrock guardrails - content-safety policy sets (content filters, denied
 // topics, word filters, sensitive-information handling, contextual
 // grounding) evaluated on model inputs and outputs, with immutable

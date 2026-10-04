@@ -42,7 +42,7 @@ Uses `pulumi-gcp/sdk/v9/go/gcp/cloudtasks` for the `cloudtasks.NewQueue` resourc
 ```bash
 cd ~/scm/github.com/plantonhq/planton/catalog/gcp/gcpcloudtasksqueue/iac/pulumi
 
-# Preview against the component's validated example manifest
+# Preview against the kind's validated example manifest
 planton pulumi preview \
   --manifest ../../e2e/manifest.yaml \
   --stack organization/<project>/<stack> \

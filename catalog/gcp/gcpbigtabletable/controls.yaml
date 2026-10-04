@@ -36,7 +36,7 @@ spec:
       evidence:
         type: provider_default
         reference: Every management call (Bigtable Admin API) and every data-plane call (reads, writes, row mutations) authorizes against IAM bigtable.* permissions on the project, instance, or table; no non-IAM access path exists.
-      notes: Table-scoped IAM bindings are deliberately not modeled on this component -- additive project-level grants compose instead (see the README's recorded modeling decisions).
+      notes: Table-scoped IAM bindings are deliberately not modeled on this kind -- additive project-level grants compose instead (see the README's recorded modeling decisions).
     - control_id: workload-identity
       status: not_applicable
       notes: The table runs no workloads and holds no credentials; callers authenticate to the Bigtable APIs with their own IAM identities.

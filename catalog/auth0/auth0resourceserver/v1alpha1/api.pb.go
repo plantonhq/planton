@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ResourceServer is a component that configures a Resource Server (API) in Auth0.
+// Auth0ResourceServer is a kind that configures a Resource Server (API) in Auth0.
 // Resource Servers represent the APIs that your applications can request access to.
 // They are essential for implementing OAuth 2.0 API authorization with Auth0.
 //

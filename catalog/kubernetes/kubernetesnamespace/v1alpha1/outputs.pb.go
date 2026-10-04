@@ -33,7 +33,7 @@ type KubernetesNamespaceOutputs struct {
 	// *
 	// The fully qualified namespace identifier.
 	// Format: <namespace>
-	// This is the same as namespace but provided for consistency with other components.
+	// This is the same as namespace but provided for consistency with other kinds.
 	NamespaceId string `protobuf:"bytes,2,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
 	// *
 	// Indicates whether resource quotas were applied to the namespace.

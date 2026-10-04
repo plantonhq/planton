@@ -17,7 +17,7 @@ against JSON Schema models, API keys and usage plans, per-method
 caching and throttling, WAF integration, canary-capable stages, EDGE/
 REGIONAL/PRIVATE endpoints, and gateway-level response customization.
 (HTTP APIs - API Gateway v2 - are the leaner, cheaper alternative and
-are the AwsHttpApiGateway component.)
+are the AwsHttpApiGateway kind.)
 
 This component bundles the API, its resource/method tree, a single
 stage with an explicit deployment, and the API-scoped satellites
@@ -38,10 +38,10 @@ Key design choices:
   surface (it needs two live deployments) and is not modeled.
 - Authorizers, models, and validators are named and referenced by
   routes for clean separation.
-- Custom domains are the AwsRestApiDomain component (a domain outlives
+- Custom domains are the AwsRestApiDomain kind (a domain outlives
   any one API and maps many APIs); VPC links are the AwsRestApiVpcLink
-  component (one link is shared by many APIs); usage plans and API
-  keys are the AwsRestApiUsagePlan component (a plan spans APIs and
+  kind (one link is shared by many APIs); usage plans and API
+  keys are the AwsRestApiUsagePlan kind (a plan spans APIs and
   stages).
 - The account-level CloudWatch-logging role is a region singleton and
   deliberately not modeled here - stage access logs (`stage.access_log`)

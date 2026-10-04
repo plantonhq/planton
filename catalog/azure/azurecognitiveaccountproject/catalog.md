@@ -13,7 +13,7 @@ When you deploy this Infra Component, the IaC module provisions:
 ### Planton Setup
 
 - **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription.
-- **An AzureCognitiveAccount** of kind `AIServices` with `projectManagementEnabled: true` (which requires the account to carry a managed identity) -- the **AI Foundry Account** preset of that component is exactly this shape.
+- **An AzureCognitiveAccount** of kind `AIServices` with `projectManagementEnabled: true` (which requires the account to carry a managed identity) -- the **AI Foundry Account** preset of that kind is exactly this shape.
 
 ### Azure Subscription
 

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSecretsManagerSecret is a component for creating and managing AWS
+// AwsSecretsManagerSecret is a kind for creating and managing AWS
 // Secrets Manager secrets - named, versioned, KMS-encrypted containers for
 // credential material with optional automatic rotation and cross-region
 // replication.

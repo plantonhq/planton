@@ -7,7 +7,7 @@ import "catalog/kubernetes/kuberneteskyverno/v1alpha1/outputs.proto";
 import "catalog/kubernetes/kuberneteskyverno/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// KubernetesKyverno is a component that installs Kyverno, the
+// KubernetesKyverno is a kind that installs Kyverno, the
 // Kubernetes-native policy engine, on a Kubernetes cluster. Kyverno
 // validates, mutates, generates, and cleans up resources using policies
 // declared as Kubernetes resources — no new policy language.

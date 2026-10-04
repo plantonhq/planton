@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeProduct is a component that declares one thing a Stripe account sells, as customers see
+// StripeProduct is a kind that declares one thing a Stripe account sells, as customers see
 // it, and the entitlement features buying it grants.
 //
 // Prices are separate resources (StripePrice names its product). Destroy archives the product;

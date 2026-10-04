@@ -121,7 +121,7 @@ Planton adds value through orchestration, governance, and collaboration — not 
 
 ## Related Documentation
 
-- [Infra Components](/docs/infrastructure/infra-components) — Deployed instances of open-source components
+- [Infra Components](/docs/infrastructure/infra-components) — Deployed instances of open-source kinds
 - [Catalog Kinds](/docs/infrastructure/catalog-kinds) — The taxonomy defined by Planton open source
 - [Infra Charts](/docs/infrastructure/infra-charts) — Composing catalog kinds into templates
 - [Infra Jobs](/docs/infrastructure/infra-jobs) — How open-source IaC modules are executed

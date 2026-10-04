@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaStore is a component that creates a store in OpenFGA.
+// OpenFgaStore is a kind that creates a store in OpenFGA.
 //
 // A store is the top-level container for authorization data in OpenFGA. Each store
 // contains authorization models (which define the relationships and permissions)

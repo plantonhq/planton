@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentMethodConfiguration is a component that declares which payment methods checkout
+// StripePaymentMethodConfiguration is a kind that declares which payment methods checkout
 // offers, method by method: on, off, or left to Stripe.
 //
 // It creates a configuration of its own and never adopts the account's default; the application

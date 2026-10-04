@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeWebhookEndpoint is a component that declares where a Stripe account delivers its events:
+// StripeWebhookEndpoint is a kind that declares where a Stripe account delivers its events:
 // the URL, the event types, and the signing secret the receiving service verifies deliveries
 // with.
 //

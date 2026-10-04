@@ -2,7 +2,7 @@
 # volume) scenarios. Deliberately the cheapest creatable ONTAP shape —
 # SINGLE_AZ_1 with the whole-file-system 128 MB/s throughput arm at the
 # 1024 GiB floor — which also live-proves the first-generation
-# throughput_capacity arm that the component's own scenarios do not carry.
+# throughput_capacity arm that the kind's own scenarios do not carry.
 # Fixed name so name-aware resolution and orphan sweeps stay stable.
 # The e2e-prerequisites annotation composes the security-group fixture this
 # manifest references (security_group_ids is optional on the kind, so it is

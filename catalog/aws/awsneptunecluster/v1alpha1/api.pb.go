@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsNeptuneCluster is a component for creating and managing
+// AwsNeptuneCluster is a kind for creating and managing
 // Amazon Neptune graph database clusters. Neptune supports property-graph
 // queries via Apache TinkerPop Gremlin and RDF queries via SPARQL.
 type AwsNeptuneCluster struct {

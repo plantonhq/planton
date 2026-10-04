@@ -20,7 +20,7 @@ When you deploy this Infra Component, the IaC module provisions:
 ### Kubernetes Cluster
 
 - The target namespace must already exist (the module does not create it).
-- For simple T-shirt-size governance on namespaces this platform creates, prefer the Kubernetes Namespace component's resource profiles — this kind is the full-fidelity instrument.
+- For simple T-shirt-size governance on namespaces this platform creates, prefer the Kubernetes Namespace kind's resource profiles — this kind is the full-fidelity instrument.
 
 ## Deploy
 

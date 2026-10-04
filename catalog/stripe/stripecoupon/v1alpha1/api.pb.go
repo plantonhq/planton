@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeCoupon is a component that declares a discount: a percentage or an amount off, once, for
+// StripeCoupon is a kind that declares a discount: a percentage or an amount off, once, for
 // some months, or forever, optionally only on some products.
 //
 // A coupon's discount never changes in Stripe, so changing it replaces the coupon (and every

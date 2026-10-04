@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetestlsroutev1alpha1.Kuberne
 
 // createTlsRoute creates the namespaced Gateway API TLSRoute using the typed
 // crd2pulumi SDK (gatewayv1.NewTLSRoute, served as gateway.networking.k8s.io/v1),
-// consistent with every other Planton ingress component. The typed approach
+// consistent with every other Planton ingress kind. The typed approach
 // catches field-name and structure errors at compile time rather than at
 // deployment time. The TLSRouteSpec mapping is split across parent_refs.go and
 // rules.go (a TLS route has no matches or filters).

@@ -705,7 +705,7 @@ func (x *GcpCloudTasksQueueLoggingConfig) GetSamplingRatio() float64 {
 //   - HTTP tasks (modern): Tasks dispatched to any HTTP endpoint. Configure
 //     queue-level authentication and routing via http_target.
 //   - App Engine tasks (legacy): Tasks dispatched to App Engine handlers.
-//     Not supported by this component (use application-level configuration).
+//     Not supported by this kind (use application-level configuration).
 //
 // Important behavioral notes:
 //

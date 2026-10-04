@@ -7,7 +7,7 @@ import "catalog/auth0/auth0promptscreenpartials/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0promptscreenpartials/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0PromptScreenPartials is a component that manages the HTML fragments one
+// Auth0PromptScreenPartials is a kind that manages the HTML fragments one
 // Universal Login prompt inserts at its named insertion points: extra form
 // fields, consent checkboxes, a note above the buttons, on each of the
 // prompt's screens.

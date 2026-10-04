@@ -10,7 +10,7 @@ The full WAFv2 statement language is modeled as a typed, recursive tree — mana
 
 ## When to Use
 
-Use this component when you need to:
+Use this kind when you need to:
 
 - Protect ALBs, API Gateways, CloudFront distributions, or App Runner services from web attacks
 - Block SQL injection, cross-site scripting, and other OWASP Top 10 threats using AWS Managed Rules

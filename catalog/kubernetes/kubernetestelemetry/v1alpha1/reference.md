@@ -162,7 +162,7 @@ INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an Planton
 foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
 labels and creates NO automatic DAG edge to any workload resource. To order this
 configuration after the workload it observes in an infra chart, express the
-dependency via metadata.relationships. See the component's "Composing in Infra
+dependency via metadata.relationships. See the kind's "Composing in Infra
 Charts" docs for the full pattern.
 
 ### spec.selector.matchLabels
@@ -197,7 +197,7 @@ valueFrom orders this configuration after the gateway it observes. A literal `va
 covers a Service, a ServiceEntry, or anything created outside Planton; istiod
 resolves group/kind/name at runtime, so order this configuration after such a target
 with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
-See the component's "Composing in Infra Charts" docs.
+See the kind's "Composing in Infra Charts" docs.
 
 - rule: {"repeated":{"maxItems":"16"}}
 

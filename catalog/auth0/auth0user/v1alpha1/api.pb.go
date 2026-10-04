@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0User is a component that manages an Auth0 User: an identity in one of
+// Auth0User is a kind that manages an Auth0 User: an identity in one of
 // the tenant's database or passwordless connections, with its profile, its
 // authoritative roles and direct API permissions, and -- on a database
 // connection -- a password the modules mint when none is declared.

@@ -63,7 +63,7 @@ spec:
     extraEnv:
       # The platform's pre-wired client environment — both values are
       # render-known literals composed from names this chart itself
-      # controls (this env surface is a plain map by the component's
+      # controls (this env surface is a plain map by the kind's
       # design: no references, no secrets — secret material would land
       # readably in the hub's values-embedding Secret).
       #

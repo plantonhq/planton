@@ -19,7 +19,7 @@ serves roughly 250 concurrent connections BEFORE scale-unit math
 matters. Growing the pool updates in place, but the pool must never
 overlap the hub, its spokes, or anything reachable through them --
 carve client space out of a range your network plan reserves for it
-(nothing routable uses this component's example `172.16.201.0/24`
+(nothing routable uses this kind's example `172.16.201.0/24`
 by convention).
 
 ## Split tunnel vs forced tunnel is a per-pool product decision

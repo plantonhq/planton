@@ -55,7 +55,7 @@ spec:
 planton apply -f openfga-tuple.yaml
 ```
 
-This writes one tuple granting `user:anne` the `viewer` relation on `document:budget-2024`, validated against the store's latest authorization model. OpenFGA ships only a Terraform provider, so this component provisions with Terraform/OpenTofu. An Infra Job tracks the provisioning in real time.
+This writes one tuple granting `user:anne` the `viewer` relation on `document:budget-2024`, validated against the store's latest authorization model. OpenFGA ships only a Terraform provider, so this kind provisions with Terraform/OpenTofu. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 

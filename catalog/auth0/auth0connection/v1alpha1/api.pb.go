@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Connection is a component that configures an identity connection in Auth0.
+// Auth0Connection is a kind that configures an identity connection in Auth0.
 // Connections are the bridge between Auth0 and identity sources, enabling users to authenticate
 // using various methods including databases, social providers, and enterprise identity providers.
 //

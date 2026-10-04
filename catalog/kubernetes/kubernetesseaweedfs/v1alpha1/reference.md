@@ -588,7 +588,7 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 `KubernetesSeaweedFsS3`
 
 S3 gateway. Empty = enabled with auth, embedded on the filer —
-the component's reason to exist. Declare explicitly to add
+the kind's reason to exist. Declare explicitly to add
 buckets, wire an existing credential config, or split the
 gateway into its own Deployment.
 

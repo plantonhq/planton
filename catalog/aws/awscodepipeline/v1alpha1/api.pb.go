@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCodePipeline is a component for creating and managing
+// AwsCodePipeline is a kind for creating and managing
 // AWS CodePipeline continuous delivery pipelines that orchestrate build,
 // test, and deploy phases of your release process through an ordered
 // sequence of stages and actions.

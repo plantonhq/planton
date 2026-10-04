@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsGlobalAccelerator is a component for creating and managing
+// AwsGlobalAccelerator is a kind for creating and managing
 // AWS Global Accelerator resources — a networking service that improves
 // availability and performance by routing traffic through the AWS global
 // network to optimal regional endpoints.

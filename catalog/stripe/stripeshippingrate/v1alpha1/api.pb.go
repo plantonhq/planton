@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeShippingRate is a component that declares a shipping option customers choose in Checkout
+// StripeShippingRate is a kind that declares a shipping option customers choose in Checkout
 // or on a payment link: a name, a fixed amount, and a delivery window.
 //
 // A rate's name, amount and delivery window never change in Stripe, so changing them replaces the

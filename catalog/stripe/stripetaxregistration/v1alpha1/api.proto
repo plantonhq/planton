@@ -7,7 +7,7 @@ import "catalog/stripe/stripetaxregistration/v1alpha1/outputs.proto";
 import "catalog/stripe/stripetaxregistration/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeTaxRegistration is a component that declares one place the account is registered to
+// StripeTaxRegistration is a kind that declares one place the account is registered to
 // collect tax with Stripe Tax.
 //
 // From its start date, Stripe Tax collects tax there on every payment that uses automatic tax.

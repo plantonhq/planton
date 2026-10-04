@@ -37,7 +37,7 @@ literal string before Terraform runs.
 ## State Import
 
 Existing GRPCRoutes can be adopted into state. `kubectl_manifest` uses the
-composed import ID `apiVersion//kind//name//namespace`; the component's
+composed import ID `apiVersion//kind//name//namespace`; the kind's
 `iac/import-map.yaml` derives each part (apiVersion and kind are constants of
 this module).
 

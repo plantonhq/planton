@@ -7,7 +7,7 @@ import "catalog/aws/awsneptunecluster/v1alpha1/outputs.proto";
 import "catalog/aws/awsneptunecluster/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsNeptuneCluster is a component for creating and managing
+// AwsNeptuneCluster is a kind for creating and managing
 // Amazon Neptune graph database clusters. Neptune supports property-graph
 // queries via Apache TinkerPop Gremlin and RDF queries via SPARQL.
 message AwsNeptuneCluster {

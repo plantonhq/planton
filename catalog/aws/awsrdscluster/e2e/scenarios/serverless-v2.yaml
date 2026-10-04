@@ -6,7 +6,7 @@
 # scenario rides the engine's current AWS default and never goes stale. The
 # subnet pair prerequisite satisfies the two-AZ DB subnet group requirement;
 # no security groups are given, so AWS attaches the VPC's default group (the
-# documented default this component preserves). skipFinalSnapshot keeps the
+# documented default this kind preserves). skipFinalSnapshot keeps the
 # destroy phase unconditional. Full metadata is supplied for tagging/orphan
 # cleanup.
 #

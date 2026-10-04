@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeRadarValueList is a component that declares a Stripe Radar list and every item in it,
+// StripeRadarValueList is a kind that declares a Stripe Radar list and every item in it,
 // for Radar rules to reference by alias.
 //
 // Items are checked against the list's type before Stripe sees them; adding an item creates it

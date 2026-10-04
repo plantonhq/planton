@@ -14,7 +14,7 @@ spec:
       notes: The project stores the site's own published build artifacts -- content produced to be served publicly -- plus configuration. Secret environment variables are managed-secret references resolved just-in-time at deploy (the spec marks them sensitive), never plaintext in the manifest. Cloudflare exposes no per-project encryption-at-rest surface for a spec field to govern.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: No data-at-rest key surface exists for this component class (see enc-at-rest); Cloudflare offers no customer-managed-key option for Pages.
+      notes: No data-at-rest key surface exists for this kind (see enc-at-rest); Cloudflare offers no customer-managed-key option for Pages.
     - control_id: enc-in-transit
       status: enforced_by_default
       evidence:

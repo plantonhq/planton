@@ -44,7 +44,7 @@ spec:
 planton apply -f openfga-store.yaml
 ```
 
-This creates a store named `production-authz` on the connected OpenFGA server and surfaces the generated store ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this component runs on OpenTofu or Terraform: set `planton.dev/provisioner: tofu` (or `terraform`), or leave it unset and the CLI asks between the two, and Pulumi is refused before anything runs. An Infra Job tracks the provisioning in real time.
+This creates a store named `production-authz` on the connected OpenFGA server and surfaces the generated store ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this kind runs on OpenTofu or Terraform: set `planton.dev/provisioner: tofu` (or `terraform`), or leave it unset and the CLI asks between the two, and Pulumi is refused before anything runs. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 

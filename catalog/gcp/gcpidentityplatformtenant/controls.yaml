@@ -82,7 +82,7 @@ spec:
       evidence:
         type: spec_default
         reference: Empty defaults to DELETE -- the tenant is deleted with ALL its users and providers, and the accounts are unrecoverable; PREVENT makes destroy fail outright, the guard for a live customer user pool; ABANDON unmanages the tenant and its IdP configs while everything keeps working in GCP. One switch governs the tenant AND its composed IdP configs.
-      notes: Both presets pin PREVENT -- for a B2B tenant, an accidental destroy is a customer's entire user base gone, the worst-case blast radius in this component family. Unlike the project config (which can never be deleted), tenants ARE fully deletable, so this dial carries real weight here.
+      notes: Both presets pin PREVENT -- for a B2B tenant, an accidental destroy is a customer's entire user base gone, the worst-case blast radius in this kind family. Unlike the project config (which can never be deleted), tenants ARE fully deletable, so this dial carries real weight here.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

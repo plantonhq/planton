@@ -49,7 +49,7 @@ const (
 // THIS (verified live): a chart-bundled database CANNOT uninstall
 // cleanly — the operator and its installation die in the same release
 // and the installation's finalizer deadlocks — which is why this
-// component composes instead of bundling.
+// kind composes instead of bundling.
 //
 // SIGNOZ OR THE COMPOSED STACK? SigNoz is the "one product instead of
 // four" path: where KubernetesKubePrometheusStack + KubernetesGrafana +

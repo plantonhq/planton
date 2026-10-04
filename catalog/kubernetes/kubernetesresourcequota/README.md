@@ -22,7 +22,7 @@ Without quotas, a namespace can consume the entire cluster — one runaway team,
 
 The single most important thing to understand about ResourceQuota: **once a quota caps a compute resource (`requests.cpu`, `limits.memory`, ...), the API REJECTS pods that omit that request or limit.** A naive `kubectl run nginx` in a compute-governed namespace fails admission.
 
-The fix is per-container defaults, which upstream models as a separate LimitRange object. This component treats the pair as one unit:
+The fix is per-container defaults, which upstream models as a separate LimitRange object. This kind treats the pair as one unit:
 
 - **`spec.hard` alone** — the quota exists; every pod must explicitly declare the capped requests/limits or be rejected
 - **`spec.hard` + `spec.limit_defaults`** — the safe pairing; workloads that omit requests/limits inherit the defaults instead of being rejected

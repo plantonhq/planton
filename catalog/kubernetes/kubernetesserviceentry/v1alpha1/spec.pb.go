@@ -97,7 +97,7 @@ type KubernetesServiceEntrySpec struct {
 	//	      name: "{{ values.app }}"
 	//	      type: depends_on
 	//
-	// See the component's "Composing in Infra Charts" docs for the full pattern.
+	// See the kind's "Composing in Infra Charts" docs for the full pattern.
 	WorkloadSelector *kubernetes.KubernetesIstioApiNetworkingWorkloadSelector `protobuf:"bytes,11,opt,name=workload_selector,json=workloadSelector,proto3" json:"workload_selector,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache

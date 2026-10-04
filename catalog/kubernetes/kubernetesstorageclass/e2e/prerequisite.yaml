@@ -1,4 +1,4 @@
-# Install manifest used when OTHER components declare KubernetesStorageClass
+# Install manifest used when OTHER kinds declare KubernetesStorageClass
 # as an E2E prerequisite (e.g. a PersistentVolumeClaim scenario composing a
 # real class through the foreign key). Uses kind's local-path provisioner so
 # claims of this class actually provision on the test cluster.

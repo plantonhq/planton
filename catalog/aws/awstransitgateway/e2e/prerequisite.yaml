@@ -4,7 +4,7 @@
 # route-table membership -- an attachment fixture is never auto-associated,
 # which would make the route-table lane's explicit association collide with
 # AWS's one-association-per-attachment rule. The dial-rich shape lives in
-# the component's own scenario.
+# the kind's own scenario.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsTransitGateway
 metadata:

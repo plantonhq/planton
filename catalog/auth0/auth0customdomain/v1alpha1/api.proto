@@ -7,7 +7,7 @@ import "catalog/auth0/auth0customdomain/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0customdomain/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0CustomDomain is a component that serves an Auth0 tenant's sign-in on a
+// Auth0CustomDomain is a kind that serves an Auth0 tenant's sign-in on a
 // domain you own -- id.example.com instead of example.eu.auth0.com -- so Universal
 // Login, the emails' links and the tokens' issuer all carry your name.
 //

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCodeBuildProject is a component for creating and managing
+// AwsCodeBuildProject is a kind for creating and managing
 // AWS CodeBuild projects with an optional webhook for source-triggered builds.
 // CodeBuild compiles source code, runs tests, and produces deployable artifacts
 // in fully managed build containers.

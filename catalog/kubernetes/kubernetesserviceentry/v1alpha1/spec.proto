@@ -178,7 +178,7 @@ message KubernetesServiceEntrySpec {
   //       - kind: KubernetesDeployment
   //         name: "{{ values.app }}"
   //         type: depends_on
-  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  // See the kind's "Composing in Infra Charts" docs for the full pattern.
   dev.planton.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector workload_selector = 11;
 }
 

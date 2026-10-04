@@ -7,7 +7,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources is the Pulumi program entry-point for the GcpRouterNat component.
+// Resources is the Pulumi program entry-point for the GcpRouterNat kind.
 func Resources(ctx *pulumi.Context, iacInput *gcprouternatv1alpha1.GcpRouterNatIacInput) error {
 	locals := initializeLocals(iacInput)
 

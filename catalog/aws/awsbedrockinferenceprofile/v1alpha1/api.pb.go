@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockInferenceProfile is a component for creating and managing
+// AwsBedrockInferenceProfile is a kind for creating and managing
 // Amazon Bedrock application inference profiles - named, taggable,
 // IAM-scopeable handles over foundation models (or AWS cross-region
 // profiles) for per-application usage tracking and cost allocation.

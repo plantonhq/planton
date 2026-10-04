@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeBillingMeter is a component that declares a usage meter -- the event the application
+// StripeBillingMeter is a kind that declares a usage meter -- the event the application
 // sends for each unit of use and how those events add up -- with alerts on usage thresholds.
 //
 // Only the display name changes in place; anything else replaces the meter, and every metered

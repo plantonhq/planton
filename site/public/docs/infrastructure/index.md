@@ -38,7 +38,7 @@ The taxonomy of available catalog kinds. Planton supports resource kinds across 
 
 ### Infra Charts
 
-Composed collections of catalog kinds that deploy together as a coordinated unit. An Infra Chart handles dependency ordering, shared configuration, and multi-resource orchestration.
+Templates of catalog objects installed together as a coordinated unit. An Infra Chart handles dependency ordering, shared configuration, and multi-resource orchestration.
 
 [Learn about Infra Charts](/docs/infrastructure/infra-charts)
 

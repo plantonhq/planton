@@ -13,7 +13,7 @@ Cloud Tasks is ideal for:
 - **Reliable task delivery** -- automatic retries with exponential backoff
 - **Microservice choreography** -- decoupling producers from consumers via HTTP dispatch
 
-## When to Use This Component
+## When to Use This Kind
 
 Use `GcpCloudTasksQueue` when you need:
 

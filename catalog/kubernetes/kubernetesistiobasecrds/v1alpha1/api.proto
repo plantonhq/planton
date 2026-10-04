@@ -9,7 +9,7 @@ import "shared/metadata.proto";
 
 // KubernetesIstioBaseCrds installs the Istio CRDs (istio/base) on a target Kubernetes
 // cluster, without istiod or any controller. It is the lightweight prerequisite for the
-// typed Istio API components.
+// typed Istio API kinds.
 message KubernetesIstioBaseCrds {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1alpha1'];

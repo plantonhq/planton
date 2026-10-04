@@ -15,7 +15,7 @@ When you deploy this Infra Component, the IaC module provisions:
 - **Deletion Policy** -- `deletionPolicy` is GCP's real three-way destroy switch: `DELETE` (default, 30-day restore window), `PREVENT` (destroy fails — foundation protection), or `ABANDON` (unmanage without touching GCP)
 - **GCP Labels** -- your `labels` merge beneath Planton's attribution labels (platform keys win on conflicts); project labels are the primary cost-allocation dimension in billing exports
 
-IAM grants are deliberately NOT part of this component — model each grant as a first-class `GcpProjectIamMember` resource.
+IAM grants are deliberately NOT part of this kind — model each grant as a first-class `GcpProjectIamMember` resource.
 
 ## Before You Deploy
 

@@ -61,7 +61,7 @@ planton apply -f dashboard.yaml
 
 ## Why one JSON field?
 
-The Dashboard API object is an enormous, fast-moving schema — dozens of widget types, each with its own options. The GCP Terraform provider models it as a single JSON-string argument rather than inventing a structure that would forever lag the API, and this component honors that judgment. The workflow that makes it pleasant: edit the dashboard in the GCP console, open its **JSON editor**, and paste the exported document into `dashboardJson`. Server-assigned keys (etag, name) are ignored on the way back in, so exported dashboards round-trip cleanly with no drift.
+The Dashboard API object is an enormous, fast-moving schema — dozens of widget types, each with its own options. The GCP Terraform provider models it as a single JSON-string argument rather than inventing a structure that would forever lag the API, and this kind honors that judgment. The workflow that makes it pleasant: edit the dashboard in the GCP console, open its **JSON editor**, and paste the exported document into `dashboardJson`. Server-assigned keys (etag, name) are ignored on the way back in, so exported dashboards round-trip cleanly with no drift.
 
 ## Outputs
 

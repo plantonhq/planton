@@ -7,9 +7,9 @@
 #
 # The catalog page additionally names the account-scoped "Load Balancing:
 # Monitors and Pools Edit" group -- that group belongs to the companion
-# CloudflareLoadBalancerPool and CloudflareLoadBalancerMonitor components
+# CloudflareLoadBalancerPool and CloudflareLoadBalancerMonitor kinds
 # (this load balancer only REFERENCES pools by ID; its modules never call
-# the account-level pool or monitor APIs), so it lives in those components'
+# the account-level pool or monitor APIs), so it lives in those kinds'
 # inventories, not this one.
 apiVersion: iac.planton.dev/v1
 kind: CatalogKindPermissions

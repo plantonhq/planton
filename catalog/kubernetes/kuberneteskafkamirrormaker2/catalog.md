@@ -107,7 +107,7 @@ These are the most important decisions when configuring a MirrorMaker 2 deployme
 
 **Group identity must be unique on the target.** `target.groupId` and the three storage topics default from `metadata.name` and share the Connect protocol with Kafka Connect clusters — a collision with any Connect-protocol workload on the same target corrupts both engines' state.
 
-**Checkpointing is what makes cutover safe.** `groupsPattern` (default `.*`) decides which consumer groups' offsets are translated into the target. Narrow it deliberately — a group that is not checkpointed reprocesses or skips data at cutover. The alternative people reach for (snapshot-and-replay) loses consumer positions entirely; preserving them is this component's reason to exist.
+**Checkpointing is what makes cutover safe.** `groupsPattern` (default `.*`) decides which consumer groups' offsets are translated into the target. Narrow it deliberately — a group that is not checkpointed reprocesses or skips data at cutover. The alternative people reach for (snapshot-and-replay) loses consumer positions entirely; preserving them is this kind's reason to exist.
 
 **Match each connection to its listener.** Target and every source carry independent `tls` / `authentication` blocks: Confluent Cloud sources use `plain` with the API key/secret, MSK SCRAM sources use `scram-sha-512`, a Strimzi-managed target trusts its cluster CA by referencing the Apache Kafka resource. A mismatched type fails at connect time, not at apply time.
 

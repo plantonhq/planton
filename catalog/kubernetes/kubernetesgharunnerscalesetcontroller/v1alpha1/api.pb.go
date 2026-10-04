@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGhaRunnerScaleSetController is a component that installs the GitHub Actions
+// KubernetesGhaRunnerScaleSetController is a kind that installs the GitHub Actions
 // Runner Scale Set Controller on a Kubernetes cluster. The controller manages AutoScalingRunnerSets
 // and EphemeralRunners, enabling dynamic scaling of self-hosted GitHub Actions runners based on
 // workflow demand.

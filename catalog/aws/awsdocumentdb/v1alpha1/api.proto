@@ -7,7 +7,7 @@ import "catalog/aws/awsdocumentdb/v1alpha1/outputs.proto";
 import "catalog/aws/awsdocumentdb/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsDocumentDb is a component for creating and managing
+// AwsDocumentDb is a kind for creating and managing
 // AWS DocumentDB clusters - a fully managed MongoDB-compatible document database service.
 message AwsDocumentDb {
   // api_version specifies the API version for this resource.

@@ -1,4 +1,4 @@
-// Package refcheck validates foreign-key reference integrity across the infra-component
+// Package refcheck validates foreign-key reference integrity across the catalog kind
 // registry: every composition key a field declares -- its (default_kind,
 // default_kind_field_path) pair and each (foreignkey.v1.candidate) entry -- must point
 // at a real field on the referenced kind's resolved target -- its status.outputs message

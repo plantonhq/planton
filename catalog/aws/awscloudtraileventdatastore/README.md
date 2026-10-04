@@ -29,7 +29,7 @@ set `termination_protection_enabled: false` and apply first. Lake
 bills per GB ingested (plus per GB retained on the fixed pricing
 mode); scope selectors deliberately.
 
-The trail (S3 log delivery) is deliberately NOT part of this component
+The trail (S3 log delivery) is deliberately NOT part of this kind
 — see [AwsCloudTrail](../awscloudtrail).
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field

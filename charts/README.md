@@ -43,7 +43,7 @@ The tree is provider-rooted, with one home rule:
 
 ## The mental model
 
-Planton's [components](../catalog) are catalog kinds:
+Planton's [catalog](../catalog) is made of kinds:
 each one describes a single piece of infrastructure (a VPC, a database, a
 cluster) with its own schema and IaC module. **An Infra Chart is a LEGO kit**
 — a curated set of those blocks that fit together to build something complete.
@@ -64,7 +64,7 @@ And the runtime relationship mirrors Kubernetes and Helm:
 Each chart's templates render standard Planton catalog objects — the same
 `apiVersion: <provider>.planton.dev/v1` manifests you would write by hand — so
 nothing about a chart is a black box: it is a transparent composition of the
-components in this repo.
+kinds in this repo.
 
 ## Anatomy of a chart
 
