@@ -1,0 +1,33 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagdFlagFile
+metadata:
+  name: my-rollout-flags
+spec:
+  namespace:
+    value: <namespace>
+  evaluators:
+    # Staff always get the new variant; reused by any flag with {"$ref": "isStaff"}.
+    isStaff:
+      ends_with:
+        - var: email
+        - "@example.com"  # replace with your staff email domain
+  flags:
+    search-ranking:
+      state: ENABLED
+      variants:
+        current:
+          stringValue: v1
+        candidate:
+          stringValue: v2
+      defaultVariant: current
+      targeting:
+        if:
+          - $ref: isStaff
+          - candidate
+          # Everyone else: 10% candidate, bucketed on the targeting key so a
+          # caller keeps its variant across evaluations.
+          - fractional:
+              - - candidate
+                - 10
+              - - current
+                - 90

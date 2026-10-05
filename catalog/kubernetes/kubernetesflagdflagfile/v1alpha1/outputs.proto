@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesflagdflagfile.v1alpha1;
+
+/**
+ * **KubernetesFlagdFlagFileOutputs** - where the rendered flag definitions
+ * live, for a KubernetesFlagd `config_map` source.
+ */
+message KubernetesFlagdFlagFileOutputs {
+  /**
+   * Name of the rendered ConfigMap.
+   */
+  string config_map_name = 1;
+
+  /**
+   * ConfigMap data key holding the definitions.
+   */
+  string key = 2;
+
+  /**
+   * Namespace of the rendered ConfigMap.
+   */
+  string namespace = 3;
+}

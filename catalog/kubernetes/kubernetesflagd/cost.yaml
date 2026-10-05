@@ -1,0 +1,24 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesflagd
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: resources
+      sku_meter: cluster CPU and memory reservations
+      impact: Each flagd replica reserves the declared requests. When the manifest omits resources, the modules apply the spec's declared defaults (50m CPU / 64Mi memory requests, 500m CPU / 256Mi limits) -- flagd holds every flag in memory, so raise memory for very large flag sets and CPU for heavy remote evaluation.
+    - field_path: replicas
+      sku_meter: cluster CPU and memory reservations
+      impact: flagd is stateless -- every replica reads the same sources -- so each replica carries the full per-replica reservation. Defaults to 1; ignored when hpa is enabled.
+    - field_path: hpa
+      sku_meter: cluster CPU and memory reservations
+      impact: When enabled, the autoscaler owns the replica count between min_replicas and max_replicas -- actual reservation follows load, so budget for max_replicas.
+  estimate_exclusions:
+    - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
+    - when hpa is enabled the reservation follows load between the declared bounds
+    - remote sources (HTTP, gRPC, buckets) bill on their own components; flag files are free ConfigMaps
+  notes: "This component runs flagd as module-owned manifests -- a stateless daemon whose cost is the share of the cluster its replicas reserve, realized on the cluster's bill. No volumes are provisioned; flag files mount as ConfigMaps and persist nothing."

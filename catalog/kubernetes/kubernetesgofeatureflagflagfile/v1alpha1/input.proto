@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesgofeatureflagflagfile.v1alpha1;
+
+import "catalog/kubernetes/kubernetesgofeatureflagflagfile/v1alpha1/api.proto";
+import "catalog/kubernetes/provider.proto";
+
+//go-feature-flag-flag-file-kubernetes iac-input
+message KubernetesGoFeatureFlagFlagFileIacInput {
+  // the catalog object to deploy
+  KubernetesGoFeatureFlagFlagFile target = 1;
+  //provider-config
+  dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesflagdflagfile.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesFlagdFlagFileSpec** declares a flagd flag definition file -
+ * typed flags with their variants, default variant and JSONLogic targeting,
+ * plus shared evaluators - and renders it as JSON (with the flagd `$schema`)
+ * into a ConfigMap named after the resource, which a KubernetesFlagd
+ * `config_map` source mounts as a directory.
+ *
+ * WHY A SEPARATE RESOURCE: flags change far more often than the daemon, are
+ * many per daemon, and are often owned by a different team. A flag flip
+ * touches this resource only - flagd is never re-applied, and it serves the
+ * change once the kubelet syncs the mounted volume (typically one to two
+ * minutes), with no restart.
+ */
+message KubernetesFlagdFlagFileSpec {
+  /**
+   * Namespace of the rendered ConfigMap - the KubernetesFlagd's namespace
+   * (pod volumes cannot cross namespaces). Accepts a literal namespace name
+   * or a reference to a KubernetesNamespace resource.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  /**
+   * ConfigMap data key the definitions are written under. It must end in
+   * .json (flagd picks the parser from the extension).
+   */
+  optional string key = 2 [
+    (dev.planton.shared.options.default) = "flags.flagd.json",
+    (buf.validate.field).cel = {
+      id: "spec.key"
+      message: "The key must end in .json and contain only letters, digits, '-', '_' and '.'."
+      expression: "this.matches('^[-._a-zA-Z0-9]+\\\\.json$')"
+    }
+  ];
+
+  /**
+   * The flags, keyed by flag key (the key OpenFeature SDKs evaluate).
+   */
+  map<string, KubernetesFlagdFlag> flags = 3 [(buf.validate.field).cel = {
+    id: "spec.flags.names"
+    message: "Flag keys may not be empty or contain whitespace."
+    expression: "this.all(k, k.matches('^\\\\S+$'))"
+  }];
+
+  /**
+   * Shared JSONLogic fragments (`$evaluators`), reused from any flag's
+   * targeting with {"$ref": "<name>"} (one level; an evaluator cannot
+   * reference another).
+   */
+  map<string, google.protobuf.Struct> evaluators = 4 [(buf.validate.field).cel = {
+    id: "spec.evaluators.non_empty"
+    message: "An evaluator cannot be empty (flagd rejects the whole file)."
+    expression: "this.all(k, size(this[k]) > 0)"
+  }];
+
+  /**
+   * Flag-set metadata merged into every flag's metadata: scalar values only
+   * (strings, numbers, booleans) - e.g. flagSetId, which gRPC source
+   * selectors and SDKs filter on. flagSetId and version must be strings.
+   */
+  google.protobuf.Struct metadata = 5 [(buf.validate.field).cel = {
+    id: "spec.metadata.scalars"
+    message: "Metadata values must be strings, numbers or booleans, and flagSetId and version must be strings."
+    expression: "this.all(k, type(this[k]) != map && type(this[k]) != list) && (!('flagSetId' in this) || type(this['flagSetId']) == string) && (!('version' in this) || type(this['version']) == string)"
+  }];
+}
+
+/** One flag. */
+message KubernetesFlagdFlag {
+  /**
+   * ENABLED serves the flag; DISABLED makes every evaluation return the
+   * caller's default value with reason DISABLED.
+   */
+  string state = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "flag.state"
+      message: "state must be ENABLED or DISABLED."
+      expression: "this in [\"ENABLED\", \"DISABLED\"]"
+    }
+  ];
+
+  /**
+   * The values this flag can return, keyed by variant name. Every variant
+   * must hold the same value type.
+   */
+  map<string, KubernetesFlagdValue> variants = 2 [
+    (buf.validate.field).map.min_pairs = 1,
+    (buf.validate.field).cel = {
+      id: "flag.variants.names"
+      message: "Variant names cannot be empty."
+      expression: "this.all(k, k != '')"
+    }
+  ];
+
+  /**
+   * The variant returned when targeting does not choose one. Empty = the
+   * caller's code default (reason DEFAULT, no value).
+   */
+  string default_variant = 3;
+
+  /**
+   * JSONLogic deciding the variant from the evaluation context, with
+   * flagd's operations: fractional (percentage bucketing), sem_ver,
+   * starts_with, ends_with - e.g. {"if": [{"ends_with": [{"var": "email"},
+   * "@example.com"]}, "on", "off"]}. It returns a variant name: null falls
+   * back to default_variant, and a name the flag does not define is an
+   * evaluation error.
+   */
+  google.protobuf.Struct targeting = 4;
+
+  /**
+   * Information about the flag (a description, an owner), returned with
+   * evaluations: scalar values only (strings, numbers, booleans).
+   * flagSetId and version must be strings.
+   */
+  google.protobuf.Struct metadata = 5 [(buf.validate.field).cel = {
+    id: "flag.metadata.scalars"
+    message: "Metadata values must be strings, numbers or booleans, and flagSetId and version must be strings."
+    expression: "this.all(k, type(this[k]) != map && type(this[k]) != list) && (!('flagSetId' in this) || type(this['flagSetId']) == string) && (!('version' in this) || type(this['version']) == string)"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "flag.variants.one_type"
+    expression: "[size(this.variants.filter(k, has(this.variants[k].bool_value))), size(this.variants.filter(k, has(this.variants[k].string_value))), size(this.variants.filter(k, has(this.variants[k].number_value))), size(this.variants.filter(k, has(this.variants[k].object_value)))].all(n, n == 0 || n == size(this.variants))"
+    message: "Every variant of a flag must hold the same value type (all booleans, all strings, all numbers or all objects)."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.default_variant.known"
+    expression: "this.default_variant == '' || this.default_variant in this.variants"
+    message: "default_variant must name one of the flag's variants."
+  };
+}
+
+/** A variant value. Exactly one type. */
+message KubernetesFlagdValue {
+  oneof value {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * A boolean value.
+     */
+    bool bool_value = 1;
+
+    /**
+     * A string value.
+     */
+    string string_value = 2;
+
+    /**
+     * A number value (integer or decimal).
+     */
+    double number_value = 3;
+
+    /**
+     * A JSON object value.
+     */
+    google.protobuf.Struct object_value = 4;
+  }
+}

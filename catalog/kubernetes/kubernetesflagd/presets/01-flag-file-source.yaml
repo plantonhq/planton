@@ -1,0 +1,31 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagd
+metadata:
+  name: my-flagd
+spec:
+  namespace:
+    value: <namespace>
+  # The namespace exists before the flag file this reads (declare it as a
+  # KubernetesNamespace), so this installation never creates it.
+  createNamespace: false
+  # Two stateless replicas behind a disruption budget: a node drain never
+  # takes flag evaluation down.
+  replicas: 2
+  pdb:
+    enabled: true
+  sources:
+    # The typed flag file, mounted as a directory -- a flag edit reaches flagd
+    # when the kubelet syncs the volume, with no restart.
+    - configMap:
+        configMapName:
+          valueFrom:
+            kind: KubernetesFlagdFlagFile
+            name: my-flags
+            fieldPath: status.outputs.config_map_name
+        key:
+          valueFrom:
+            kind: KubernetesFlagdFlagFile
+            name: my-flags
+            fieldPath: status.outputs.key
+  log:
+    format: json

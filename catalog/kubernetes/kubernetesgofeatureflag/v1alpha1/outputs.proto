@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesgofeatureflag.v1alpha1;
+
+/**
+ * **KubernetesGoFeatureFlagOutputs** - the handles a deployed GO Feature
+ * Flag relay exports. Point OpenFeature SDKs and providers at
+ * `api_endpoint`; point monitoring at `monitoring_endpoint`.
+ */
+message KubernetesGoFeatureFlagOutputs {
+  /**
+   * Namespace the relay runs in.
+   */
+  string namespace = 1;
+
+  /**
+   * The relay Service name.
+   */
+  string service = 2;
+
+  /**
+   * In-cluster evaluation endpoint (e.g.
+   * "http://flags.feature-flags.svc.cluster.local:1031") - the base URL
+   * for the GO Feature Flag OpenFeature providers (remote and in-process),
+   * OFREP clients (`/ofrep/v1/...`) and the REST API.
+   */
+  string api_endpoint = 3;
+
+  /**
+   * In-cluster monitoring endpoint serving /health, /info and /metrics
+   * (e.g. "http://flags.feature-flags.svc.cluster.local:1032").
+   */
+  string monitoring_endpoint = 4;
+
+  /**
+   * Copy-paste command for reaching the evaluation API from a
+   * workstation.
+   */
+  string port_forward_command = 5;
+}

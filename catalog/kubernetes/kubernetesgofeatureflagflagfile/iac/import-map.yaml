@@ -1,0 +1,20 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kubernetesgofeatureflagflagfile
+spec:
+  # The flag file renders into exactly one ConfigMap named after the
+  # resource.
+  values:
+    - name: config_map_name
+      derivations:
+        - from_output: config_map_name
+        - from_metadata_name: true
+      where_to_find: >-
+        The resource's own name -- `kubectl get configmaps -n <namespace>`.
+    - name: config_map_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        The namespace the flag file renders into.

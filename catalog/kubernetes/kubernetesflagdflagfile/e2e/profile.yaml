@@ -1,0 +1,14 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesflagdflagfile
+spec:
+  tier: 1
+  # Renders one ConfigMap; the verifier proves its key holds flagd JSON
+  # declaring the flag. The flagd lanes prove the same file evaluates and
+  # flips live.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 10

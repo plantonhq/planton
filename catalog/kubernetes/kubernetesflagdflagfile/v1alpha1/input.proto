@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesflagdflagfile.v1alpha1;
+
+import "catalog/kubernetes/kubernetesflagdflagfile/v1alpha1/api.proto";
+import "catalog/kubernetes/provider.proto";
+
+//flagd-flag-file-kubernetes iac-input
+message KubernetesFlagdFlagFileIacInput {
+  // the catalog object to deploy
+  KubernetesFlagdFlagFile target = 1;
+  //provider-config
+  dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

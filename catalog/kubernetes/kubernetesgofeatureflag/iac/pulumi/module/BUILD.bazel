@@ -1,0 +1,47 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "env_secret.go",
+        "helm_release.go",
+        "k8s_bodies.go",
+        "locals.go",
+        "main.go",
+        "namespace.go",
+        "outputs.go",
+        "rbac.go",
+        "relay_config.go",
+        "service_monitor.go",
+        "vars.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgofeatureflag/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesgofeatureflag/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//shared/catalogkind",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/apiextensions",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/helm/v3:helm",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/rbac/v1:rbac",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@io_k8s_sigs_yaml//:yaml",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["relay_config_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes/kubernetesgofeatureflag/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+        "@org_golang_google_protobuf//types/known/structpb",
+    ],
+)

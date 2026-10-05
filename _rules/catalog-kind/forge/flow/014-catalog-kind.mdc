@@ -46,7 +46,7 @@ ID PREFIX PATTERNS
 - AWS: the "aws" head + a 2-5 char abbreviation (e.g., "awsvpc", "awsecr", "awss3")
 - Azure: typically "az" prefix + 2-6 char abbreviation (e.g., "aks", "azdns", "azkv")
 - GCP: typically "gcp" prefix + 3-7 char abbreviation (e.g., "gcpdns", "gcpsql", "gcpcert")
-- Kubernetes: descriptive + "k8s" suffix (e.g., "k8sms", "pgk8s", "cmk8s")
+- Kubernetes: the "k8s" head + an abbreviation of the kind (e.g., "k8sdpl", "k8sgoff", "k8sflagd"); a content kind that serves an engine kind extends the engine's abbreviation ("k8sgofff" for KubernetesGoFeatureFlagFlagFile)
 - DigitalOcean: "do" prefix + abbreviation (e.g., "doapp", "dodns", "docert")
 - Cloudflare: "cf" prefix + abbreviation (e.g., "cfdns", "cfkvn", "cfr2b")
 - Auth0: "a0" prefix + abbreviation (e.g., "a0cli", "a0conn", "a0es")

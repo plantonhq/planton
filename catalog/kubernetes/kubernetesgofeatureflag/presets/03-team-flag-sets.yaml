@@ -1,0 +1,37 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlag
+metadata:
+  name: my-flag-relay
+spec:
+  namespace:
+    value: <namespace>
+  # The namespace exists before the flag file this reads (declare it as a
+  # KubernetesNamespace), so this installation never creates it.
+  createNamespace: false
+  replicas: 2
+  flagSets:
+    items:
+      - name: web
+        apiKeys:
+          - $secret/<web-team-key>
+        source:
+          retrievers:
+            - configMap:
+                configMapName:
+                  valueFrom:
+                    name: <web-flag-file-name>
+                key:
+                  value: flags.goff.yaml
+          startWithRetrieverError: true
+      - name: mobile
+        apiKeys:
+          - $secret/<mobile-team-key>
+        source:
+          retrievers:
+            - configMap:
+                configMapName:
+                  valueFrom:
+                    name: <mobile-flag-file-name>
+                key:
+                  value: flags.goff.yaml
+          startWithRetrieverError: true

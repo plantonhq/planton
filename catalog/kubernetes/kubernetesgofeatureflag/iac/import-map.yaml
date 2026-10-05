@@ -1,0 +1,96 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kubernetesgofeatureflag
+spec:
+  # The relay installs as one Helm release NAMED AFTER metadata.name (the
+  # module pins fullnameOverride to the same), plus the optional anchor
+  # namespace, the `<name>-env` Secret (present when the spec holds a
+  # secret), one `<name>-flag-reader` Role and RoleBinding per namespace a
+  # config_map retriever reads (instances keyed by that namespace), and the
+  # optional `<name>-metrics` ServiceMonitor. Chart-created objects (the
+  # Deployment, Service, ConfigMap, ServiceAccount, PDB, HPA) travel with the
+  # release import.
+  values:
+    - name: release_name
+      derivations:
+        - from_metadata_name: true
+      where_to_find: >-
+        `helm list -n <namespace>` (NAME column) -- the release shares
+        the resource's name.
+    - name: release_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        `helm list -A` (NAMESPACE column).
+    # -- the optional anchor namespace ------------------------------------
+    - name: namespace_name
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Only imported when create_namespace is true; the installation
+        namespace itself.
+    # -- the secret-environment Secret ------------------------------------
+    - name: secret_name
+      tofu_resource_name: env
+      derivations:
+        - from_metadata_name_suffix: "-env"
+      where_to_find: >-
+        "<resource-name>-env" whenever the spec holds a secret value --
+        `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      tofu_resource_name: env
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the relay.
+    # -- the flag-reader Roles and RoleBindings (keyed by namespace) ------
+    - name: role_name
+      derivations:
+        - from_metadata_name_suffix: "-flag-reader"
+      where_to_find: >-
+        "<resource-name>-flag-reader" in every namespace a config_map
+        retriever reads -- `kubectl get roles -A`.
+    - name: role_namespace
+      derivations:
+        - from_address_key: true
+      where_to_find: >-
+        The namespace of a ConfigMap a retriever reads (the relay's own
+        namespace when the retriever names none).
+    - name: role_binding_name
+      derivations:
+        - from_metadata_name_suffix: "-flag-reader"
+      where_to_find: >-
+        "<resource-name>-flag-reader" beside each Role --
+        `kubectl get rolebindings -A`.
+    - name: role_binding_namespace
+      derivations:
+        - from_address_key: true
+      where_to_find: >-
+        The namespace of a ConfigMap a retriever reads.
+    # -- the optional ServiceMonitor (composed-ID kubectl_manifest) -------
+    - name: api_version
+      derivations:
+        - literal: monitoring.coreos.com/v1
+      where_to_find: >-
+        Fixed -- the Prometheus operator's monitoring API group.
+    - name: kind
+      derivations:
+        - literal: ServiceMonitor
+      where_to_find: >-
+        Fixed.
+    - name: name
+      derivations:
+        - from_metadata_name_suffix: "-metrics"
+      where_to_find: >-
+        "<resource-name>-metrics" when metrics.service_monitor_enabled --
+        `kubectl get servicemonitors -n <namespace>`.
+    - name: namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the relay.

@@ -1,0 +1,159 @@
+# Full-surface development manifest - every source kind (a ConfigMap mounted
+# as a directory, HTTP with an authorization header, gRPC with TLS and a CA,
+# an OpenFeature Operator FeatureFlag resource, and the three object stores),
+# server TLS, evaluation context and CORS, the OFREP stream, sync settings,
+# OpenTelemetry with TLS, request limits, HPA, PDB, the full scheduling block,
+# security contexts, extra environment and the ServiceMonitor. Every secret
+# below is a development literal; a real manifest holds managed-secret
+# references ($secret/<slug>) in these fields.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagd
+metadata:
+  name: flagd-dev
+spec:
+  namespace:
+    value: flagd-dev
+  createNamespace: true
+  image:
+    repository: ghcr.io/open-feature/flagd
+    tag: v0.17.0
+    pullPolicy: IfNotPresent
+    pullSecretNames:
+      - registry-mirror
+  replicas: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCpuUtilizationPercent: 70
+    targetMemoryUtilizationPercent: 80
+  pdb:
+    enabled: true
+    maxUnavailable: "1"
+  sources:
+    - configMap:
+        configMapName:
+          value: flagd-dev-flags
+        key:
+          value: flags.flagd.json
+        watcher: fsnotify
+    - http:
+        url: https://flags.example.com/flags.json
+        authHeader: Bearer dev-http-token
+        headers:
+          Accept: application/json
+        sensitiveHeaders:
+          X-Api-Key: dev-http-api-key
+        intervalSeconds: 30
+        intervalSeed: flagd-dev
+        timeoutSeconds: 10
+    - http:
+        url: https://flags.example.com/team-flags.json
+        oauth:
+          clientId: flagd-dev
+          clientSecret: dev-oauth-client-secret
+          tokenUrl: https://idp.example.com/oauth/token
+    - grpc:
+        target: flag-service.flags.svc.cluster.local:8015
+        tls: true
+        caCertSecret:
+          name: flag-service-ca
+          key: ca.crt
+        providerId: flagd-dev
+        maxMsgSize: 5242880
+        headers:
+          x-env: dev
+        sensitiveHeaders:
+          authorization: Bearer dev-grpc-token
+        selector: flagSetId=web
+    - featureFlag:
+        namespace: apps
+        name: web-flags
+    - googleStorage:
+        bucket: acme-flags
+        object: flags.json
+        intervalSeconds: 60
+    - azureBlob:
+        bucket: flags
+        object: flags.json
+    - s3:
+        bucket: acme-flags
+        object: flags.yaml
+        intervalSeed: flagd-dev
+  server:
+    port: 8013
+    managementPort: 8014
+    syncPort: 8015
+    ofrepPort: 8016
+    tlsSecretName: flagd-dev-tls
+    serviceType: ClusterIP
+  evaluation:
+    contextValues:
+      env: dev
+    contextFromHeader:
+      X-Tenant: tenant
+    corsOrigins:
+      - https://app.example.com
+  ofrepSse:
+    enabled: true
+    inactivityDelaySeconds: 120
+    publicUrl: https://flags.example.com
+  sync:
+    httpEnabled: true
+    streamDeadline: 1h30m
+  log:
+    format: json
+  telemetry:
+    otelCollectorUri: otel-collector.observability:4317
+    otelCaCertSecret:
+      name: otel-ca
+      key: ca.crt
+    otelClientTlsSecretName: otel-client-tls
+    otelReloadInterval: 30m
+  limits:
+    maxRequestBodyBytes: 1000000
+    maxRequestHeaderBytes: 1000000
+  scheduling:
+    nodeSelector:
+      kubernetes.io/os: linux
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: platform
+        effect: NoSchedule
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/flagd-dev
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  podLabels:
+    team: platform
+  podSecurityContext:
+    runAsNonRoot: true
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  extraEnv:
+    AWS_REGION: us-east-1
+  extraEnvFromSecret:
+    AZURE_STORAGE_KEY:
+      name: azure-storage
+      key: key
+  metrics:
+    serviceMonitorEnabled: true
+    serviceMonitorLabels:
+      release: kube-prometheus-stack

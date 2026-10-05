@@ -1,0 +1,249 @@
+# Full-surface development manifest - exercises every module-rendered arm so
+# the offline plan/preview proofs cover what the kind-cluster lanes exclude:
+# every retriever, notifier and exporter kind (their secrets riding the
+# module-owned env Secret), authorized keys, telemetry, Swagger, the runtime
+# switches, HPA, PDB, scheduling, security contexts, extra environment, the
+# ServiceMonitor, and the helm_values escape hatch with its fullnameOverride
+# re-pin. Every secret below is a development literal; a real manifest holds
+# managed-secret references ($secret/<slug>) in these fields.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlag
+metadata:
+  name: goff-dev
+spec:
+  namespace:
+    value: goff-dev
+  createNamespace: true
+  chartVersion: 1.56.0
+  image:
+    repository: gofeatureflag/go-feature-flag
+    tag: v1.56.0
+    pullPolicy: IfNotPresent
+    pullSecretNames:
+      - registry-mirror
+  replicas: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCpuUtilizationPercent: 70
+  pdb:
+    enabled: true
+    minAvailable: "1"
+  server:
+    port: 1031
+    monitoringPort: 1032
+    serviceType: ClusterIP
+  log:
+    level: info
+    format: json
+  authorizedKeys:
+    admin:
+      - dev-admin-key
+    evaluation:
+      - dev-evaluation-key
+  flagSource:
+    retrievers:
+      - configMap:
+          configMapName:
+            value: goff-dev-flags
+          key:
+            value: flags.goff.yaml
+      - http:
+          url: https://flags.example.com/flags.yaml
+          method: GET
+          headers:
+            Accept: application/yaml
+          sensitiveHeaders:
+            Authorization: Bearer dev-http-token
+          timeoutMs: 5000
+      - github:
+          repositorySlug: acme/flags
+          path: flags/release.goff.yaml
+          branch: main
+          token: dev-github-token
+      - gitlab:
+          repositorySlug: acme/platform/flags
+          path: flags.goff.yaml
+          baseUrl: https://gitlab.example.com
+          token: dev-gitlab-token
+      - bitbucket:
+          repositorySlug: acme/flags
+          path: flags.goff.yaml
+          token: dev-bitbucket-token
+      - s3:
+          bucket: acme-flags
+          item: flags.goff.yaml
+      - googleStorage:
+          bucket: acme-flags
+          object: flags.goff.yaml
+      - azureBlobStorage:
+          accountName: acmeflags
+          accountKey: dev-azure-key
+          container: flags
+          object: flags.goff.yaml
+      - mongodb:
+          uri: mongodb://flags:dev-mongo-password@mongo:27017
+          database: flags
+          collection: flags
+      - redis:
+          options:
+            addr: redis:6379
+            password: dev-redis-password
+            db: 2
+            tlsEnabled: true
+            poolSize: 20
+          prefix: "goff:"
+      - postgresql:
+          uri: postgres://flags:dev-pg-password@postgres:5432/flags?sslmode=require
+          table: flags
+          columns:
+            flag_name: name
+    notifiers:
+      - slack:
+          webhookUrl: https://hooks.slack.com/services/dev/slack
+      - microsoftTeams:
+          webhookUrl: https://acme.webhook.office.com/dev/teams
+      - discord:
+          webhookUrl: https://discord.com/api/webhooks/dev/discord
+      - webhook:
+          endpointUrl: https://ops.example.com/flag-changes
+          secret: dev-webhook-signing-secret
+          meta:
+            environment: dev
+          headers:
+            X-Source: goff-dev
+          sensitiveHeaders:
+            X-Api-Key: dev-webhook-api-key
+    exporters:
+      - log:
+          logFormat: '[{{ .FormattedDate}}] {{ .Key}}={{ .Value}}'
+        eventType: feature
+      - webhook:
+          endpointUrl: https://events.example.com/goff
+          secret: dev-exporter-signing-secret
+        flushIntervalMs: 10000
+        maxEventInMemory: 5000
+      - s3:
+          bucket: acme-flag-events
+          path: goff/
+          file:
+            format: Parquet
+            parquetCompressionCodec: ZSTD
+      - googleStorage:
+          bucket: acme-flag-events
+          file:
+            format: CSV
+            csvTemplate: "{{ .Key}};{{ .Value}}\n"
+      - azureBlobStorage:
+          accountName: acmeevents
+          accountKey: dev-azure-events-key
+          container: events
+      - sqs:
+          queueUrl: https://sqs.us-east-1.amazonaws.com/123456789012/flag-events
+      - kinesis:
+          streamName: flag-events
+      - pubsub:
+          projectId: acme-dev
+          topic: flag-events
+      - bigquery:
+          projectId: acme-dev
+          datasetId: flags
+          tableName: events
+          googleCredentials: '{"type":"service_account"}'
+          autoMigrate: true
+      - kafka:
+          topic: flag-events
+          addresses:
+            - kafka:9092
+          config:
+            Net:
+              SASL:
+                Enable: true
+                Mechanism: SCRAM-SHA-512
+                User: goff
+          saslPassword: dev-kafka-password
+      - opentelemetry:
+          tracerName: goff-dev
+    fileFormat: yaml
+    pollingIntervalMs: 15000
+    startWithRetrieverError: true
+    enablePollingJitter: true
+    disableNotifierOnInit: true
+    evaluationContextEnrichment:
+      region: us-east-1
+      tier: 2
+  ofrepEventStream:
+    baseUrl: https://flags.example.com
+    inactivityDelaySec: 120
+  telemetry:
+    otlpEndpoint: http://otel-collector:4318
+    otlpProtocol: http/protobuf
+    serviceName: goff-dev
+    tracesSampler: jaeger_remote
+    resourceAttributes:
+      deployment.environment: dev
+    jaegerSampler:
+      managerHostPort: http://jaeger:5778
+      refreshInterval: 1m
+      maxOperations: 100
+  swagger:
+    enabled: true
+    host: flags.example.com
+  runtime:
+    hideBanner: true
+    enableBulkMetricFlagNames: true
+    exporterCleanQueueInterval: 1m
+    envVariablePrefix: GOFFRELAY_
+  metrics:
+    serviceMonitorEnabled: true
+    serviceMonitorLabels:
+      release: kube-prometheus-stack
+  scheduling:
+    nodeSelector:
+      kubernetes.io/os: linux
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: platform
+        effect: NoSchedule
+    podAntiAffinity:
+      preferred:
+        - weight: 100
+          term:
+            matchLabels:
+              app.kubernetes.io/name: relay-proxy
+            topologyKey: kubernetes.io/hostname
+  serviceAccount:
+    annotations:
+      iam.gke.io/gcp-service-account: goff-dev@acme-dev.iam.gserviceaccount.com
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  podLabels:
+    team: platform
+  commonLabels:
+    app.kubernetes.io/part-of: feature-flags
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  extraEnv:
+    AWS_REGION: us-east-1
+  extraEnvFromSecret:
+    AWS_ACCESS_KEY_ID:
+      name: aws-credentials
+      key: access-key-id
+  helmValues: |
+    extraManifests: []

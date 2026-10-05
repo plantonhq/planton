@@ -1,0 +1,111 @@
+# Full-surface development manifest - every flag shape GO Feature Flag
+# evaluates: boolean, string, number, object and list variations; targeting
+# by query; a percentage split; a progressive rollout; a disabled rule; a
+# scheduled rollout with every overlay; an experimentation window; metadata,
+# a bucketing key and event export turned off.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlagFlagFile
+metadata:
+  name: goff-dev-flags
+spec:
+  namespace:
+    value: goff-dev
+  key: flags.goff.yaml
+  flags:
+    assistant:
+      variations:
+        enabled:
+          boolValue: true
+        disabled:
+          boolValue: false
+      targeting:
+        - name: first-organizations
+          query: org in ["planton", "acme"]
+          variation: enabled
+        - name: beta-ramp
+          query: beta eq true
+          progressiveRollout:
+            initial:
+              variation: disabled
+              percentage: 0
+              date: "2026-11-01T09:00:00Z"
+            end:
+              variation: enabled
+              percentage: 100
+              date: "2026-11-15T09:00:00Z"
+        - name: parked
+          query: org eq "globex"
+          variation: enabled
+          disable: true
+      defaultRule:
+        variation: disabled
+      metadata:
+        description: The Planton Assistant
+        owner: platform
+    checkout-theme:
+      variations:
+        light:
+          stringValue: light
+        dark:
+          stringValue: dark
+      targeting:
+        - name: split
+          query: country eq "FR"
+          percentage:
+            dark: 25
+            light: 75
+      defaultRule:
+        variation: light
+      bucketingKey: companyId
+      trackEvents: false
+      version: "3"
+      experimentation:
+        start: "2026-11-01T00:00:00Z"
+        end: "2026-12-01T00:00:00Z"
+      scheduledRollout:
+        - date: "2026-11-08T09:00:00Z"
+          targeting:
+            - name: split
+              percentage:
+                dark: 50
+                light: 50
+        - date: "2026-12-01T09:00:00Z"
+          variations:
+            contrast:
+              stringValue: contrast
+          defaultRule:
+            variation: dark
+          disable: false
+          trackEvents: true
+          version: "4"
+    request-limit:
+      variations:
+        small:
+          numberValue: 10
+        large:
+          numberValue: 100
+      defaultRule:
+        percentage:
+          small: 90
+          large: 10
+    limits:
+      variations:
+        standard:
+          objectValue:
+            rps: 10
+            burst: 20
+        premium:
+          objectValue:
+            rps: 100
+            burst: 200
+      defaultRule:
+        variation: standard
+    regions:
+      variations:
+        default:
+          listValue:
+            - us-east-1
+            - eu-west-1
+      defaultRule:
+        variation: default
+      disable: true

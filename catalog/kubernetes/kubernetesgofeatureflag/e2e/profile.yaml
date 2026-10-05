@@ -1,0 +1,18 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesgofeatureflag
+spec:
+  tier: 2
+  # The relay installs from the official relay-proxy chart and reads its
+  # flags from the consumer-scoped flag-file fixture
+  # (e2e/prerequisites/kubernetesgofeatureflagflagfile.yaml, in a namespace
+  # its own prerequisite creates). The dedicated verifier proves the
+  # monitoring-port discovery, the auth gate, OFREP evaluation BOTH ways,
+  # the live flip without a restart, flag-set selection by key, the
+  # disruption budget selecting the relay, and a signed webhook delivery.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 20

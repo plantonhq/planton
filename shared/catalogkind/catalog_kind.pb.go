@@ -2476,7 +2476,11 @@ const (
 	// KubernetesPlantonOperator is a prerequisite because this kind declares
 	// the PlantonPlatform custom resource that only the operator's CRD
 	// admits and only the operator reconciles into a running platform.
-	CatalogKind_KubernetesPlantonPlatform CatalogKind = 4175
+	CatalogKind_KubernetesPlantonPlatform       CatalogKind = 4175
+	CatalogKind_KubernetesGoFeatureFlag         CatalogKind = 4176
+	CatalogKind_KubernetesFlagd                 CatalogKind = 4177
+	CatalogKind_KubernetesGoFeatureFlagFlagFile CatalogKind = 4178
+	CatalogKind_KubernetesFlagdFlagFile         CatalogKind = 4179
 	// 5000–5999: DigitalOcean resources
 	CatalogKind_DigitalOceanApp               CatalogKind = 5000
 	CatalogKind_DigitalOceanBucket            CatalogKind = 5001
@@ -3536,6 +3540,10 @@ var (
 		4173:  "KubernetesPlantonRunner",
 		4174:  "KubernetesPlantonOperator",
 		4175:  "KubernetesPlantonPlatform",
+		4176:  "KubernetesGoFeatureFlag",
+		4177:  "KubernetesFlagd",
+		4178:  "KubernetesGoFeatureFlagFlagFile",
+		4179:  "KubernetesFlagdFlagFile",
 		5000:  "DigitalOceanApp",
 		5001:  "DigitalOceanBucket",
 		5002:  "DigitalOceanContainerRegistry",
@@ -4377,6 +4385,10 @@ var (
 		"KubernetesPlantonRunner":                        4173,
 		"KubernetesPlantonOperator":                      4174,
 		"KubernetesPlantonPlatform":                      4175,
+		"KubernetesGoFeatureFlag":                        4176,
+		"KubernetesFlagd":                                4177,
+		"KubernetesGoFeatureFlagFlagFile":                4178,
+		"KubernetesFlagdFlagFile":                        4179,
 		"DigitalOceanApp":                                5000,
 		"DigitalOceanBucket":                             5001,
 		"DigitalOceanContainerRegistry":                  5002,
@@ -4957,7 +4969,7 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe2\x93\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*Օ\x03\n" +
 	"\vCatalogKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12`\n" +
 	"\x16TestCatalogKindGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tckgJ,\n" +
@@ -5742,7 +5754,11 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x10KubernetesLocust\x10\xcc \x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8slocP\x92\x03\x129\n" +
 	"\x17KubernetesPlantonRunner\x10\xcd \x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8srunP\x91\x03\x12>\n" +
 	"\x19KubernetesPlantonOperator\x10\xce \x1a\x1e\xa2\xf7\x04\x1a\b\x13\x12\bv1alpha1\"\tk8spltnopP\x91\x03\x12@\n" +
-	"\x19KubernetesPlantonPlatform\x10\xcf \x1a \xa2\xf7\x04\x1c\b\x13\x12\bv1alpha1\"\ak8spltn:\x02\xce P\x92\x03\x120\n" +
+	"\x19KubernetesPlantonPlatform\x10\xcf \x1a \xa2\xf7\x04\x1c\b\x13\x12\bv1alpha1\"\ak8spltn:\x02\xce P\x92\x03\x12:\n" +
+	"\x17KubernetesGoFeatureFlag\x10\xd0 \x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\ak8sgoffP\x92\x03\x123\n" +
+	"\x0fKubernetesFlagd\x10\xd1 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sflagdP\x92\x03\x12C\n" +
+	"\x1fKubernetesGoFeatureFlagFlagFile\x10\xd2 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sgofffP\x92\x03\x12;\n" +
+	"\x17KubernetesFlagdFlagFile\x10\xd3 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sflgdfP\x92\x03\x120\n" +
 	"\x0fDigitalOceanApp\x10\x88'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05doappP\xf6\x03\x123\n" +
 	"\x12DigitalOceanBucket\x10\x89'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05dobktP\xf8\x03\x12=\n" +
 	"\x1dDigitalOceanContainerRegistry\x10\x8a'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04docrP\xfa\x03\x12=\n" +

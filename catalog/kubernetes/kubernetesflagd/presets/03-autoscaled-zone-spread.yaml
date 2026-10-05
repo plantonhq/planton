@@ -1,0 +1,45 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagd
+metadata:
+  name: my-flagd
+spec:
+  namespace:
+    value: <namespace>
+  # The namespace exists before the flag file this reads (declare it as a
+  # KubernetesNamespace), so this installation never creates it.
+  createNamespace: false
+  hpa:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCpuUtilizationPercent: 70
+  pdb:
+    enabled: true
+    minAvailable: "2"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+  sources:
+    - configMap:
+        configMapName:
+          valueFrom:
+            kind: KubernetesFlagdFlagFile
+            name: my-flags
+            fieldPath: status.outputs.config_map_name
+        key:
+          valueFrom:
+            kind: KubernetesFlagdFlagFile
+            name: my-flags
+            fieldPath: status.outputs.key
+  scheduling:
+    # An empty match_labels spreads flagd's own pods across zones.
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+  log:
+    format: json

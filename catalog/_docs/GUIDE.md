@@ -45,6 +45,7 @@ kind's own documentation:
 | Confluent Schema Registry | KubernetesKarapace | Apache-2.0, Confluent-API-compatible schema registry — existing Confluent SR clients work unchanged |
 | MinIO / in-cluster S3 | KubernetesSeaweedFs | Not a MinIO fork — an S3-compatible object store whose S3 gateway is on by default; clients speaking the S3 API connect to it |
 | PrestoSQL / Presto | KubernetesTrino | Trino is the renamed community successor of PrestoSQL (the Presto fork by Presto's creators); PrestoSQL/Presto clients, drivers, and connector vocabulary carry over |
+| LaunchDarkly / Unleash / hosted feature flags | KubernetesGoFeatureFlag or KubernetesFlagd | Self-hosted OpenFeature engines: any OpenFeature SDK evaluates through their providers or OFREP. Declare the flags as a KubernetesGoFeatureFlagFlagFile / KubernetesFlagdFlagFile; GO Feature Flag adds change notifications, evaluation export and keyed flag sets, flagd is the CNCF OpenFeature daemon with JSONLogic targeting and a sync stream |
 
 Many well-known names need no substitution — Kafka, MongoDB, PostgreSQL,
 ClickHouse, RabbitMQ, and others have kinds of their own; the per-provider

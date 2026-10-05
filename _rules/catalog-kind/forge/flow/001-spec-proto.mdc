@@ -101,6 +101,24 @@ VERIFY FLAG SEMANTICS IN THE PROVIDER'S CRUD FUNCTIONS, NOT THE ARGUMENT NAME
   bucket-level toggle, an account posture), the field comment must state that
   coupling explicitly so manifests do not wire it blindly.
 
+DEFAULTS INSIDE LIST ELEMENTS ARE NEVER APPLIED
+- The defaulting middleware (`internal/manifest/protodefaults`) skips repeated
+  and map fields: a `(dev.planton.shared.options.default)` on a field of a
+  message used only as a list element (`retrievers[]`, `exporters[]`,
+  `flag_sets.items[]`) never fills anything. Leave such fields without a
+  default, state the engine's own default in the comment ("Empty = 10000"),
+  and let the module omit the unset value so the engine applies it.
+
+FREE-TYPED VALUES ARE A TYPED ONEOF, NEVER `google.protobuf.Value`
+- A field whose upstream value may be a boolean, string, number or object (a
+  flag variation, a variant) is a oneof of typed arms
+  (`bool_value`/`string_value`/`number_value`/`object_value` Struct, plus
+  `list_value` ListValue when arrays are legal). The console's write path
+  parses a string given to a `Value` as JSON, so a string value either fails
+  or silently turns into a number or boolean; typed arms round-trip exactly.
+  Mirror the upstream's "all values share one type" rule as a message CEL
+  rule over the arms.
+
 PLAIN ASCII PUNCTUATION IN FIELD COMMENTS
 - Use plain ASCII punctuation in proto field comments: hyphens (`-`) instead of
   em/en dashes, straight quotes (`'`/`"`) instead of smart quotes, `...` instead

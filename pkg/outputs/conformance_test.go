@@ -1432,6 +1432,67 @@ func TestOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// KubernetesGoFeatureFlag: the pinned-fullname relay Service and
+			// the evaluation and monitoring endpoints OpenFeature providers,
+			// OFREP clients and monitoring point at.
+			name: "KubernetesGoFeatureFlag",
+			kind: catalogkind.CatalogKind_KubernetesGoFeatureFlag,
+			rawOutputs: map[string]interface{}{
+				"namespace":            "feature-flags",
+				"service":              "flags",
+				"api_endpoint":         "http://flags.feature-flags.svc.cluster.local:1031",
+				"monitoring_endpoint":  "http://flags.feature-flags.svc.cluster.local:1032",
+				"port_forward_command": "kubectl port-forward -n feature-flags svc/flags 1031:1031",
+			},
+			mustPopulate: []string{
+				"namespace", "service", "api_endpoint", "monitoring_endpoint", "port_forward_command",
+			},
+		},
+		{
+			// KubernetesGoFeatureFlagFlagFile: the rendered ConfigMap a
+			// relay's config_map retriever reads.
+			name: "KubernetesGoFeatureFlagFlagFile",
+			kind: catalogkind.CatalogKind_KubernetesGoFeatureFlagFlagFile,
+			rawOutputs: map[string]interface{}{
+				"config_map_name": "release-flags",
+				"key":             "flags.goff.yaml",
+				"namespace":       "feature-flags",
+			},
+			mustPopulate: []string{"config_map_name", "key", "namespace"},
+		},
+		{
+			// KubernetesFlagd: the module-owned Service and its four
+			// endpoints - remote evaluation, in-process sync, OFREP and
+			// management.
+			name: "KubernetesFlagd",
+			kind: catalogkind.CatalogKind_KubernetesFlagd,
+			rawOutputs: map[string]interface{}{
+				"namespace":            "feature-flags",
+				"service":              "flagd",
+				"evaluation_endpoint":  "flagd.feature-flags.svc.cluster.local:8013",
+				"sync_endpoint":        "flagd.feature-flags.svc.cluster.local:8015",
+				"ofrep_endpoint":       "http://flagd.feature-flags.svc.cluster.local:8016",
+				"management_endpoint":  "http://flagd.feature-flags.svc.cluster.local:8014",
+				"port_forward_command": "kubectl port-forward -n feature-flags svc/flagd 8016:8016",
+			},
+			mustPopulate: []string{
+				"namespace", "service", "evaluation_endpoint", "sync_endpoint",
+				"ofrep_endpoint", "management_endpoint", "port_forward_command",
+			},
+		},
+		{
+			// KubernetesFlagdFlagFile: the rendered ConfigMap a flagd
+			// config_map source mounts as a directory.
+			name: "KubernetesFlagdFlagFile",
+			kind: catalogkind.CatalogKind_KubernetesFlagdFlagFile,
+			rawOutputs: map[string]interface{}{
+				"config_map_name": "release-flags",
+				"key":             "flags.flagd.json",
+				"namespace":       "feature-flags",
+			},
+			mustPopulate: []string{"config_map_name", "key", "namespace"},
+		},
+		{
 			// KubernetesOtelOperator: the pinned-fullname naming contract —
 			// the release, the webhook Service the API server calls for
 			// admission and CRD conversion, and the cert-manager-issued

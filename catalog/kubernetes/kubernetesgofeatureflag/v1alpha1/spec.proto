@@ -1,0 +1,1699 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesgofeatureflag.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetes.proto";
+import "catalog/kubernetes/options.proto";
+import "catalog/kubernetes/workload_container.proto";
+import "catalog/kubernetes/workload_pod.proto";
+import "google/protobuf/struct.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesGoFeatureFlagSpec** installs the GO Feature Flag relay proxy -
+ * an OpenFeature-native feature flag server - from the official `relay-proxy`
+ * chart (https://charts.gofeatureflag.org, chart 1.56.x = GO Feature Flag
+ * v1.56). The relay reads flag files from one or more retrievers, evaluates
+ * flags for any OpenFeature SDK (REST, OFREP, and the flag-configuration
+ * endpoint in-process providers sync from), notifies on every flag change,
+ * and exports evaluation events.
+ *
+ * This component deploys the ENGINE. The flags themselves are DATA with
+ * their own lifecycle: declare them as a KubernetesGoFeatureFlagFlagFile
+ * (typed, validated flags rendered into a ConfigMap) and point a
+ * `config_map` retriever at it, or let the relay read a flag file from Git,
+ * HTTP, object storage, or a database. A flag flip then edits the flag file
+ * only - the relay is never re-applied, and the relay picks the change up on
+ * its next poll with no restart.
+ *
+ * TWO MODES (the relay accepts exactly one): `flag_source` serves one flag
+ * file set to every caller; `flag_sets` serves several isolated flag sets,
+ * each selected by the API key the caller presents.
+ *
+ * SECRETS: every token, password, webhook URL and API key is written by the
+ * module into its own Secret and reaches the relay as an environment
+ * variable. None is ever rendered into the chart's configuration ConfigMap.
+ *
+ * NOT MODELED, BY DESIGN (verified at chart 1.56.0 / relay v1.56.0):
+ * - exposure: compose a Gateway API route against the `service` output
+ *   instead of the chart's ingress block;
+ * - server modes `lambda` and `unixsocket` and the listen host: a
+ *   Kubernetes Service reaches only an all-interfaces HTTP listener, so the
+ *   module pins `server.mode: http` on 0.0.0.0;
+ * - `persistentFlagConfigurationFile`, the `file` retriever, the `file`
+ *   exporter and the HTTP retriever's client-certificate paths: each needs a
+ *   file mounted into the container, and the chart mounts no volume besides
+ *   its own configuration;
+ * - the flag-set `environment` key, which the relay parses but never reads;
+ * - the singular `retriever`/`exporter` keys, `openTelemetryOtlpEndpoint`
+ *   (an alias of `otel.exporter.otlp.endpoint`) and the deprecated keys
+ *   (`listen`, top-level `monitoringPort`, `enableSwagger`, `host`,
+ *   `apiKeys`, `startAsAwsLambda`, `notifier`, `githubToken`,
+ *   `slackWebhookUrl`): the lists and current keys below cover them.
+ */
+message KubernetesGoFeatureFlagSpec {
+  /**
+   * Namespace to install into. Accepts a literal namespace name or a
+   * reference to a KubernetesNamespace resource. Secrets the relay reads
+   * through `extra_env_from_secret` must live in this same namespace.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  /**
+   * When true, the namespace is created (with the standard Planton
+   * governance labels) before installing and deleted with the resource.
+   * When false, the namespace must already exist.
+   */
+  bool create_namespace = 2;
+
+  /**
+   * Helm chart version to install (e.g. "1.56.0" = GO Feature Flag
+   * v1.56.0; the chart version and the relay version move together).
+   * Versions must exist in the SERVED index at
+   * https://charts.gofeatureflag.org.
+   */
+  optional string chart_version = 3 [(dev.planton.shared.options.default) = "1.56.0"];
+
+  /**
+   * Relay container image. Empty fields keep the chart's image, at the tag
+   * matching chart_version.
+   */
+  KubernetesGoFeatureFlagImage image = 4;
+
+  /**
+   * Relay replicas. The relay is stateless (every replica polls the same
+   * retrievers), so replicas add availability and evaluation throughput.
+   * Ignored when hpa is enabled (the autoscaler owns the count).
+   */
+  optional int32 replicas = 5 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 50
+    }
+  ];
+
+  /**
+   * CPU and memory for the relay container. The relay holds every flag in
+   * memory and evaluates in-process; these defaults suit hundreds of flags
+   * at moderate traffic - raise memory for very large flag files and CPU
+   * for heavy evaluation volume.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 6 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "512Mi"
+    }
+    requests: {
+      cpu: "100m"
+      memory: "128Mi"
+    }
+  }];
+
+  /**
+   * Horizontal pod autoscaling on CPU and memory utilization.
+   */
+  KubernetesGoFeatureFlagHpa hpa = 7;
+
+  /**
+   * PodDisruptionBudget for voluntary disruptions (node drains, upgrades).
+   */
+  KubernetesGoFeatureFlagPdb pdb = 8;
+
+  /**
+   * HTTP listener, monitoring listener and Service shape.
+   */
+  KubernetesGoFeatureFlagServer server = 9;
+
+  /**
+   * Relay log settings.
+   */
+  KubernetesGoFeatureFlagLog log = 10;
+
+  /**
+   * API keys guarding the relay's endpoints. Unset = NO authentication -
+   * anyone who can reach the Service can evaluate every flag and read the
+   * full flag configuration. Fine on a lab cluster, never in production.
+   * In `flag_sets` mode each flag set carries its own evaluation keys;
+   * `admin` keys here still guard the admin endpoints.
+   */
+  KubernetesGoFeatureFlagAuthorizedKeys authorized_keys = 11;
+
+  /**
+   * Where flags come from, and what the relay does with changes and
+   * evaluation events. Exactly one mode.
+   */
+  oneof mode {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * One flag source served to every caller: its retrievers, change
+     * notifiers and evaluation exporters.
+     */
+    KubernetesGoFeatureFlagFlagSource flag_source = 12;
+
+    /**
+     * Several isolated flag sets, each selected by the API key the caller
+     * presents, each with its own retrievers, notifiers and exporters
+     * (there is no inheritance between flag sets).
+     */
+    KubernetesGoFeatureFlagFlagSets flag_sets = 13;
+  }
+
+  /**
+   * The OFREP flag-change event stream advertised to clients.
+   */
+  KubernetesGoFeatureFlagOfrepEventStream ofrep_event_stream = 14;
+
+  /**
+   * OpenTelemetry traces and Jaeger remote sampling.
+   */
+  KubernetesGoFeatureFlagTelemetry telemetry = 15;
+
+  /**
+   * The relay's built-in Swagger UI.
+   */
+  KubernetesGoFeatureFlagSwagger swagger = 16;
+
+  /**
+   * Less common relay switches.
+   */
+  KubernetesGoFeatureFlagRuntime runtime = 17;
+
+  /**
+   * Prometheus scraping. The relay always serves /metrics on the
+   * monitoring port.
+   */
+  KubernetesGoFeatureFlagMetrics metrics = 18;
+
+  /**
+   * Pod scheduling constraints.
+   */
+  KubernetesGoFeatureFlagScheduling scheduling = 19;
+
+  /**
+   * The relay's ServiceAccount.
+   */
+  KubernetesGoFeatureFlagServiceAccount service_account = 20;
+
+  /**
+   * Annotations added to the relay pods (e.g. a service mesh or a log
+   * shipper's settings). Values may not contain Helm template syntax.
+   */
+  map<string, string> pod_annotations = 21 [(buf.validate.field).cel = {
+    id: "spec.pod_annotations.no_templates"
+    message: "Pod annotation values may not contain Helm template syntax ({{)."
+    expression: "this.all(k, !this[k].contains('{{'))"
+  }];
+
+  /**
+   * Labels added to the relay pods only.
+   */
+  map<string, string> pod_labels = 22;
+
+  /**
+   * Labels added to every object the chart renders.
+   */
+  map<string, string> common_labels = 23;
+
+  /**
+   * Pod-level security context.
+   */
+  dev.planton.kubernetes.WorkloadPodSecurityContext pod_security_context = 24;
+
+  /**
+   * Container-level security context for the relay container.
+   */
+  dev.planton.kubernetes.WorkloadContainerSecurityContext container_security_context = 25;
+
+  /**
+   * Extra plain environment variables for the relay container - e.g.
+   * AWS_REGION for the S3, SQS and Kinesis integrations, which read the
+   * standard AWS SDK environment. Names may not collide with the
+   * variables the module generates for secret values.
+   */
+  map<string, string> extra_env = 26;
+
+  /**
+   * Extra environment variables read from existing Secrets in the relay's
+   * namespace, keyed by variable name - e.g. AWS_ACCESS_KEY_ID and
+   * AWS_SECRET_ACCESS_KEY when the cluster has no workload identity.
+   */
+  map<string, dev.planton.kubernetes.KubernetesSecretKey> extra_env_from_secret = 27;
+
+  /**
+   * Advanced escape hatch: raw Helm values merged LAST (Helm `-f`
+   * semantics) over everything this spec renders - later keys win. Use it
+   * for chart keys this spec does not type (`extraManifests`). The module
+   * re-pins `fullnameOverride` after the merge. Overriding
+   * `relayproxy.config` here replaces the whole rendered relay
+   * configuration. YAML document as a string.
+   */
+  string helm_values = 28;
+
+  option (buf.validate.message).cel = {
+    id: "spec.extra_env.unique_names"
+    expression: "!this.extra_env.exists(k, k in this.extra_env_from_secret)"
+    message: "A variable may be declared in extra_env or extra_env_from_secret, not both."
+  };
+}
+
+/** Relay container image. */
+message KubernetesGoFeatureFlagImage {
+  /**
+   * Image repository. The same images are mirrored at
+   * ghcr.io/go-feature-flag/go-feature-flag (tags after v1.55.1).
+   */
+  optional string repository = 1 [(dev.planton.shared.options.default) = "gofeatureflag/go-feature-flag"];
+
+  /**
+   * Image tag. Empty = the tag matching chart_version (the chart's
+   * appVersion). Set it only to run a relay version other than the
+   * chart's.
+   */
+  string tag = 2;
+
+  /**
+   * Run the FIPS 140 build (the module appends `-fips` to the tag).
+   */
+  bool fips = 3;
+
+  /**
+   * Image pull policy: Always, IfNotPresent or Never.
+   */
+  optional string pull_policy = 4 [
+    (dev.planton.shared.options.default) = "IfNotPresent",
+    (buf.validate.field).cel = {
+      id: "spec.image.pull_policy"
+      message: "Image pull policy must be one of: Always, IfNotPresent, Never."
+      expression: "this in [\"Always\", \"IfNotPresent\", \"Never\"]"
+    }
+  ];
+
+  /**
+   * Names of existing image pull Secrets in the relay's namespace (for a
+   * private mirror).
+   */
+  repeated string pull_secret_names = 5 [(dev.planton.shared.options.sensitive_exempt_reason) = "NAMES of existing image pull Secrets (references), not secret material"];
+}
+
+/** Horizontal pod autoscaling. */
+message KubernetesGoFeatureFlagHpa {
+  /**
+   * Enable the HorizontalPodAutoscaler (replicas then belongs to the
+   * autoscaler).
+   */
+  bool enabled = 1;
+
+  /**
+   * Minimum replicas.
+   */
+  optional int32 min_replicas = 2 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Maximum replicas. The platform default is 10 (the chart's own default
+   * is 100).
+   */
+  optional int32 max_replicas = 3 [
+    (dev.planton.shared.options.default) = "10",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Target average CPU utilization percent.
+   */
+  optional int32 target_cpu_utilization_percent = 4 [
+    (dev.planton.shared.options.default) = "80",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    }
+  ];
+
+  /**
+   * Target average memory utilization percent. Empty = memory does not
+   * drive scaling (CPU alone does).
+   */
+  optional int32 target_memory_utilization_percent = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.hpa.replica_bounds"
+    expression: "!this.enabled || (has(this.min_replicas) ? this.min_replicas : 1) <= (has(this.max_replicas) ? this.max_replicas : 10)"
+    message: "The autoscaler's minimum replica count cannot exceed its maximum."
+  };
+}
+
+/** PodDisruptionBudget. */
+message KubernetesGoFeatureFlagPdb {
+  /**
+   * Create the PodDisruptionBudget. It only protects availability when
+   * more than one replica runs.
+   */
+  bool enabled = 1;
+
+  /**
+   * Minimum pods that must stay available during a voluntary disruption:
+   * an integer ("1") or a percentage ("50%"). Empty with max_unavailable
+   * also empty = 1.
+   */
+  string min_available = 2 [(buf.validate.field).cel = {
+    id: "spec.pdb.min_available"
+    message: "min_available must be a positive integer or a percentage up to 100%, such as 50% (the chart reads 0 as unset and renders 1)."
+    expression: "this == '' || (this != '0' && this.matches('^([0-9]+|100%|[0-9]{1,2}%)$'))"
+  }];
+
+  /**
+   * Maximum pods that may be unavailable during a voluntary disruption: an
+   * integer or a percentage. Mutually exclusive with min_available.
+   */
+  string max_unavailable = 3 [(buf.validate.field).cel = {
+    id: "spec.pdb.max_unavailable"
+    message: "max_unavailable must be a non-negative integer or a percentage up to 100%, such as 25%."
+    expression: "this == '' || this.matches('^([0-9]+|100%|[0-9]{1,2}%)$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.pdb.one_bound"
+    expression: "this.min_available == '' || this.max_unavailable == ''"
+    message: "A PodDisruptionBudget takes either min_available or max_unavailable, not both."
+  };
+}
+
+/** HTTP listener, monitoring listener and Service. */
+message KubernetesGoFeatureFlagServer {
+  /**
+   * Port of the evaluation API: REST evaluation, OFREP, and the flag
+   * configuration endpoint in-process providers sync from. Also the
+   * Service port.
+   */
+  optional int32 port = 1 [
+    (dev.planton.shared.options.default) = "1031",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Separate port for /health, /info and /metrics, so probes and scraping
+   * never share the evaluation listener. The Service exposes it as the
+   * `monitoring` port.
+   */
+  optional int32 monitoring_port = 2 [
+    (dev.planton.shared.options.default) = "1032",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Service type: ClusterIP, NodePort or LoadBalancer. Keep ClusterIP and
+   * compose a Gateway API route for external access.
+   */
+  optional string service_type = 3 [
+    (dev.planton.shared.options.default) = "ClusterIP",
+    (buf.validate.field).cel = {
+      id: "spec.server.service_type"
+      message: "Service type must be one of: ClusterIP, NodePort, LoadBalancer."
+      expression: "this in [\"ClusterIP\", \"NodePort\", \"LoadBalancer\"]"
+    }
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "spec.server.distinct_ports"
+    expression: "!has(this.port) || !has(this.monitoring_port) || this.port != this.monitoring_port"
+    message: "The evaluation port and the monitoring port must differ."
+  };
+}
+
+/** Relay log settings. */
+message KubernetesGoFeatureFlagLog {
+  /**
+   * Log level: debug, info, warn, error, dpanic, panic or fatal.
+   */
+  optional string level = 1 [
+    (dev.planton.shared.options.default) = "info",
+    (buf.validate.field).cel = {
+      id: "spec.log.level"
+      message: "Log level must be one of: debug, info, warn, error, dpanic, panic, fatal."
+      expression: "this in [\"debug\", \"info\", \"warn\", \"error\", \"dpanic\", \"panic\", \"fatal\"]"
+    }
+  ];
+
+  /**
+   * Log format: json or logfmt.
+   */
+  optional string format = 2 [
+    (dev.planton.shared.options.default) = "json",
+    (buf.validate.field).cel = {
+      id: "spec.log.format"
+      message: "Log format must be either \"json\" or \"logfmt\"."
+      expression: "this in [\"json\", \"logfmt\"]"
+    }
+  ];
+}
+
+/**
+ * API keys. Callers send a key as `Authorization: Bearer <key>` (or the
+ * `X-API-Key` header). A key may not contain a comma - the relay reads key
+ * lists from a comma-separated environment variable, and the module refuses
+ * a comma at deploy time.
+ */
+message KubernetesGoFeatureFlagAuthorizedKeys {
+  /**
+   * Keys allowed to call the admin endpoints (forcing a flag refresh,
+   * reading the full configuration). Admin keys can also evaluate.
+   */
+  repeated string admin = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Keys allowed to evaluate flags and read the flag configuration (what
+   * OpenFeature SDKs and in-process providers present).
+   */
+  repeated string evaluation = 2 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/** Several flag sets. */
+message KubernetesGoFeatureFlagFlagSets {
+  /**
+   * The flag sets. Every caller's API key selects exactly one of them.
+   */
+  repeated KubernetesGoFeatureFlagFlagSet items = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  option (buf.validate.message).cel = {
+    id: "spec.flag_sets.unique_names"
+    expression: "this.items.filter(i, i.name != '').all(i, size(this.items.filter(o, o.name == i.name)) == 1)"
+    message: "Flag set names must be unique (the relay keys flag sets by name, so a second set with the same name takes over the first set's keys)."
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.flag_sets.reserved_name"
+    expression: "this.items.all(i, i.name != 'default')"
+    message: "\"default\" is reserved by the relay; name the flag set something else."
+  };
+}
+
+/**
+ * One isolated flag set. Its API keys must be unique across every flag set
+ * (the module checks at deploy time) and may not contain a comma.
+ */
+message KubernetesGoFeatureFlagFlagSet {
+  /**
+   * Flag set name, shown in notifications and exported events. Unique across
+   * the flag sets; "default" is reserved. Empty = the relay generates one.
+   */
+  string name = 1;
+
+  /**
+   * API keys that select this flag set. At least one.
+   */
+  repeated string api_keys = 2 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  /**
+   * This flag set's retrievers, notifiers and exporters.
+   */
+  KubernetesGoFeatureFlagFlagSource source = 3 [(buf.validate.field).required = true];
+}
+
+/**
+ * A flag source: where flags come from, how often they are re-read, who is
+ * told about changes, and where evaluation events go. Fields left empty keep
+ * the relay's own defaults (noted per field, verified at v1.56.0).
+ */
+message KubernetesGoFeatureFlagFlagSource {
+  /**
+   * Retrievers the flag files are read from. When several are listed, the
+   * relay merges their flags and a later retriever wins on a flag both
+   * define.
+   */
+  repeated KubernetesGoFeatureFlagRetriever retrievers = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  /**
+   * Notifiers told about every flag change (created, updated, deleted).
+   */
+  repeated KubernetesGoFeatureFlagNotifier notifiers = 2;
+
+  /**
+   * Exporters that receive evaluation events.
+   */
+  repeated KubernetesGoFeatureFlagExporter exporters = 3;
+
+  /**
+   * Format of the flag files: yaml, json or toml. Empty = yaml (what a
+   * KubernetesGoFeatureFlagFlagFile renders).
+   */
+  string file_format = 4 [(buf.validate.field).cel = {
+    id: "spec.flag_source.file_format"
+    message: "File format must be one of: yaml, json, toml."
+    expression: "this == '' || this in [\"yaml\", \"json\", \"toml\"]"
+  }];
+
+  /**
+   * How often the retrievers are re-read, in milliseconds (minimum 1000).
+   * A negative value disables polling (flags load once at startup). Empty =
+   * 60000. A flag flip reaches evaluations within one interval.
+   */
+  optional int32 polling_interval_ms = 5 [(buf.validate.field).cel = {
+    id: "spec.flag_source.polling_interval_ms"
+    message: "The polling interval must be at least 1000 ms, or negative to disable polling."
+    expression: "this < 0 || this >= 1000"
+  }];
+
+  /**
+   * Start serving even when a retriever fails at startup (flags then load
+   * on the first successful poll). Empty = false: a retriever that cannot
+   * be read keeps the relay from starting. Set true when the flag file is
+   * deployed alongside the relay, so install order never matters.
+   */
+  optional bool start_with_retriever_error = 6;
+
+  /**
+   * Add up to +-10% random jitter to every poll, so many replicas never hit
+   * the retrievers at the same instant.
+   */
+  bool enable_polling_jitter = 7;
+
+  /**
+   * Do not notify for the initial load at startup (only for later changes).
+   */
+  bool disable_notifier_on_init = 8;
+
+  /**
+   * Attributes merged into every evaluation context (a field here
+   * overrides the same field sent by the caller) - e.g. the environment
+   * name or a region, so targeting rules can use them.
+   */
+  google.protobuf.Struct evaluation_context_enrichment = 9;
+}
+
+/** One retriever. Exactly one kind. */
+message KubernetesGoFeatureFlagRetriever {
+  oneof kind {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * A key of a ConfigMap, read through the Kubernetes API on every poll -
+     * the way to serve a KubernetesGoFeatureFlagFlagFile. The module grants
+     * the relay `get` on exactly this ConfigMap.
+     */
+    KubernetesGoFeatureFlagConfigMapRetriever config_map = 1;
+
+    /**
+     * A flag file served over HTTP(S).
+     */
+    KubernetesGoFeatureFlagHttpRetriever http = 2;
+
+    /**
+     * A flag file in a GitHub repository.
+     */
+    KubernetesGoFeatureFlagGitRetriever github = 3;
+
+    /**
+     * A flag file in a GitLab repository.
+     */
+    KubernetesGoFeatureFlagGitRetriever gitlab = 4;
+
+    /**
+     * A flag file in a Bitbucket repository.
+     */
+    KubernetesGoFeatureFlagGitRetriever bitbucket = 5;
+
+    /**
+     * A flag file in an S3 bucket (credentials from the standard AWS SDK
+     * chain: workload identity, or AWS_* variables).
+     */
+    KubernetesGoFeatureFlagS3Retriever s3 = 6;
+
+    /**
+     * A flag file in a Google Cloud Storage bucket (credentials from
+     * workload identity or GOOGLE_APPLICATION_CREDENTIALS).
+     */
+    KubernetesGoFeatureFlagGcsRetriever google_storage = 7;
+
+    /**
+     * A flag file in Azure Blob Storage.
+     */
+    KubernetesGoFeatureFlagAzureBlobRetriever azure_blob_storage = 8;
+
+    /**
+     * Flags stored as documents in a MongoDB collection.
+     */
+    KubernetesGoFeatureFlagMongoDbRetriever mongodb = 9;
+
+    /**
+     * Flags stored as Redis keys.
+     */
+    KubernetesGoFeatureFlagRedisRetriever redis = 10;
+
+    /**
+     * Flags stored as rows in a PostgreSQL table.
+     */
+    KubernetesGoFeatureFlagPostgresRetriever postgresql = 11;
+  }
+}
+
+/** ConfigMap retriever. */
+message KubernetesGoFeatureFlagConfigMapRetriever {
+  /**
+   * ConfigMap name. Accepts a literal or a reference to a
+   * KubernetesGoFeatureFlagFlagFile (its rendered ConfigMap); any ConfigMap
+   * holding a GO Feature Flag flag file works.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef config_map_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesGoFeatureFlagFlagFile,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.config_map_name"
+  ];
+
+  /**
+   * Key within the ConfigMap holding the flag file. Accepts a literal or a
+   * reference to the same KubernetesGoFeatureFlagFlagFile (its rendered
+   * key, `flags.goff.yaml` unless the flag file says otherwise).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesGoFeatureFlagFlagFile,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key"
+  ];
+
+  /**
+   * Namespace of the ConfigMap. Empty = the relay's own namespace. The
+   * module grants the read in whichever namespace this names.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
+}
+
+/** HTTP(S) retriever. */
+message KubernetesGoFeatureFlagHttpRetriever {
+  /**
+   * URL of the flag file.
+   */
+  string url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+
+  /**
+   * HTTP method, upper case (e.g. GET or POST). Empty = GET.
+   */
+  string method = 2 [(buf.validate.field).cel = {
+    id: "spec.retriever.http.method"
+    message: "The HTTP method must be an upper-case token such as GET or POST."
+    expression: "this == '' || this.matches('^[A-Z]+$')"
+  }];
+
+  /**
+   * Request body (for POST/PUT/PATCH endpoints).
+   */
+  string body = 3;
+
+  /**
+   * Plain request headers. Repeat a header by joining its values with
+   * ", " (equivalent on the wire).
+   */
+  map<string, string> headers = 4;
+
+  /**
+   * Request headers carrying credentials (e.g. Authorization). Header names
+   * may not contain "_" and may not repeat a plain header; the module
+   * checks both at deploy time.
+   */
+  map<string, string> sensitive_headers = 5 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Request timeout in milliseconds. Empty = 10000.
+   */
+  optional int32 timeout_ms = 6 [(buf.validate.field).int32.gt = 0];
+}
+
+/** Git hosting retriever (GitHub, GitLab or Bitbucket). */
+message KubernetesGoFeatureFlagGitRetriever {
+  /**
+   * Repository as `owner/name` (GitLab: the project path, groups
+   * included).
+   */
+  string repository_slug = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Path of the flag file in the repository.
+   */
+  string path = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Branch to read. Empty = main.
+   */
+  string branch = 3;
+
+  /**
+   * Access token. Required for private repositories; also lifts the
+   * provider's anonymous rate limit, which a short polling interval
+   * otherwise exhausts.
+   */
+  string token = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * API base URL for a self-hosted server (GitHub Enterprise, a GitLab or
+   * Bitbucket instance). Empty = the public service.
+   */
+  string base_url = 5 [(buf.validate.field).cel = {
+    id: "spec.retriever.git.base_url"
+    message: "base_url must be an absolute http(s) URL."
+    expression: "this == '' || (this.isUri() && (this.startsWith('http://') || this.startsWith('https://')))"
+  }];
+
+  /**
+   * Request timeout in milliseconds. Empty = 10000.
+   */
+  optional int32 timeout_ms = 6 [(buf.validate.field).int32.gt = 0];
+}
+
+/** S3 retriever. */
+message KubernetesGoFeatureFlagS3Retriever {
+  /**
+   * Bucket name.
+   */
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Object key of the flag file.
+   */
+  string item = 2 [(buf.validate.field).required = true];
+}
+
+/** Google Cloud Storage retriever. */
+message KubernetesGoFeatureFlagGcsRetriever {
+  /**
+   * Bucket name.
+   */
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Object name of the flag file.
+   */
+  string object = 2 [(buf.validate.field).required = true];
+}
+
+/** Azure Blob Storage retriever. */
+message KubernetesGoFeatureFlagAzureBlobRetriever {
+  /**
+   * Storage account name.
+   */
+  string account_name = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Storage account key. Empty = the Azure default credential chain
+   * (workload identity or a managed identity).
+   */
+  string account_key = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Blob container.
+   */
+  string container = 3 [(buf.validate.field).required = true];
+
+  /**
+   * Blob name of the flag file.
+   */
+  string object = 4 [(buf.validate.field).required = true];
+}
+
+/** MongoDB retriever. */
+message KubernetesGoFeatureFlagMongoDbRetriever {
+  /**
+   * Connection URI (credentials included).
+   */
+  string uri = 1 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).required = true
+  ];
+
+  /**
+   * Database holding the flags collection.
+   */
+  string database = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Collection with one document per flag (the document's `flag` field
+   * names the flag).
+   */
+  string collection = 3 [(buf.validate.field).required = true];
+}
+
+/** Redis retriever. */
+message KubernetesGoFeatureFlagRedisRetriever {
+  /**
+   * Redis connection.
+   */
+  KubernetesGoFeatureFlagRedisOptions options = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Key prefix: every key starting with it holds one flag (the rest of the
+   * key is the flag name). Empty = every key.
+   */
+  string prefix = 2;
+}
+
+/**
+ * Redis connection options. Empty fields keep the client's defaults (noted
+ * per field). Timeouts are in milliseconds.
+ */
+message KubernetesGoFeatureFlagRedisOptions {
+  /**
+   * Server address as host:port.
+   */
+  string addr = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Network: tcp or unix. Empty = tcp.
+   */
+  string network = 2 [(buf.validate.field).cel = {
+    id: "spec.retriever.redis.network"
+    message: "Network must be tcp or unix."
+    expression: "this == '' || this in [\"tcp\", \"unix\"]"
+  }];
+
+  /**
+   * Username (Redis 6 ACL).
+   */
+  string username = 3;
+
+  /**
+   * Password.
+   */
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Database number selected after connecting.
+   */
+  int32 db = 5 [(buf.validate.field).int32.gte = 0];
+
+  /**
+   * Connect with TLS (minimum TLS 1.2).
+   */
+  bool tls_enabled = 6;
+
+  /**
+   * RESP protocol version: 2 or 3. Empty = 3.
+   */
+  optional int32 protocol = 7 [(buf.validate.field).cel = {
+    id: "spec.retriever.redis.protocol"
+    message: "RESP protocol must be 2 or 3."
+    expression: "this in [2, 3]"
+  }];
+
+  /**
+   * Name set on every connection with CLIENT SETNAME.
+   */
+  string client_name = 8;
+
+  /**
+   * Suffix appended to the client library identity.
+   */
+  string identity_suffix = 9;
+
+  /**
+   * Do not send the client library identity (CLIENT SETINFO) on connect.
+   */
+  bool disable_identity = 10;
+
+  /**
+   * Retries before giving up. -1 disables retries. Empty = 3.
+   */
+  optional int32 max_retries = 11 [(buf.validate.field).int32.gte = -1];
+
+  /**
+   * Minimum backoff between retries. -1 disables backoff. Empty = 8.
+   */
+  optional int64 min_retry_backoff_ms = 12 [(buf.validate.field).int64.gte = -1];
+
+  /**
+   * Maximum backoff between retries. -1 disables backoff. Empty = 512.
+   */
+  optional int64 max_retry_backoff_ms = 13 [(buf.validate.field).int64.gte = -1];
+
+  /**
+   * Timeout for establishing a connection. Empty = 5000.
+   */
+  optional int64 dial_timeout_ms = 14 [(buf.validate.field).int64.gt = 0];
+
+  /**
+   * Socket read timeout. -1 = no timeout, -2 = never set a read deadline.
+   * Empty = 3000.
+   */
+  optional int64 read_timeout_ms = 15 [(buf.validate.field).int64.gte = -2];
+
+  /**
+   * Socket write timeout. Empty = the read timeout.
+   */
+  optional int64 write_timeout_ms = 16 [(buf.validate.field).int64.gte = -2];
+
+  /**
+   * Honor context deadlines on commands.
+   */
+  bool context_timeout_enabled = 17;
+
+  /**
+   * Use FIFO instead of LIFO for the connection pool.
+   */
+  bool pool_fifo = 18;
+
+  /**
+   * Maximum socket connections. Empty = 10 per available CPU.
+   */
+  optional int32 pool_size = 19 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * How long to wait for a pooled connection when all are busy. Empty =
+   * the read timeout plus one second.
+   */
+  optional int64 pool_timeout_ms = 20 [(buf.validate.field).int64.gt = 0];
+
+  /**
+   * Minimum idle connections kept open.
+   */
+  int32 min_idle_conns = 21 [(buf.validate.field).int32.gte = 0];
+
+  /**
+   * Maximum idle connections. 0 = unlimited.
+   */
+  int32 max_idle_conns = 22 [(buf.validate.field).int32.gte = 0];
+
+  /**
+   * Maximum idle time of a connection. -1 disables the check. Empty =
+   * 1800000 (30 minutes).
+   */
+  optional int64 conn_max_idle_time_ms = 23 [(buf.validate.field).int64.gte = -1];
+
+  /**
+   * Maximum lifetime of a connection. Empty = connections are never
+   * retired for age.
+   */
+  optional int64 conn_max_lifetime_ms = 24 [(buf.validate.field).int64.gt = 0];
+}
+
+/** PostgreSQL retriever. */
+message KubernetesGoFeatureFlagPostgresRetriever {
+  /**
+   * Connection URI (credentials included), e.g.
+   * postgres://user:password@host:5432/db?sslmode=require.
+   */
+  string uri = 1 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).required = true
+  ];
+
+  /**
+   * Table holding one row per flag.
+   */
+  string table = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Column mapping, from the relay's field name (`flag_name`, `flagset`,
+   * `config`) to the column that holds it. Empty = those same names.
+   */
+  map<string, string> columns = 3 [(buf.validate.field).cel = {
+    id: "spec.retriever.postgresql.columns"
+    message: "Column mappings may only name the relay's fields: flag_name, flagset, config."
+    expression: "this.all(k, k in [\"flag_name\", \"flagset\", \"config\"])"
+  }];
+}
+
+/** One change notifier. Exactly one kind. */
+message KubernetesGoFeatureFlagNotifier {
+  oneof kind {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * A Slack incoming webhook.
+     */
+    KubernetesGoFeatureFlagWebhookUrlNotifier slack = 1;
+
+    /**
+     * A Microsoft Teams incoming webhook.
+     */
+    KubernetesGoFeatureFlagWebhookUrlNotifier microsoft_teams = 2;
+
+    /**
+     * A Discord webhook.
+     */
+    KubernetesGoFeatureFlagWebhookUrlNotifier discord = 3;
+
+    /**
+     * Any HTTP endpoint, with an optional HMAC signature.
+     */
+    KubernetesGoFeatureFlagWebhookNotifier webhook = 4;
+  }
+}
+
+/** A chat incoming-webhook notifier. */
+message KubernetesGoFeatureFlagWebhookUrlNotifier {
+  /**
+   * The incoming-webhook URL (it embeds the channel's credential).
+   */
+  string webhook_url = 1 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).required = true
+  ];
+}
+
+/** Generic webhook notifier. */
+message KubernetesGoFeatureFlagWebhookNotifier {
+  /**
+   * Endpoint receiving a POST with the change payload.
+   */
+  string endpoint_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+
+  /**
+   * Secret used to sign each payload (HMAC-SHA256 in the
+   * X-Hub-Signature-256 header), so the receiver can verify it.
+   */
+  string secret = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Static fields added to every payload's `meta` (e.g. the environment).
+   */
+  map<string, string> meta = 3;
+
+  /**
+   * Plain request headers.
+   */
+  map<string, string> headers = 4;
+
+  /**
+   * Request headers carrying credentials. Names may not contain "_" and
+   * may not repeat a plain header (checked at deploy time).
+   */
+  map<string, string> sensitive_headers = 5 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/**
+ * One evaluation-event exporter. Exactly one kind, plus the batching
+ * settings every kind shares. Fields left empty keep the relay's defaults.
+ */
+message KubernetesGoFeatureFlagExporter {
+  oneof kind {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * POST batches of events to an HTTP endpoint.
+     */
+    KubernetesGoFeatureFlagWebhookExporter webhook = 1;
+
+    /**
+     * Write one log line per event to the relay's log.
+     */
+    KubernetesGoFeatureFlagLogExporter log = 2;
+
+    /**
+     * Write event files to an S3 bucket.
+     */
+    KubernetesGoFeatureFlagS3Exporter s3 = 3;
+
+    /**
+     * Write event files to a Google Cloud Storage bucket.
+     */
+    KubernetesGoFeatureFlagGcsExporter google_storage = 4;
+
+    /**
+     * Write event files to Azure Blob Storage.
+     */
+    KubernetesGoFeatureFlagAzureBlobExporter azure_blob_storage = 5;
+
+    /**
+     * Send events to an SQS queue.
+     */
+    KubernetesGoFeatureFlagSqsExporter sqs = 6;
+
+    /**
+     * Send events to a Kinesis data stream.
+     */
+    KubernetesGoFeatureFlagKinesisExporter kinesis = 7;
+
+    /**
+     * Publish events to a Google Cloud Pub/Sub topic.
+     */
+    KubernetesGoFeatureFlagPubSubExporter pubsub = 8;
+
+    /**
+     * Stream events into a BigQuery table.
+     */
+    KubernetesGoFeatureFlagBigQueryExporter bigquery = 9;
+
+    /**
+     * Produce events to a Kafka topic.
+     */
+    KubernetesGoFeatureFlagKafkaExporter kafka = 10;
+
+    /**
+     * Record events as OpenTelemetry span events on the relay's traces.
+     */
+    KubernetesGoFeatureFlagOpenTelemetryExporter opentelemetry = 11;
+  }
+
+  /**
+   * How often a batch is flushed, in milliseconds. Empty = 60000.
+   */
+  optional int64 flush_interval_ms = 12 [(buf.validate.field).int64.gt = 0];
+
+  /**
+   * Events buffered before a forced flush. Empty = 100000.
+   */
+  optional int64 max_event_in_memory = 13 [(buf.validate.field).int64.gt = 0];
+
+  /**
+   * Which events this exporter receives: feature (flag evaluations) or
+   * tracking (custom tracking events). Empty = feature.
+   */
+  string event_type = 14 [(buf.validate.field).cel = {
+    id: "spec.exporter.event_type"
+    message: "event_type must be feature or tracking."
+    expression: "this == '' || this in [\"feature\", \"tracking\"]"
+  }];
+}
+
+/** Webhook exporter. */
+message KubernetesGoFeatureFlagWebhookExporter {
+  /**
+   * Endpoint receiving a POST per batch.
+   */
+  string endpoint_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+
+  /**
+   * Secret used to sign each batch (HMAC-SHA256 in X-Hub-Signature-256).
+   */
+  string secret = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Static fields added to every batch's `meta`.
+   */
+  map<string, string> meta = 3;
+
+  /**
+   * Plain request headers.
+   */
+  map<string, string> headers = 4;
+
+  /**
+   * Request headers carrying credentials. Names may not contain "_" and
+   * may not repeat a plain header (checked at deploy time).
+   */
+  map<string, string> sensitive_headers = 5 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/** Log exporter. */
+message KubernetesGoFeatureFlagLogExporter {
+  /**
+   * Go template for each line. Empty =
+   * `[{{ .FormattedDate}}] user="{{ .UserKey}}", flag="{{ .Key}}", value="{{ .Value}}"`.
+   */
+  string log_format = 1;
+}
+
+/**
+ * Settings shared by the file-writing exporters (S3, GCS, Azure Blob).
+ * Empty fields keep the relay's defaults.
+ */
+message KubernetesGoFeatureFlagEventFileFormat {
+  /**
+   * File format: JSON, CSV or Parquet. Empty = JSON.
+   */
+  string format = 1 [(buf.validate.field).cel = {
+    id: "spec.exporter.file.format"
+    message: "File format must be JSON, CSV or Parquet (any case)."
+    expression: "this == '' || this in [\"JSON\", \"json\", \"Json\", \"CSV\", \"csv\", \"Csv\", \"Parquet\", \"parquet\", \"PARQUET\"]"
+  }];
+
+  /**
+   * Go template for each file name. Empty =
+   * `flag-variation-{{ .Hostname}}-{{ .Timestamp}}.{{ .Format}}`.
+   */
+  string filename = 2;
+
+  /**
+   * Go template for each CSV line (CSV format only). Empty = every event
+   * field, separated by ";".
+   */
+  string csv_template = 3;
+
+  /**
+   * Parquet compression codec (Parquet format only): UNCOMPRESSED, SNAPPY,
+   * GZIP, LZO, BROTLI, LZ4, ZSTD or LZ4_RAW. Empty = SNAPPY.
+   */
+  string parquet_compression_codec = 4 [(buf.validate.field).cel = {
+    id: "spec.exporter.file.parquet_compression_codec"
+    message: "Parquet codec must be one of: UNCOMPRESSED, SNAPPY, GZIP, LZO, BROTLI, LZ4, ZSTD, LZ4_RAW."
+    expression: "this == '' || this in [\"UNCOMPRESSED\", \"SNAPPY\", \"GZIP\", \"LZO\", \"BROTLI\", \"LZ4\", \"ZSTD\", \"LZ4_RAW\"]"
+  }];
+}
+
+/** S3 exporter. */
+message KubernetesGoFeatureFlagS3Exporter {
+  /**
+   * Bucket name.
+   */
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Key prefix (folder) for the files. Empty = the bucket root.
+   */
+  string path = 2;
+
+  /**
+   * File format and naming.
+   */
+  KubernetesGoFeatureFlagEventFileFormat file = 3;
+}
+
+/** Google Cloud Storage exporter. */
+message KubernetesGoFeatureFlagGcsExporter {
+  /**
+   * Bucket name.
+   */
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Object prefix (folder) for the files. Empty = the bucket root.
+   */
+  string path = 2;
+
+  /**
+   * File format and naming.
+   */
+  KubernetesGoFeatureFlagEventFileFormat file = 3;
+}
+
+/** Azure Blob Storage exporter. */
+message KubernetesGoFeatureFlagAzureBlobExporter {
+  /**
+   * Storage account name.
+   */
+  string account_name = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Storage account key. Empty = the Azure default credential chain.
+   */
+  string account_key = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Blob container.
+   */
+  string container = 3 [(buf.validate.field).required = true];
+
+  /**
+   * Blob prefix (folder) for the files. Empty = the container root.
+   */
+  string path = 4;
+
+  /**
+   * File format and naming.
+   */
+  KubernetesGoFeatureFlagEventFileFormat file = 5;
+}
+
+/** SQS exporter. */
+message KubernetesGoFeatureFlagSqsExporter {
+  /**
+   * Queue URL.
+   */
+  string queue_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+}
+
+/** Kinesis exporter. */
+message KubernetesGoFeatureFlagKinesisExporter {
+  /**
+   * Stream ARN. Give the ARN or the name.
+   */
+  string stream_arn = 1;
+
+  /**
+   * Stream name. Give the ARN or the name.
+   */
+  string stream_name = 2;
+
+  /**
+   * Record format. Empty = JSON (the only format the relay produces for
+   * streams).
+   */
+  string format = 3;
+
+  option (buf.validate.message).cel = {
+    id: "spec.exporter.kinesis.stream"
+    expression: "this.stream_arn != '' || this.stream_name != ''"
+    message: "Name the Kinesis stream by stream_arn or stream_name."
+  };
+}
+
+/** Pub/Sub exporter. */
+message KubernetesGoFeatureFlagPubSubExporter {
+  /**
+   * Google Cloud project holding the topic.
+   */
+  string project_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Topic name.
+   */
+  string topic = 2 [(buf.validate.field).required = true];
+}
+
+/** BigQuery exporter. */
+message KubernetesGoFeatureFlagBigQueryExporter {
+  /**
+   * Google Cloud project holding the dataset.
+   */
+  string project_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Dataset holding the table.
+   */
+  string dataset_id = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Table name. Empty = the relay's default table name.
+   */
+  string table_name = 3;
+
+  /**
+   * Service account key JSON. Empty = workload identity or
+   * GOOGLE_APPLICATION_CREDENTIALS.
+   */
+  string google_credentials = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Create or update the table schema automatically.
+   */
+  bool auto_migrate = 5;
+}
+
+/** Kafka exporter. */
+message KubernetesGoFeatureFlagKafkaExporter {
+  /**
+   * Topic events are produced to.
+   */
+  string topic = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Bootstrap broker addresses (host:port).
+   */
+  repeated string addresses = 2 [(buf.validate.field).repeated.min_items = 1];
+
+  /**
+   * Producer tuning: a Sarama client configuration object
+   * (https://pkg.go.dev/github.com/IBM/sarama#Config), merged over Sarama's
+   * defaults - e.g. {"net": {"sasl": {"enable": true, "mechanism":
+   * "SCRAM-SHA-512", "user": "events"}, "tls": {"enable": true}}}. Keys are
+   * matched case-insensitively. Put the SASL password in sasl_password,
+   * never here.
+   */
+  google.protobuf.Struct config = 3;
+
+  /**
+   * SASL password, merged into config as net.sasl.password.
+   */
+  string sasl_password = 4 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/** OpenTelemetry exporter. */
+message KubernetesGoFeatureFlagOpenTelemetryExporter {
+  /**
+   * Tracer name the span events are recorded under. Empty = the relay's
+   * default tracer.
+   */
+  string tracer_name = 1;
+}
+
+/** OFREP flag-change event stream. */
+message KubernetesGoFeatureFlagOfrepEventStream {
+  /**
+   * Public base URL clients use to reach the relay (e.g.
+   * https://flags.example.com); the stream path is appended. Empty = no
+   * event stream is advertised.
+   */
+  string base_url = 1 [(buf.validate.field).cel = {
+    id: "spec.ofrep_event_stream.base_url"
+    message: "base_url must be an absolute http(s) URL."
+    expression: "this == '' || (this.isUri() && (this.startsWith('http://') || this.startsWith('https://')))"
+  }];
+
+  /**
+   * Seconds after which a client treats a silent stream as inactive. Empty
+   * = not advertised.
+   */
+  int32 inactivity_delay_sec = 2 [(buf.validate.field).int32.gte = 0];
+}
+
+/** OpenTelemetry and Jaeger settings. */
+message KubernetesGoFeatureFlagTelemetry {
+  /**
+   * OTLP collector endpoint for the relay's traces (e.g.
+   * http://otel-collector:4318).
+   */
+  string otlp_endpoint = 1;
+
+  /**
+   * OTLP protocol: grpc or http/protobuf (the two the relay's exporter
+   * supports). Empty = http/protobuf.
+   */
+  string otlp_protocol = 2 [(buf.validate.field).cel = {
+    id: "spec.telemetry.otlp_protocol"
+    message: "OTLP protocol must be grpc or http/protobuf."
+    expression: "this == '' || this in [\"grpc\", \"http/protobuf\"]"
+  }];
+
+  /**
+   * Disable the OpenTelemetry SDK entirely.
+   */
+  bool sdk_disabled = 3;
+
+  /**
+   * Service name reported on traces. Empty = the relay's own name.
+   */
+  string service_name = 4;
+
+  /**
+   * Trace sampler: an OpenTelemetry sampler name (always_on, always_off,
+   * traceidratio, parentbased_always_on, parentbased_always_off,
+   * parentbased_traceidratio) or jaeger_remote (sampling strategies served
+   * by a Jaeger sampling manager - configure jaeger_sampler). Empty = every
+   * trace is sampled.
+   */
+  string traces_sampler = 5 [(buf.validate.field).cel = {
+    id: "spec.telemetry.traces_sampler"
+    message: "traces_sampler must be one of: always_on, always_off, traceidratio, parentbased_always_on, parentbased_always_off, parentbased_traceidratio, jaeger_remote."
+    expression: "this == '' || this in [\"always_on\", \"always_off\", \"traceidratio\", \"parentbased_always_on\", \"parentbased_always_off\", \"parentbased_traceidratio\", \"jaeger_remote\"]"
+  }];
+
+  /**
+   * Resource attributes added to every span.
+   */
+  map<string, string> resource_attributes = 6;
+
+  /**
+   * Jaeger remote sampling (only with traces_sampler jaeger_remote).
+   */
+  KubernetesGoFeatureFlagJaegerSampler jaeger_sampler = 7;
+
+  /**
+   * Argument of the ratio samplers: the fraction of traces sampled, 0 to 1
+   * (e.g. "0.25").
+   */
+  string traces_sampler_arg = 8 [(buf.validate.field).cel = {
+    id: "spec.telemetry.traces_sampler_arg"
+    message: "traces_sampler_arg must be a number between 0 and 1."
+    expression: "this == '' || this.matches('^(0(\\\\.[0-9]+)?|1(\\\\.0+)?)$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.telemetry.jaeger_needs_jaeger_remote"
+    expression: "!has(this.jaeger_sampler) || this.traces_sampler == 'jaeger_remote'"
+    message: "jaeger_sampler is read only when traces_sampler is jaeger_remote."
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.telemetry.sampler_arg_needs_ratio_sampler"
+    expression: "this.traces_sampler_arg == '' || this.traces_sampler in ['traceidratio', 'parentbased_traceidratio']"
+    message: "traces_sampler_arg applies to the traceidratio and parentbased_traceidratio samplers."
+  };
+}
+
+/** Jaeger remote sampling. */
+message KubernetesGoFeatureFlagJaegerSampler {
+  /**
+   * Sampling manager URL (e.g. http://jaeger:5778/sampling).
+   */
+  string manager_host_port = 1 [(buf.validate.field).cel = {
+    id: "spec.telemetry.jaeger_sampler.manager_host_port"
+    message: "manager_host_port must be an absolute http(s) URL of the sampling manager."
+    expression: "this == '' || (this.isUri() && (this.startsWith('http://') || this.startsWith('https://')))"
+  }];
+
+  /**
+   * How often the sampling strategy is refreshed (Go duration, e.g. "1m").
+   */
+  string refresh_interval = 2 [(buf.validate.field).cel = {
+    id: "spec.telemetry.jaeger_sampler.refresh_interval"
+    message: "refresh_interval must be a Go duration such as 30s or 1m."
+    expression: "this == '' || this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+  }];
+
+  /**
+   * Maximum operations the sampler tracks.
+   */
+  int32 max_operations = 3 [(buf.validate.field).int32.gte = 0];
+}
+
+/** Swagger UI. */
+message KubernetesGoFeatureFlagSwagger {
+  /**
+   * Serve the Swagger UI and OpenAPI document on the evaluation port.
+   */
+  bool enabled = 1;
+
+  /**
+   * Host name the Swagger document advertises (the public host clients
+   * use). Empty = localhost.
+   */
+  string host = 2;
+}
+
+/** Less common relay switches. */
+message KubernetesGoFeatureFlagRuntime {
+  /**
+   * Do not print the startup banner.
+   */
+  bool hide_banner = 1;
+
+  /**
+   * Serve Go pprof profiling endpoints on the monitoring port.
+   */
+  bool enable_pprof = 2;
+
+  /**
+   * Omit the relay version response header.
+   */
+  bool disable_version_header = 3;
+
+  /**
+   * Label bulk-evaluation metrics with each flag name (higher cardinality).
+   */
+  bool enable_bulk_metric_flag_names = 4;
+
+  /**
+   * Send only flag names, not flag definitions, in WebSocket change
+   * messages.
+   */
+  bool disable_flag_details_in_stream = 5;
+
+  /**
+   * How often exporter queues are cleaned (Go duration, e.g. "1m"). Empty =
+   * the relay default.
+   */
+  string exporter_clean_queue_interval = 6 [(buf.validate.field).cel = {
+    id: "spec.runtime.exporter_clean_queue_interval"
+    message: "exporter_clean_queue_interval must be a Go duration such as 30s or 1m."
+    expression: "this == '' || this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+  }];
+
+  /**
+   * Prefix the relay requires on the environment variables it reads as
+   * configuration. A prefix keeps the relay from reading the service-link
+   * variables Kubernetes injects for every Service in the namespace (a
+   * Service named `server` injects SERVER_PORT=tcp://..., which an
+   * unprefixed relay reads as its own port and then fails to start). The
+   * module prefixes the variables it generates for secret values to match.
+   */
+  optional string env_variable_prefix = 7 [
+    (dev.planton.shared.options.default) = "GOFFRELAY_",
+    (buf.validate.field).cel = {
+      id: "spec.runtime.env_variable_prefix"
+      message: "env_variable_prefix may contain only upper-case letters, digits and underscores."
+      expression: "this == '' || this.matches('^[A-Z][A-Z0-9_]*$')"
+    }
+  ];
+}
+
+/** Prometheus scraping. */
+message KubernetesGoFeatureFlagMetrics {
+  /**
+   * Create a ServiceMonitor for the monitoring port (requires the
+   * Prometheus Operator CRDs on the cluster; the apply FAILS without
+   * them).
+   */
+  bool service_monitor_enabled = 1;
+
+  /**
+   * Labels on the ServiceMonitor, to match a Prometheus instance's
+   * serviceMonitorSelector (e.g. release: kube-prometheus-stack).
+   */
+  map<string, string> service_monitor_labels = 2;
+}
+
+/** Pod scheduling constraints. */
+message KubernetesGoFeatureFlagScheduling {
+  /**
+   * Schedule onto nodes carrying these labels.
+   */
+  map<string, string> node_selector = 1;
+
+  /**
+   * Tolerations for tainted nodes.
+   */
+  repeated dev.planton.kubernetes.WorkloadToleration tolerations = 2;
+
+  /**
+   * Node affinity: hard requirements and weighted preferences.
+   */
+  dev.planton.kubernetes.WorkloadNodeAffinity node_affinity = 3;
+
+  /**
+   * Pod affinity toward pods already running elsewhere.
+   */
+  dev.planton.kubernetes.WorkloadPodAffinity pod_affinity = 4;
+
+  /**
+   * Pod anti-affinity - spread replicas across nodes or zones.
+   */
+  dev.planton.kubernetes.WorkloadPodAffinity pod_anti_affinity = 5;
+}
+
+/** The relay's ServiceAccount. */
+message KubernetesGoFeatureFlagServiceAccount {
+  /**
+   * Annotations on the ServiceAccount the chart creates - the cloud
+   * workload-identity seam (e.g. eks.amazonaws.com/role-arn,
+   * iam.gke.io/gcp-service-account) for the S3, GCS, SQS, Kinesis,
+   * Pub/Sub and BigQuery integrations.
+   */
+  map<string, string> annotations = 1;
+
+  /**
+   * Run as an existing ServiceAccount instead of creating one (its
+   * annotations are then yours to manage, and `annotations` is ignored).
+   * The module binds the ConfigMap reads to whichever account runs the
+   * relay.
+   */
+  string existing_name = 2;
+}

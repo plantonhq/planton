@@ -1,0 +1,23 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlag
+metadata:
+  name: my-flag-relay
+spec:
+  namespace:
+    value: <namespace>
+  createNamespace: true
+  authorizedKeys:
+    evaluation:
+      - $secret/<relay-evaluation-key>
+  flagSource:
+    retrievers:
+      - github:
+          repositorySlug: <owner>/<repository>
+          path: <path-to-flags.goff.yaml>
+          branch: main
+          token: $secret/<github-token>
+    notifiers:
+      - slack:
+          webhookUrl: $secret/<slack-webhook-url>
+    # A token lifts GitHub's anonymous rate limit; keep the interval at a minute or more.
+    pollingIntervalMs: 60000

@@ -1950,6 +1950,10 @@ Allowed values (use exactly as shown):
 - `KubernetesPlantonRunner`
 - `KubernetesPlantonOperator`
 - `KubernetesPlantonPlatform` -- KubernetesPlantonOperator is a prerequisite because this kind declares the PlantonPlatform custom resource that only the operator's CRD admits and only the operator reconciles into a running platform.
+- `KubernetesGoFeatureFlag`
+- `KubernetesFlagd`
+- `KubernetesGoFeatureFlagFlagFile`
+- `KubernetesFlagdFlagFile`
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -2954,6 +2958,10 @@ Allowed values (use exactly as shown):
 - `KubernetesPlantonRunner`
 - `KubernetesPlantonOperator`
 - `KubernetesPlantonPlatform` -- KubernetesPlantonOperator is a prerequisite because this kind declares the PlantonPlatform custom resource that only the operator's CRD admits and only the operator reconciles into a running platform.
+- `KubernetesGoFeatureFlag`
+- `KubernetesFlagd`
+- `KubernetesGoFeatureFlagFlagFile`
+- `KubernetesFlagdFlagFile`
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -5154,6 +5162,10 @@ Allowed values (use exactly as shown):
 - `KubernetesPlantonRunner`
 - `KubernetesPlantonOperator`
 - `KubernetesPlantonPlatform` -- KubernetesPlantonOperator is a prerequisite because this kind declares the PlantonPlatform custom resource that only the operator's CRD admits and only the operator reconciles into a running platform.
+- `KubernetesGoFeatureFlag`
+- `KubernetesFlagd`
+- `KubernetesGoFeatureFlagFlagFile`
+- `KubernetesFlagdFlagFile`
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -6158,6 +6170,10 @@ Allowed values (use exactly as shown):
 - `KubernetesPlantonRunner`
 - `KubernetesPlantonOperator`
 - `KubernetesPlantonPlatform` -- KubernetesPlantonOperator is a prerequisite because this kind declares the PlantonPlatform custom resource that only the operator's CRD admits and only the operator reconciles into a running platform.
+- `KubernetesGoFeatureFlag`
+- `KubernetesFlagd`
+- `KubernetesGoFeatureFlagFlagFile`
+- `KubernetesFlagdFlagFile`
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -8477,6 +8493,10 @@ Allowed values (use exactly as shown):
 - `KubernetesPlantonRunner`
 - `KubernetesPlantonOperator`
 - `KubernetesPlantonPlatform` -- KubernetesPlantonOperator is a prerequisite because this kind declares the PlantonPlatform custom resource that only the operator's CRD admits and only the operator reconciles into a running platform.
+- `KubernetesGoFeatureFlag`
+- `KubernetesFlagd`
+- `KubernetesGoFeatureFlagFlagFile`
+- `KubernetesFlagdFlagFile`
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -9481,6 +9501,10 @@ Allowed values (use exactly as shown):
 - `KubernetesPlantonRunner`
 - `KubernetesPlantonOperator`
 - `KubernetesPlantonPlatform` -- KubernetesPlantonOperator is a prerequisite because this kind declares the PlantonPlatform custom resource that only the operator's CRD admits and only the operator reconciles into a running platform.
+- `KubernetesGoFeatureFlag`
+- `KubernetesFlagd`
+- `KubernetesGoFeatureFlagFlagFile`
+- `KubernetesFlagdFlagFile`
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`

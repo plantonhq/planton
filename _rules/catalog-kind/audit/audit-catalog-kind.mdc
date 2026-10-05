@@ -66,7 +66,7 @@ User: @audit-catalog-kind <KindName>
 2. **Lookup in catalog_kind.proto**:
    - Read `~/scm/github.com/plantonhq/planton/shared/catalogkind/catalog_kind.proto`
    - Search for enum entry matching the kind name
-   - Extract metadata: provider, id_prefix, version, kubernetes_meta (if applicable)
+   - Extract metadata: provider, version, id_prefix, service_group, prerequisites (if any)
 
 3. **Determine kind path**:
    - `catalog/<provider>/<kind_lowercase>/`
@@ -93,7 +93,7 @@ For each category, check files and record results. Use the following structure t
       (`go test ./pkg/catalogkindreflect/ -run TestRegistryNumberSnapshot`)
 - [ ] `id_prefix` is unique (no other kind uses it)
 - [ ] `kind_meta` includes provider, version, id_prefix
-- [ ] For Kubernetes: `kubernetes_meta` includes category and namespace_prefix (if workload)
+- [ ] `kind_meta` carries the `service_group` the kind belongs to (a Kubernetes kind: `kubernetes_core_workloads_apis`, `kubernetes_operators_controllers` or `kubernetes_open_source_software`), and `prerequisites` only for kinds that cannot deploy without another (`go test ./pkg/catalogkindreflect/` checks prefix uniqueness and the group)
 
 **Scoring:** Pass all checks = 4.44%, partial = proportional, fail all = 0%
 
@@ -214,7 +214,7 @@ only mirrors the schema silently misses them. For every audited kind:
 no subdir) and the release-equivalent build are CRITICAL: a kind that fails either cannot
 be released and must be reported as a critical gap regardless of other scores.
 
-#### Category 5: IaC Modules - Terraform (Critical - 4.44%)
+#### Category 5: IaC Modules - Terraform (Critical - 4.24%)
 
 **Checks:**
 - [ ] `iac/tf/variables.tf` exists and is substantial (>1KB)
@@ -230,7 +230,7 @@ be released and must be reported as a critical gap regardless of other scores.
 
 **Reference:** See `architecture/catalog-kind.md` §4.1 Code Quality ("Well-Commented Module Code") for the module-comment bar.
 
-**Scoring:** Pass all checks = 4.44%, partial = proportional
+**Scoring:** Pass all checks = 4.24%, partial = proportional
 
 #### Category 5b: Cross-Engine IaC Parity (Critical GATE — no separate weight)
 
@@ -326,17 +326,17 @@ by this audit.
 - **PROVIDER PARITY ❌** — stale manifest entries, or debt OUTSIDE the baseline (the
   `lint.provider-parity` CI lane would fail). Report as a Critical Gap.
 
-#### Category 6: Documentation - Authored Judgment (Important - 13.34% total)
+#### Category 6: Documentation - Authored Judgment (Important - 13.18% total)
 
 Research documents are never committed -- durable judgment lives in the kind's
 `GUIDE.md` (kind root, optional), backed by `README.md` and `catalog.md`. A missing
 guide is not a finding by itself: guides exist where judgment earns a place.
 
-**Guide Presence and Substance (10.00%, when a guide is warranted):**
+**Guide Presence and Substance (9.88%, when a guide is warranted):**
 - [ ] `GUIDE.md` exists at the kind root where the kind carries non-obvious judgment (state-ownership flags, kind-vs-flag choices, operational surprises)
 - [ ] Content is substantial relative to the kind's complexity (short is fine; empty scaffolding is not)
 
-**Content Quality (3.34%):**
+**Content Quality (3.30%):**
 - [ ] States the pinned provider version, affirms full configurable-argument coverage of the mapped provider resources, and enumerates any compositions and recorded exclusions (deprecated/superseded only) with reasons
 - [ ] Teaches judgment ("when X vs when Y, and what breaks if you choose wrong"), never feature lists
 - [ ] Grounded: every claim traces to `spec.proto`, the IaC modules, or recorded platform behavior
@@ -345,25 +345,25 @@ guide is not a finding by itself: guides exist where judgment earns a place.
 
 **Scoring:** Judged on substance and grounding, not file size
 
-#### Category 7: Documentation - User-Facing (Important - 13.33% total)
+#### Category 7: Documentation - User-Facing (Important - 13.09% total)
 
-**README and Catalog Page (13.33%):**
+**README and Catalog Page (13.09%):**
 - [ ] `README.md` (kind root) is substantial (>2KB = good, 1-2KB = minimal, <1KB = stub)
 - [ ] `catalog.md` (kind root -- THE catalog page, rendered by the public site and the console) follows the catalog page standard (`_rules/docs/write-catalog-kind-catalog-md.mdc`)
 
 **Scoring:** Scored on substance and standard-adherence
 
-#### Category 8: Supporting Files (Important - 13.33% total)
+#### Category 8: Supporting Files (Important - 10.09% total)
 
 Presence of module READMEs is owned by the anatomy gate -- here, judge substance:
 
-**Pulumi Supporting Docs (6.67%):**
+**Pulumi Supporting Docs (5.05%):**
 - [ ] `iac/pulumi/README.md` documents the module usefully (it ships in the console catalog and the iac-source zip)
 
-**Terraform Supporting Docs (3.33%):**
+**Terraform Supporting Docs (2.52%):**
 - [ ] `iac/tf/README.md` documents the module usefully
 
-**Helper Files (3.33%):**
+**Helper Files (2.52%):**
 - [ ] `e2e/manifest.yaml` exists at the kind root (the deployable test manifest)
 
 **Scoring:** Each sub-category scored independently
@@ -678,7 +678,7 @@ Blocking issues that prevent production readiness:
 
 ❌ **Failed:**
 
-- Missing `kubernetes_meta` field (only applicable to Kubernetes kinds)
+- Missing `service_group` in `kind_meta`
 
 ⚠️ **Warnings:**
 

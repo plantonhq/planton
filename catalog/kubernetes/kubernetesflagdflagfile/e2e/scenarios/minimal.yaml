@@ -1,0 +1,25 @@
+# The smallest useful flagd file: one boolean flag, ON for the listed
+# organizations through JSONLogic targeting, OFF for everyone else.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagdFlagFile
+metadata:
+  name: e2e-flagdff-min
+spec:
+  namespace:
+    value: default
+  flags:
+    assistant:
+      state: ENABLED
+      variants:
+        "on":
+          boolValue: true
+        "off":
+          boolValue: false
+      defaultVariant: "off"
+      targeting:
+        if:
+          - in:
+              - var: org
+              - - planton
+          - "on"
+          - "off"

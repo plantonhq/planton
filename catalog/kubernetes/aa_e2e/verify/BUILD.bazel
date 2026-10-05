@@ -18,6 +18,7 @@ go_library(
         "ednsroute53.go",
         "externaldns.go",
         "externalsecrets.go",
+        "featureflags.go",
         "flinkdeployment.go",
         "flinkoperator.go",
         "gatekeeper.go",

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesgofeatureflag.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetesgofeatureflag/v1alpha1/outputs.proto";
+import "catalog/kubernetes/kubernetesgofeatureflag/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//go-feature-flag-kubernetes
+message KubernetesGoFeatureFlag {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesGoFeatureFlag'];
+
+  //metadata
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  KubernetesGoFeatureFlagSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  KubernetesGoFeatureFlagStatus status = 5;
+}
+
+//go-feature-flag-kubernetes status.
+message KubernetesGoFeatureFlagStatus {
+  //outputs
+  KubernetesGoFeatureFlagOutputs outputs = 1;
+}

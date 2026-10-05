@@ -1,0 +1,185 @@
+# Least-privilege permissions the IaC runner's Kubernetes principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources plus the
+# pinned relay-proxy chart 1.56.0, cited in notes) until the live capture
+# lane upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindPermissions
+metadata:
+  name: kubernetesgofeatureflag
+spec:
+  kubernetes:
+    rules:
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: Covers kubernetes_namespace_v1.relay (Terraform namespace.tf) and namespace.go (Pulumi) -- created and owned only when spec.create_namespace is true; get is needed for refresh either way.
+      - api_groups:
+          - ""
+        resources:
+          - secrets
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_secret_v1.env (secret.tf; env_secret.go in Pulumi) -- the `<name>-env` Secret carrying every secret value of the spec as an environment variable, created only when the spec holds one. Helm's own release-state Secrets in the target namespace also live here.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+          - services
+          - serviceaccounts
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Chart-rendered inside helm_release.relay_proxy -- the relay configuration ConfigMap (secret-free), the Service (evaluation and monitoring ports) and the ServiceAccount (annotated from spec.service_account, skipped when spec.service_account.existing_name is set).
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+        verbs:
+          - get
+        cluster_scoped: false
+        provenance: derived
+        notes: Escalation prevention -- kubernetes_role_v1.flag_reader (rbac.tf; rbac.go in Pulumi) grants the relay get on the ConfigMaps its config_map retrievers name, in each of their namespaces, and Kubernetes refuses to create a Role granting a permission the creator does not hold. The runner therefore holds get on configmaps in every namespace a retriever names, not only the install namespace.
+      - api_groups:
+          - ""
+        resources:
+          - pods
+          - events
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Read-only -- helm_release.relay_proxy sets wait=true and atomic=true, so the provider tracks Deployment rollout readiness and surfaces failure events; the modules never create bare pods.
+      - api_groups:
+          - apps
+        resources:
+          - deployments
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The chart renders exactly one Deployment -- the relay (replicas from spec.replicas, omitted when hpa is enabled so the HPA owns the count).
+      - api_groups:
+          - autoscaling
+        resources:
+          - horizontalpodautoscalers
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Rendered only when spec.hpa.enabled is true -- one HPA on the relay Deployment.
+      - api_groups:
+          - policy
+        resources:
+          - poddisruptionbudgets
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Rendered only when spec.pdb.enabled is true -- the chart's budget, which selects the `name` pod label the module adds through podLabels.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - roles
+          - rolebindings
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_role_v1.flag_reader and kubernetes_role_binding_v1.flag_reader (rbac.tf, for_each over the namespaces the config_map retrievers name; rbac.go in Pulumi) -- `<name>-flag-reader`, granting the relay's ServiceAccount get on exactly the named ConfigMaps. Beyond these verbs, Kubernetes' RBAC escalation check requires the runner to already hold every permission a created Role grants (the configmaps get rule above).
+      - api_groups:
+          - monitoring.coreos.com
+        resources:
+          - servicemonitors
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubectl_manifest.service_monitor (service_monitor.tf; service_monitor.go in Pulumi) -- rendered only when spec.metrics.service_monitor_enabled is true; requires the Prometheus Operator CRDs on the cluster.
+      - api_groups:
+          - ""
+        resources:
+          - secrets
+        verbs:
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Secret in env_secret.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing. Listing or watching Secrets returns their data, not only their names, so this grants read of every Secret in the namespace. Pulumi's delete wait cannot watch a deleted Secret without it.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - roles
+          - rolebindings
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Role and RoleBinding in rbac.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - monitoring.coreos.com
+        resources:
+          - servicemonitors
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the ServiceMonitor in service_monitor.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

@@ -1,0 +1,30 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesgofeatureflag
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: resources
+      sku_meter: cluster CPU and memory reservations
+      impact: Each relay replica reserves the declared requests. When the manifest omits resources, the spec's declared defaults apply (100m CPU / 128Mi memory requests, 1000m CPU / 512Mi limits) -- enough for hundreds of flags at moderate traffic; raise memory for very large flag files and CPU for heavy evaluation volume.
+    - field_path: replicas
+      sku_meter: cluster CPU and memory reservations
+      impact: The relay is stateless (every replica polls the same retrievers), so replicas add availability and evaluation throughput -- each carries the full per-replica reservation. Defaults to 1; ignored when hpa is enabled.
+    - field_path: hpa
+      sku_meter: cluster CPU and memory reservations
+      impact: When enabled, the autoscaler owns the replica count between min_replicas and max_replicas -- actual reservation follows load, so budget for max_replicas.
+    - field_path: flag_source
+      sku_meter: composed services
+      impact: Exporters (S3, Google Cloud Storage, Azure Blob Storage, BigQuery, Pub/Sub, SQS, Kinesis, Kafka) and remote retrievers bill on the destination service's own meters -- storage, requests and streaming throughput there, not here.
+    - field_path: flag_sets
+      sku_meter: composed services
+      impact: Each flag set's exporters and remote retrievers bill on their destination services' own meters, exactly as flag_source's do.
+  estimate_exclusions:
+    - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
+    - evaluation exports and remote flag sources bill on the destination services' own meters
+    - when hpa is enabled the reservation follows load between the declared bounds
+  notes: "This component installs the GO Feature Flag relay-proxy Helm chart -- a stateless flag server whose cost is the share of the cluster its replicas reserve, realized on the cluster's bill. No volumes are provisioned; the flags live in the retrievers the spec names."

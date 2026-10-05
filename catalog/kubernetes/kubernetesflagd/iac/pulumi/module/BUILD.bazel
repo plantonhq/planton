@@ -1,0 +1,50 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "deployment.go",
+        "flagd_config.go",
+        "identity.go",
+        "locals.go",
+        "main.go",
+        "namespace.go",
+        "outputs.go",
+        "scaling.go",
+        "service_monitor.go",
+        "vars.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesflagd/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesflagd/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod",
+        "//shared/catalogkind",
+        "//shared/foreignkey/v1:foreignkey",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/apiextensions",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/apps/v1:apps",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/autoscaling/v2:autoscaling",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/policy/v1:policy",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/rbac/v1:rbac",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@org_golang_google_protobuf//proto",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["flagd_config_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesflagd/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+    ],
+)

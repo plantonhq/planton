@@ -1,0 +1,31 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlag
+metadata:
+  name: my-flag-relay
+spec:
+  namespace:
+    value: <namespace>
+  # The namespace exists before the flag file this reads (declare it as a
+  # KubernetesNamespace), so this installation never creates it.
+  createNamespace: false
+  replicas: 2
+  pdb:
+    enabled: true
+    minAvailable: "1"
+  authorizedKeys:
+    admin:
+      - $secret/<relay-admin-key>
+    evaluation:
+      - $secret/<relay-evaluation-key>
+  flagSource:
+    retrievers:
+      - configMap:
+          configMapName:
+            valueFrom:
+              name: <flag-file-name>
+          key:
+            value: flags.goff.yaml
+    # Start even if the flag file is not there yet, so install order never matters.
+    startWithRetrieverError: true
+    # A flag flip reaches evaluations within one polling interval.
+    pollingIntervalMs: 30000

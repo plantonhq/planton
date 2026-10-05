@@ -1494,6 +1494,27 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			ApiKey:    openFgaPresharedKey(spec),
 		}, nil
 
+	// The feature-flag engines: rolled out, a flag evaluated BOTH WAYS
+	// through OFREP (the targeted organization ON, an untargeted one OFF),
+	// and THE LIVE FLIP - the flag file's ConfigMap edited and the
+	// untargeted answer turning ON within the reload window with zero
+	// restarts. The GO Feature Flag relay also proves the chart discovered
+	// the monitoring port, the auth gate (an unknown key refused), flag-set
+	// selection by key, the PodDisruptionBudget selecting the relay, and a
+	// signed webhook delivery carrying a credential header (secret values
+	// reach the relay through the module-owned env Secret).
+	case "kubernetesgofeatureflag":
+		return newGoFeatureFlagVerifier(info.Namespace, info.Name, manifestSpecMap(manifestPath)), nil
+	case "kubernetesflagd":
+		return newFlagdVerifier(info.Namespace, info.Name, manifestSpecMap(manifestPath)), nil
+
+	// The flag-file kinds: the rendered ConfigMap holds a JSON document
+	// declaring the fixture's flag.
+	case "kubernetesgofeatureflagflagfile":
+		return newFlagFileVerifier(info.Namespace, info.Name, manifestSpecMap(manifestPath), "flags.goff.yaml", ""), nil
+	case "kubernetesflagdflagfile":
+		return newFlagFileVerifier(info.Namespace, info.Name, manifestSpecMap(manifestPath), "flags.flagd.json", "flags"), nil
+
 	// The OpenTelemetry Operator: manager rolled out (its pod mounts
 	// the cert-manager-issued webhook Secret — the rollout IS the
 	// cert-issuance proof), all four module-owned opentelemetry.io

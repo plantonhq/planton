@@ -1,0 +1,64 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesgofeatureflagflagfile
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The flag file is one ConfigMap persisted in the cluster's etcd; encryption at rest is the cluster's etcd encryption configuration. Flags are configuration, not secrets -- the spec holds no sensitive field.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Key management for etcd belongs to the cluster (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The ConfigMap is read through the Kubernetes API server, whose transport is the cluster's TLS.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: A ConfigMap exposes no network endpoint.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: A ConfigMap exposes no network endpoint.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: A ConfigMap serves no edge traffic.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Reading the rendered ConfigMap is a Kubernetes API operation; a KubernetesGoFeatureFlag relay is granted get on exactly this ConfigMap by name (a resourceNames-scoped Role), and changing it requires the writer's own cluster RBAC -- so flip rights can be granted without rights over the relay.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The flag file runs nothing; it has no identity of its own.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: Access is the Kubernetes API's own authentication.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component packages no human sign-in surface.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: Every change to the flag file is a Kubernetes API operation captured by the cluster's audit policy, and a change to the Planton resource is recorded with its Infra Job.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The flag file emits nothing; flag evaluation metrics come from the relay that serves it.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The manifest is the source of truth -- re-applying it renders the same ConfigMap byte for byte.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist on this component (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A ConfigMap's availability is the API server's.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: ConfigMaps carry no deletion-protection flag. Deleting the flag file makes the relay's reads of it fail; the relay keeps serving the flags it last loaded and logs every failed poll. Protection is operational (cluster RBAC, change review).
+    - control_id: managed-patching
+      status: not_applicable
+      notes: The component installs no software.

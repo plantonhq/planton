@@ -429,6 +429,49 @@ previous operator created instead of failing on the field conflict. The
 E2E verifier asserts the object exists while deployed and is GONE after
 destroy.
 
+**Helm kinds whose chart takes the application's whole configuration as one
+string** (a `config:` values key the chart writes into its own ConfigMap, the
+GO Feature Flag relay-proxy shape). Read the chart's templates for what it does
+WITH the string before rendering it:
+- **Render it so both engines produce it byte for byte.** Emit the document as
+  one JSON object (JSON is YAML): Go `json.Marshal` and OpenTofu `jsonencode`
+  sort keys and escape identically, while Go YAML and `yamlencode` do not.
+- **A chart that scans the string by regex** (the relay-proxy chart finds its
+  monitoring port by matching `monitoringPort:`) never sees a key inside JSON
+  or a `yamlencode` document, whose keys are quoted. Prepend the exact line the
+  chart scans for as a YAML comment (`# server.monitoringPort: 1032`) and have
+  the verifier assert what the chart derives from it (the Service port).
+- **A chart that runs the string through `tpl`** rewrites every `{{`: escape it
+  (`{{"{{"}}`) in both engines when the application's own config carries Go
+  templates (filename, CSV and log templates).
+- **Secrets never ride the string.** It lands in a ConfigMap. Write each secret
+  into a module-owned Secret and hand it to the application as an environment
+  variable through the chart's env values, when the application overlays
+  environment variables onto its config (koanf/viper-style loaders, including
+  indexed list entries such as `RETRIEVERS_0_TOKEN`). Read the loader first:
+  environment keys usually arrive lowercased and split on `_`, so a file key
+  that differs from the overlaid key only in case is a SECOND key with an
+  undefined winner -- spell every map the environment writes into exactly as
+  the environment does, keep keys the application pre-loads with defaults in
+  their documented spelling, and refuse at deploy time (both engines) a secret
+  whose variable cannot carry it (a `_` in a header name, a `,` in a
+  comma-split key list). An application that reads its whole environment as
+  configuration also reads the service-link variables Kubernetes injects for
+  every Service in the namespace; give it an env prefix when it supports one.
+- **A chart that ships no RBAC** for a capability the application uses (a
+  retriever that GETs a ConfigMap) gets a module-owned Role scoped by
+  `resourceNames` to exactly the named objects, bound to the chart's
+  ServiceAccount, in the namespace of the objects read.
+- **Check every chart selector against the pod labels the chart renders.** The
+  relay-proxy chart's PodDisruptionBudget selects a `name` label its pods never
+  carry; the module adds the label through the chart's pod-label values and
+  the verifier asserts `status.expectedPods` equals the ready replicas.
+
+**Module-owned workloads that hot-reload a ConfigMap mount it as a DIRECTORY,
+never `subPath`** (a `subPath` mount never sees an edit), and the verifier
+times the reload from the edit: the kubelet's volume sync bounds it (one to two
+minutes on a default kubelet).
+
 ### Phase 6: Terraform Implementation (Rules 012-013)
 
 14. **012-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf), richly commented to the module-comment bar
@@ -442,6 +485,16 @@ destroy.
       Terraform is authored AFTER Pulumi in the sequence, so it is reconciled field-by-field
       against the existing Pulumi module — fixing whichever engine is wrong, since neither is
       privileged (the proto contract + intended behavior decide correctness).
+    - **Lists that carry a free-form value arrive untyped** (`variables.tf`
+      declares any list or map whose element holds a `Struct` as `any`): read
+      every field with `try()`, and wrap every numeric leaf in `tonumber()` --
+      the converter renders int64 fields as JSON strings, and only typed
+      variables convert them back. A conditional whose branches are differently
+      shaped objects fails plan-time type unification (`cond ? {} : {...}`);
+      use the null-prune idiom, and `try(<object expression>, fallback)` where a
+      value may be an object or a scalar (a depth-limited key lowercase of a
+      free-form object is `try(keys(x) == null ? null : {for k, v in x :
+      lower(k) => ...}, x)`).
 15. **013-terraform-readme** - Generate iac/tf/README.md
 
 ### Phase 6b: Cross-Engine Parity Gate (orchestrator gate -- no flow-rule file)

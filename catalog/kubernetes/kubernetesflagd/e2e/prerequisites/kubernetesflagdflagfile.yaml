@@ -1,0 +1,29 @@
+# Consumer-scoped flag-file fixture for the KubernetesFlagd lanes: the
+# boolean flag `assistant`, ON for org "planton" and OFF for everyone else.
+# The verifier evaluates it both ways, then edits this ConfigMap so
+# everyone is ON and waits for flagd to serve the change.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagdFlagFile
+metadata:
+  name: e2e-flagd-flags
+  annotations:
+    planton.dev/e2e-prerequisites: KubernetesNamespace
+spec:
+  namespace:
+    value: e2e-flagd
+  flags:
+    assistant:
+      state: ENABLED
+      variants:
+        "on":
+          boolValue: true
+        "off":
+          boolValue: false
+      defaultVariant: "off"
+      targeting:
+        if:
+          - in:
+              - var: org
+              - - planton
+          - "on"
+          - "off"

@@ -1,0 +1,45 @@
+# GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
+# This file replays the kind's presets through its capacity derivation
+# (../capacity/, the machine-executable value-to-capacity rules): each
+# preset states the CPU/memory requests and limits and the persistent
+# volume storage it reserves from its target cluster, with a basis sentence
+# tracing every total back to the manifest's values. Cluster-capacity
+# kinds carry no priced lines -- the dollar value of the reservation
+# is the target cluster's node and storage-class economics, which this
+# catalog cannot know. Schema: finops/catalogkindcostestimate/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostEstimate
+metadata:
+  name: kubernetesgofeatureflag
+spec:
+  presets:
+    - preset: 01-flag-file-relay
+      capacity_footprint:
+        cpu_requests: 200m
+        memory_requests: 256Mi
+        cpu_limits: "2"
+        memory_limits: 1Gi
+        basis: 2 relay replicas x (100m CPU / 128Mi memory requests, 1000m CPU / 512Mi limits) from the spec-declared defaults (the modules apply them when the manifest omits resources)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
+        - evaluation exports and remote flag sources bill on the destination services' own meters
+    - preset: 02-flags-from-github
+      capacity_footprint:
+        cpu_requests: 100m
+        memory_requests: 128Mi
+        cpu_limits: "1"
+        memory_limits: 512Mi
+        basis: 1 relay replica x (100m CPU / 128Mi memory requests, 1000m CPU / 512Mi limits) from the spec-declared defaults (the modules apply them when the manifest omits resources)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
+        - evaluation exports and remote flag sources bill on the destination services' own meters
+    - preset: 03-team-flag-sets
+      capacity_footprint:
+        cpu_requests: 200m
+        memory_requests: 256Mi
+        cpu_limits: "2"
+        memory_limits: 1Gi
+        basis: 2 relay replicas x (100m CPU / 128Mi memory requests, 1000m CPU / 512Mi limits) from the spec-declared defaults (the modules apply them when the manifest omits resources)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
+        - evaluation exports and remote flag sources bill on the destination services' own meters

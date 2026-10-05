@@ -1,0 +1,156 @@
+# Least-privilege permissions the IaC runner's Kubernetes principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/catalogkindpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindPermissions
+metadata:
+  name: kubernetesflagd
+spec:
+  kubernetes:
+    rules:
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: Covers kubernetes_namespace_v1.flagd (Terraform namespace.tf) and namespace.go (Pulumi) -- created and owned only when spec.create_namespace is true; get is needed for refresh either way. list and watch are Pulumi only -- pulumi-kubernetes waits on an informer of a deleted Namespace until it is gone, and an informer whose list is forbidden never syncs.
+      - api_groups:
+          - ""
+        resources:
+          - secrets
+          - serviceaccounts
+          - services
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_secret_v1.sources (the `<name>-sources` Secret holding flagd's SourceConfig array), kubernetes_service_account_v1.flagd (unless spec.service_account.existing_name) and kubernetes_service_v1.flagd (Terraform identity.tf and service.tf; identity.go and deployment.go in Pulumi). list and watch are what pulumi-kubernetes reads while it waits on these objects; listing or watching Secrets returns their data, so this grants read of every Secret in the namespace.
+      - api_groups:
+          - apps
+        resources:
+          - deployments
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_deployment_v1.flagd (deployment.tf; deployment.go in Pulumi) -- the flagd pods. Both engines wait for the rollout; readiness is /readyz, which flagd answers only after every source has synced.
+      - api_groups:
+          - apps
+        resources:
+          - replicasets
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Read-only -- the Deployment rollout wait follows the ReplicaSets the Deployment controller creates; the modules never create them.
+      - api_groups:
+          - ""
+        resources:
+          - pods
+          - events
+          - endpoints
+          - persistentvolumeclaims
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Read-only -- pulumi-kubernetes' Deployment rollout wait subscribes pods and persistentvolumeclaims and its Service wait subscribes core Endpoints; both engines surface warning events. The modules never create these objects.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - roles
+          - rolebindings
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_role_v1.flag_reader and kubernetes_role_binding_v1.flag_reader (identity.tf; identity.go in Pulumi) -- the `<name>-flag-reader` pair, created only for featureFlag sources, one per namespace they read. Kubernetes escalation prevention requires the runner to already hold the permissions the Role grants (see the featureflags rule), or the escalate verb.
+      - api_groups:
+          - core.openfeature.dev
+        resources:
+          - featureflags
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Never exercised by the modules directly -- held so the runner may grant it through the flag-reader Role (escalation prevention), only in the namespaces featureFlag sources name. Requires the OpenFeature Operator's CRDs.
+      - api_groups:
+          - autoscaling
+        resources:
+          - horizontalpodautoscalers
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_horizontal_pod_autoscaler_v2.flagd (scaling.tf; scaling.go in Pulumi) -- created only when spec.hpa.enabled is true.
+      - api_groups:
+          - policy
+        resources:
+          - poddisruptionbudgets
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubernetes_pod_disruption_budget_v1.flagd (scaling.tf; scaling.go in Pulumi) -- created only when spec.pdb.enabled is true.
+      - api_groups:
+          - monitoring.coreos.com
+        resources:
+          - servicemonitors
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers kubectl_manifest.service_monitor (service_monitor.tf; service_monitor.go in Pulumi) -- created only when spec.metrics.service_monitor_enabled is true; requires the Prometheus Operator CRDs.

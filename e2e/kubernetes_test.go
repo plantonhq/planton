@@ -462,6 +462,30 @@ func TestKubernetesOpenFga_Pulumi(t *testing.T) {
 func TestKubernetesOpenFga_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesopenfga", "terraform")
 }
+func TestKubernetesGoFeatureFlag_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesgofeatureflag", "pulumi")
+}
+func TestKubernetesGoFeatureFlag_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesgofeatureflag", "terraform")
+}
+func TestKubernetesGoFeatureFlagFlagFile_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesgofeatureflagflagfile", "pulumi")
+}
+func TestKubernetesGoFeatureFlagFlagFile_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesgofeatureflagflagfile", "terraform")
+}
+func TestKubernetesFlagd_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesflagd", "pulumi")
+}
+func TestKubernetesFlagd_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesflagd", "terraform")
+}
+func TestKubernetesFlagdFlagFile_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesflagdflagfile", "pulumi")
+}
+func TestKubernetesFlagdFlagFile_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesflagdflagfile", "terraform")
+}
 func TestKubernetesHarbor_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesharbor", "pulumi")
 }

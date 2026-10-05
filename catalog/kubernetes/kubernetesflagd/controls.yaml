@@ -1,0 +1,79 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesflagd
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "flagd persists nothing: flags live in memory, loaded from ConfigMap, HTTP, gRPC, bucket or FeatureFlag sources whose own resources carry their encryption posture. The sources Secret rests in the cluster's etcd, whose encryption at rest is the cluster's control-plane posture."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "With no data at rest of its own (see enc-at-rest), key management belongs to the cluster and to the composed sources."
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: server.tls_secret_name
+      evidence:
+        type: spec_default
+        reference: "Unset serves every listener in plaintext inside the cluster; naming a kubernetes.io/tls Secret makes the module pass --server-cert-path and --server-key-path so the evaluation and sync listeners serve TLS (the OFREP and management listeners stay plain HTTP -- terminate TLS for OFREP at a gateway). Outbound, gRPC sources take tls with an optional CA, and the OpenTelemetry collector connection takes a CA and a client certificate."
+      notes: "Every preset leaves TLS off for in-cluster use; set server.tls_secret_name (for example from a cert-manager Certificate) before exposing flagd beyond the cluster network."
+    - control_id: no-public-access
+      status: configurable
+      field_path: server.service_type
+      evidence:
+        type: spec_default
+        reference: "The Service type defaults to ClusterIP and the module creates no ingress -- exposure beyond the cluster composes from Gateway API routes against the service output. NodePort or LoadBalancer is an explicit spec choice."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "The spec models no NetworkPolicy seam -- in-cluster reachability is governed by first-class KubernetesNetworkPolicy resources composed alongside. Browser origins are limited by evaluation.cors_origins; an empty list allows ANY origin, so list the origins whenever browsers reach flagd."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "An in-cluster flag evaluation service serves no edge traffic by default -- web application firewalls compose at the gateway layer if OFREP is exposed to browsers."
+    - control_id: rbac
+      status: not_applicable
+      notes: "flagd has no caller authentication or authorization of its own -- anyone who reaches its ports can evaluate every flag and read the full flag set from the sync service. Scope access by network reach (ClusterIP, NetworkPolicy, gateway authentication). The module's own Kubernetes grant is minimal: the flag-reader Role carries get/list/watch on FeatureFlag resources only in the namespaces featureFlag sources name."
+    - control_id: workload-identity
+      status: configurable
+      field_path: service_account.annotations
+      evidence:
+        type: spec_default
+        reference: "Unset means the flagd pods hold no cloud identity; annotating the ServiceAccount the module creates (EKS IRSA, GKE Workload Identity, AKS Workload Identity) lets the googleStorage, azureBlob and s3 sources read their buckets without static credentials."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "flagd exposes no authentication mechanism, legacy or otherwise -- access control is network reach (see rbac). Outbound credentials to HTTP sources ride the sensitive auth_header and sensitive_headers fields, which render only into the module-owned sources Secret."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry."
+    - control_id: audit-logging
+      status: not_applicable
+      notes: "Changes to flagd's objects -- and to the flag files it mounts -- are Kubernetes API operations captured by the cluster's audit policy; flagd's own logs (log.format, JSON by default) are operational logs, not an audit trail."
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: metrics.service_monitor_enabled
+      evidence:
+        type: spec_default
+        reference: "flagd always serves Prometheus metrics on the management port (unless telemetry.metrics_exporter is otel, which pushes to the collector instead); service_monitor_enabled additionally renders a ServiceMonitor for the Prometheus Operator. The readiness probe is /readyz, which turns ready only after every source has synced."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "flagd holds no state to back up -- flags are reloaded from their sources on every start, and flag files are declarative manifests reproducible from source control."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "No backups exist on this component (see backup-recovery)."
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: scheduling
+      evidence:
+        type: spec_default
+        reference: "Unset places replicas wherever the scheduler finds room. scheduling.topology_spread_constraints spreads them across zones (an empty match_labels spreads flagd's own pods), and replicas or hpa with pdb keep evaluation serving through node and zone loss -- flagd is stateless, so any replica serves every flag."
+      notes: "The Autoscaled Zone Spread preset renders this shape."
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: "Kubernetes offers no deletion-protection flag on Deployments or Services; protection is operational (cluster RBAC, change review). Deleting flagd loses nothing durable -- flags live in their sources."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: "The Deployment runs exactly the image.tag the manifest pins (default v0.17.0) -- there is no managed patch channel; upgrades are deliberate manifest changes."

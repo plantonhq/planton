@@ -1,0 +1,21 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagd
+metadata:
+  name: my-flagd-remote
+spec:
+  namespace:
+    value: <namespace>
+  createNamespace: true
+  replicas: 2
+  sources:
+    - http:
+        url: https://flags.example.com/flags.json  # replace with your flag document URL
+        # The Authorization header value, held as a managed secret; it reaches
+        # flagd only through the module-owned sources Secret.
+        authHeader: $secret/<flag-document-auth-header>
+        intervalSeconds: 30
+        # A seed per deployment offsets its poll schedule against other flagd
+        # deployments reading the same URL (this deployment's replicas share it).
+        intervalSeed: my-flagd-remote
+  log:
+    format: json

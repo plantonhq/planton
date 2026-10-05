@@ -1,0 +1,421 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesgofeatureflagflagfile.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesGoFeatureFlagFlagFileSpec** declares a GO Feature Flag flag
+ * file - typed, validated flags with their variations, targeting rules,
+ * percentage, progressive and scheduled rollouts - and renders it as a
+ * ConfigMap (named after the resource) that a KubernetesGoFeatureFlag relay
+ * reads through its `config_map` retriever.
+ *
+ * WHY A SEPARATE RESOURCE: flags change far more often than the relay, are
+ * many per relay, and are often owned by a different team than the one that
+ * runs it. Keeping them here means a flag flip touches this resource only -
+ * the relay is never re-applied, its permissions can be granted separately,
+ * and the relay serves the change on its next poll (its polling interval,
+ * 60 seconds by default) with no restart. Several flag files can feed one
+ * relay; when two define the same flag, the retriever listed later wins.
+ *
+ * Every rule GO Feature Flag enforces on a flag (at least one variation, one
+ * value type across variations, a query on every enabled targeting rule, a
+ * default rule that resolves to a value, rules and rollouts that name
+ * existing variations, a rollout that ramps forward in time and share,
+ * unique rule names, real dates) is enforced here at plan time, so such a
+ * flag never reaches the relay - where it would be dropped (with an error
+ * logged) and every evaluation of it would return the caller's default
+ * value, and where an undecodable date would stop the whole file from
+ * loading. Query syntax is the one check left to the relay: it parses each
+ * targeting query when it loads the file and drops a flag whose query does
+ * not parse.
+ *
+ * Not modeled: a scheduled step's `bucketingKey` and `metadata` - the
+ * format accepts them on a step, and the relay's step merge ignores them.
+ */
+message KubernetesGoFeatureFlagFlagFileSpec {
+  /**
+   * Namespace of the rendered ConfigMap. Accepts a literal namespace name
+   * or a reference to a KubernetesNamespace resource. Put it where the
+   * relay runs, or name this namespace in the relay's retriever.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  /**
+   * ConfigMap data key the flag file is written under. The relay's
+   * retriever names the same key.
+   */
+  optional string key = 2 [
+    (dev.planton.shared.options.default) = "flags.goff.yaml",
+    (buf.validate.field).cel = {
+      id: "spec.key"
+      message: "The key may contain only letters, digits, '-', '_' and '.'."
+      expression: "this.matches('^[-._a-zA-Z0-9]+$')"
+    },
+    (buf.validate.field).string.max_len = 253
+  ];
+
+  /**
+   * The flags, keyed by flag name (the key OpenFeature SDKs evaluate). An
+   * empty file is valid: every evaluation then returns the caller's
+   * default value.
+   */
+  map<string, KubernetesGoFeatureFlagFlag> flags = 3 [(buf.validate.field).cel = {
+    id: "spec.flags.names"
+    message: "Flag names may not be empty or contain whitespace."
+    expression: "this.all(k, k.matches('^\\\\S+$'))"
+  }];
+}
+
+/**
+ * One flag. Fields left empty keep GO Feature Flag's defaults (noted per
+ * field, verified at v1.56.0).
+ */
+message KubernetesGoFeatureFlagFlag {
+  /**
+   * The values this flag can return, keyed by variation name (e.g.
+   * enabled: true, disabled: false). Every variation must hold the same
+   * value type.
+   */
+  map<string, KubernetesGoFeatureFlagValue> variations = 1 [(buf.validate.field).map.min_pairs = 1];
+
+  /**
+   * Targeting rules, checked in order; the first whose query matches the
+   * evaluation context decides the variation. A context matching no rule
+   * falls to default_rule.
+   */
+  repeated KubernetesGoFeatureFlagRule targeting = 2;
+
+  /**
+   * The rule applied when no targeting rule matches. It takes no query.
+   */
+  KubernetesGoFeatureFlagRule default_rule = 3 [(buf.validate.field).required = true];
+
+  /**
+   * Evaluation-context field to bucket percentages on instead of the
+   * targeting key (e.g. companyId, so a whole company gets one variation).
+   */
+  string bucketing_key = 4;
+
+  /**
+   * Send this flag's evaluations to the relay's exporters. Empty = true.
+   */
+  optional bool track_events = 5;
+
+  /**
+   * Turn the flag off: every evaluation returns the caller's default
+   * value.
+   */
+  bool disable = 6;
+
+  /**
+   * Free-form version shown in notifications and exported events.
+   */
+  string version = 7;
+
+  /**
+   * Free-form information about the flag (a description, an issue link,
+   * an owner), returned with every evaluation.
+   */
+  google.protobuf.Struct metadata = 8;
+
+  /**
+   * Run the flag only inside a time window; outside it every evaluation
+   * returns the caller's default value.
+   */
+  KubernetesGoFeatureFlagExperimentation experimentation = 9;
+
+  /**
+   * Changes applied automatically at given times (e.g. widen a percentage
+   * every day), in date order.
+   */
+  repeated KubernetesGoFeatureFlagScheduledStep scheduled_rollout = 10;
+
+  option (buf.validate.message).cel = {
+    id: "flag.variations.one_type"
+    expression: "[size(this.variations.filter(k, has(this.variations[k].bool_value))), size(this.variations.filter(k, has(this.variations[k].string_value))), size(this.variations.filter(k, has(this.variations[k].number_value))), size(this.variations.filter(k, has(this.variations[k].object_value))), size(this.variations.filter(k, has(this.variations[k].list_value)))].all(n, n == 0 || n == size(this.variations))"
+    message: "Every variation of a flag must hold the same value type (all booleans, all strings, all numbers, all objects or all lists)."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.default_rule.no_query"
+    expression: "!has(this.default_rule) || this.default_rule.query == ''"
+    message: "The default rule applies when no targeting rule matches, so it takes no query."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.default_rule.resolves"
+    expression: "!has(this.default_rule) || this.default_rule.variation != '' || size(this.default_rule.percentage) > 0 || has(this.default_rule.progressive_rollout)"
+    message: "The default rule must resolve to a value: set a variation, a percentage split, or a progressive rollout."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.default_rule.not_disabled"
+    expression: "!has(this.default_rule) || !this.default_rule.disable"
+    message: "The default rule cannot be disabled - it is what every unmatched evaluation returns."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.targeting.resolves"
+    expression: "this.targeting.all(r, r.disable || r.variation != '' || size(r.percentage) > 0 || has(r.progressive_rollout))"
+    message: "Every enabled targeting rule must resolve to a value: set a variation, a percentage split, or a progressive rollout."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.targeting.query_required"
+    expression: "this.targeting.all(r, r.disable || r.query != '')"
+    message: "Every enabled targeting rule needs a query (the default rule is the one without)."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.rules.one_outcome"
+    expression: "(!has(this.default_rule) || (this.default_rule.variation != '' ? 1 : 0) + (size(this.default_rule.percentage) > 0 ? 1 : 0) + (has(this.default_rule.progressive_rollout) ? 1 : 0) <= 1) && this.targeting.all(r, (r.variation != '' ? 1 : 0) + (size(r.percentage) > 0 ? 1 : 0) + (has(r.progressive_rollout) ? 1 : 0) <= 1)"
+    message: "A rule resolves one way: a variation, a percentage split, or a progressive rollout - when several are set, GO Feature Flag silently uses one."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.rules.percentage_shares"
+    expression: "(!has(this.default_rule) || (this.default_rule.percentage.all(k, this.default_rule.percentage[k] >= 0.0) && (size(this.default_rule.percentage) == 0 || this.default_rule.percentage.exists(k, this.default_rule.percentage[k] > 0.0)))) && this.targeting.all(r, r.disable || (r.percentage.all(k, r.percentage[k] >= 0.0) && (size(r.percentage) == 0 || r.percentage.exists(k, r.percentage[k] > 0.0))))"
+    message: "Percentage shares cannot be negative, and a split must give some variation a share."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.rules.known_variations"
+    expression: "(!has(this.default_rule) || ((this.default_rule.variation == '' || this.default_rule.variation in this.variations) && this.default_rule.percentage.all(v, v in this.variations) && (!has(this.default_rule.progressive_rollout) || ((!has(this.default_rule.progressive_rollout.initial) || this.default_rule.progressive_rollout.initial.variation in this.variations) && (!has(this.default_rule.progressive_rollout.end) || this.default_rule.progressive_rollout.end.variation in this.variations))))) && this.targeting.all(r, r.disable || ((r.variation == '' || r.variation in this.variations) && r.percentage.all(v, v in this.variations) && (!has(r.progressive_rollout) || ((!has(r.progressive_rollout.initial) || r.progressive_rollout.initial.variation in this.variations) && (!has(r.progressive_rollout.end) || r.progressive_rollout.end.variation in this.variations)))))"
+    message: "Rules and progressive rollouts may only name variations the flag defines."
+  };
+  option (buf.validate.message).cel = {
+    id: "flag.targeting.unique_names"
+    expression: "this.targeting.filter(r, r.name != '').all(r, size(this.targeting.filter(o, o.name == r.name)) == 1)"
+    message: "Targeting rule names must be unique within a flag (scheduled steps update rules by name)."
+  };
+}
+
+/** A variation value. Exactly one type. */
+message KubernetesGoFeatureFlagValue {
+  oneof value {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * A boolean value (the common on/off flag).
+     */
+    bool bool_value = 1;
+
+    /**
+     * A string value.
+     */
+    string string_value = 2;
+
+    /**
+     * A number value (integer or decimal).
+     */
+    double number_value = 3;
+
+    /**
+     * A JSON object value.
+     */
+    google.protobuf.Struct object_value = 4;
+
+    /**
+     * A JSON array value.
+     */
+    google.protobuf.ListValue list_value = 5;
+  }
+}
+
+/**
+ * A targeting rule. It resolves to exactly one of: a fixed variation, a
+ * percentage split, or a progressive rollout.
+ */
+message KubernetesGoFeatureFlagRule {
+  /**
+   * Rule name. Required for a rule a scheduled step updates (steps match
+   * rules by name).
+   */
+  string name = 1;
+
+  /**
+   * Which evaluation contexts the rule matches: GO Feature Flag's query
+   * language - e.g. `org in ["acme", "globex"]`, `targetingKey sw "beta-"`,
+   * `email ew "@example.com" and country eq "FR"` - or a JSONLogic
+   * expression. Required on every enabled targeting rule; not allowed on
+   * the default rule. The relay checks the syntax when it loads the file:
+   * a query that does not parse drops the whole flag, and every evaluation
+   * of it returns the caller's default value.
+   */
+  string query = 2;
+
+  /**
+   * The variation returned when the rule matches.
+   */
+  string variation = 3;
+
+  /**
+   * A split across variations (variation name -> share, e.g. enabled: 10,
+   * disabled: 90), bucketed on the targeting key (or bucketing_key) so a
+   * caller keeps its variation across evaluations. Shares are relative
+   * weights (they need not add up to 100). In a scheduled step, a negative
+   * share removes that variation from the split it updates.
+   */
+  map<string, double> percentage = 4;
+
+  /**
+   * A gradual ramp from one variation share to another between two
+   * dates.
+   */
+  KubernetesGoFeatureFlagProgressiveRollout progressive_rollout = 5;
+
+  /**
+   * Skip this rule (it is kept in the file but never matches). Not
+   * allowed on the default rule.
+   */
+  bool disable = 6;
+}
+
+/** A progressive rollout between two dated steps. */
+message KubernetesGoFeatureFlagProgressiveRollout {
+  /**
+   * Where the ramp starts (served before its date).
+   */
+  KubernetesGoFeatureFlagProgressiveRolloutStep initial = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Where the ramp ends (served after its date).
+   */
+  KubernetesGoFeatureFlagProgressiveRolloutStep end = 2 [(buf.validate.field).required = true];
+
+  option (buf.validate.message).cel = {
+    id: "progressive_rollout.ramps_forward"
+    expression: "!has(this.initial) || !has(this.end) || (has(this.end.percentage) && this.end.percentage > 0.0 ? this.end.percentage : 100.0) >= (has(this.initial.percentage) ? this.initial.percentage : 0.0)"
+    message: "A progressive rollout ramps forward: the end share must be at least the initial share."
+  };
+  option (buf.validate.message).cel = {
+    id: "progressive_rollout.distinct_variations"
+    expression: "!has(this.initial) || !has(this.end) || this.initial.variation != this.end.variation"
+    message: "A progressive rollout moves callers between two variations - name different ones at its two ends (a single variation for everyone is a plain variation)."
+  };
+  option (buf.validate.message).cel = {
+    id: "progressive_rollout.end_after_initial"
+    expression: "!has(this.initial) || !has(this.end) || !this.initial.date.matches('^[0-9]{4}-((01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|[12][0-9]))T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$') || !this.end.date.matches('^[0-9]{4}-((01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|[12][0-9]))T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$') || timestamp(this.end.date) > timestamp(this.initial.date)"
+    message: "A progressive rollout's end date must come after its initial date."
+  };
+}
+
+/** One end of a progressive rollout. */
+message KubernetesGoFeatureFlagProgressiveRolloutStep {
+  /**
+   * The variation this end of the ramp serves. Callers outside the moving
+   * share get the initial variation: everyone gets it before the initial
+   * date. Callers inside the share get the end variation: everyone gets it
+   * after the end date when the end share is 100.
+   */
+  string variation = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Share of callers on the END variation at this step's date. Between the
+   * two dates the share moves linearly from the initial step's value to the
+   * end step's. Initial: empty = 0. End: empty or 0 = 100. The end share
+   * must be at least the initial share.
+   */
+  optional double percentage = 2 [(buf.validate.field).double = {
+    gte: 0
+    lte: 100
+  }];
+
+  /**
+   * When this step applies, as an RFC 3339 timestamp (e.g.
+   * 2026-11-01T09:00:00Z).
+   */
+  string date = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "progressive_rollout.date"
+      message: "Dates are real RFC 3339 timestamps such as 2026-11-01T09:00:00Z."
+      expression: "this.matches('^[0-9]{4}-((01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|[12][0-9]))T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$') && timestamp(this) > timestamp('0001-01-01T00:00:00Z')"
+    }
+  ];
+}
+
+/** An experimentation window. */
+message KubernetesGoFeatureFlagExperimentation {
+  /**
+   * Window start, as an RFC 3339 timestamp.
+   */
+  string start = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "experimentation.start"
+      message: "Dates are real RFC 3339 timestamps such as 2026-11-01T09:00:00Z."
+      expression: "this.matches('^[0-9]{4}-((01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|[12][0-9]))T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$') && timestamp(this) > timestamp('0001-01-01T00:00:00Z')"
+    }
+  ];
+
+  /**
+   * Window end, as an RFC 3339 timestamp.
+   */
+  string end = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "experimentation.end"
+      message: "Dates are real RFC 3339 timestamps such as 2026-11-01T09:00:00Z."
+      expression: "this.matches('^[0-9]{4}-((01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|[12][0-9]))T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$') && timestamp(this) > timestamp('0001-01-01T00:00:00Z')"
+    }
+  ];
+}
+
+/**
+ * A scheduled change: at its date, the fields it sets are merged into the
+ * flag. Variations are added or replaced by name; targeting rules are merged
+ * by name, field by field (a rule with a new name is added); the default
+ * rule is merged field by field. Fields left empty leave the flag as it is.
+ */
+message KubernetesGoFeatureFlagScheduledStep {
+  /**
+   * When the change applies, as an RFC 3339 timestamp.
+   */
+  string date = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "scheduled_step.date"
+      message: "Dates are real RFC 3339 timestamps such as 2026-11-01T09:00:00Z."
+      expression: "this.matches('^[0-9]{4}-((01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|[12][0-9]))T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$') && timestamp(this) > timestamp('0001-01-01T00:00:00Z')"
+    }
+  ];
+
+  /**
+   * Variations added or replaced.
+   */
+  map<string, KubernetesGoFeatureFlagValue> variations = 2;
+
+  /**
+   * Targeting rules merged by name, field by field (a rule with a new name
+   * is added). A negative percentage share removes that variation from the
+   * rule's split.
+   */
+  repeated KubernetesGoFeatureFlagRule targeting = 3;
+
+  /**
+   * Fields merged into the default rule.
+   */
+  KubernetesGoFeatureFlagRule default_rule = 4;
+
+  /**
+   * Turn event export on or off from this date.
+   */
+  optional bool track_events = 5;
+
+  /**
+   * Turn the flag off (true) or back on (false) from this date.
+   */
+  optional bool disable = 6;
+
+  /**
+   * A replacement version.
+   */
+  string version = 7;
+
+  /**
+   * A replacement experimentation window.
+   */
+  KubernetesGoFeatureFlagExperimentation experimentation = 8;
+}

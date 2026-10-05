@@ -1,0 +1,16 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesflagd
+spec:
+  tier: 2
+  # flagd runs as module-owned manifests and mounts the consumer-scoped
+  # flag-file fixture (e2e/prerequisites/kubernetesflagdflagfile.yaml) as a
+  # directory. The dedicated verifier proves readiness (every source
+  # synced), OFREP evaluation BOTH ways, the live flip without a restart
+  # (bounded by the kubelet's volume sync), and the disruption budget.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 20

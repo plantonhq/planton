@@ -666,12 +666,16 @@ contained dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyF
 contained dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesflagd.v1alpha1.KubernetesFlagdSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesflagdflagfile.v1alpha1.KubernetesFlagdFlagFileSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1.KubernetesFlinkDeploymentSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesflinkoperator.v1alpha1.KubernetesFlinkOperatorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesgateway.v1alpha1.KubernetesGatewaySpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1.KubernetesGhaRunnerScaleSetControllerSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesgofeatureflag.v1alpha1.KubernetesGoFeatureFlagSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesgofeatureflagflagfile.v1alpha1.KubernetesGoFeatureFlagFlagFileSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborSpec.namespace -> KubernetesNamespace
@@ -1045,6 +1049,7 @@ exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExtern
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsCloudflare.zone_id_filters -> CloudflareDnsZone
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsGoogleCloudDns.project -> GcpProject
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsGoogleCloudDns.zone_id_filters -> GcpDnsZone
+exempt    dev.planton.kubernetes.kubernetesgofeatureflag.v1alpha1.KubernetesGoFeatureFlagConfigMapRetriever.namespace -> KubernetesNamespace
 exempt    dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectSpec.bootstrap_servers -> KubernetesKafka
 exempt    dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Source.bootstrap_servers -> KubernetesKafka
 exempt    dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Target.bootstrap_servers -> KubernetesKafka

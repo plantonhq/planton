@@ -1,0 +1,62 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesflagdflagfile
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "The flag file's ConfigMap rests in the cluster's etcd, whose encryption at rest is the cluster's control-plane posture. Flag definitions are not confidential by contract -- this kind carries no sensitive field."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "Customer-managed keys for etcd belong to the cluster component; this spec has no seam for them."
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: "The ConfigMap serves no connections. Reads travel over the Kubernetes API's TLS or a kubelet volume mount, properties of the cluster."
+    - control_id: no-public-access
+      status: not_applicable
+      notes: "The ConfigMap is not a network endpoint; it is reachable only through the Kubernetes API and the volume mounts of pods in its namespace."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "There is no inbound network traffic to restrict on a data object."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "The ConfigMap serves no traffic; web application firewalls have no meaning for a configuration data object."
+    - control_id: rbac
+      status: not_applicable
+      notes: "Who may read or change the flags is the cluster's Kubernetes RBAC on configmaps in the namespace -- keeping flags in their own resource lets that grant differ from the grant over the flagd that serves them."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "The ConfigMap calls no cloud APIs -- there is nothing for it to authenticate to."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "The ConfigMap has no authentication path of any kind."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry."
+    - control_id: audit-logging
+      status: not_applicable
+      notes: "Every flag change is a Kubernetes API operation on the ConfigMap, captured by the cluster's audit policy -- and, applied through Planton, an Infra Job with the manifest change that caused it."
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: "A data object emits no operational metrics; flag evaluation surfaces in the serving flagd's metrics."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The flag file is declarative configuration fully reproducible from its manifest -- there is no runtime state to back up."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "No backups exist to retain (see backup-recovery)."
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: "The ConfigMap is an API-server record replicated by the cluster's control plane; availability of flag evaluation is the serving flagd's replicas and spread."
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: "Kubernetes offers no deletion-protection flag on ConfigMap; protection is operational (namespace RBAC, change review). Deleting the file leaves flagd unable to start new pods that mount it."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: "There is no software here to patch -- the resource is data."

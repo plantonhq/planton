@@ -1,0 +1,913 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesflagd.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetes.proto";
+import "catalog/kubernetes/options.proto";
+import "catalog/kubernetes/workload_container.proto";
+import "catalog/kubernetes/workload_pod.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesFlagdSpec** runs flagd - the CNCF OpenFeature project's flag
+ * evaluation daemon - as a central service: a Deployment and Service the
+ * module owns end to end (flagd publishes no Helm chart; image
+ * ghcr.io/open-feature/flagd). flagd reads flag definitions from one or
+ * more sources and serves them over gRPC evaluation (8013), OFREP (8016)
+ * and a sync stream in-process providers subscribe to (8015), with health
+ * and Prometheus metrics on the management port (8014).
+ *
+ * This component deploys the ENGINE. The flags themselves are DATA with
+ * their own lifecycle: declare them as a KubernetesFlagdFlagFile (typed,
+ * validated flags rendered into a ConfigMap) and add a `config_map` source,
+ * or let flagd read flags over HTTP, gRPC, from object storage, or from the
+ * OpenFeature Operator's FeatureFlag resources. A ConfigMap source is
+ * mounted as a DIRECTORY (never a subPath mount, which would never see an
+ * edit), so a flag flip reaches flagd when the kubelet syncs the volume -
+ * typically one to two minutes - with no restart.
+ *
+ * READINESS: flagd reports ready only after every source has synced once,
+ * so a source that cannot be read keeps the pods unready and the apply
+ * waiting.
+ *
+ * SECRETS: HTTP authorization headers and credential-bearing headers are
+ * written by the module into its own Secret, which holds flagd's source
+ * configuration file; nothing credential-bearing renders into the
+ * Deployment.
+ *
+ * NOT MODELED, BY DESIGN (verified at flagd v0.17.0): the unix socket
+ * listeners (`--socket-path`, `--sync-socket-path`) serve only a sidecar in
+ * the same pod, never a Service; `--keep-alive-min-time` and
+ * `--keep-alive-permit-without-stream` are no-ops kept for compatibility; the
+ * HTTP source's OAuth `folder` and `reloadDelayS` re-read client credentials
+ * from mounted files, where the module passes them directly;
+ * the `file`, `fsnotify` and `fileinfo` providers are reached through
+ * `config_map` sources (choose the watcher there); exposure is a Gateway API
+ * route composed against the `service` output.
+ */
+message KubernetesFlagdSpec {
+  /**
+   * Namespace to install into. Accepts a literal namespace name or a
+   * reference to a KubernetesNamespace resource. ConfigMap sources and
+   * referenced Secrets must live in this same namespace (pod volumes cannot
+   * cross namespaces).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  /**
+   * When true, the namespace is created (with the standard Planton
+   * governance labels) before installing and deleted with the resource.
+   * When false, the namespace must already exist.
+   */
+  bool create_namespace = 2;
+
+  /**
+   * flagd container image.
+   */
+  KubernetesFlagdImage image = 3;
+
+  /**
+   * flagd replicas. flagd is stateless (every replica reads the same
+   * sources), so replicas add availability and evaluation throughput.
+   * Ignored when hpa is enabled.
+   */
+  optional int32 replicas = 4 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 50
+    }
+  ];
+
+  /**
+   * CPU and memory for the flagd container. flagd holds every flag in
+   * memory; these defaults suit hundreds of flags at moderate traffic.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 5 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "500m"
+      memory: "256Mi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "64Mi"
+    }
+  }];
+
+  /**
+   * Horizontal pod autoscaling on CPU and memory utilization.
+   */
+  KubernetesFlagdHpa hpa = 6;
+
+  /**
+   * PodDisruptionBudget for voluntary disruptions.
+   */
+  KubernetesFlagdPdb pdb = 7;
+
+  /**
+   * Where flag definitions come from. When several sources define the same
+   * flag key, the source listed later wins.
+   */
+  repeated KubernetesFlagdSource sources = 8 [(buf.validate.field).repeated.min_items = 1];
+
+  /**
+   * Listener ports, TLS and the Service.
+   */
+  KubernetesFlagdServer server = 9;
+
+  /**
+   * Evaluation behavior: static context, header-to-context mapping, CORS.
+   */
+  KubernetesFlagdEvaluation evaluation = 10;
+
+  /**
+   * The OFREP flag-change event stream (server-sent events on the OFREP
+   * port).
+   */
+  KubernetesFlagdOfrepSse ofrep_sse = 11;
+
+  /**
+   * The flag sync service in-process providers subscribe to.
+   */
+  KubernetesFlagdSync sync = 12;
+
+  /**
+   * Logging.
+   */
+  KubernetesFlagdLog log = 13;
+
+  /**
+   * Metrics and traces.
+   */
+  KubernetesFlagdTelemetry telemetry = 14;
+
+  /**
+   * Request size limits.
+   */
+  KubernetesFlagdLimits limits = 15;
+
+  /**
+   * Pod scheduling: node selection, tolerations, affinity and topology
+   * spread.
+   */
+  dev.planton.kubernetes.WorkloadScheduling scheduling = 16;
+
+  /**
+   * flagd's ServiceAccount.
+   */
+  KubernetesFlagdServiceAccount service_account = 17;
+
+  /**
+   * Annotations added to the flagd pods.
+   */
+  map<string, string> pod_annotations = 18;
+
+  /**
+   * Labels added to the flagd pods.
+   */
+  map<string, string> pod_labels = 19;
+
+  /**
+   * Pod-level security context. The flagd image already runs as the
+   * non-root user 65532.
+   */
+  dev.planton.kubernetes.WorkloadPodSecurityContext pod_security_context = 20;
+
+  /**
+   * Container-level security context for the flagd container.
+   */
+  dev.planton.kubernetes.WorkloadContainerSecurityContext container_security_context = 21;
+
+  /**
+   * Extra plain environment variables - e.g. AWS_REGION for an S3 source,
+   * or AZURE_STORAGE_ACCOUNT for an Azure Blob source (an Azure Blob source
+   * needs the account set here or flagd fails to start). Variables named
+   * FLAGD_* override flagd settings and are refused here (use the typed
+   * fields).
+   */
+  map<string, string> extra_env = 22 [(buf.validate.field).cel = {
+    id: "spec.extra_env.no_flagd_overrides"
+    message: "FLAGD_* variables override flagd's own settings; use the typed fields instead."
+    expression: "this.all(k, !k.startsWith('FLAGD_'))"
+  }];
+
+  /**
+   * Extra environment variables read from existing Secrets in flagd's
+   * namespace, keyed by variable name - e.g. AWS_ACCESS_KEY_ID and
+   * AWS_SECRET_ACCESS_KEY, or AZURE_STORAGE_KEY.
+   */
+  map<string, dev.planton.kubernetes.KubernetesSecretKey> extra_env_from_secret = 23 [(buf.validate.field).cel = {
+    id: "spec.extra_env_from_secret.no_flagd_overrides"
+    message: "FLAGD_* variables override flagd's own settings; use the typed fields instead."
+    expression: "this.all(k, !k.startsWith('FLAGD_'))"
+  }];
+
+  /**
+   * Prometheus scraping of the management port.
+   */
+  KubernetesFlagdMetrics metrics = 24;
+
+  option (buf.validate.message).cel = {
+    id: "spec.extra_env.unique_names"
+    expression: "!this.extra_env.exists(k, k in this.extra_env_from_secret)"
+    message: "A variable may be declared in extra_env or extra_env_from_secret, not both."
+  };
+}
+
+/** flagd container image. */
+message KubernetesFlagdImage {
+  /**
+   * Image repository.
+   */
+  optional string repository = 1 [(dev.planton.shared.options.default) = "ghcr.io/open-feature/flagd"];
+
+  /**
+   * Image tag (a flagd release, e.g. "v0.17.0").
+   */
+  optional string tag = 2 [(dev.planton.shared.options.default) = "v0.17.0"];
+
+  /**
+   * Run the FIPS 140-3 build (the module appends `-fips` to the tag).
+   */
+  bool fips = 3;
+
+  /**
+   * Image pull policy: Always, IfNotPresent or Never.
+   */
+  optional string pull_policy = 4 [
+    (dev.planton.shared.options.default) = "IfNotPresent",
+    (buf.validate.field).cel = {
+      id: "spec.image.pull_policy"
+      message: "Image pull policy must be one of: Always, IfNotPresent, Never."
+      expression: "this in [\"Always\", \"IfNotPresent\", \"Never\"]"
+    }
+  ];
+
+  /**
+   * Names of existing image pull Secrets in flagd's namespace.
+   */
+  repeated string pull_secret_names = 5 [(dev.planton.shared.options.sensitive_exempt_reason) = "NAMES of existing image pull Secrets (references), not secret material"];
+}
+
+/** Horizontal pod autoscaling. */
+message KubernetesFlagdHpa {
+  /**
+   * Enable the HorizontalPodAutoscaler (replicas then belongs to the
+   * autoscaler).
+   */
+  bool enabled = 1;
+
+  /**
+   * Minimum replicas.
+   */
+  optional int32 min_replicas = 2 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Maximum replicas.
+   */
+  optional int32 max_replicas = 3 [
+    (dev.planton.shared.options.default) = "10",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Target average CPU utilization percent.
+   */
+  optional int32 target_cpu_utilization_percent = 4 [
+    (dev.planton.shared.options.default) = "80",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    }
+  ];
+
+  /**
+   * Target average memory utilization percent. Empty = memory does not
+   * drive scaling.
+   */
+  optional int32 target_memory_utilization_percent = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.hpa.replica_bounds"
+    expression: "!this.enabled || (has(this.min_replicas) ? this.min_replicas : 1) <= (has(this.max_replicas) ? this.max_replicas : 10)"
+    message: "The autoscaler's minimum replica count cannot exceed its maximum."
+  };
+}
+
+/** PodDisruptionBudget. */
+message KubernetesFlagdPdb {
+  /**
+   * Create the PodDisruptionBudget. It only protects availability when
+   * more than one replica runs.
+   */
+  bool enabled = 1;
+
+  /**
+   * Minimum pods that must stay available: an integer ("1") or a
+   * percentage ("50%"). Empty with max_unavailable also empty = 1 - which
+   * with a single replica blocks every voluntary eviction (node drains
+   * wait), so pair the budget with two or more replicas.
+   */
+  string min_available = 2 [(buf.validate.field).cel = {
+    id: "spec.pdb.min_available"
+    message: "min_available must be a non-negative integer or a percentage up to 100%, such as 50%."
+    expression: "this == '' || this.matches('^([0-9]+|100%|[0-9]{1,2}%)$')"
+  }];
+
+  /**
+   * Maximum pods that may be unavailable: an integer or a percentage.
+   * Mutually exclusive with min_available.
+   */
+  string max_unavailable = 3 [(buf.validate.field).cel = {
+    id: "spec.pdb.max_unavailable"
+    message: "max_unavailable must be a non-negative integer or a percentage up to 100%, such as 25%."
+    expression: "this == '' || this.matches('^([0-9]+|100%|[0-9]{1,2}%)$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.pdb.one_bound"
+    expression: "this.min_available == '' || this.max_unavailable == ''"
+    message: "A PodDisruptionBudget takes either min_available or max_unavailable, not both."
+  };
+}
+
+/**
+ * One flag source. Exactly one kind.
+ */
+message KubernetesFlagdSource {
+  oneof kind {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * A key of a ConfigMap in flagd's namespace, mounted as a directory -
+     * the way to serve a KubernetesFlagdFlagFile.
+     */
+    KubernetesFlagdConfigMapSource config_map = 1;
+
+    /**
+     * A flag definition document served over HTTP(S), polled.
+     */
+    KubernetesFlagdHttpSource http = 2;
+
+    /**
+     * A gRPC server implementing flagd's sync protocol (another flagd, or
+     * a custom flag service).
+     */
+    KubernetesFlagdGrpcSource grpc = 3;
+
+    /**
+     * A FeatureFlag custom resource of the OpenFeature Operator (the
+     * operator's CRDs must be installed). The module grants flagd read
+     * access to FeatureFlag resources in the named namespace.
+     */
+    KubernetesFlagdFeatureFlagSource feature_flag = 4;
+
+    /**
+     * An object in a Google Cloud Storage bucket, polled (credentials from
+     * workload identity or GOOGLE_APPLICATION_CREDENTIALS).
+     */
+    KubernetesFlagdObjectSource google_storage = 5;
+
+    /**
+     * A blob in Azure Blob Storage, polled (account and credentials from
+     * the AZURE_STORAGE_* environment).
+     */
+    KubernetesFlagdObjectSource azure_blob = 6;
+
+    /**
+     * An object in an S3 bucket, polled (credentials from the standard AWS
+     * SDK chain).
+     */
+    KubernetesFlagdObjectSource s3 = 7;
+  }
+}
+
+/** ConfigMap source (mounted as a directory). */
+message KubernetesFlagdConfigMapSource {
+  /**
+   * ConfigMap name, in flagd's namespace. Accepts a literal or a reference
+   * to a KubernetesFlagdFlagFile (its rendered ConfigMap). The ConfigMap
+   * must exist: a missing one keeps the pods from starting.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef config_map_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesFlagdFlagFile,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.config_map_name"
+  ];
+
+  /**
+   * ConfigMap data key holding the flag definitions; it must end in .json,
+   * .yaml or .yml (flagd picks the parser from the extension). Accepts a
+   * literal or a reference to the same KubernetesFlagdFlagFile (its
+   * rendered key, `flags.flagd.json` unless the flag file says otherwise).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesFlagdFlagFile,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key",
+    (buf.validate.field).cel = {
+      id: "spec.sources.config_map.key"
+      message: "The key must end in .json, .yaml or .yml."
+      expression: "this.value == '' || this.value.matches('^[-._a-zA-Z0-9]+\\\\.(json|yaml|yml)$')"
+    }
+  ];
+
+  /**
+   * How flagd notices edits: fsnotify (file events - flagd's choice inside
+   * Kubernetes) or fileinfo (polls the file's metadata). Empty = flagd
+   * picks (fsnotify in Kubernetes).
+   */
+  string watcher = 3 [(buf.validate.field).cel = {
+    id: "spec.sources.config_map.watcher"
+    message: "Watcher must be fsnotify or fileinfo."
+    expression: "this == '' || this in [\"fsnotify\", \"fileinfo\"]"
+  }];
+}
+
+/** HTTP(S) source. */
+message KubernetesFlagdHttpSource {
+  /**
+   * URL of the flag definition document.
+   */
+  string url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true,
+    (buf.validate.field).cel = {
+      id: "spec.sources.http.url"
+      message: "The URL must be http(s)."
+      expression: "this.startsWith('http://') || this.startsWith('https://')"
+    }
+  ];
+
+  /**
+   * The full Authorization header value (e.g. "Bearer <token>" or
+   * "Basic <base64>").
+   */
+  string auth_header = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Plain request headers.
+   */
+  map<string, string> headers = 3;
+
+  /**
+   * Request headers carrying credentials. They may not repeat a plain
+   * header.
+   */
+  map<string, string> sensitive_headers = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Poll interval in seconds (maximum 86400). Empty = 5.
+   */
+  optional int32 interval_seconds = 5 [(buf.validate.field).int32 = {
+    gt: 0
+    lte: 86400
+  }];
+
+  /**
+   * Seed that offsets this source's poll schedule within the interval, so
+   * this flagd does not poll in lockstep with other flagd deployments
+   * reading the same document (every replica of one deployment shares the
+   * seed and polls together). Empty = no offset.
+   */
+  string interval_seed = 6;
+
+  /**
+   * Request timeout in seconds. Empty = flagd's default.
+   */
+  optional int32 timeout_seconds = 7 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * OAuth 2.0 client credentials: flagd fetches a token from token_url and
+   * sends it as the Authorization header. Mutually exclusive with
+   * auth_header.
+   */
+  KubernetesFlagdHttpOAuth oauth = 8;
+
+  option (buf.validate.message).cel = {
+    id: "spec.sources.http.one_auth"
+    expression: "this.auth_header == '' || !has(this.oauth)"
+    message: "Authenticate an HTTP source one way: auth_header or oauth."
+  };
+}
+
+/** OAuth 2.0 client-credentials authentication for an HTTP source. */
+message KubernetesFlagdHttpOAuth {
+  /**
+   * OAuth client id.
+   */
+  string client_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * OAuth client secret.
+   */
+  string client_secret = 2 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).required = true
+  ];
+
+  /**
+   * Token endpoint URL.
+   */
+  string token_url = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.sources.http.oauth.token_url"
+      message: "token_url must be an absolute http(s) URL."
+      expression: "this.isUri() && (this.startsWith('http://') || this.startsWith('https://'))"
+    }
+  ];
+}
+
+/** gRPC sync source. */
+message KubernetesFlagdGrpcSource {
+  /**
+   * Target address: host:port, or an envoy://, dns://, uds:// or xds://
+   * target.
+   */
+  string target = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Connect with TLS.
+   */
+  bool tls = 2;
+
+  /**
+   * CA certificate for the TLS connection, read from an existing Secret in
+   * flagd's namespace (mounted into the pod). Empty = the system trust
+   * store.
+   */
+  dev.planton.kubernetes.KubernetesSecretKey ca_cert_secret = 3;
+
+  /**
+   * Provider id sent to the server (servers may use it to identify the
+   * connecting flagd).
+   */
+  string provider_id = 4;
+
+  /**
+   * Maximum message size in bytes. Empty = 4194304 (4 MB).
+   */
+  optional int32 max_msg_size = 5 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Experimental: each update replaces only the flag sets in its payload,
+   * so flags from other flag sets accumulate.
+   */
+  bool incremental_updates = 6;
+
+  /**
+   * Plain gRPC metadata.
+   */
+  map<string, string> headers = 7;
+
+  /**
+   * gRPC metadata carrying credentials. It may not repeat a plain header.
+   */
+  map<string, string> sensitive_headers = 8 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Selector the server filters the synced flags by (`flagSetId=<id>` or
+   * `source=<name>`). Empty = every flag the server offers.
+   */
+  string selector = 9;
+
+  option (buf.validate.message).cel = {
+    id: "spec.sources.grpc.ca_needs_tls"
+    expression: "!has(this.ca_cert_secret) || this.tls"
+    message: "A CA certificate only applies to a TLS connection - set tls: true."
+  };
+}
+
+/** OpenFeature Operator FeatureFlag source. */
+message KubernetesFlagdFeatureFlagSource {
+  /**
+   * Namespace of the FeatureFlag resource. Empty = flagd's namespace.
+   */
+  string namespace = 1;
+
+  /**
+   * Name of the FeatureFlag resource.
+   */
+  string name = 2 [(buf.validate.field).required = true];
+}
+
+/** An object-storage source (GCS, Azure Blob or S3). */
+message KubernetesFlagdObjectSource {
+  /**
+   * Bucket (GCS, S3) or container (Azure Blob).
+   */
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Object or blob name of the flag definitions. flagd picks the parser by
+   * the extension (.json, .yaml or .yml, any case); a name without an
+   * extension is parsed by the object's content type (application/json or
+   * application/yaml).
+   */
+  string object = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.sources.object.extension"
+      message: "An object's extension must be .json, .yaml or .yml (or none, parsed by its content type) - flagd picks the parser by it."
+      expression: "!this.matches('\\\\.[^./]*$') || this.matches('(?i)\\\\.(json|ya?ml)$')"
+    }
+  ];
+
+  /**
+   * Poll interval in seconds (maximum 86400). Empty = 5.
+   */
+  optional int32 interval_seconds = 3 [(buf.validate.field).int32 = {
+    gt: 0
+    lte: 86400
+  }];
+
+  /**
+   * Seed that offsets this source's poll schedule within the interval,
+   * against other flagd deployments reading the same object. Empty = no
+   * offset.
+   */
+  string interval_seed = 4;
+}
+
+/** Listener ports, TLS and the Service. */
+message KubernetesFlagdServer {
+  /**
+   * gRPC evaluation port (also serves Connect over HTTP).
+   */
+  optional int32 port = 1 [
+    (dev.planton.shared.options.default) = "8013",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Management port: /healthz, /readyz and /metrics.
+   */
+  optional int32 management_port = 2 [
+    (dev.planton.shared.options.default) = "8014",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Flag sync service port (gRPC, gRPC-Web and Connect), for in-process
+   * providers.
+   */
+  optional int32 sync_port = 3 [
+    (dev.planton.shared.options.default) = "8015",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * OFREP port (OpenFeature Remote Evaluation Protocol over HTTP).
+   */
+  optional int32 ofrep_port = 4 [
+    (dev.planton.shared.options.default) = "8016",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Serve the evaluation and sync listeners over TLS, from an existing
+   * kubernetes.io/tls Secret in flagd's namespace (keys tls.crt and
+   * tls.key; e.g. one a cert-manager Certificate maintains). The OFREP and
+   * management listeners stay plain HTTP - terminate TLS for them at a
+   * gateway.
+   */
+  string tls_secret_name = 5;
+
+  /**
+   * Service type: ClusterIP, NodePort or LoadBalancer.
+   */
+  optional string service_type = 6 [
+    (dev.planton.shared.options.default) = "ClusterIP",
+    (buf.validate.field).cel = {
+      id: "spec.server.service_type"
+      message: "Service type must be one of: ClusterIP, NodePort, LoadBalancer."
+      expression: "this in [\"ClusterIP\", \"NodePort\", \"LoadBalancer\"]"
+    }
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "spec.server.distinct_ports"
+    expression: "[has(this.port) ? this.port : 8013, has(this.management_port) ? this.management_port : 8014, has(this.sync_port) ? this.sync_port : 8015, has(this.ofrep_port) ? this.ofrep_port : 8016].all(p, [has(this.port) ? this.port : 8013, has(this.management_port) ? this.management_port : 8014, has(this.sync_port) ? this.sync_port : 8015, has(this.ofrep_port) ? this.ofrep_port : 8016].filter(q, q == p).size() == 1)"
+    message: "flagd's four ports must all differ."
+  };
+}
+
+/** Evaluation behavior. */
+message KubernetesFlagdEvaluation {
+  /**
+   * Static key-value pairs added to every evaluation context (e.g. the
+   * environment name, for targeting).
+   */
+  map<string, string> context_values = 1 [(buf.validate.field).cel = {
+    id: "spec.evaluation.context_values"
+    message: "Context keys and values may not contain ',', '=' or '\"' (flagd parses the pairs as comma-separated key=value text)."
+    expression: "this.all(k, !k.contains(',') && !k.contains('=') && !k.contains('\"') && !this[k].contains(',') && !this[k].contains('\"'))"
+  }];
+
+  /**
+   * Request headers copied into the evaluation context: header name ->
+   * context key (e.g. X-Tenant -> tenant).
+   */
+  map<string, string> context_from_header = 2 [(buf.validate.field).cel = {
+    id: "spec.evaluation.context_from_header"
+    message: "Header names and context keys may not contain ',', '=' or '\"' (flagd parses the pairs as comma-separated key=value text)."
+    expression: "this.all(k, !k.contains(',') && !k.contains('=') && !k.contains('\"') && !this[k].contains(',') && !this[k].contains('=') && !this[k].contains('\"'))"
+  }];
+
+  /**
+   * Origins allowed to call flagd from a browser (CORS). Empty = ANY origin
+   * (flagd always installs its CORS handler, and an empty list allows
+   * every origin) - list the origins to restrict browser access.
+   */
+  repeated string cors_origins = 3;
+}
+
+/** OFREP server-sent events. */
+message KubernetesFlagdOfrepSse {
+  /**
+   * Serve the change-notification stream at /ofrep/v1/sse/{channel}.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Seconds after which clients close an idle stream.
+   */
+  optional int32 inactivity_delay_seconds = 2 [
+    (dev.planton.shared.options.default) = "120",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Public origin (scheme://host) advertised for the stream, when clients
+   * reach flagd through a proxy or gateway. Empty = clients resolve it
+   * against the OFREP base URL.
+   */
+  string public_url = 3 [(buf.validate.field).cel = {
+    id: "spec.ofrep_sse.public_url"
+    message: "public_url must be an absolute http(s) origin."
+    expression: "this == '' || (this.isUri() && (this.startsWith('http://') || this.startsWith('https://')))"
+  }];
+}
+
+/** The flag sync service. */
+message KubernetesFlagdSync {
+  /**
+   * Serve the flag configuration document over HTTP at /v1/flags on the
+   * sync port.
+   */
+  optional bool http_enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Disable the sync service's metadata endpoint.
+   */
+  bool disable_metadata = 2;
+
+  /**
+   * Server-side deadline for sync and event streams (Go duration, e.g.
+   * "1h"). Empty = no deadline.
+   */
+  string stream_deadline = 3 [(buf.validate.field).cel = {
+    id: "spec.sync.stream_deadline"
+    message: "stream_deadline must be a Go duration such as 30m or 1h."
+    expression: "this == '' || this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+  }];
+}
+
+/** Logging. */
+message KubernetesFlagdLog {
+  /**
+   * Log format: json or console.
+   */
+  optional string format = 1 [
+    (dev.planton.shared.options.default) = "json",
+    (buf.validate.field).cel = {
+      id: "spec.log.format"
+      message: "Log format must be json or console."
+      expression: "this in [\"json\", \"console\"]"
+    }
+  ];
+
+  /**
+   * Verbose debug logging.
+   */
+  bool debug = 2;
+}
+
+/** Metrics and traces. */
+message KubernetesFlagdTelemetry {
+  /**
+   * Metrics exporter: prometheus (served on the management port) or otel
+   * (pushed to otel_collector_uri). Empty = prometheus.
+   */
+  string metrics_exporter = 1 [(buf.validate.field).cel = {
+    id: "spec.telemetry.metrics_exporter"
+    message: "metrics_exporter must be prometheus or otel."
+    expression: "this == '' || this in [\"prometheus\", \"otel\"]"
+  }];
+
+  /**
+   * gRPC URI of an OpenTelemetry collector for traces (and metrics when
+   * metrics_exporter is otel). Empty = traces are not exported.
+   */
+  string otel_collector_uri = 2;
+
+  /**
+   * CA certificate the collector's TLS certificate is verified against,
+   * read from an existing Secret in flagd's namespace (mounted into the
+   * pod). Empty = the system trust store.
+   */
+  dev.planton.kubernetes.KubernetesSecretKey otel_ca_cert_secret = 3;
+
+  /**
+   * Client certificate for mutual TLS with the collector: an existing
+   * kubernetes.io/tls Secret in flagd's namespace (keys tls.crt and
+   * tls.key).
+   */
+  string otel_client_tls_secret_name = 4;
+
+  /**
+   * How often the collector TLS files are reloaded (Go duration). Empty =
+   * 1h.
+   */
+  string otel_reload_interval = 5 [(buf.validate.field).cel = {
+    id: "spec.telemetry.otel_reload_interval"
+    message: "otel_reload_interval must be a Go duration such as 30m or 1h."
+    expression: "this == '' || this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.telemetry.otel_needs_collector"
+    expression: "this.metrics_exporter != 'otel' || this.otel_collector_uri != ''"
+    message: "The otel metrics exporter pushes to a collector - set otel_collector_uri."
+  };
+}
+
+/** Request size limits. */
+message KubernetesFlagdLimits {
+  /**
+   * Maximum request body in bytes (HTTP 413 / 429 above it). 0 disables
+   * the limit, which exposes flagd to memory exhaustion.
+   */
+  optional int64 max_request_body_bytes = 1 [
+    (dev.planton.shared.options.default) = "1000000",
+    (buf.validate.field).int64.gte = 0
+  ];
+
+  /**
+   * Maximum request header size in bytes (HTTP 431 above it). 0 = Go's
+   * built-in default (1 MiB).
+   */
+  optional int64 max_request_header_bytes = 2 [
+    (dev.planton.shared.options.default) = "1000000",
+    (buf.validate.field).int64.gte = 0
+  ];
+}
+
+/** flagd's ServiceAccount. */
+message KubernetesFlagdServiceAccount {
+  /**
+   * Annotations on the ServiceAccount the module creates - the cloud
+   * workload-identity seam for the GCS, S3 and Azure Blob sources.
+   */
+  map<string, string> annotations = 1;
+
+  /**
+   * Run as an existing ServiceAccount instead of creating one (its
+   * annotations are then yours to manage). The module binds FeatureFlag
+   * reads to whichever account runs flagd.
+   */
+  string existing_name = 2;
+}
+
+/** Prometheus scraping. */
+message KubernetesFlagdMetrics {
+  /**
+   * Create a ServiceMonitor for the management port (requires the
+   * Prometheus Operator CRDs on the cluster; the apply FAILS without
+   * them).
+   */
+  bool service_monitor_enabled = 1;
+
+  /**
+   * Labels on the ServiceMonitor, to match a Prometheus instance's
+   * serviceMonitorSelector.
+   */
+  map<string, string> service_monitor_labels = 2;
+}

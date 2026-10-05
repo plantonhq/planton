@@ -725,6 +725,8 @@ import (
 	kubernetesexternaldnsv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesexternaldns/v1alpha1"
 	kubernetesexternalsecretv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesexternalsecret/v1alpha1"
 	kubernetesexternalsecretsoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesexternalsecretsoperator/v1alpha1"
+	kubernetesflagdv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesflagd/v1alpha1"
+	kubernetesflagdflagfilev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesflagdflagfile/v1alpha1"
 	kubernetesflinkdeploymentv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesflinkdeployment/v1alpha1"
 	kubernetesflinkoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesflinkoperator/v1alpha1"
 	kubernetesgatekeeperv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgatekeeper/v1alpha1"
@@ -733,6 +735,8 @@ import (
 	kubernetesgatewayclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgatewayclass/v1alpha1"
 	kubernetesgharunnerscalesetv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1"
 	kubernetesgharunnerscalesetcontrollerv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgharunnerscalesetcontroller/v1alpha1"
+	kubernetesgofeatureflagv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgofeatureflag/v1alpha1"
+	kubernetesgofeatureflagflagfilev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgofeatureflagflagfile/v1alpha1"
 	kubernetesgrafanav1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgrafana/v1alpha1"
 	kubernetesgrpcroutev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgrpcroute/v1alpha1"
 	kubernetesharborv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesharbor/v1alpha1"
@@ -1599,6 +1603,8 @@ var ProviderKubernetesMap = map[catalogkind.CatalogKind]proto.Message{
 	catalogkind.CatalogKind_KubernetesExternalDns:                 &kubernetesexternaldnsv1alpha1.KubernetesExternalDns{},
 	catalogkind.CatalogKind_KubernetesExternalSecret:              &kubernetesexternalsecretv1alpha1.KubernetesExternalSecret{},
 	catalogkind.CatalogKind_KubernetesExternalSecretsOperator:     &kubernetesexternalsecretsoperatorv1alpha1.KubernetesExternalSecretsOperator{},
+	catalogkind.CatalogKind_KubernetesFlagd:                       &kubernetesflagdv1alpha1.KubernetesFlagd{},
+	catalogkind.CatalogKind_KubernetesFlagdFlagFile:               &kubernetesflagdflagfilev1alpha1.KubernetesFlagdFlagFile{},
 	catalogkind.CatalogKind_KubernetesFlinkDeployment:             &kubernetesflinkdeploymentv1alpha1.KubernetesFlinkDeployment{},
 	catalogkind.CatalogKind_KubernetesFlinkOperator:               &kubernetesflinkoperatorv1alpha1.KubernetesFlinkOperator{},
 	catalogkind.CatalogKind_KubernetesGatekeeper:                  &kubernetesgatekeeperv1alpha1.KubernetesGatekeeper{},
@@ -1607,6 +1613,8 @@ var ProviderKubernetesMap = map[catalogkind.CatalogKind]proto.Message{
 	catalogkind.CatalogKind_KubernetesGatewayClass:                &kubernetesgatewayclassv1alpha1.KubernetesGatewayClass{},
 	catalogkind.CatalogKind_KubernetesGhaRunnerScaleSet:           &kubernetesgharunnerscalesetv1alpha1.KubernetesGhaRunnerScaleSet{},
 	catalogkind.CatalogKind_KubernetesGhaRunnerScaleSetController: &kubernetesgharunnerscalesetcontrollerv1alpha1.KubernetesGhaRunnerScaleSetController{},
+	catalogkind.CatalogKind_KubernetesGoFeatureFlag:               &kubernetesgofeatureflagv1alpha1.KubernetesGoFeatureFlag{},
+	catalogkind.CatalogKind_KubernetesGoFeatureFlagFlagFile:       &kubernetesgofeatureflagflagfilev1alpha1.KubernetesGoFeatureFlagFlagFile{},
 	catalogkind.CatalogKind_KubernetesGrafana:                     &kubernetesgrafanav1alpha1.KubernetesGrafana{},
 	catalogkind.CatalogKind_KubernetesGrpcRoute:                   &kubernetesgrpcroutev1alpha1.KubernetesGrpcRoute{},
 	catalogkind.CatalogKind_KubernetesHarbor:                      &kubernetesharborv1alpha1.KubernetesHarbor{},

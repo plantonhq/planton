@@ -1,0 +1,34 @@
+# flag_source mode: one ConfigMap retriever reading the flag-file fixture,
+# an evaluation key (its value rides the module-owned env Secret into the
+# relay), a two-second polling interval so the live flip lands fast, and
+# the PodDisruptionBudget the verifier proves selects the relay's pods.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlag
+metadata:
+  name: e2e-goff-min
+  annotations:
+    planton.dev/e2e-prerequisites: KubernetesGoFeatureFlagFlagFile
+spec:
+  namespace:
+    value: e2e-goff
+  createNamespace: false
+  authorizedKeys:
+    evaluation:
+      - e2e-evaluation-key
+  pdb:
+    enabled: true
+  flagSource:
+    retrievers:
+      - configMap:
+          configMapName:
+            valueFrom:
+              kind: KubernetesGoFeatureFlagFlagFile
+              name: e2e-goff-flags
+              fieldPath: status.outputs.config_map_name
+          key:
+            valueFrom:
+              kind: KubernetesGoFeatureFlagFlagFile
+              name: e2e-goff-flags
+              fieldPath: status.outputs.key
+    pollingIntervalMs: 2000
+    startWithRetrieverError: true

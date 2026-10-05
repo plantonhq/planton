@@ -1,0 +1,22 @@
+# The smallest useful flag file: one boolean release flag, ON for the
+# listed organizations and OFF for everyone else.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlagFlagFile
+metadata:
+  name: e2e-gofff-min
+spec:
+  namespace:
+    value: default
+  flags:
+    assistant:
+      variations:
+        enabled:
+          boolValue: true
+        disabled:
+          boolValue: false
+      targeting:
+        - name: first-organizations
+          query: org in ["planton"]
+          variation: enabled
+      defaultRule:
+        variation: disabled

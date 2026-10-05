@@ -1,0 +1,23 @@
+# Capacity derivation: machine-executable rules turning any
+# KubernetesGoFeatureFlag manifest's spec values into the cluster capacity
+# the deployment reserves. Field paths are spec-relative proto field names,
+# held to the served contract by the conformance gate. The spec's resources
+# field carries the (default_container_resources) annotation -- the sizing
+# the modules apply when a manifest omits resources -- and the estimator
+# states those defaults with their origin named in the basis.
+# Schema: finops/catalogkindcapacityderivation/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCapacityDerivation
+metadata:
+  name: kubernetesgofeatureflag
+spec:
+  workloads:
+    - label: relay replica
+      resources_path: resources
+      instances:
+        field_value:
+          field_path: replicas
+          default_when_unset: "1"
+  exclusions:
+    - text: the dollar value of this capacity is the target cluster's node economics
+    - text: evaluation exports and remote flag sources bill on the destination services' own meters

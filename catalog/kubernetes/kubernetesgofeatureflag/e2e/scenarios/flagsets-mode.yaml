@@ -1,0 +1,62 @@
+# flag_sets mode: two isolated flag sets, each selected by its own API key,
+# both reading the consumer-scoped flag-file fixture. The verifier proves
+# selection by key (an evaluation with a set's key succeeds, one with an
+# unknown key is refused) and a live flip. The mobile set carries a webhook
+# notifier delivering to an in-cluster sink; its signing secret and credential
+# header reach the relay through the module-owned env Secret as
+# FLAGSETS_<i>_NOTIFIERS_<j>_ variables, so the delivery proves the indexed
+# secret path end to end.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlag
+metadata:
+  name: e2e-goff-sets
+  annotations:
+    planton.dev/e2e-prerequisites: KubernetesGoFeatureFlagFlagFile
+spec:
+  namespace:
+    value: e2e-goff
+  createNamespace: false
+  flagSets:
+    items:
+      - name: web
+        apiKeys:
+          - e2e-web-key
+        source:
+          retrievers:
+            - configMap:
+                configMapName:
+                  valueFrom:
+                    kind: KubernetesGoFeatureFlagFlagFile
+                    name: e2e-goff-flags
+                    fieldPath: status.outputs.config_map_name
+                key:
+                  valueFrom:
+                    kind: KubernetesGoFeatureFlagFlagFile
+                    name: e2e-goff-flags
+                    fieldPath: status.outputs.key
+          pollingIntervalMs: 2000
+          startWithRetrieverError: true
+      - name: mobile
+        apiKeys:
+          - e2e-mobile-key
+        source:
+          retrievers:
+            - configMap:
+                configMapName:
+                  valueFrom:
+                    kind: KubernetesGoFeatureFlagFlagFile
+                    name: e2e-goff-flags
+                    fieldPath: status.outputs.config_map_name
+                key:
+                  valueFrom:
+                    kind: KubernetesGoFeatureFlagFlagFile
+                    name: e2e-goff-flags
+                    fieldPath: status.outputs.key
+          notifiers:
+            - webhook:
+                endpointUrl: http://flag-change-sink.e2e-goff.svc.cluster.local:8080/flag-changes
+                secret: e2e-signing-secret
+                sensitiveHeaders:
+                  X-Sink-Token: e2e-sink-token
+          pollingIntervalMs: 2000
+          startWithRetrieverError: true

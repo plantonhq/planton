@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesflagdflagfile
+spec:
+  billing_model: free
+  free_tier: A flag file is one ConfigMap -- a record in the Kubernetes API server holding the rendered flag definitions (up to 1MiB) in the cluster's etcd. No provider bills for the object, and it reserves no cluster capacity.
+  notes: "No field of this spec buys anything: flags, evaluators, and metadata describe the content of one API object. The real spend lives in the KubernetesFlagd that mounts and serves the file, which carries its own cluster-capacity profile."

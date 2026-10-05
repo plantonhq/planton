@@ -1,0 +1,8 @@
+# The namespace flagd and its flag-file fixture share (a ConfigMap volume
+# cannot cross namespaces).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-flagd
+spec:
+  name: e2e-flagd

@@ -1,0 +1,33 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "flag_file.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgofeatureflagflagfile/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes/kubernetesgofeatureflagflagfile/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//shared/catalogkind",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["flag_file_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes/kubernetesgofeatureflagflagfile/v1alpha1",
+        "@org_golang_google_protobuf//types/known/structpb",
+    ],
+)

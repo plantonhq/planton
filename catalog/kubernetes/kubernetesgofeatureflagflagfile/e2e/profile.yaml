@@ -1,0 +1,14 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesgofeatureflagflagfile
+spec:
+  tier: 1
+  # Renders one ConfigMap; the verifier proves its key holds a JSON flag
+  # file declaring the flag. The relay lanes prove the same file evaluates
+  # and flips live.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 10

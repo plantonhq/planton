@@ -1,0 +1,29 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagdFlagFile
+metadata:
+  name: my-flags
+spec:
+  namespace:
+    value: <namespace>
+  metadata:
+    flagSetId: <flag-set-id>
+  flags:
+    new-checkout:
+      state: ENABLED
+      variants:
+        # "on" and "off" are quoted: bare, YAML reads them as booleans.
+        "on":
+          boolValue: true
+        "off":
+          boolValue: false
+      defaultVariant: "off"
+      # On for the listed organizations, off for everyone else.
+      targeting:
+        if:
+          - in:
+              - var: org
+              - - <first-organization>
+          - "on"
+          - "off"
+      metadata:
+        owner: <owning-team>

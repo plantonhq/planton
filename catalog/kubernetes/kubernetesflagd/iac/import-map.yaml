@@ -1,0 +1,127 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kubernetesflagd
+spec:
+  # flagd runs as module-owned manifests named after metadata.name: the
+  # Deployment, Service, ServiceAccount, HorizontalPodAutoscaler and
+  # PodDisruptionBudget carry the resource name itself; the sources Secret,
+  # the FeatureFlag reader Role/RoleBinding and the ServiceMonitor carry a
+  # fixed suffix. The reader pair is keyed by the namespace it grants in.
+  values:
+    # -- the optional anchor namespace ----------------------------------
+    - name: namespace_name
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Only imported when create_namespace is true; the installation
+        namespace itself.
+    # -- the sources Secret -----------------------------------------------
+    - name: secret_name
+      derivations:
+        - from_metadata_name_suffix: "-sources"
+      where_to_find: >-
+        Always "<resource-name>-sources" -- `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.
+    # -- the ServiceAccount (unless an existing one is named) -------------
+    - name: service_account_name
+      derivations:
+        - from_metadata_name: true
+      where_to_find: >-
+        The resource name -- `kubectl get serviceaccounts -n <namespace>`.
+    - name: service_account_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.
+    # -- the FeatureFlag reader pair, one per namespace read ---------------
+    - name: role_name
+      derivations:
+        - from_metadata_name_suffix: "-flag-reader"
+      where_to_find: >-
+        Always "<resource-name>-flag-reader" -- `kubectl get roles -A`.
+    - name: role_namespace
+      derivations:
+        - from_address_key: true
+      where_to_find: >-
+        The namespace a featureFlag source reads (the source's namespace,
+        or the installation namespace when it names none).
+    - name: role_binding_name
+      derivations:
+        - from_metadata_name_suffix: "-flag-reader"
+      where_to_find: >-
+        Always "<resource-name>-flag-reader" -- `kubectl get rolebindings -A`.
+    - name: role_binding_namespace
+      derivations:
+        - from_address_key: true
+      where_to_find: >-
+        The namespace a featureFlag source reads (the source's namespace,
+        or the installation namespace when it names none).
+    # -- the workload ------------------------------------------------------
+    - name: deployment_name
+      derivations:
+        - from_metadata_name: true
+        - from_output: service
+      where_to_find: The resource name -- `kubectl get deployments -n <namespace>`.
+    - name: deployment_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.
+    - name: service_name
+      derivations:
+        - from_output: service
+        - from_metadata_name: true
+      where_to_find: The resource name -- `kubectl get services -n <namespace>`.
+    - name: service_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.
+    - name: hpa_name
+      derivations:
+        - from_metadata_name: true
+      where_to_find: >-
+        Only imported when hpa.enabled is true; the resource name --
+        `kubectl get hpa -n <namespace>`.
+    - name: hpa_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.
+    - name: pdb_name
+      derivations:
+        - from_metadata_name: true
+      where_to_find: >-
+        Only imported when pdb.enabled is true; the resource name --
+        `kubectl get pdb -n <namespace>`.
+    - name: pdb_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.
+    # -- the optional ServiceMonitor (kubectl_manifest) --------------------
+    - name: api_version
+      derivations:
+        - literal: monitoring.coreos.com/v1
+      where_to_find: Always "monitoring.coreos.com/v1" -- the ServiceMonitor group/version.
+    - name: kind
+      derivations:
+        - literal: ServiceMonitor
+      where_to_find: Always "ServiceMonitor".
+    - name: name
+      derivations:
+        - from_metadata_name_suffix: "-metrics"
+      where_to_find: >-
+        Only imported when metrics.service_monitor_enabled is true; always
+        "<resource-name>-metrics" -- `kubectl get servicemonitors -n <namespace>`.
+    - name: namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: Same namespace as the installation.

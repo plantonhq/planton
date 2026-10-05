@@ -1,0 +1,31 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlagFlagFile
+metadata:
+  name: my-rollout-flags
+spec:
+  namespace:
+    value: <namespace>
+  flags:
+    new-search:
+      variations:
+        enabled:
+          boolValue: true
+        disabled:
+          boolValue: false
+      targeting:
+        - name: staff
+          query: email ew "@<your-domain>"
+          variation: enabled
+      # Everyone else gets `disabled` until the start date, then the share on
+      # `enabled` ramps from 0% to 100% by the end date, bucketed on the
+      # targeting key.
+      defaultRule:
+        progressiveRollout:
+          initial:
+            variation: disabled
+            percentage: 0
+            date: "2026-11-01T09:00:00Z"  # replace with your start
+          end:
+            variation: enabled
+            percentage: 100
+            date: "2026-11-15T09:00:00Z"  # replace with your end

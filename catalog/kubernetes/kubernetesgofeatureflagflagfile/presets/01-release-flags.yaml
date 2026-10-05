@@ -1,0 +1,24 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGoFeatureFlagFlagFile
+metadata:
+  name: my-release-flags
+spec:
+  namespace:
+    value: <namespace>
+  flags:
+    new-checkout:
+      variations:
+        enabled:
+          boolValue: true
+        disabled:
+          boolValue: false
+      targeting:
+        # On for the organizations it is ready for.
+        - name: first-organizations
+          query: org in ["<organization-slug>"]
+          variation: enabled
+      defaultRule:
+        variation: disabled
+      metadata:
+        owner: <team>
+        description: <what the flag hides>

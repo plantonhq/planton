@@ -7249,6 +7249,30 @@ enum CatalogKind {
     prerequisites: [KubernetesPlantonOperator]
     service_group: kubernetes_open_source_software
   }];
+  KubernetesGoFeatureFlag = 4176 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sgoff"
+    service_group: kubernetes_open_source_software
+  }];
+  KubernetesFlagd = 4177 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sflagd"
+    service_group: kubernetes_open_source_software
+  }];
+  KubernetesGoFeatureFlagFlagFile = 4178 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sgofff"
+    service_group: kubernetes_open_source_software
+  }];
+  KubernetesFlagdFlagFile = 4179 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sflgdf"
+    service_group: kubernetes_open_source_software
+  }];
 
   // 5000–5999: DigitalOcean resources
   DigitalOceanApp = 5000 [(kind_meta) = {

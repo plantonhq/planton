@@ -1,0 +1,98 @@
+# Full-surface development manifest - boolean, string, number and object
+# variants; JSONLogic targeting with flagd's operations (fractional
+# bucketing, sem_ver, ends_with) and a shared evaluator; a disabled flag; a
+# flag that defers to the caller's code default; flag-set metadata.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesFlagdFlagFile
+metadata:
+  name: flagd-dev-flags
+spec:
+  namespace:
+    value: flagd-dev
+  key: flags.flagd.json
+  metadata:
+    flagSetId: web
+  evaluators:
+    isStaff:
+      ends_with:
+        - var: email
+        - "@example.com"
+  flags:
+    assistant:
+      state: ENABLED
+      variants:
+        "on":
+          boolValue: true
+        "off":
+          boolValue: false
+      defaultVariant: "off"
+      targeting:
+        if:
+          - in:
+              - var: org
+              - - planton
+                - acme
+          - "on"
+          - "off"
+      metadata:
+        owner: platform
+    checkout-color:
+      state: ENABLED
+      variants:
+        red:
+          stringValue: "#c00"
+        blue:
+          stringValue: "#00c"
+      defaultVariant: red
+      targeting:
+        fractional:
+          - - red
+            - 50
+          - - blue
+            - 50
+    staff-banner:
+      state: ENABLED
+      variants:
+        shown:
+          boolValue: true
+        hidden:
+          boolValue: false
+      defaultVariant: hidden
+      targeting:
+        if:
+          - $ref: isStaff
+          - shown
+          - hidden
+    request-limit:
+      state: ENABLED
+      variants:
+        standard:
+          numberValue: 10
+        premium:
+          numberValue: 100
+      defaultVariant: standard
+      targeting:
+        if:
+          - sem_ver:
+              - var: appVersion
+              - ">="
+              - 2.0.0
+          - premium
+          - standard
+    limits:
+      state: DISABLED
+      variants:
+        small:
+          objectValue:
+            rps: 10
+        large:
+          objectValue:
+            rps: 100
+      defaultVariant: small
+    code-default:
+      state: ENABLED
+      variants:
+        "on":
+          boolValue: true
+        "off":
+          boolValue: false

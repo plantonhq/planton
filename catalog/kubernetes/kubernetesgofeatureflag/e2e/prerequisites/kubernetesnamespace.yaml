@@ -1,0 +1,9 @@
+# The namespace the relay lanes and their flag-file fixture share (a
+# KubernetesGoFeatureFlagFlagFile has no namespace switch of its own - it
+# renders into an existing namespace).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-goff
+spec:
+  name: e2e-goff

@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesflagd.v1alpha1;
+
+/**
+ * **KubernetesFlagdOutputs** - the handles a deployed flagd exports. Point
+ * OpenFeature flagd providers at `evaluation_endpoint` (remote evaluation)
+ * or `sync_endpoint` (in-process evaluation), and OFREP clients at
+ * `ofrep_endpoint`.
+ */
+message KubernetesFlagdOutputs {
+  /**
+   * Namespace flagd runs in.
+   */
+  string namespace = 1;
+
+  /**
+   * The flagd Service name.
+   */
+  string service = 2;
+
+  /**
+   * In-cluster gRPC evaluation endpoint host:port (e.g.
+   * "flagd.feature-flags.svc.cluster.local:8013").
+   */
+  string evaluation_endpoint = 3;
+
+  /**
+   * In-cluster sync endpoint host:port for in-process providers (e.g.
+   * "flagd.feature-flags.svc.cluster.local:8015").
+   */
+  string sync_endpoint = 4;
+
+  /**
+   * In-cluster OFREP base URL (e.g.
+   * "http://flagd.feature-flags.svc.cluster.local:8016").
+   */
+  string ofrep_endpoint = 5;
+
+  /**
+   * In-cluster management endpoint serving /healthz, /readyz and /metrics
+   * (e.g. "http://flagd.feature-flags.svc.cluster.local:8014").
+   */
+  string management_endpoint = 6;
+
+  /**
+   * Copy-paste command for reaching the OFREP endpoint from a workstation.
+   */
+  string port_forward_command = 7;
+}
