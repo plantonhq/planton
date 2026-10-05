@@ -90,7 +90,7 @@ Rotating a key you hold is yours: store a new passphrase in a new secret and cha
 
 - **With a key you hold**, give the engine the same key: an OpenTofu encryption configuration (`TF_ENCRYPTION`) naming the key provider under the label your state file shows in its `meta` (it starts with `planton_`), or Pulumi the same secrets provider.
 - **With Planton's passphrase on your own storage**, the passphrase is a secret in your own organization, shown on the backend's page.
-- **With Planton's key on Planton-managed storage**, download the state from the resource's IaC tab or the CLI. Planton decrypts it for you into a short-lived copy: its link expires within the day, and the copy is deleted two days after it was made.
+- **With Planton's key on Planton-managed storage**, download the state from the resource's IaC tab or the CLI. Planton decrypts it for you into a plain-text copy in its transfer storage: the link works for an hour, and Planton deletes the copy about two days after it is written.
 
 ## Not Supported, and Why
 
@@ -111,6 +111,11 @@ Planton supports every combination each engine can do safely, and refuses the re
 - **Values Pulumi was not told are secret.** Pulumi encrypts what your program marks secret; OpenTofu encrypts the whole file.
 - **Earlier versions in a versioned bucket**, written before encryption was turned on.
 - **The open-source CLI used on its own**, against state you point it at: there, encryption is the engine's own setting, as described in [Deploy from GitHub Actions](/docs/ci-cd/deploy-from-github-actions).
+- **Downloaded and uploaded copies.** A downloaded state file is plain text, and so is any copy of it you keep. Between you and the backend, Planton holds each copy in its own transfer storage, a download as plain text and an upload exactly as you sent it, behind links that last at most two hours, and deletes it about two days after it is written. Only Planton's storage access protects it there.
+- **A deploy whose state could not be saved, on a backend you keep unencrypted.** When OpenTofu changes your infrastructure but cannot save the new state (a credential that expired mid-deploy, a network failure), Planton keeps that state until the resource's next run stores it, before anything else runs. It is sealed under the backend's key, so on a backend you keep unencrypted, it waits unencrypted too.
+- **A saved state that can no longer be stored.** If that kept state no key on the backend opens, or the backend was written outside Planton since, every run on the resource stops with a sentence saying so, until you upload the state the resource should keep.
+- **A lock a failed run left in your own bucket.** On Google Cloud Storage, Azure Blob Storage, or S3 with a DynamoDB lock table, a run that failed mid-deploy can leave its lock behind. Later runs stop with OpenTofu's lock message until you release it with `tofu force-unlock <lock ID>`; Planton cannot release it for you.
+- **A Pulumi create that was in flight when a save failed.** Pulumi keeps every step it saved. A resource it had started creating is recorded as a pending operation: the next run warns about it, and you adopt it with an [import](/docs/infrastructure/importing-resources). Planton does not adopt it for you.
 
 ## Related Documentation
 

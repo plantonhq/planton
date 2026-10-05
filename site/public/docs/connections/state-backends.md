@@ -254,6 +254,8 @@ Planton automatically organizes state files within the backend bucket. Each depl
 
 Pulumi, Terraform, and OpenTofu all support state locking to prevent concurrent modifications. For the S3 backend with Terraform or OpenTofu, configure a DynamoDB table for locking. Pulumi handles locking differently depending on the backend (Pulumi Cloud handles it natively; DIY backends use the storage provider's conditional writes).
 
+A run that fails mid-deploy, for example because its credential expired, can leave its lock behind in your bucket. Later runs stop with OpenTofu's lock message, which names the lock's ID, until you release it with `tofu force-unlock <lock ID>`. Planton cannot release a lock in your bucket for you.
+
 ### Switching from Planton-Managed to Self-Managed
 
 To move from the Planton-managed default to your own storage:

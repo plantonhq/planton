@@ -160,7 +160,7 @@ This dual-layer enforcement means:
 
 ## Infrastructure State Is Encrypted
 
-Every state file a runner writes is encrypted under the key its state backend names, with the engine's own encryption: OpenTofu encrypts the whole state and plan files, and Pulumi encrypts every secret value. The runner receives the key for one job and one organization at a time, and refuses to read state it cannot open rather than reading it as empty. On Planton-hosted runners, the key for Planton-managed storage is derived for your organization alone from a master key that only those runners hold: they take it out of their environment when they start, so no job, and no code a job runs, ever sees it. See [State Encryption](/docs/connections/state-encryption).
+Every state file a runner writes is encrypted under the key its state backend names, with the engine's own encryption: OpenTofu encrypts the whole state and plan files, and Pulumi encrypts every secret value. The runner receives the key for one job and one organization at a time, and refuses to read state it cannot open rather than reading it as empty. On Planton-hosted runners, the key for Planton-managed storage is derived for your organization alone from a master key that only those runners hold: they take it out of their environment when they start, so no job, and no code a job runs, ever sees it. A state you download is the exception you asked for: Planton decrypts it into a plain-text copy, kept in its transfer storage until it is deleted about two days later. See [State Encryption](/docs/connections/state-encryption), and what it does not cover.
 
 ## What the Runner Cannot Do
 

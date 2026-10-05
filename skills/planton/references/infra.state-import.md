@@ -6,6 +6,16 @@ then died before the IaC state recorded it (an auth failure or crash mid-way
 through a long create). The cloud has the resource; the state file does not;
 every rerun tries to create it again and collides.
 
+Two runs leave this behind less often than they used to, and one still does:
+- **OpenTofu:** when an apply changes the cloud but cannot save its state,
+  Planton keeps that state and the resource's next run stores it before
+  anything else runs, so the rerun does not collide. If that kept state can no
+  longer be stored, the next run stops with a sentence asking for an upload of
+  the state the resource should keep; that is a state upload, not an import.
+- **Pulumi:** a resource whose create was in flight when the save failed is
+  recorded as a pending operation, and the next run warns about it. Planton
+  does not adopt it; import it as below.
+
 Recognize the signature in the failed node's engine logs (step 3 of the
 diagnosis workflow in `craft.planton-cli.md`):
 

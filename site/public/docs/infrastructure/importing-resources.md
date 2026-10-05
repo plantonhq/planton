@@ -149,6 +149,8 @@ Import failures do not corrupt state. Every error scenario leaves the state file
 
 Import failure is always safe to retry. The Infra Job records the exact error for troubleshooting.
 
+Import is also how you adopt a resource Pulumi created but could not record. When a Pulumi deploy cannot save its state, every step it saved is kept, and a resource whose create was still in flight is recorded as a pending operation. The next run warns about it. Import that resource here; Planton does not adopt it automatically.
+
 ## Related Documentation
 
 - [Infra Components](/docs/infrastructure/infra-components) — The infrastructure lifecycle that import extends
