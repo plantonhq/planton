@@ -88,7 +88,7 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.45
+  version: v0.0.140
 ```
 
 Apply it, wait for the operator to reach Ready (`kubectl get

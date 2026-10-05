@@ -213,6 +213,7 @@ func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav
 		cfg.IacModulesVersion = planton.Spec.ControlPlane.IacModulesVersion
 		cfg.ServiceAccountAnnotations = planton.Spec.ControlPlane.ServiceAccountAnnotations
 	}
+	cfg.TracesEndpoint = tracesEndpoint(planton)
 
 	// The platform vault is present or absent -- never a placeholder. Enabled:
 	// the real OpenBAO address + the control plane's own token by Secret

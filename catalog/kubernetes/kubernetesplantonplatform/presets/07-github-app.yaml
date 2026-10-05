@@ -9,7 +9,7 @@ spec:
   # The first platform release whose control plane signs with an App the
   # install declares. An older release offers no install App, so this preset
   # never names a lower version.
-  version: v0.0.113
+  version: v0.0.140
   ingress:
     enabled: true
     hostname: planton.example.com

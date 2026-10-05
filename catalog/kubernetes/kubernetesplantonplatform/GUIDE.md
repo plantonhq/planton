@@ -414,7 +414,7 @@ spec:
   namespace:
     value: planton
   createNamespace: true
-  version: v0.0.113
+  version: v0.0.140
   database:
     postgresql:
       backup:
@@ -549,7 +549,7 @@ spec:
     value: planton
   createNamespace: true
   # The release the source ran; upgrade afterwards, as its own step.
-  version: v0.0.113
+  version: v0.0.140
   database:
     postgresql:
       # READS the source's archive; honored only when the database is first

@@ -20,9 +20,9 @@ from your address, so invitations reach inboxes, alerts reach people, and
 - The credentials Secret in the platform's namespace, created BEFORE the
   platform is applied — the operator preflights it and reports a missing
   Secret in words while the platform runs as if no email were declared
-- Platform release `v0.0.60` or newer (the first whose control plane
-  reads the `smtp` arm) and operator chart 0.14.1 or newer (the first
-  whose definition knows `email`)
+- Platform release `v0.0.140` or newer (the operator's floor; every release
+  it runs reads the `smtp` arm) and operator chart 0.26.0 or newer (the
+  first that runs that release)
 
 ## Key Configuration Choices
 

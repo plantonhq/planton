@@ -42,7 +42,7 @@ spec:
   namespace:
     value: planton
   createNamespace: true
-  version: v0.0.45
+  version: v0.0.140
 ```
 
 ```shell
@@ -63,7 +63,7 @@ spec:
       name: planton
       fieldPath: spec.name
   createNamespace: false
-  version: v0.0.45
+  version: v0.0.140
 ```
 
 The InfraPipeline creates the namespace first, then declares the platform into it. The operator itself is a `depends_on` edge declared through `metadata.relationships` — no spec field consumes an operator output. The `planton-on-kubernetes` InfraChart carries namespace + operator + platform as one deployable arm.

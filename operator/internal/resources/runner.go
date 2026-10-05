@@ -280,7 +280,8 @@ func RunnerCloudOpsSecret(crName, namespace, cloudOpsToken string, ownerRef *met
 // webhook on port 80 (so the sink URL needs no explicit port -- see
 // TektonEventsSinkURL). The webhook is unauthenticated by the runner's design:
 // its trust boundary is the cluster network, which is exactly the scope a
-// ClusterIP Service grants.
+// ClusterIP Service grants. The metrics port is always there, for a monitor
+// inside the cluster (metrics.go).
 func RunnerService(cfg RunnerConfig) *corev1.Service {
 	ports := []corev1.ServicePort{{
 		Name:       "grpc",
@@ -296,6 +297,7 @@ func RunnerService(cfg RunnerConfig) *corev1.Service {
 			Protocol:   corev1.ProtocolTCP,
 		})
 	}
+	ports = append(ports, metricsServicePort())
 
 	svc := &corev1.Service{
 		TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Service"},
@@ -540,6 +542,9 @@ func RunnerDeployment(cfg RunnerConfig) *appsv1.Deployment {
 		{Name: "TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
 		{Name: "IAC_RUNNER_CACHE_DIR", Value: runnerIacCacheDir},
 		{Name: "PLANTON_LOCAL_IAC_STATE_DIR", Value: runnerIacStateDir},
+		// The job-attempt meters, always served on the Service's named metrics
+		// port (metrics.go).
+		metricsPortEnv(),
 	}
 
 	if cfg.BuildEnabled {
@@ -591,6 +596,7 @@ func RunnerDeployment(cfg RunnerConfig) *appsv1.Deployment {
 			Protocol:      corev1.ProtocolTCP,
 		})
 	}
+	ports = append(ports, metricsContainerPort())
 
 	deploy := &appsv1.Deployment{
 		TypeMeta: metav1.TypeMeta{APIVersion: "apps/v1", Kind: "Deployment"},

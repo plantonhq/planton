@@ -6,7 +6,7 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.62
+  version: v0.0.140
   database:
     postgresql:
       # The platform's own database archives continuously (every write, as

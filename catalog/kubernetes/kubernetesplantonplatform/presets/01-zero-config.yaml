@@ -8,4 +8,4 @@ spec:
   create_namespace: true # the platform's own namespace, owned by this resource
   # The ONE required choice — pins control plane, console, and runner as a
   # coherent line. Upgrading the platform is editing this field.
-  version: v0.0.50
+  version: v0.0.140

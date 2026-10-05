@@ -130,6 +130,7 @@ func fullControlPlaneConfig() ControlPlaneConfig {
 	cfg := testControlPlaneConfig()
 	cfg.ExternalConfigSecretName = "planton-extra-config"
 	cfg.IacModulesVersion = "v0.0.0-fixture"
+	cfg.TracesEndpoint = "http://cluster-traces-collector.observability.svc.cluster.local:4318"
 	cfg.OpenFGA = OpenFGAConnection("planton", "default")
 	neo4j := Neo4jConnection("planton", "default")
 	cfg.Neo4j = &neo4j
@@ -195,6 +196,7 @@ func fullConsoleConfig() ConsoleConfig {
 		ExternalConfigSecretName: "planton-console-extra-config",
 		PublicURL:                "http://planton.example.com",
 		GRPCEndpoint:             "planton.example.com:80",
+		TracesEndpoint:           "http://cluster-traces-collector.observability.svc.cluster.local:4318",
 		Identity: &ConsoleIdentityConfig{
 			IssuerURL:         "http://planton.example.com/idp/realms/planton",
 			InternalIssuerURL: "http://planton-identity.default.svc.cluster.local/idp/realms/planton",

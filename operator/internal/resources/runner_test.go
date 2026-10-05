@@ -160,8 +160,8 @@ func TestRunnerService(t *testing.T) {
 	if svc.Name != wantRunnerName {
 		t.Errorf("name = %s, want planton-runner", svc.Name)
 	}
-	if len(svc.Spec.Ports) != 2 {
-		t.Fatalf("ports = %+v, want grpc + webhook in the default (builds-on) shape", svc.Spec.Ports)
+	if len(svc.Spec.Ports) != 3 {
+		t.Fatalf("ports = %+v, want grpc + webhook + metrics in the default (builds-on) shape", svc.Spec.Ports)
 	}
 	if svc.Spec.Ports[0].Name != "grpc" || svc.Spec.Ports[0].Port != 50051 ||
 		svc.Spec.Ports[0].TargetPort.IntValue() != 50051 {
@@ -180,8 +180,8 @@ func TestRunnerService(t *testing.T) {
 // to land, and nothing should pretend otherwise.
 func TestRunnerService_BuildOptOut(t *testing.T) {
 	svc := RunnerService(testRunnerConfigBuildsOff())
-	if len(svc.Spec.Ports) != 1 || svc.Spec.Ports[0].Name != "grpc" {
-		t.Errorf("ports = %+v, want only grpc with builds off", svc.Spec.Ports)
+	if len(svc.Spec.Ports) != 2 || svc.Spec.Ports[0].Name != "grpc" || svc.Spec.Ports[1].Name != MetricsPortName {
+		t.Errorf("ports = %+v, want grpc and metrics with builds off", svc.Spec.Ports)
 	}
 }
 
@@ -369,6 +369,9 @@ func TestRunnerDeployment_EnvContract(t *testing.T) {
 	if envMap["PLANTON_LOCAL_IAC_STATE_DIR"] != "/var/lib/planton/iac-state" {
 		t.Errorf("PLANTON_LOCAL_IAC_STATE_DIR = %q, want the PVC mount", envMap["PLANTON_LOCAL_IAC_STATE_DIR"])
 	}
+	if envMap["METRICS_PORT"] != "9464" {
+		t.Errorf("METRICS_PORT = %q, want 9464: the job-attempt meters are always served", envMap["METRICS_PORT"])
+	}
 }
 
 // The opt-out shape states its contract too: both flags render an explicit
@@ -388,8 +391,8 @@ func TestRunnerDeployment_BuildOptOut(t *testing.T) {
 			t.Errorf("%s must be absent when builds are off, not empty", absent)
 		}
 	}
-	if len(container.Ports) != 1 || container.Ports[0].Name != "grpc" {
-		t.Errorf("ports = %+v, want only grpc with builds off", container.Ports)
+	if len(container.Ports) != 2 || container.Ports[0].Name != "grpc" || container.Ports[1].Name != MetricsPortName {
+		t.Errorf("ports = %+v, want grpc and metrics with builds off", container.Ports)
 	}
 }
 

@@ -22,6 +22,7 @@ A user should be able to apply a CR with only `spec.version` set and get a worki
 - Ingress: disabled (use port-forward)
 - Runner and builds (Tekton): enabled -- deploying and building are the product; opting out is the explicit act
 - Optional components (Graph): disabled
+- Observability: metrics always served, inside the cluster, on the control plane's and runner's Service port `metrics` (9464); traces off until `spec.observability.otlpHttpEndpoint` names a trace store -- the address is the switch, so there is no separate flag to disagree with it
 
 ### Sizing
 

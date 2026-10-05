@@ -1655,6 +1655,35 @@ spec:
                 x-kubernetes-validations:
                 - message: set at most one of key or secretKeyRef
                   rule: '!has(self.key) || !has(self.secretKeyRef)'
+              observability:
+                description: |-
+                  observability says where this install's traces go. Metrics need no
+                  setting: the control plane and the runner always serve them, inside the
+                  cluster only, on their Services' port named "metrics" (9464;
+                  /actuator/prometheus on the control plane, /metrics on the runner), so a
+                  Prometheus finds each with one monitor selecting
+                  app.kubernetes.io/managed-by=planton-operator and its
+                  app.kubernetes.io/name, which is also the monitor's jobLabel. Logs are
+                  one JSON object per line on stdout, each carrying its trace_id.
+                properties:
+                  otlpHttpEndpoint:
+                    description: |-
+                      otlpHttpEndpoint is the OTLP/HTTP base address of the collector (or
+                      trace store) the platform sends its traces to, such as
+                      http://cluster-traces-collector.observability.svc.cluster.local:4318.
+                      Set, every API request is traced and the console relays its browser
+                      spans there too (the control plane and the console add /v1/traces
+                      themselves); unset, nothing is traced. Setting it is the switch: there
+                      is no separate enabled flag to disagree with it.
+                    type: string
+                    x-kubernetes-validations:
+                    - message: 'spec.observability.otlpHttpEndpoint is a collector''s
+                        OTLP/HTTP base address, such as http://cluster-traces-collector.observability.svc.cluster.local:4318:
+                        http:// or https://, no trailing slash, and no /v1/ signal
+                        path (the platform adds /v1/traces itself)'
+                      rule: self.matches('^https?://[^/]+(/.*)?$') && !self.endsWith('/')
+                        && !self.contains('/v1/')
+                type: object
               openfga:
                 description: |-
                   openfga sizes the bundled policy engine (OpenFGA) that answers every

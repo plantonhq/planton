@@ -497,6 +497,20 @@ type RemoteRunnersSpec struct {
 	Enabled *bool `json:"enabled,omitempty"`
 }
 
+// ObservabilitySpec says where the platform's traces go.
+type ObservabilitySpec struct {
+	// otlpHttpEndpoint is the OTLP/HTTP base address of the collector (or
+	// trace store) the platform sends its traces to, such as
+	// http://cluster-traces-collector.observability.svc.cluster.local:4318.
+	// Set, every API request is traced and the console relays its browser
+	// spans there too (the control plane and the console add /v1/traces
+	// themselves); unset, nothing is traced. Setting it is the switch: there
+	// is no separate enabled flag to disagree with it.
+	// +kubebuilder:validation:XValidation:rule="self.matches('^https?://[^/]+(/.*)?$') && !self.endsWith('/') && !self.contains('/v1/')",message="spec.observability.otlpHttpEndpoint is a collector's OTLP/HTTP base address, such as http://cluster-traces-collector.observability.svc.cluster.local:4318: http:// or https://, no trailing slash, and no /v1/ signal path (the platform adds /v1/traces itself)"
+	// +optional
+	OtlpHttpEndpoint string `json:"otlpHttpEndpoint,omitempty"`
+}
+
 // PlantonPlatformSpec defines the desired state of a self-hosted Planton deployment.
 // A minimal spec requires only the version field; all other fields have sensible defaults.
 // +kubebuilder:validation:XValidation:rule="!has(self.bootstrap) || !has(self.bootstrap.secretBackend) || self.bootstrap.secretBackend.type != 'platform' || !has(self.vault) || !has(self.vault.enabled) || self.vault.enabled",message="bootstrap.secretBackend type 'platform' stores secrets in the bundled vault, which spec.vault.enabled: false has opted out of; re-enable the vault or use type awsSecretsManager"
@@ -665,6 +679,17 @@ type PlantonPlatformSpec struct {
 	// GHCR image tagged with spec.version.
 	// +optional
 	Console *ConsoleSpec `json:"console,omitempty"`
+
+	// observability says where this install's traces go. Metrics need no
+	// setting: the control plane and the runner always serve them, inside the
+	// cluster only, on their Services' port named "metrics" (9464;
+	// /actuator/prometheus on the control plane, /metrics on the runner), so a
+	// Prometheus finds each with one monitor selecting
+	// app.kubernetes.io/managed-by=planton-operator and its
+	// app.kubernetes.io/name, which is also the monitor's jobLabel. Logs are
+	// one JSON object per line on stdout, each carrying its trace_id.
+	// +optional
+	Observability *ObservabilitySpec `json:"observability,omitempty"`
 }
 
 // PrerequisitesSpec controls deployment of sub-operators that the Planton

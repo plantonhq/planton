@@ -6,7 +6,7 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.50
+  version: v0.0.140
   storage:
     # gp3 over the legacy gp2 default; requires the EBS CSI driver (an
     # EKS managed addon with its own IAM identity — NOT installed by the

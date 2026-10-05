@@ -9,7 +9,7 @@ spec:
   # The first platform release whose control plane sends through an SMTP
   # relay. An older release refuses to boot with `smtp` declared, so this
   # preset never names a lower version.
-  version: v0.0.60
+  version: v0.0.140
   email:
     # One declaration for both senders: the control plane (invitations,
     # alerts) and the identity server (password resets) send through this

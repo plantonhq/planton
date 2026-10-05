@@ -35,7 +35,6 @@ const (
 
 	controlPlaneDefaultLogLevel          = "info"
 	controlPlaneLogFormat                = "json"
-	controlPlaneMetricsPortOff           = "-1"
 	controlPlaneDefaultTemporalNamespace = "default"
 
 	// A stopping pod drains before the kubelet's kill: the gRPC server's
@@ -101,6 +100,11 @@ type ControlPlaneConfig struct {
 	// INSTEAD of its own catalog release. Empty -- the shape every plain
 	// install has -- renders nothing, and the control plane uses its pin.
 	IacModulesVersion string
+
+	// TracesEndpoint is the CR's spec.observability.otlpHttpEndpoint: the
+	// OTLP/HTTP base address the control plane sends its traces to. Empty
+	// keeps tracing off (see controlPlaneTracingEnv).
+	TracesEndpoint string
 
 	PostgreSQL PostgreSQLConnectionInfo
 	Redis      RedisConnectionInfo
@@ -662,6 +666,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 							{Name: controlPlaneGrpcWebPortName, ContainerPort: controlPlaneGrpcWebPort, Protocol: corev1.ProtocolTCP},
 							{Name: controlPlaneWebhookPortName, ContainerPort: controlPlaneWebhookPort, Protocol: corev1.ProtocolTCP},
 							{Name: "debug", ContainerPort: controlPlaneDebugPort, Protocol: corev1.ProtocolTCP},
+							metricsContainerPort(),
 						},
 						VolumeMounts: volumeMounts,
 						Env:          envVars,
@@ -761,6 +766,9 @@ func ControlPlaneService(crName, namespace string, ownerRef *metav1.OwnerReferen
 					Protocol:    corev1.ProtocolTCP,
 					AppProtocol: new("http"),
 				},
+				// Prometheus text at /actuator/prometheus, for a monitor inside the
+				// cluster; no front door routes it.
+				metricsServicePort(),
 			},
 		},
 	}
@@ -770,6 +778,27 @@ func ControlPlaneService(crName, namespace string, ownerRef *metav1.OwnerReferen
 	}
 
 	return svc
+}
+
+// controlPlaneTracingEnv is the control plane's tracing switch, from
+// spec.observability.otlpHttpEndpoint. Set, every request is traced to that
+// address over OTLP/HTTP (the exporter adds /v1/traces). Unset, tracing is off
+// and the exporter's address is a placeholder that is never dialed: all three
+// variables are required by the image, so off is said out loud rather than
+// left to a default.
+func controlPlaneTracingEnv(endpoint string) []corev1.EnvVar {
+	if endpoint == "" {
+		return []corev1.EnvVar{
+			{Name: "OBSERVABILITY_ENABLED", Value: "false"},
+			{Name: "OTEL_EXPORTER_OTLP_ENDPOINT", Value: "http://localhost:4318"},
+			{Name: "OTEL_EXPORTER_OTLP_TRANSPORT", Value: "http"},
+		}
+	}
+	return []corev1.EnvVar{
+		{Name: "OBSERVABILITY_ENABLED", Value: "true"},
+		{Name: "OTEL_EXPORTER_OTLP_ENDPOINT", Value: endpoint},
+		{Name: "OTEL_EXPORTER_OTLP_TRANSPORT", Value: "http"},
+	}
 }
 
 // controlPlaneEnvVars builds the control-plane boot contract.
@@ -820,24 +849,19 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// the browser console; unset, the app runs no gRPC-Web listener at all.
 		{Name: "GRPC_WEB_PORT", Value: fmt.Sprintf("%d", controlPlaneGrpcWebPort)},
 
-		// ── application / observability (off) ──
+		// ── application / observability ──
 		{Name: "ENV", Value: cfg.CRName},
 		{Name: "SERVICE_NAME", Value: "control-plane"},
 		{Name: "DEPLOYMENT_VERSION", Value: cfg.Version},
 		{Name: "LOG_LEVEL", Value: controlPlaneDefaultLogLevel},
 		// One JSON object per line: the operator only ever runs the control plane in a cluster,
-		// where a collector reads each line (and its trace_id) into a record. Required from
-		// platform v0.0.134 on -- the image refuses to boot without it -- and ignored by older
-		// images, so the floor does not move.
+		// where a collector reads each line (and its trace_id) into a record.
 		{Name: "LOG_FORMAT", Value: controlPlaneLogFormat},
-		// The metrics surface stays off, like the rest of this block: the operator declares no
-		// metrics port or scrape target, so a listener here would serve nobody. -1 is the control
-		// plane's own off switch; required from v0.0.134 on, ignored before.
-		{Name: "METRICS_PORT", Value: controlPlaneMetricsPortOff},
-		{Name: "OBSERVABILITY_ENABLED", Value: "false"},
-		{Name: "OTEL_EXPORTER_OTLP_ENDPOINT", Value: "http://localhost:4317"},
-		{Name: "OTEL_EXPORTER_OTLP_TRANSPORT", Value: "grpc"},
-
+		// The metrics surface is always served, on the Service's named metrics port (metrics.go).
+		metricsPortEnv(),
+	}...)
+	envs = append(envs, controlPlaneTracingEnv(cfg.TracesEndpoint)...)
+	envs = append(envs, []corev1.EnvVar{
 		// ── Postgres (operator-managed; the fat-jar self-provisions databases) ──
 		{Name: "DB_HOST", Value: cfg.PostgreSQL.Host},
 		{Name: "DB_NAME", Value: DBBase},

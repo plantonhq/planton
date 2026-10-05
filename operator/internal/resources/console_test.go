@@ -221,6 +221,20 @@ func TestConsoleDeployment_DeviceDiscoveryFacts(t *testing.T) {
 	}
 }
 
+// The browser's spans go where the control plane's go: the relay is on only
+// when spec.observability names a trace store, at its /v1/traces path.
+func TestConsoleDeployment_TraceRelay(t *testing.T) {
+	base := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	if _, present := consoleEnv(ConsoleDeployment(base))["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]; present {
+		t.Error("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT must be absent when nothing is traced: absent is the console's off")
+	}
+	traced := base
+	traced.TracesEndpoint = "http://cluster-traces-collector.observability.svc.cluster.local:4318"
+	if got := consoleEnv(ConsoleDeployment(traced))["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]; got != traced.TracesEndpoint+"/v1/traces" {
+		t.Errorf("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = %q, want the store's /v1/traces", got)
+	}
+}
+
 func consoleEnv(deploy *appsv1.Deployment) map[string]string {
 	env := map[string]string{}
 	for _, e := range deploy.Spec.Template.Spec.Containers[0].Env {

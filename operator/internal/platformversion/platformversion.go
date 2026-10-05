@@ -99,7 +99,15 @@ import (
 // one-host method verdicts (the platform App's availability and reason, host
 // login). An older control plane requires the placeholder webhook secret to
 // boot at all, and would offer neither a declared App nor host login.
-const MinimumSupported = "v0.0.113"
+//
+// v0.0.140: the infra-hub queues carry their product names -- the operator
+// renders TEMPORAL_TASK_QUEUE_INFRA_JOB, TEMPORAL_TASK_QUEUE_INFRA_JOB_IAC_OPERATION,
+// TEMPORAL_TASK_QUEUE_INFRA_COMPONENT_PURGE and TEMPORAL_TASK_QUEUE_INFRA_STACK_PURGE
+// and no longer the names they replace (TEMPORAL_TASK_QUEUE_STACK_JOB,
+// TEMPORAL_TASK_QUEUE_STACK_JOB_IAC_OPERATION, TEMPORAL_TASK_QUEUE_CLOUD_RESOURCE_PURGE,
+// TEMPORAL_TASK_QUEUE_INFRA_PROJECT_PURGE). An older control plane binds the
+// old names without a default, so under this operator it would never come up.
+const MinimumSupported = "v0.0.140"
 
 // releaseForm is the only shape spec.version may take: a full semantic
 // version with the "v" prefix, optionally with a pre-release suffix and build

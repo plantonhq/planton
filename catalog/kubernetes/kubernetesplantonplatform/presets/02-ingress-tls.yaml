@@ -6,7 +6,7 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.50
+  version: v0.0.140
   ingress:
     enabled: true
     # One hostname serves console AND API. The identity server bakes this

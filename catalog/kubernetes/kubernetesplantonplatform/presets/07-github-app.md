@@ -11,7 +11,7 @@ A platform at a real hostname with a GitHub App registered for the whole install
 
 - A GitHub App registered on github.com (or on your GitHub Enterprise Server, declared as its own host), its webhook pointed at `https://<hostname>/webhooks/github`, and its webhook secret set
 - The Secret holding the App's PEM private key and webhook secret in the platform's namespace, created before the platform is applied. The operator preflights it, and a missing Secret shows in the platform's status while the host is offered without an App
-- Platform release `v0.0.113` or newer (the first whose control plane signs with an App the install declares) and operator chart 0.14.1 or newer (the first whose definition knows `github`)
+- Platform release `v0.0.140` or newer (the operator's floor; every release it runs signs with an App the install declares) and operator chart 0.26.0 or newer (the first that runs that release)
 
 ## Key Configuration Choices
 

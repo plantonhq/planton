@@ -131,8 +131,8 @@ func TestControlPlaneDeployment_ImageOverride(t *testing.T) {
 func TestControlPlaneDeployment_Ports(t *testing.T) {
 	deploy := ControlPlaneDeployment(testControlPlaneConfig())
 	ports := deploy.Spec.Template.Spec.Containers[0].Ports
-	if len(ports) != 4 {
-		t.Fatalf("expected 4 ports (grpc, grpc-web, webhook, debug), got %d", len(ports))
+	if len(ports) != 5 {
+		t.Fatalf("expected 5 ports (grpc, grpc-web, webhook, debug, metrics), got %d", len(ports))
 	}
 	if ports[0].ContainerPort != 8080 {
 		t.Errorf("grpc port = %d, want 8080", ports[0].ContainerPort)
@@ -145,6 +145,31 @@ func TestControlPlaneDeployment_Ports(t *testing.T) {
 	}
 	if ports[3].ContainerPort != 5005 {
 		t.Errorf("debug port = %d, want 5005", ports[3].ContainerPort)
+	}
+	if ports[4].Name != MetricsPortName || ports[4].ContainerPort != MetricsPort {
+		t.Errorf("metrics port = %s/%d, want %s/%d", ports[4].Name, ports[4].ContainerPort, MetricsPortName, MetricsPort)
+	}
+}
+
+// Metrics are always served, on the port the Service names; traces follow
+// spec.observability.otlpHttpEndpoint alone. Off is said out loud, because the
+// image requires all three tracing variables.
+func TestControlPlaneDeployment_Observability(t *testing.T) {
+	off := envVarMap(ControlPlaneDeployment(testControlPlaneConfig()).Spec.Template.Spec.Containers[0].Env)
+	if off["METRICS_PORT"] != "9464" {
+		t.Errorf("METRICS_PORT = %q, want 9464 whether or not traces are on", off["METRICS_PORT"])
+	}
+	if off["OBSERVABILITY_ENABLED"] != "false" || off["OTEL_EXPORTER_OTLP_ENDPOINT"] == "" || off["OTEL_EXPORTER_OTLP_TRANSPORT"] != "http" {
+		t.Errorf("tracing off = %q/%q/%q, want false with a placeholder address over http",
+			off["OBSERVABILITY_ENABLED"], off["OTEL_EXPORTER_OTLP_ENDPOINT"], off["OTEL_EXPORTER_OTLP_TRANSPORT"])
+	}
+
+	cfg := testControlPlaneConfig()
+	cfg.TracesEndpoint = "http://cluster-traces-collector.observability.svc.cluster.local:4318"
+	on := envVarMap(ControlPlaneDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
+	if on["OBSERVABILITY_ENABLED"] != "true" || on["OTEL_EXPORTER_OTLP_ENDPOINT"] != cfg.TracesEndpoint || on["OTEL_EXPORTER_OTLP_TRANSPORT"] != "http" {
+		t.Errorf("tracing on = %q/%q/%q, want true to the declared base address over http",
+			on["OBSERVABILITY_ENABLED"], on["OTEL_EXPORTER_OTLP_ENDPOINT"], on["OTEL_EXPORTER_OTLP_TRANSPORT"])
 	}
 }
 
@@ -511,8 +536,12 @@ func TestControlPlaneService(t *testing.T) {
 	if svc.Spec.Type != "ClusterIP" {
 		t.Errorf("type = %s, want ClusterIP", svc.Spec.Type)
 	}
-	if len(svc.Spec.Ports) != 3 {
-		t.Fatalf("expected 3 ports (grpc, grpc-web, webhook), got %d", len(svc.Spec.Ports))
+	if len(svc.Spec.Ports) != 4 {
+		t.Fatalf("expected 4 ports (grpc, grpc-web, webhook, metrics), got %d", len(svc.Spec.Ports))
+	}
+	if metrics := svc.Spec.Ports[3]; metrics.Name != MetricsPortName || metrics.Port != MetricsPort ||
+		metrics.TargetPort.String() != MetricsPortName || metrics.AppProtocol == nil || *metrics.AppProtocol != "http" {
+		t.Errorf("metrics service port = %+v, want %s %d->%s over http", metrics, MetricsPortName, MetricsPort, MetricsPortName)
 	}
 	if svc.Spec.Ports[0].Port != 80 {
 		t.Errorf("grpc service port = %d, want 80", svc.Spec.Ports[0].Port)

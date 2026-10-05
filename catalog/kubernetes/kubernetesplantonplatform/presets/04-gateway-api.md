@@ -21,10 +21,11 @@ Gateway stays yours and is never modified.
   and allows routes from the platform's namespace
   (`spec.listeners[].allowedRoutes.namespaces`) — the platform's status
   names the exact mismatch when either is missing
-- A planton-operator chart that knows `gateway_ref` (0.9.0 or newer). An
-  older definition refuses the declaration; the refusal names the resource
-  to upgrade (`KubernetesPlantonOperator`, `spec.chart_version`). That
-  operator's platform floor is `v0.0.50`, so `version` is at least that
+- A planton-operator chart that knows `gateway_ref` and runs the platform
+  release: 0.26.0 or newer, whose platform floor is `v0.0.140`, so `version`
+  is at least that. An older definition refuses the declaration; the
+  refusal names the resource to upgrade (`KubernetesPlantonOperator`,
+  `spec.chart_version`)
 - DNS: point the hostname at the Gateway's address — the operator's status
   names the exact record while it waits
 

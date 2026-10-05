@@ -86,6 +86,41 @@ helm install planton oci://ghcr.io/plantonhq/charts/planton --namespace planton 
 The one required value is the platform release: the chart pins none, and the
 operator refuses a release below its floor.
 
+### Watching Planton
+
+The control plane and the runner always serve Prometheus metrics, inside the cluster only,
+on their Services' port named `metrics` (9464: `/actuator/prometheus` on the control plane,
+`/metrics` on the runner). One monitor per component finds them, the runner's the same
+with `name: runner` and `path: /metrics`:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: planton-control-plane
+  namespace: planton
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/managed-by: planton-operator
+      app.kubernetes.io/name: control-plane
+  jobLabel: app.kubernetes.io/name   # job="control-plane", whatever the platform is named
+  endpoints:
+    - port: metrics
+      path: /actuator/prometheus
+```
+
+Traces are the one signal that needs a setting, because they need somewhere to go: name
+your collector's (or Tempo's) OTLP/HTTP base address and every API request is traced, with
+the console's browser spans joined to them. Platform logs are one JSON object per line on
+stdout, each carrying its `trace_id`.
+
+```yaml
+spec:
+  observability:
+    otlpHttpEndpoint: http://cluster-traces-collector.observability.svc.cluster.local:4318
+```
+
 ### Publishing Planton at a URL
 
 External access is a friction ladder in `spec.ingress` -- each rung is one field

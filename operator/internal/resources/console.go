@@ -60,6 +60,12 @@ type ConsoleConfig struct {
 	// server. Always set by the component once the front-door URL is known
 	// -- every install signs in.
 	Identity *ConsoleIdentityConfig
+
+	// TracesEndpoint is the CR's spec.observability.otlpHttpEndpoint, the
+	// same address the control plane traces to. Set, the console relays its
+	// browser spans there, so a page load and the API calls it makes are one
+	// trace. Empty, the relay is off.
+	TracesEndpoint string
 }
 
 // ConsoleIdentityConfig carries the sign-in wiring for the console.
@@ -169,6 +175,12 @@ func ConsoleDeployment(cfg ConsoleConfig) *appsv1.Deployment {
 		// one address a native gRPC client needs, declared by the deployment
 		// that serves it.
 		envVars = append(envVars, corev1.EnvVar{Name: "GRPC_ENDPOINT", Value: cfg.GRPCEndpoint})
+	}
+	if cfg.TracesEndpoint != "" {
+		// The browser posts its spans to the console's own /api/traces, which
+		// relays them here; absent, the relay answers 404 and the page loads no
+		// tracer at all -- the console's own off.
+		envVars = append(envVars, corev1.EnvVar{Name: "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", Value: cfg.TracesEndpoint + "/v1/traces"})
 	}
 	if cfg.Identity != nil {
 		envVars = append(envVars,

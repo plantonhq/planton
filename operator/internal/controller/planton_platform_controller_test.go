@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -419,6 +420,46 @@ var _ = Describe("PlantonPlatform Controller", func() {
 				"a platform backend with no vault to store it in must be rejected at apply time")
 			Expect(err.Error()).To(ContainSubstring("spec.vault.enabled: false"),
 				"the rejection must explain itself, got: %v", err)
+		})
+	})
+
+	Context("When observability names where traces go", func() {
+		// The address rule runs in the real API server, so these pin what an
+		// adopter's helm --set or kubectl apply is told: a base address, never
+		// the signal path the platform appends itself.
+		observed := func(name, endpoint string) *plantonaiv1.PlantonPlatform {
+			return &plantonaiv1.PlantonPlatform{
+				ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
+				Spec: plantonaiv1.PlantonPlatformSpec{
+					Version:       "v1.0.0",
+					Observability: &plantonaiv1.ObservabilitySpec{OtlpHttpEndpoint: endpoint},
+				},
+			}
+		}
+
+		It("should accept a collector's base address, with or without a path prefix", func() {
+			for i, endpoint := range []string{
+				"http://cluster-traces-collector.observability.svc.cluster.local:4318",
+				"https://otel.example.com/otlp",
+			} {
+				resource := observed(fmt.Sprintf("cel-otlp-ok-%d", i), endpoint)
+				Expect(k8sClient.Create(ctx, resource)).To(Succeed(), "%s is a base address", endpoint)
+				Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
+			}
+		})
+
+		It("should reject an address the exporter cannot use as a base", func() {
+			for i, endpoint := range []string{
+				"cluster-traces-collector.observability:4318",                  // no scheme
+				"http://cluster-traces-collector.observability:4318/",          // trailing slash
+				"http://cluster-traces-collector.observability:4318/v1/traces", // the signal path
+				"grpc://cluster-traces-collector.observability:4317",           // not OTLP/HTTP
+			} {
+				err := k8sClient.Create(ctx, observed(fmt.Sprintf("cel-otlp-bad-%d", i), endpoint))
+				Expect(err).To(HaveOccurred(), "%s must be refused at apply time", endpoint)
+				Expect(err.Error()).To(ContainSubstring("OTLP/HTTP base address"),
+					"the rejection must explain itself, got: %v", err)
+			}
 		})
 	})
 
