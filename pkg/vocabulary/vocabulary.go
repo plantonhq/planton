@@ -288,6 +288,13 @@ func (s *Scanner) ScanText(path string, content []byte) []Finding {
 	}
 	var findings []Finding
 	lines := strings.Split(string(content), "\n")
+	code := isSourceCode(path)
+	wraps := func(above, below string) bool {
+		if keyLine.MatchString(below) {
+			return false
+		}
+		return !code || (commentLine.MatchString(above) && commentLine.MatchString(below))
+	}
 	for i, line := range lines {
 		// Each line is read in the window of its neighbours, the way a reader
 		// reads wrapped prose: a two-word name broken across a line break
@@ -295,11 +302,11 @@ func (s *Scanner) ScanText(path string, content []byte) []Finding {
 		// next) is found on the line it starts on, and a vendor's phrase
 		// wrapped the same way still excuses its words on both lines.
 		prev, cur, next := "", line, ""
-		if i > 0 && !keyLine.MatchString(line) {
+		if i > 0 && wraps(lines[i-1], line) {
 			prev = lines[i-1] + " "
 			cur = commentMarker.ReplaceAllString(line, "")
 		}
-		if i+1 < len(lines) && !keyLine.MatchString(lines[i+1]) {
+		if i+1 < len(lines) && wraps(line, lines[i+1]) {
 			next = " " + commentMarker.ReplaceAllString(lines[i+1], "")
 		}
 		findings = append(findings, s.scanWindow(path, i+1, prev+cur+next, len(prev), len(prev)+len(cur), allow)...)
@@ -313,6 +320,26 @@ func (s *Scanner) ScanText(path string, content []byte) []Finding {
 var lookalikes = strings.NewReplacer("\u2010", "-", "\u2011", "-", "\u2012", "-", "\u00a0", " ")
 
 var commentMarker = regexp.MustCompile(`^\s*(//+|#+|\*|--|;+)?\s*`)
+
+// sourceSuffixes are the source-code files, where a line break separates
+// tokens: there only a comment wraps, so two neighbouring lines are read
+// together only when both are comments.
+var sourceSuffixes = []string{
+	".go", ".java", ".kt", ".scala", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".py", ".rs",
+	".dart", ".swift", ".proto", ".sh", ".bash", ".sql", ".cypher", ".bzl", ".bazel", ".tf", ".hcl",
+	".c", ".h", ".cc", ".cpp",
+}
+
+func isSourceCode(path string) bool {
+	for _, s := range sourceSuffixes {
+		if strings.HasSuffix(path, s) {
+			return true
+		}
+	}
+	return false
+}
+
+var commentLine = regexp.MustCompile(`^\s*(//|#|\*|/\*|--|;)`)
 
 // keyLine is a line that opens with a key (YAML, a struct literal): it
 // starts a new statement, so it never continues the line above.

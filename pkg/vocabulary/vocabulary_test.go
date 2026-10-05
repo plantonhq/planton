@@ -105,6 +105,12 @@ func TestWrappedNamesAreFound(t *testing.T) {
 	if got := s.ScanText("README.md", []byte("one deployment\nper environment")); len(got) != 0 {
 		t.Errorf("ordinary wrapped prose was flagged: %v", got)
 	}
+	if got := s.ScanText("pkg/x.go", []byte("\tStack          *stack.PulumiStack\n\tOutputFilePath string")); len(got) != 0 {
+		t.Errorf("two lines of source code were read as one: %v", got)
+	}
+	if len(s.ScanText("pkg/x.go", []byte("// the value a\n// cloud resource carries"))) == 0 {
+		t.Error("a comment wrapped in source code was not read across the break")
+	}
 }
 
 func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
