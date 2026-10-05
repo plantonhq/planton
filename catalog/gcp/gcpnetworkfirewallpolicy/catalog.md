@@ -170,5 +170,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**GCP Hierarchical Firewall Policy**](/infra-catalog/gcp-hierarchical-firewall-policy) -- organization- and folder-level policies evaluated before this one
 - [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the networks the policy attaches to
 - [**GCP Tag Value**](/infra-catalog/gcp-tag-value) -- the secure tags rules key on
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the load balancers `targetForwardingRules` reference
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the load balancers `targetForwardingRules` reference
 - [**GCP Firewall Rule**](/infra-catalog/gcp-firewall-rule) -- legacy per-network rules, evaluated last

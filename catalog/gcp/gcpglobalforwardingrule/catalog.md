@@ -1,4 +1,4 @@
-# GCP Global Forwarding Rule
+# GCP Forwarding Rule
 
 Deploys a Compute Engine forwarding rule — the VIP node of a load balancer, global (the default) or regional when `region` is set. It binds an IP address and port to a target proxy (HTTP or HTTPS) — or, for the passthrough Network Load Balancers, straight to a regional backend service — which is where client traffic enters. With the load-balancing scheme set to `NONE`, the same resource becomes a Private Service Connect entry point for Google APIs (`all-apis` / `vpc-sc`) or a producer service attachment. The target is mutable in place — repointing a live VIP at a new proxy is GCP's zero-downtime frontend swap — while the IP, protocol, port range, and scheme are immutable.
 
@@ -26,7 +26,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Console
 
-Open the deployment store, find **GCP Global Forwarding Rule**, and click **Deploy**. The creation wizard walks you through preset selection, environment and connection configuration, and spec fields. Start from the **HTTPS Frontend VIP** preset in the [Presets](#presets) tab.
+Open the deployment store, find **GCP Forwarding Rule**, and click **Deploy**. The creation wizard walks you through preset selection, environment and connection configuration, and spec fields. Start from the **HTTPS Frontend VIP** preset in the [Presets](#presets) tab.
 
 ### CLI
 

@@ -232,7 +232,7 @@ func TestGcpTargetHttpsProxy_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "gcptargethttpsproxy", "terraform")
 }
 
-// --- GCP Global Forwarding Rule (the VIP node; the deepest composed chain in the GCP harness) ---
+// --- GCP Forwarding Rule (the VIP node; the deepest composed chain in the GCP harness) ---
 
 func TestGcpGlobalForwardingRule_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "gcpglobalforwardingrule", "pulumi")

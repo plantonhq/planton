@@ -131,4 +131,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**GCP Managed SSL Certificate**](/infra-catalog/gcp-managed-ssl-certificate) -- the auto-renewing certificates this proxy presents
 - [**GCP SSL Certificate**](/infra-catalog/gcp-ssl-certificate) -- the self-managed certificate alternative on the same list
 - [**GCP SSL Policy**](/infra-catalog/gcp-ssl-policy) -- the TLS versions/ciphers floor
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
