@@ -98,7 +98,7 @@ func TestRunnerConfig_GlobalStorage(t *testing.T) {
 // The platform's registry root moves the runner and the control plane together;
 // the runner's own image override still wins over it.
 func TestImageRegistry_MovesEveryPlantonImage(t *testing.T) {
-	const mirror = "asia-south1-docker.pkg.dev/plantonhq/planton"
+	const mirror = "us-central1-docker.pkg.dev/plantonhq/planton"
 	p := ingressPlatform(false)
 	p.Spec.ImageRegistry = mirror
 

@@ -408,11 +408,11 @@ install under the same release adopts kept definitions.
 The OCI registry path the planton-operator chart is pulled from. Defaults
 to oci://ghcr.io/plantonhq/charts. Every chart release is also
 published, byte for byte, to Google Artifact Registry at
-oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+oci://us-central1-docker.pkg.dev/plantonhq/charts; set that to pull
 from Google, or name a mirror of your own holding the same charts.
 
 - default: `oci://ghcr.io/plantonhq/charts`
-- rule: chart repository must be an OCI path such as "oci://asia-south1-docker.pkg.dev/plantonhq/charts": oci:// scheme, no trailing slash
+- rule: chart repository must be an OCI path such as "oci://us-central1-docker.pkg.dev/plantonhq/charts": oci:// scheme, no trailing slash
 
 ## Outputs
 

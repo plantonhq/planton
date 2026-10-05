@@ -533,10 +533,10 @@ type PlantonPlatformSpec struct {
 	// control-plane, client-apps/web, and runner). Defaults to
 	// ghcr.io/plantonhq/planton. Every release is also published, byte for
 	// byte, to Google Artifact Registry at
-	// asia-south1-docker.pkg.dev/plantonhq/planton; set that here to pull from
+	// us-central1-docker.pkg.dev/plantonhq/planton; set that here to pull from
 	// Google, or name a mirror of your own. A component's image.repository, when
 	// set, wins over this root.
-	// +kubebuilder:validation:XValidation:rule="!self.endsWith('/') && !self.contains('://')",message="spec.imageRegistry is a registry root such as asia-south1-docker.pkg.dev/plantonhq/planton: no scheme and no trailing slash"
+	// +kubebuilder:validation:XValidation:rule="!self.endsWith('/') && !self.contains('://')",message="spec.imageRegistry is a registry root such as us-central1-docker.pkg.dev/plantonhq/planton: no scheme and no trailing slash"
 	// +optional
 	ImageRegistry string `json:"imageRegistry,omitempty"`
 

@@ -4,7 +4,7 @@
 // anywhere else, so moving the defaults is a change to this file alone.
 //
 // Every release is published to ghcr.io and copied, byte for byte, to the
-// Google Artifact Registry mirror at asia-south1-docker.pkg.dev/plantonhq; the
+// Google Artifact Registry mirror at us-central1-docker.pkg.dev/plantonhq; the
 // path after the root is the same on both.
 package plantonregistry
 

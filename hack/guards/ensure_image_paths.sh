@@ -61,7 +61,7 @@ fi
 
 # Rule two: code names a registry root only in its home. Every release is
 # published to ghcr.io and mirrored, byte for byte, to Google Artifact
-# Registry (asia-south1-docker.pkg.dev/plantonhq), and an install chooses
+# Registry (us-central1-docker.pkg.dev/plantonhq), and an install chooses
 # between them with one setting (spec.imageRegistry, a module's
 # chart_repository). A root written into any other code file is a default that
 # setting cannot move. The operator's home is one package; each catalog module

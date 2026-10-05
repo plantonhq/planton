@@ -137,7 +137,7 @@ type KubernetesPlantonRunnerSpec struct {
 	// The OCI registry path the planton-runner chart is pulled from. Defaults
 	// to oci://ghcr.io/plantonhq/charts. Every chart release is also
 	// published, byte for byte, to Google Artifact Registry at
-	// oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+	// oci://us-central1-docker.pkg.dev/plantonhq/charts; set that to pull
 	// from Google, or name a mirror of your own holding the same charts.
 	ChartRepository *string `protobuf:"bytes,12,opt,name=chart_repository,json=chartRepository,proto3,oneof" json:"chart_repository,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -423,7 +423,7 @@ const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDes
 	"\vhelm_values\x18\v \x01(\tR\n" +
 	"helmValues\x12\xab\x02\n" +
 	"\x10chart_repository\x18\f \x01(\tB\xfa\x01\xbaH\xd4\x01\xba\x01\xd0\x01\n" +
-	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x02R\x0fchartRepository\x88\x01\x01B\x11\n" +
+	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://us-central1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x02R\x0fchartRepository\x88\x01\x01B\x11\n" +
 	"\x0f_runner_versionB\x13\n" +
 	"\x11_image_repositoryB\x13\n" +
 	"\x11_chart_repository\"\xfa\x04\n" +

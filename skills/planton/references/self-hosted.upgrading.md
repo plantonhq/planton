@@ -53,10 +53,10 @@ Both steps are mutations under the protocol in `cloud.exploration.md`: state the
 
 ## Moving an install to the Google Artifact Registry mirror
 
-Every release is copied, byte for byte, from ghcr.io to Google Artifact Registry at the same path after the host: `asia-south1-docker.pkg.dev/plantonhq/planton/<image>` and `oci://asia-south1-docker.pkg.dev/plantonhq/charts/<chart>`. When an adopter's pulls from ghcr.io crawl or stall (Google Cloud clusters most often), the move is two declarations, each a mutation under the same protocol:
+Every release is copied, byte for byte, from ghcr.io to Google Artifact Registry at the same path after the host: `us-central1-docker.pkg.dev/plantonhq/planton/<image>` and `oci://us-central1-docker.pkg.dev/plantonhq/charts/<chart>`. When an adopter's pulls from ghcr.io crawl or stall (Google Cloud clusters most often), the move is two declarations, each a mutation under the same protocol:
 
-1. The operator: `helm upgrade planton-operator oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-operator --version <chart-version> -n <operator-namespace> --reuse-values --set image.repository=asia-south1-docker.pkg.dev/plantonhq/planton/operator`. The chart must be 0.22.0 or newer, the first to carry the next field.
-2. The platform: set `spec.imageRegistry: asia-south1-docker.pkg.dev/plantonhq/planton` the way the platform was declared (`--set platform.spec.imageRegistry=...` on the `planton` chart, a `kubectl patch`, or the platform kind's `image_registry`). The control plane, console, and runner then roll to the same images from the mirror.
+1. The operator: `helm upgrade planton-operator oci://us-central1-docker.pkg.dev/plantonhq/charts/planton-operator --version <chart-version> -n <operator-namespace> --reuse-values --set image.repository=us-central1-docker.pkg.dev/plantonhq/planton/operator`. The chart must be 0.22.0 or newer, the first to carry the next field.
+2. The platform: set `spec.imageRegistry: us-central1-docker.pkg.dev/plantonhq/planton` the way the platform was declared (`--set platform.spec.imageRegistry=...` on the `planton` chart, a `kubectl patch`, or the platform kind's `image_registry`). The control plane, console, and runner then roll to the same images from the mirror.
 
 Confirm with `crane digest` against both hosts for the running tag (they match), and with the pods' `image` fields. The bundled third-party components (PostgreSQL, Temporal, OpenFGA, OpenBao, Valkey) keep pulling from their own registries; say so rather than promising a complete move.
 

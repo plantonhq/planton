@@ -2,7 +2,7 @@
 # Mirror released images and charts to Google Artifact Registry
 # =============================================================================
 # Copies what a release pushed to ghcr.io/plantonhq into the mirror at
-# asia-south1-docker.pkg.dev/plantonhq, at the same path, by digest, so both
+# us-central1-docker.pkg.dev/plantonhq, at the same path, by digest, so both
 # registries hold the same bytes (tools/ci/release/mirror_images.sh). The
 # operator's image and the Helm charts publish to ghcr.io first; this is the one
 # step that writes the mirror.
@@ -68,7 +68,7 @@ jobs:
       - name: Log in to the mirror
         env:
           TOKEN: ${{ steps.gcp.outputs.access_token }}
-        run: printf '%s' "${TOKEN}" | crane auth login asia-south1-docker.pkg.dev -u oauth2accesstoken --password-stdin
+        run: printf '%s' "${TOKEN}" | crane auth login us-central1-docker.pkg.dev -u oauth2accesstoken --password-stdin
 
       - name: Mirror by digest
         env:

@@ -6,9 +6,9 @@
 # keeps the same path under its own root:
 #
 #   planton/operator:v0.21.0        ghcr.io/plantonhq/planton/operator:v0.21.0
-#                                -> asia-south1-docker.pkg.dev/plantonhq/planton/operator:v0.21.0
+#                                -> us-central1-docker.pkg.dev/plantonhq/planton/operator:v0.21.0
 #   charts/planton-runner:0.7.0     ghcr.io/plantonhq/charts/planton-runner:0.7.0 (a Helm chart, an OCI artifact)
-#                                -> asia-south1-docker.pkg.dev/plantonhq/charts/planton-runner:0.7.0
+#                                -> us-central1-docker.pkg.dev/plantonhq/charts/planton-runner:0.7.0
 #
 # crane copies every architecture of a multi-arch image and any OCI artifact
 # byte for byte, so a digest pinned from one registry resolves on the other; the
@@ -17,7 +17,7 @@
 set -euo pipefail
 
 SOURCE_ROOT="ghcr.io/plantonhq"
-MIRROR_ROOT="asia-south1-docker.pkg.dev/plantonhq"
+MIRROR_ROOT="us-central1-docker.pkg.dev/plantonhq"
 
 if [ "$#" -eq 0 ]; then
   echo "usage: mirror_images.sh <path:tag> [path:tag ...]  (paths under ${SOURCE_ROOT})" >&2

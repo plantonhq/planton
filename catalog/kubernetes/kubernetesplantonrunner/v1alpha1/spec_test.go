@@ -75,7 +75,7 @@ var _ = ginkgo.Describe("KubernetesPlantonRunnerSpec Validation Tests", func() {
 
 			ginkgo.It("should accept a mirrored chart repository", func() {
 				input := minimalValidRunner()
-				input.Spec.ChartRepository = stringPtr("oci://asia-south1-docker.pkg.dev/plantonhq/charts")
+				input.Spec.ChartRepository = stringPtr("oci://us-central1-docker.pkg.dev/plantonhq/charts")
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})

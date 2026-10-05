@@ -153,7 +153,7 @@ type KubernetesPlantonOperatorSpec struct {
 	// The OCI registry path the planton-operator chart is pulled from. Defaults
 	// to oci://ghcr.io/plantonhq/charts. Every chart release is also
 	// published, byte for byte, to Google Artifact Registry at
-	// oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+	// oci://us-central1-docker.pkg.dev/plantonhq/charts; set that to pull
 	// from Google, or name a mirror of your own holding the same charts.
 	ChartRepository *string `protobuf:"bytes,17,opt,name=chart_repository,json=chartRepository,proto3,oneof" json:"chart_repository,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -520,7 +520,7 @@ const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_spec_proto_rawD
 	"helmValues\x12l\n" +
 	"\x04crds\x18\x10 \x01(\v2X.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorCrdsR\x04crds\x12\xab\x02\n" +
 	"\x10chart_repository\x18\x11 \x01(\tB\xfa\x01\xbaH\xd4\x01\xba\x01\xd0\x01\n" +
-	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x03R\x0fchartRepository\x88\x01\x01\x1a?\n" +
+	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://us-central1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x03R\x0fchartRepository\x88\x01\x01\x1a?\n" +
 	"\x11CommonLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aA\n" +

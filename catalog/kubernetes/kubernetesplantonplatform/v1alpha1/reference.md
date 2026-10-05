@@ -2985,13 +2985,13 @@ pulled from, as <image_registry>/<image> (control-plane,
 client-apps/web, runner). Empty = the operator's default,
 ghcr.io/plantonhq/planton. Every release is also published, byte for
 byte, to Google Artifact Registry at
-asia-south1-docker.pkg.dev/plantonhq/planton; set that to pull from
+us-central1-docker.pkg.dev/plantonhq/planton; set that to pull from
 Google, or name a mirror of your own. A component's image.repository,
 when set, wins over this root. Requires a planton-operator chart that
 knows this field (0.22.0 or newer); an older definition refuses the
 declaration.
 
-- rule: image_registry is a registry root such as "asia-south1-docker.pkg.dev/plantonhq/planton": no scheme and no trailing slash
+- rule: image_registry is a registry root such as "us-central1-docker.pkg.dev/plantonhq/planton": no scheme and no trailing slash
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
 
 ### spec.temporal

@@ -124,7 +124,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 
 		ginkgo.It("should accept a registry root and a runner image override", func() {
 			input := minimalValidPlatform()
-			input.Spec.ImageRegistry = "asia-south1-docker.pkg.dev/plantonhq/planton"
+			input.Spec.ImageRegistry = "us-central1-docker.pkg.dev/plantonhq/planton"
 			input.Spec.Runner = &KubernetesPlantonPlatformRunner{
 				Image: &KubernetesPlantonPlatformImage{Repository: "mirror.example.com/planton/runner"},
 			}

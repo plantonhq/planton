@@ -494,12 +494,12 @@ func TestPlatformSpecBody_ImageRegistryAndRunnerImageRenderOnlyWhenDeclared(t *t
 	}
 
 	spec = platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
-		ImageRegistry: "asia-south1-docker.pkg.dev/plantonhq/planton",
+		ImageRegistry: "us-central1-docker.pkg.dev/plantonhq/planton",
 		Runner: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformRunner{
 			Image: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformImage{Repository: "mirror.example.com/runner"},
 		},
 	}))
-	if got := spec["imageRegistry"]; got != "asia-south1-docker.pkg.dev/plantonhq/planton" {
+	if got := spec["imageRegistry"]; got != "us-central1-docker.pkg.dev/plantonhq/planton" {
 		t.Errorf("imageRegistry = %#v, want the declared root", got)
 	}
 	want := map[string]interface{}{"image": map[string]interface{}{"repository": "mirror.example.com/runner"}}

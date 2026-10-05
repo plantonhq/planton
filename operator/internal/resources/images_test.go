@@ -5,7 +5,7 @@ import "testing"
 // One registry root moves every Planton image; a component's own override
 // still wins, and an install that names nothing keeps pulling from ghcr.io.
 func TestImageRepository(t *testing.T) {
-	const mirror = "asia-south1-docker.pkg.dev/plantonhq/planton"
+	const mirror = "us-central1-docker.pkg.dev/plantonhq/planton"
 	cases := []struct {
 		name, override, registry, slug, want string
 	}{

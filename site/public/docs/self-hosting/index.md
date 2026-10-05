@@ -159,20 +159,20 @@ Every Planton release is published to ghcr.io and copied, byte for byte, to Goog
 
 | On ghcr.io | On Google Artifact Registry |
 |---|---|
-| `ghcr.io/plantonhq/planton/<image>` | `asia-south1-docker.pkg.dev/plantonhq/planton/<image>` |
-| `oci://ghcr.io/plantonhq/charts/<chart>` | `oci://asia-south1-docker.pkg.dev/plantonhq/charts/<chart>` |
+| `ghcr.io/plantonhq/planton/<image>` | `us-central1-docker.pkg.dev/plantonhq/planton/<image>` |
+| `oci://ghcr.io/plantonhq/charts/<chart>` | `oci://us-central1-docker.pkg.dev/plantonhq/charts/<chart>` |
 
 Use it when your cluster's route to ghcr.io is slow, or when you'd rather pull from Google. Clusters on Google Cloud in particular pull from it in seconds. One value on the platform, `spec.imageRegistry`, moves the control plane, the console, and the runner together:
 
 ```bash
-helm install planton-operator oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-operator \
+helm install planton-operator oci://us-central1-docker.pkg.dev/plantonhq/charts/planton-operator \
   --namespace planton --create-namespace \
-  --set image.repository=asia-south1-docker.pkg.dev/plantonhq/planton/operator
+  --set image.repository=us-central1-docker.pkg.dev/plantonhq/planton/operator
 
-helm install planton oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton \
+helm install planton oci://us-central1-docker.pkg.dev/plantonhq/charts/planton \
   --namespace planton \
   --set platform.spec.version=<release> \
-  --set platform.spec.imageRegistry=asia-south1-docker.pkg.dev/plantonhq/planton
+  --set platform.spec.imageRegistry=us-central1-docker.pkg.dev/plantonhq/planton
 ```
 
 The operator pulls each Planton image from `<imageRegistry>/<image>`. A component's own `image.repository`, when set, still wins. The same value points at a mirror of your own: copy the images keeping the path after the host, and set `spec.imageRegistry` to your root. The setting needs operator 0.22.0 or newer. The catalog kinds carry the same choice: `image_registry` on `KubernetesPlantonPlatform`, and `chart_repository` on `KubernetesPlantonOperator` and `KubernetesPlantonRunner`.
@@ -181,7 +181,7 @@ To confirm the two registries hold the same image, compare digests:
 
 ```bash
 crane digest ghcr.io/plantonhq/planton/control-plane:v0.0.75
-crane digest asia-south1-docker.pkg.dev/plantonhq/planton/control-plane:v0.0.75
+crane digest us-central1-docker.pkg.dev/plantonhq/planton/control-plane:v0.0.75
 ```
 
 The components the operator bundles (PostgreSQL, Temporal, OpenFGA, OpenBao, Valkey) still pull from their own registries.

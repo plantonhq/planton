@@ -209,7 +209,7 @@ type KubernetesPlantonPlatformSpec struct {
 	// client-apps/web, runner). Empty = the operator's default,
 	// ghcr.io/plantonhq/planton. Every release is also published, byte for
 	// byte, to Google Artifact Registry at
-	// asia-south1-docker.pkg.dev/plantonhq/planton; set that to pull from
+	// us-central1-docker.pkg.dev/plantonhq/planton; set that to pull from
 	// Google, or name a mirror of your own. A component's image.repository,
 	// when set, wins over this root. Requires a planton-operator chart that
 	// knows this field (0.22.0 or newer); an older definition refuses the
@@ -4948,7 +4948,7 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x0eremote_runners\x18\x12 \x01(\v2a.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunnersR\rremoteRunners\x12o\n" +
 	"\x05email\x18\x13 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailR\x05email\x12\xf3\x01\n" +
 	"\x0eimage_registry\x18\x14 \x01(\tB\xcb\x01\xbaH\xc7\x01\xba\x01\xc0\x01\n" +
-	"\x15image_registry_format\x12yimage_registry is a registry root such as \"asia-south1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x12x\n" +
+	"\x15image_registry_format\x12yimage_registry is a registry root such as \"us-central1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x12x\n" +
 	"\btemporal\x18\x15 \x01(\v2\\.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalR\btemporal\x12u\n" +
 	"\aopenfga\x18\x16 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFgaR\aopenfga\x12r\n" +
 	"\x06github\x18\x17 \x01(\v2Z.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubR\x06github\x12\x87\x01\n" +

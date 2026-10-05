@@ -11,7 +11,7 @@ import (
 // every Planton image to another registry -- the Google Artifact Registry
 // mirror, a private mirror of its own -- by changing one value. Every release
 // is published to ghcr.io/plantonhq/planton and copied, byte for byte, to the
-// mirror at asia-south1-docker.pkg.dev/plantonhq/planton: the slug after the
+// mirror at us-central1-docker.pkg.dev/plantonhq/planton: the slug after the
 // root is the same on both, which is what lets one value move them all.
 
 // DefaultImageRegistry is the root an install pulls from when it names none.
