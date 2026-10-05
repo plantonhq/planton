@@ -367,7 +367,10 @@ jobs:
         # after every upload job and the pointer move -- so it inherits the
         # DAG's only-complete-releases guarantee; the GitHub releases list
         # cannot promise that (a release tag can exist whose definitions
-        # uploads failed). First release: no index exists yet, start empty.
+        # uploads failed). First release: no index exists yet, start empty --
+        # but ONLY when the store answers "not found": any other failed read
+        # (a network blip, a throttle) fails the step, because rewriting the
+        # index from an empty list would drop every earlier release from it.
         # Re-run safe: a tag enters the list once, newest first.
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
@@ -376,8 +379,17 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           INDEX_KEY="definitions/releases/index.json"
-          aws s3 cp "s3://${R2_BUCKET}/${INDEX_KEY}" index.json \
-            --endpoint-url "${AWS_ENDPOINT_URL}" || echo '{"releases":[]}' > index.json
+          if aws s3api head-object --bucket "${R2_BUCKET}" --key "${INDEX_KEY}" \
+              --endpoint-url "${AWS_ENDPOINT_URL}" > /dev/null 2> head.err; then
+            aws s3 cp "s3://${R2_BUCKET}/${INDEX_KEY}" index.json \
+              --endpoint-url "${AWS_ENDPOINT_URL}"
+          elif grep -qE '\(404\)|Not Found|NoSuchKey' head.err; then
+            echo '{"releases":[]}' > index.json
+          else
+            cat head.err >&2
+            echo "::error::could not read ${INDEX_KEY}; refusing to rewrite it from an empty list"
+            exit 1
+          fi
           jq --arg tag "$TAG" '.releases |= ([$tag] + (. - [$tag]))' index.json > index.next.json
           aws s3 cp index.next.json "s3://${R2_BUCKET}/${INDEX_KEY}" \
             --endpoint-url "${AWS_ENDPOINT_URL}" \
