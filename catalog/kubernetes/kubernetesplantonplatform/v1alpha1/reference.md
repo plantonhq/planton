@@ -75,7 +75,7 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.50
+  version: v0.0.140
   license:
     secret_key_ref:
       name: planton-license
